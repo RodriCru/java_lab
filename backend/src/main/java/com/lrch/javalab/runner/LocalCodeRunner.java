@@ -7,6 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 
 /**
@@ -38,6 +39,15 @@ public class LocalCodeRunner extends AbstractJUnitRunner {
         return hayJavac && hayJar;
     }
 
+    /**
+     * El codigo del alumno corre en el mismo contenedor que la API: no debe heredar sus variables de
+     * entorno (secreto JWT, API key de Resend, credenciales de la base de datos).
+     */
+    @Override
+    protected void prepararEntorno(Map<String, String> entorno) {
+        entorno.clear();
+    }
+
     @Override
     protected SalidaProceso ejecutarProceso(Path srcDir, Path outDir) throws IOException {
         Path classesDir = Files.createDirectories(outDir.resolve("classes"));
@@ -50,7 +60,7 @@ public class LocalCodeRunner extends AbstractJUnitRunner {
         }
 
         List<String> compilar = new ArrayList<>(List.of(
-                javacBin().toString(), "-encoding", "UTF-8", "-cp", junitJar, "-d", classesDir.toString()));
+                javacBin().toString(), "-J-Xmx128m", "-encoding", "UTF-8", "-cp", junitJar, "-d", classesDir.toString()));
         compilar.addAll(fuentes);
 
         SalidaProceso compilacion = lanzar(compilar, outDir, null);
@@ -62,7 +72,7 @@ public class LocalCodeRunner extends AbstractJUnitRunner {
         }
 
         List<String> ejecutar = List.of(
-                javaBin().toString(), "-Dfile.encoding=UTF-8", "-jar", junitJar, "execute",
+                javaBin().toString(), "-Xmx128m", "-Xss512k", "-Dfile.encoding=UTF-8", "-jar", junitJar, "execute",
                 "--class-path", classesDir.toString(),
                 "--select-class", TEST_CLASS,
                 "--reports-dir", reportsDir.toString(),

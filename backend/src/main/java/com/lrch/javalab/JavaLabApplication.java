@@ -27,6 +27,10 @@ public class JavaLabApplication {
      * al arrancar. Se crea aqui, antes de que Spring levante el DataSource.
      */
     static void prepararDirectorioDeLaBaseDeDatos() {
+        if (usaOtraBaseDeDatos()) {
+            // Con JAVALAB_DB_URL (Postgres) no hay archivo SQLite que preparar.
+            return;
+        }
         String ruta = rutaDeLaBaseDeDatos();
         if (ruta.startsWith(":")) {
             // Bases de datos en memoria (por ejemplo ":memory:") no tienen archivo.
@@ -44,6 +48,11 @@ public class JavaLabApplication {
             throw new UncheckedIOException(
                     "No se pudo crear el directorio de la base de datos: " + directorio, ex);
         }
+    }
+
+    private static boolean usaOtraBaseDeDatos() {
+        String url = System.getProperty("JAVALAB_DB_URL", System.getenv("JAVALAB_DB_URL"));
+        return url != null && !url.isBlank();
     }
 
     private static String rutaDeLaBaseDeDatos() {

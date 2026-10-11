@@ -12,6 +12,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
@@ -96,6 +97,10 @@ public abstract class AbstractJUnitRunner implements CodeRunner {
     protected record SalidaProceso(int codigo, String texto, boolean timeout) {
     }
 
+    /** Permite a cada motor ajustar las variables de entorno del proceso hijo (por defecto hereda todas). */
+    protected void prepararEntorno(Map<String, String> entorno) {
+    }
+
     /**
      * Ejecuta un comando, captura su salida y lo mata si excede el timeout configurado.
      *
@@ -106,6 +111,7 @@ public abstract class AbstractJUnitRunner implements CodeRunner {
                 .directory(directorio.toFile())
                 .redirectErrorStream(true);
 
+        prepararEntorno(builder.environment());
         Process proceso = builder.start();
         proceso.getOutputStream().close();
 

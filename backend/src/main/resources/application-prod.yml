@@ -1,0 +1,21 @@
+# Perfil de produccion (SPRING_PROFILES_ACTIVE=prod): Postgres en lugar de SQLite.
+# JAVALAB_DB_URL con formato JDBC, por ejemplo:
+#   jdbc:postgresql://ep-xxxx.us-east-2.aws.neon.tech/neondb?sslmode=require
+javalab:
+  auth:
+    # En produccion el registro esta cerrado salvo que se abra a proposito: las cuentas se crean por invitacion.
+    registration-enabled: ${JAVALAB_REGISTRATION_ENABLED:false}
+
+spring:
+  datasource:
+    url: ${JAVALAB_DB_URL}
+    username: ${JAVALAB_DB_USER:}
+    password: ${JAVALAB_DB_PASSWORD:}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      # El plan gratis de Neon admite pocas conexiones.
+      maximum-pool-size: 5
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect

@@ -39,3 +39,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# La plantilla de variables sí se sube (el .env.local real sigue ignorado)
+!.env.example

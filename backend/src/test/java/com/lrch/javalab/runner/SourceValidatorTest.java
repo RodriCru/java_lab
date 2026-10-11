@@ -163,4 +163,19 @@ class SourceValidatorTest {
         assertThat(codigo.length()).isLessThan(20_000);
         assertThatCode(() -> validador.validar(codigo, "Solution")).doesNotThrowAnyException();
     }
+
+    @Test
+    @DisplayName("Rechaza las rutas indirectas hacia clases prohibidas (invoke, ClassLoader, ModuleLayer)")
+    void rechazaRutasIndirectas() {
+        for (String intento : new String[]{
+                "java.lang.invoke.MethodHandles.lookup()",
+                "MethodHandle h = null;",
+                "ClassLoader.getSystemClassLoader()",
+                "ModuleLayer.boot()"}) {
+            String codigo = "public class Solution { public static void f() { " + intento + " } }";
+            assertThatThrownBy(() -> validador.validar(codigo, "Solution"))
+                    .as(intento)
+                    .isInstanceOf(ApiException.class);
+        }
+    }
 }

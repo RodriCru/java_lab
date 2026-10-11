@@ -197,6 +197,56 @@ Todas las respuestas siguen el contrato LRCH:
 
 ---
 
+## Despliegue (Render + Neon + Vercel)
+
+```
+Navegador ──► Vercel (Next.js) ──rewrite /api/v1/*──► Render (Docker, Spring Boot) ──► Neon (Postgres)
+```
+
+El navegador solo habla con Vercel; Next reenvía `/api/v1/*` al backend. Así la cookie de sesión queda en un
+único dominio y `SameSite=Lax` sigue funcionando.
+
+**1. Base de datos (Neon).** Crea un proyecto en neon.tech y copia host, base, usuario y contraseña. La URL
+de Neon empieza por `postgresql://`; el backend necesita el formato JDBC:
+`jdbc:postgresql://<host>/<base>?sslmode=require`, con usuario y contraseña en variables aparte.
+
+**2. Backend (Render, Web Service con Docker).** Repositorio de GitHub, `Dockerfile Path` = `./Dockerfile`,
+Root Directory vacío, Health Check Path = `/api/v1/health`. Variables:
+
+| Variable | Valor |
+|---|---|
+| `JAVALAB_JWT_SECRET` | aleatorio (`openssl rand -base64 48`), distinto al local |
+| `JAVALAB_COOKIE_SECURE` | `true` |
+| `JAVALAB_ALLOWED_ORIGINS` | `https://tu-app.vercel.app` |
+| `JAVALAB_DB_URL` / `JAVALAB_DB_USER` / `JAVALAB_DB_PASSWORD` | los de Neon (formato JDBC) |
+| `JAVALAB_RESEND_API_KEY` / `JAVALAB_MAIL_FROM` | los de Resend |
+| `JAVALAB_SUPER_ADMIN_EMAIL` | tu correo: esa cuenta se promueve a SUPER_ADMIN al arrancar |
+
+El `Dockerfile` ya fija `SPRING_PROFILES_ACTIVE=prod` y `JAVALAB_RUNNER_USE_DOCKER=false`. En producción el
+**registro está cerrado por defecto** (`JAVALAB_REGISTRATION_ENABLED=false`): las cuentas se crean por invitación. El plan gratis de
+Render se duerme tras ~15 minutos sin tráfico: el primer acceso tarda cerca de un minuto.
+
+**3. Frontend (Vercel).** Root Directory = `frontend`. Variables (definirlas **antes** del primer build,
+porque `NEXT_PUBLIC_*` se incrusta al compilar):
+
+| Variable | Valor |
+|---|---|
+| `NEXT_PUBLIC_API_BASE_URL` | `/api/v1` |
+| `BACKEND_URL` | `https://tu-api.onrender.com` (sin barra final) |
+
+La key de Resend y el secreto JWT van **solo** en Render; lo que empieza por `NEXT_PUBLIC_` lo ve cualquiera.
+
+**Cuentas por invitación.** El SUPER_ADMIN entra a `/admin`, escribe el correo de la persona y el sistema crea la
+cuenta con una **contraseña temporal aleatoria** que llega por correo (con la indicación de que puede cambiarla desde
+Perfil → Cambiar contraseña). Desde el mismo panel se reenvía una contraseña nueva o se desactiva una cuenta. La
+contraseña temporal solo viaja en ese correo; la API nunca la devuelve. El rol se comprueba contra la base de datos en
+cada llamada, no contra el token.
+
+**Ojo con la seguridad del runner.** En Render no hay Docker, así que el código del alumno se compila y
+ejecuta **dentro del mismo contenedor que la API**. Mitigaciones: entorno vacío y `-Xmx128m` para el proceso
+del alumno, usuario sin privilegios y el filtro de `SourceValidator`. No es un aislamiento real: por eso
+conviene mantener el registro cerrado e invitar solo a gente de confianza.
+
 ## Seguridad
 
 - La sesión viaja en una **cookie httpOnly** (`SameSite=Lax`); el token nunca se guarda en

@@ -1,0 +1,18 @@
+# Nada de secretos ni de datos locales dentro de la imagen.
+.env
+.env.*
+!.env.example
+**/*.db
+**/data/
+
+# No hacen falta para el backend.
+frontend/
+runner/
+.git/
+.github/
+**/node_modules/
+**/target/
+**/.next/
+*.md
+*.py
+CLAUDE.md
