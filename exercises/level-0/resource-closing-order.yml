@@ -1,0 +1,149 @@
+slug: resource-closing-order
+level: 0
+topic: exceptions
+title: Orden de cierre en try-with-resources
+statement: |
+  try-with-resources cierra automáticamente los recursos AutoCloseable, y lo hace en ORDEN INVERSO al de apertura (el último abierto se cierra primero), incluso si el cuerpo lanza una excepción.
+
+  Dentro de Solution existe la clase Resource, que implementa AutoCloseable y registra eventos en una lista compartida:
+  - El constructor agrega "abrir " + nombre.
+  - close() debe agregar "cerrar " + nombre (complétalo).
+
+  Escribe useResources(first, second, fail), que devuelve la lista de eventos:
+  1. Crea la lista de eventos.
+  2. Con try-with-resources abre primero Resource(first) y luego Resource(second).
+  3. Dentro del cuerpo: si fail es true lanza new IllegalStateException("fallo"); si no, agrega "usar".
+  4. Con un catch (IllegalStateException) agrega "capturado".
+  5. Devuelve la lista.
+
+  Ejemplos:
+  - useResources("A", "B", false) -> [abrir A, abrir B, usar, cerrar B, cerrar A]
+  - useResources("A", "B", true) -> [abrir A, abrir B, cerrar B, cerrar A, capturado]
+  (el catch se ejecuta DESPUÉS de cerrar los recursos).
+methodSignature: public static List<String> useResources(String first, String second, boolean fail)
+className: Solution
+estimatedMinutes: 20
+difficulty: medium
+hints:
+- 'Sintaxis: try (Resource a = new Resource(first, log); Resource b = new Resource(second, log)) { ... }. Los recursos se separan con punto y coma.'
+- En Resource.close() agrega 'cerrar ' + name a la lista. No declares throws en close() para no tener que capturar Exception.
+- 'No cierres nada a mano: Java llama a close() en orden inverso. El catch va después del bloque try-with-resources.'
+starterCode: |
+  import java.util.*;
+
+  public class Solution {
+
+      public static class Resource implements AutoCloseable {
+          private final String name;
+          private final List<String> log;
+
+          public Resource(String name, List<String> log) {
+              this.name = name;
+              this.log = log;
+              log.add("abrir " + name);
+          }
+
+          @Override
+          public void close() {
+              // Tu código aquí
+          }
+      }
+
+      public static List<String> useResources(String first, String second, boolean fail) {
+          List<String> log = new ArrayList<>();
+          // Tu código aquí
+          return log;
+      }
+  }
+referenceSolution: |
+  import java.util.*;
+
+  public class Solution {
+
+      public static class Resource implements AutoCloseable {
+          private final String name;
+          private final List<String> log;
+
+          public Resource(String name, List<String> log) {
+              this.name = name;
+              this.log = log;
+              log.add("abrir " + name);
+          }
+
+          @Override
+          public void close() {
+              log.add("cerrar " + name);
+          }
+      }
+
+      public static List<String> useResources(String first, String second, boolean fail) {
+          List<String> log = new ArrayList<>();
+          try (Resource a = new Resource(first, log); Resource b = new Resource(second, log)) {
+              if (fail) {
+                  throw new IllegalStateException("fallo");
+              }
+              log.add("usar");
+          } catch (IllegalStateException e) {
+              log.add("capturado");
+          }
+          return log;
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  import java.util.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Sin fallo: se cierra en orden inverso")
+      void t1() throws Exception {
+          assertEquals(List.of("abrir A", "abrir B", "usar", "cerrar B", "cerrar A"), Solution.useResources("A", "B", false));
+      }
+
+      @Test
+      @DisplayName("Con fallo: se cierra antes del catch")
+      void t2() throws Exception {
+          assertEquals(List.of("abrir A", "abrir B", "cerrar B", "cerrar A", "capturado"), Solution.useResources("A", "B", true));
+      }
+
+      @Test
+      @DisplayName("Otros nombres de recursos")
+      void t3() throws Exception {
+          assertEquals(List.of("abrir db", "abrir file", "usar", "cerrar file", "cerrar db"), Solution.useResources("db", "file", false));
+      }
+
+      @Test
+      @DisplayName("Nombres iguales")
+      void t4() throws Exception {
+          assertEquals(List.of("abrir X", "abrir X", "usar", "cerrar X", "cerrar X"), Solution.useResources("X", "X", false));
+      }
+
+      @Test
+      @DisplayName("Siempre hay 5 eventos sin fallo")
+      void t5() throws Exception {
+          assertEquals(5, Solution.useResources("A", "B", false).size());
+      }
+
+      @Test
+      @DisplayName("El último evento con fallo es capturado")
+      void t6() throws Exception {
+          List<String> r = Solution.useResources("A", "B", true);
+          assertEquals("capturado", r.get(r.size() - 1));
+          assertFalse(r.contains("usar"));
+      }
+
+      @Test
+      @DisplayName("Resource es AutoCloseable y close registra el cierre")
+      void t7() throws Exception {
+          List<String> log = new ArrayList<>();
+          Solution.Resource r = new Solution.Resource("Z", log);
+          assertTrue(r instanceof AutoCloseable);
+          r.close();
+          assertEquals(List.of("abrir Z", "cerrar Z"), log);
+      }
+  }

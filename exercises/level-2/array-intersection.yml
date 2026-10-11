@@ -1,0 +1,135 @@
+slug: array-intersection
+level: 2
+topic: structures
+title: Intersección de dos arreglos
+statement: |
+  Escribe un método que devuelva los elementos que aparecen en AMBOS arreglos, sin repetir,
+  ordenados de forma ascendente.
+
+  Ejemplo:
+  - Entrada: first=[1, 2, 2, 1], second=[2, 2] -> Salida: [2]
+  - Entrada: first=[4, 9, 5], second=[9, 4, 9, 8, 4] -> Salida: [4, 9]
+  - Entrada: first=[1, 2], second=[3, 4] -> Salida: []
+
+  Si alguno de los arreglos es null, trátalo como vacío. No modifiques los arreglos de entrada.
+methodSignature: "public static int[] intersection(int[] first, int[] second)"
+className: Solution
+estimatedMinutes: 20
+difficulty: medium
+hints:
+  - "Convierte uno de los arreglos en un Set para consultar la pertenencia en O(1)."
+  - "Recorre el otro arreglo y agrega a un segundo Set los elementos que estén en el primero (así no se repiten)."
+  - "Un TreeSet mantiene los elementos ordenados; al final copia el resultado a un int[]."
+starterCode: |
+  public class Solution {
+      public static int[] intersection(int[] first, int[] second) {
+          // Tu código aquí
+          return new int[] {-1};
+      }
+  }
+referenceSolution: |
+  import java.util.HashSet;
+  import java.util.Set;
+  import java.util.TreeSet;
+
+  public class Solution {
+      public static int[] intersection(int[] first, int[] second) {
+          if (first == null || second == null) {
+              return new int[0];
+          }
+          Set<Integer> a = new HashSet<>();
+          for (int n : first) {
+              a.add(n);
+          }
+          Set<Integer> comunes = new TreeSet<>();
+          for (int n : second) {
+              if (a.contains(n)) {
+                  comunes.add(n);
+              }
+          }
+          int[] resultado = new int[comunes.size()];
+          int i = 0;
+          for (int n : comunes) {
+              resultado[i++] = n;
+          }
+          return resultado;
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Elimina repetidos del resultado")
+      void sinRepetidos() {
+          assertArrayEquals(new int[] {2}, Solution.intersection(new int[] {1, 2, 2, 1}, new int[] {2, 2}));
+      }
+
+      @Test
+      @DisplayName("El resultado sale ordenado ascendente")
+      void ordenado() {
+          assertArrayEquals(new int[] {4, 9}, Solution.intersection(new int[] {9, 4, 5}, new int[] {9, 4, 9, 8, 4}));
+      }
+
+      @Test
+      @DisplayName("Sin elementos comunes devuelve arreglo vacío")
+      void sinComunes() {
+          assertArrayEquals(new int[0], Solution.intersection(new int[] {1, 2}, new int[] {3, 4}));
+      }
+
+      @Test
+      @DisplayName("Arreglos vacíos o null")
+      void vaciosONulos() {
+          assertArrayEquals(new int[0], Solution.intersection(new int[0], new int[] {1}));
+          assertArrayEquals(new int[0], Solution.intersection(null, new int[] {1}));
+          assertArrayEquals(new int[0], Solution.intersection(new int[] {1}, null));
+          assertArrayEquals(new int[0], Solution.intersection(null, null));
+      }
+
+      @Test
+      @DisplayName("Un solo elemento en común")
+      void unElemento() {
+          assertArrayEquals(new int[] {5}, Solution.intersection(new int[] {5}, new int[] {5}));
+      }
+
+      @Test
+      @DisplayName("Funciona con negativos")
+      void negativos() {
+          assertArrayEquals(new int[] {-3, 0, 2},
+                  Solution.intersection(new int[] {2, 0, -3, 7}, new int[] {-3, 2, 0, -8}));
+      }
+
+      @Test
+      @DisplayName("No modifica los arreglos de entrada")
+      void noModifica() {
+          int[] a = {3, 1, 2};
+          int[] b = {2, 3};
+          Solution.intersection(a, b);
+          assertArrayEquals(new int[] {3, 1, 2}, a);
+          assertArrayEquals(new int[] {2, 3}, b);
+      }
+
+      @Test
+      @DisplayName("Funciona con 100000 elementos")
+      void grande() {
+          int[] a = new int[100000];
+          int[] b = new int[100000];
+          for (int i = 0; i < a.length; i++) {
+              a[i] = i;
+              b[i] = i + 99990;
+          }
+          int[] r = Solution.intersection(a, b);
+          assertEquals(10, r.length);
+          assertEquals(99990, r[0]);
+          assertEquals(99999, r[9]);
+      }
+  }
+complexityQuestion:
+  prompt: "Con n y m elementos en cada arreglo y k elementos comunes, ¿cuál es la complejidad de la solución con HashSet + TreeSet?"
+  options: ["O(n + m + k log k)", "O(n · m)", "O(1)", "O((n + m)²)"]
+  correctIndex: 0
+  explanation: "Llenar el HashSet y recorrer el segundo arreglo cuesta O(n + m); ordenar los k comunes con el TreeSet añade O(k log k). La fuerza bruta sería O(n · m)."

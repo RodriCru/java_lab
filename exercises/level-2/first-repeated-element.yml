@@ -1,0 +1,116 @@
+slug: first-repeated-element
+level: 2
+topic: structures
+title: Primer elemento repetido
+statement: |
+  Escribe un método que devuelva el primer elemento cuya SEGUNDA aparición ocurre antes que
+  la segunda aparición de cualquier otro elemento. Es decir, recorriendo de izquierda a derecha,
+  devuelve el primer valor que ya habías visto antes.
+
+  Ejemplo:
+  - Entrada: [2, 1, 3, 1, 2] -> Salida: 1 (el 1 se repite en el índice 3, antes que el 2 en el índice 4)
+  - Entrada: [5, 6, 7] -> Salida: -1
+  - Entrada: [4, 4] -> Salida: 4
+
+  Si no hay elementos repetidos, o el arreglo es null o vacío, devuelve -1.
+  Los valores del arreglo pueden ser cualquier entero, incluido -1.
+methodSignature: "public static int firstRepeated(int[] numbers)"
+className: Solution
+estimatedMinutes: 15
+difficulty: medium
+hints:
+  - "Fíjate en la posición de la segunda aparición, no de la primera."
+  - "Mantén un Set con lo que ya viste mientras recorres de izquierda a derecha."
+  - "En cuanto un elemento ya esté en el Set, ese es el resultado; si terminas el recorrido, devuelve -1."
+starterCode: |
+  public class Solution {
+      public static int firstRepeated(int[] numbers) {
+          // Tu código aquí
+          return -1;
+      }
+  }
+referenceSolution: |
+  import java.util.HashSet;
+  import java.util.Set;
+
+  public class Solution {
+      public static int firstRepeated(int[] numbers) {
+          if (numbers == null) {
+              return -1;
+          }
+          Set<Integer> vistos = new HashSet<>();
+          for (int n : numbers) {
+              if (!vistos.add(n)) {
+                  return n;
+              }
+          }
+          return -1;
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Elige el elemento cuya segunda aparición ocurre primero")
+      void segundaAparicionPrimero() {
+          assertEquals(1, Solution.firstRepeated(new int[] {2, 1, 3, 1, 2}));
+      }
+
+      @Test
+      @DisplayName("Devuelve -1 si no hay repetidos")
+      void sinRepetidos() {
+          assertEquals(-1, Solution.firstRepeated(new int[] {5, 6, 7}));
+      }
+
+      @Test
+      @DisplayName("Arreglo vacío o null devuelve -1")
+      void vacioONulo() {
+          assertEquals(-1, Solution.firstRepeated(new int[0]));
+          assertEquals(-1, Solution.firstRepeated(null));
+      }
+
+      @Test
+      @DisplayName("Dos elementos iguales")
+      void dosIguales() {
+          assertEquals(4, Solution.firstRepeated(new int[] {4, 4}));
+      }
+
+      @Test
+      @DisplayName("Un solo elemento devuelve -1")
+      void unElemento() {
+          assertEquals(-1, Solution.firstRepeated(new int[] {9}));
+      }
+
+      @Test
+      @DisplayName("Funciona con negativos")
+      void negativos() {
+          assertEquals(-3, Solution.firstRepeated(new int[] {-3, 8, -3, 8}));
+      }
+
+      @Test
+      @DisplayName("Un elemento con más de dos apariciones cuenta por la segunda")
+      void variasApariciones() {
+          assertEquals(3, Solution.firstRepeated(new int[] {3, 3, 3, 1, 1}));
+      }
+
+      @Test
+      @DisplayName("Funciona rápido con 200000 elementos")
+      void grande() {
+          int[] a = new int[200001];
+          for (int i = 0; i < 200000; i++) {
+              a[i] = i;
+          }
+          a[200000] = 150000;
+          assertEquals(150000, Solution.firstRepeated(a));
+      }
+  }
+complexityQuestion:
+  prompt: "¿Cuál es la complejidad temporal y de espacio de la solución óptima?"
+  options: ["Tiempo O(n), espacio O(n)", "Tiempo O(n), espacio O(1)", "Tiempo O(n²), espacio O(1)", "Tiempo O(n log n), espacio O(1)"]
+  correctIndex: 0
+  explanation: "Un único recorrido con un HashSet: tiempo O(n) y, en el peor caso, el Set guarda hasta n elementos (espacio O(n)). Sin Set serían O(n²) comparaciones."

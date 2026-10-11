@@ -1,0 +1,117 @@
+slug: remove-while-iterating
+level: 0
+topic: collections
+title: Eliminar mientras se recorre
+statement: |
+  Si eliminas elementos de una lista dentro de un for-each, Java lanza ConcurrentModificationException. Y si lo haces con un for de índices sin cuidado, te saltas elementos. La forma segura es usar un Iterator (su método remove) o el método removeIf.
+
+  Escribe un método que elimine, DENTRO de la propia lista recibida, todos los números negativos (menores que 0) y devuelva cuántos eliminó. El cero NO es negativo y se conserva. El orden de los elementos restantes no cambia. Si la lista es null, devuelve 0.
+
+  Ejemplos:
+  - [1, -2, 3, -4] -> devuelve 2 y la lista queda [1, 3]
+  - [-1, -2, -3] -> devuelve 3 y la lista queda []
+  - [0, 5] -> devuelve 0 y la lista queda [0, 5]
+
+  La lista recibida es modificable (por ejemplo un ArrayList).
+methodSignature: "public static int removeNegatives(List<Integer> numbers)"
+className: Solution
+estimatedMinutes: 12
+difficulty: easy
+hints:
+  - "No uses remove dentro de un for-each sobre la misma lista: lanza ConcurrentModificationException."
+  - "Con Iterator<Integer> it = numbers.iterator(); while (it.hasNext()) { if (it.next() < 0) it.remove(); } eliminas de forma segura."
+  - "Para contar, incrementa un contador en cada it.remove(), o compara numbers.size() antes y después de numbers.removeIf(n -> n < 0)."
+starterCode: |
+  import java.util.*;
+
+  public class Solution {
+
+      public static int removeNegatives(List<Integer> numbers) {
+          // Tu código aquí
+          return 0;
+      }
+  }
+referenceSolution: |
+  import java.util.*;
+
+  public class Solution {
+
+      public static int removeNegatives(List<Integer> numbers) {
+          if (numbers == null) {
+              return 0;
+          }
+          int removed = 0;
+          Iterator<Integer> it = numbers.iterator();
+          while (it.hasNext()) {
+              if (it.next() < 0) {
+                  it.remove();
+                  removed++;
+              }
+          }
+          return removed;
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import java.util.*;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Elimina los negativos y devuelve cuántos eliminó")
+      void mezcla() {
+          List<Integer> list = new ArrayList<>(List.of(1, -2, 3, -4));
+          assertEquals(2, Solution.removeNegatives(list));
+          assertEquals(List.of(1, 3), list);
+      }
+
+      @Test
+      @DisplayName("Negativos consecutivos no se saltan")
+      void consecutivos() {
+          List<Integer> list = new ArrayList<>(List.of(-1, -2, -3, 4, -5, -6));
+          assertEquals(5, Solution.removeNegatives(list));
+          assertEquals(List.of(4), list);
+      }
+
+      @Test
+      @DisplayName("Si todos son negativos la lista queda vacía")
+      void todosNegativos() {
+          List<Integer> list = new ArrayList<>(List.of(-1, -2, -3));
+          assertEquals(3, Solution.removeNegatives(list));
+          assertTrue(list.isEmpty());
+      }
+
+      @Test
+      @DisplayName("El cero se conserva")
+      void ceroSeConserva() {
+          List<Integer> list = new ArrayList<>(List.of(0, 5));
+          assertEquals(0, Solution.removeNegatives(list));
+          assertEquals(List.of(0, 5), list);
+      }
+
+      @Test
+      @DisplayName("Una lista vacía devuelve 0")
+      void listaVacia() {
+          List<Integer> list = new ArrayList<>();
+          assertEquals(0, Solution.removeNegatives(list));
+          assertTrue(list.isEmpty());
+      }
+
+      @Test
+      @DisplayName("Una lista null devuelve 0")
+      void listaNula() {
+          assertEquals(0, Solution.removeNegatives(null));
+      }
+
+      @Test
+      @DisplayName("Se conserva el orden de los elementos restantes y los repetidos")
+      void conservaOrden() {
+          List<Integer> list = new ArrayList<>(List.of(5, -1, 3, 3, -7, 1));
+          assertEquals(2, Solution.removeNegatives(list));
+          assertEquals(List.of(5, 3, 3, 1), list);
+      }
+  }

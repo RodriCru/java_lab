@@ -1,0 +1,111 @@
+slug: day-type
+level: 0
+topic: operators-decisions
+title: "Tipo de día con switch"
+statement: |
+  Escribe un método que reciba el número de un día de la semana (1 = lunes ... 7 = domingo) y devuelva su tipo, usando una sentencia switch.
+
+  - 1 a 5 -> "laboral"
+  - 6 y 7 -> "fin de semana"
+  - Cualquier otro número -> "inválido"
+
+  Ejemplos:
+  - Entrada: 1 -> Salida: "laboral"
+  - Entrada: 5 -> Salida: "laboral"
+  - Entrada: 7 -> Salida: "fin de semana"
+  - Entrada: 0 -> Salida: "inválido"
+  - Entrada: 8 -> Salida: "inválido"
+
+  Los textos se devuelven exactamente así, en minúsculas y con acentos.
+methodSignature: "public static String dayType(int day)"
+className: Solution
+estimatedMinutes: 8
+difficulty: easy
+hints:
+  - "switch (day) { case 1: ... } compara day contra cada case; default atiende todo lo demás."
+  - "Varios case pueden compartir el mismo resultado: case 1: case 2: case 3: case 4: case 5: return \"laboral\"; (sin break entre ellos, cae al siguiente)."
+  - "Con return dentro de cada case no necesitas break. Con la sintaxis moderna también puedes escribir case 1, 2, 3, 4, 5 -> \"laboral\";"
+starterCode: |
+  public class Solution {
+
+      public static String dayType(int day) {
+          // Tu código aquí
+          return "";
+      }
+  }
+referenceSolution: |
+  public class Solution {
+
+      public static String dayType(int day) {
+          switch (day) {
+              case 1:
+              case 2:
+              case 3:
+              case 4:
+              case 5:
+                  return "laboral";
+              case 6:
+              case 7:
+                  return "fin de semana";
+              default:
+                  return "inválido";
+          }
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+      @Test
+      @DisplayName("El lunes es laboral")
+      void caso1() {
+          assertEquals("laboral", Solution.dayType(1));
+      }
+
+      @Test
+      @DisplayName("El viernes es laboral")
+      void caso2() {
+          assertEquals("laboral", Solution.dayType(5));
+      }
+
+      @Test
+      @DisplayName("Entre semana")
+      void caso3() {
+          assertEquals("laboral", Solution.dayType(2));
+          assertEquals("laboral", Solution.dayType(3));
+          assertEquals("laboral", Solution.dayType(4));
+      }
+
+      @Test
+      @DisplayName("El sábado es fin de semana")
+      void caso4() {
+          assertEquals("fin de semana", Solution.dayType(6));
+      }
+
+      @Test
+      @DisplayName("El domingo es fin de semana")
+      void caso5() {
+          assertEquals("fin de semana", Solution.dayType(7));
+      }
+
+      @Test
+      @DisplayName("0 es inválido")
+      void caso6() {
+          assertEquals("inválido", Solution.dayType(0));
+      }
+
+      @Test
+      @DisplayName("8 es inválido")
+      void caso7() {
+          assertEquals("inválido", Solution.dayType(8));
+      }
+
+      @Test
+      @DisplayName("Los negativos son inválidos")
+      void caso8() {
+          assertEquals("inválido", Solution.dayType(-3));
+      }
+  }

@@ -1,0 +1,116 @@
+slug: generate-permutations
+level: 2
+topic: recursion
+title: "Generar permutaciones"
+statement: |
+  Devuelve todas las permutaciones de una cadena cuyos caracteres son todos distintos, ordenadas lexicográficamente (orden de String.compareTo).
+
+  Ejemplos:
+  - "abc" -> ["abc", "acb", "bac", "bca", "cab", "cba"]
+  - "ab" -> ["ab", "ba"]
+  - "x" -> ["x"]
+  - "" -> [""] (una lista con la cadena vacía)
+
+  Si el texto es null, devuelve una lista vacía.
+methodSignature: "public static java.util.List<String> permutations(String text)"
+className: Solution
+estimatedMinutes: 30
+difficulty: medium
+hints:
+  - "Define el caso base: cuando ya no quedan caracteres por elegir, tienes una permutación completa."
+  - "Con backtracking, en cada paso prueba cada carácter aún no usado."
+  - "Para el orden lexicográfico, ordena los caracteres al inicio o ordena la lista final con Collections.sort."
+starterCode: |
+  import java.util.*;
+  public class Solution {
+      public static java.util.List<String> permutations(String text) {
+          // Tu código aquí
+          return new ArrayList<>();
+      }
+  }
+referenceSolution: |
+  import java.util.*;
+  public class Solution {
+      public static List<String> permutations(String text) {
+          List<String> resultado = new ArrayList<>();
+          if (text == null) return resultado;
+          char[] letras = text.toCharArray();
+          Arrays.sort(letras);
+          construir(letras, new boolean[letras.length], new StringBuilder(), resultado);
+          return resultado;
+      }
+
+      private static void construir(char[] letras, boolean[] usada, StringBuilder actual, List<String> resultado) {
+          if (actual.length() == letras.length) {
+              resultado.add(actual.toString());
+              return;
+          }
+          for (int i = 0; i < letras.length; i++) {
+              if (usada[i]) continue;
+              usada[i] = true;
+              actual.append(letras[i]);
+              construir(letras, usada, actual, resultado);
+              actual.deleteCharAt(actual.length() - 1);
+              usada[i] = false;
+          }
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+  import java.util.*;
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Tres caracteres")
+      void t0() {
+          assertEquals(Arrays.asList("abc", "acb", "bac", "bca", "cab", "cba"), Solution.permutations("abc"));
+      }
+
+      @Test
+      @DisplayName("Dos caracteres")
+      void t1() {
+          assertEquals(Arrays.asList("ab", "ba"), Solution.permutations("ab"));
+      }
+
+      @Test
+      @DisplayName("Un carácter")
+      void t2() {
+          assertEquals(Arrays.asList("x"), Solution.permutations("x"));
+      }
+
+      @Test
+      @DisplayName("Cadena vacía devuelve lista con vacío")
+      void t3() {
+          assertEquals(Arrays.asList(""), Solution.permutations(""));
+      }
+
+      @Test
+      @DisplayName("Null devuelve lista vacía")
+      void t4() {
+          assertEquals(new ArrayList<String>(), Solution.permutations(null));
+      }
+
+      @Test
+      @DisplayName("Entrada desordenada sale ordenada")
+      void t5() {
+          assertEquals(Arrays.asList("abc", "acb", "bac", "bca", "cab", "cba"), Solution.permutations("cab"));
+      }
+
+      @Test
+      @DisplayName("Cantidad factorial de 7 caracteres")
+      void t6() {
+          List<String> r = Solution.permutations("gfedcba");
+          assertEquals(5040, r.size());
+          assertEquals("abcdefg", r.get(0));
+          assertEquals("gfedcba", r.get(5039));
+          assertEquals(5040, new HashSet<>(r).size());
+      }
+  }
+complexityQuestion:
+  prompt: "¿Cuál es la complejidad temporal de generar todas las permutaciones de n caracteres?"
+  options: ["O(n)", "O(n²)", "O(2ⁿ)", "O(n · n!)"]
+  correctIndex: 3
+  explanation: "Hay n! permutaciones y construir o copiar cada una cuesta O(n)."

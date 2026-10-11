@@ -1,0 +1,113 @@
+slug: fast-power-mod
+level: 2
+topic: logic-math
+title: Exponenciación rápida modular
+statement: |
+  Calcula (base ^ exponent) mod modulus de forma eficiente, aunque el exponente sea enorme
+  (hasta 10^18). Una solución que multiplique `exponent` veces no terminará a tiempo.
+
+  Ejemplo:
+  - Entrada: base=2, exponent=10, modulus=1000 -> Salida: 24
+  - Entrada: base=3, exponent=0, modulus=7 -> Salida: 1
+  - Entrada: base=5, exponent=3, modulus=1 -> Salida: 0
+
+  Restricciones: base >= 0, exponent >= 0, 1 <= modulus <= 1_000_000_007 (así los productos
+  caben en un long). Cualquier cosa elevada a 0 vale 1 (mod modulus), y todo mod 1 vale 0.
+methodSignature: "public static long fastPower(long base, long exponent, long modulus)"
+className: Solution
+estimatedMinutes: 20
+difficulty: medium
+hints:
+  - "Reduce la base módulo `modulus` desde el inicio y empieza con resultado = 1 % modulus."
+  - "Mira el bit menos significativo del exponente: si es 1, multiplica el resultado por la base (mod)."
+  - "En cada vuelta eleva la base al cuadrado (mod) y desplaza el exponente una posición a la derecha."
+starterCode: |
+  public class Solution {
+      public static long fastPower(long base, long exponent, long modulus) {
+          // Tu código aquí
+          return 0;
+      }
+  }
+referenceSolution: |
+  public class Solution {
+      public static long fastPower(long base, long exponent, long modulus) {
+          long resultado = 1 % modulus;
+          long b = base % modulus;
+          long e = exponent;
+          while (e > 0) {
+              if ((e & 1) == 1) {
+                  resultado = (resultado * b) % modulus;
+              }
+              b = (b * b) % modulus;
+              e >>= 1;
+          }
+          return resultado;
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Caso básico 2^10 mod 1000")
+      void basico() {
+          assertEquals(24, Solution.fastPower(2, 10, 1000));
+      }
+
+      @Test
+      @DisplayName("Exponente cero devuelve 1")
+      void exponenteCero() {
+          assertEquals(1, Solution.fastPower(3, 0, 7));
+          assertEquals(1, Solution.fastPower(0, 0, 7));
+      }
+
+      @Test
+      @DisplayName("Módulo 1 siempre devuelve 0")
+      void moduloUno() {
+          assertEquals(0, Solution.fastPower(5, 3, 1));
+          assertEquals(0, Solution.fastPower(5, 0, 1));
+      }
+
+      @Test
+      @DisplayName("Base cero con exponente positivo")
+      void baseCero() {
+          assertEquals(0, Solution.fastPower(0, 5, 13));
+      }
+
+      @Test
+      @DisplayName("Base mayor que el módulo")
+      void baseMayor() {
+          assertEquals(2, Solution.fastPower(10, 2, 7));
+      }
+
+      @Test
+      @DisplayName("Pequeño teorema de Fermat con exponente enorme")
+      void fermat() {
+          long p = 1_000_000_007L;
+          assertEquals(1, Solution.fastPower(2, p - 1, p));
+          assertEquals(1, Solution.fastPower(123456789, p - 1, p));
+      }
+
+      @Test
+      @DisplayName("Exponente gigante termina rápido")
+      void exponenteGigante() {
+          assertEquals(Solution.fastPower(2, 1_000_000_000_000_000_000L, 1_000_000_007L),
+                  Solution.fastPower(2, 1_000_000_000_000_000_000L % 1_000_000_006L, 1_000_000_007L));
+      }
+
+      @Test
+      @DisplayName("Resultado conocido 7^13 mod 100")
+      void conocido() {
+          assertEquals(7, Solution.fastPower(7, 13, 100));
+          assertEquals(96889010407L % 1000, Solution.fastPower(7, 13, 1000));
+      }
+  }
+complexityQuestion:
+  prompt: "¿Cuál es la complejidad temporal de tu solución óptima, en función del exponente e?"
+  options: ["O(e)", "O(log e)", "O(e log e)", "O(1)"]
+  correctIndex: 1
+  explanation: "En cada vuelta el exponente se divide entre 2 (se descarta un bit), así que se hacen unas log2(e) iteraciones."

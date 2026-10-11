@@ -1,0 +1,160 @@
+slug: count-islands
+level: 2
+topic: matrices-patterns
+title: Contar islas
+statement: |
+  Dada una matriz `grid` de 0 y 1, donde 1 es tierra y 0 es agua, cuenta cuántas islas hay.
+  Una isla es un grupo de celdas con 1 conectadas en las 4 direcciones (arriba, abajo,
+  izquierda, derecha); las diagonales NO cuentan como conexión.
+
+  Ejemplo:
+  - Entrada: [[1,1,0,0],[1,0,0,1],[0,0,1,1]] -> Salida: 2
+  - Entrada: [[1,0],[0,1]] -> Salida: 2   (están en diagonal)
+  - Entrada: [[0,0]] -> Salida: 0
+
+  Si `grid` es null o vacío, devuelve 0. La matriz de entrada NO debe modificarse
+  (usa una matriz auxiliar de visitados).
+methodSignature: "public static int countIslands(int[][] grid)"
+className: Solution
+estimatedMinutes: 30
+difficulty: medium
+hints:
+  - "Recorre todas las celdas; cada vez que encuentres una tierra sin visitar, cuenta una isla nueva."
+  - "Al encontrarla, marca toda su isla como visitada con DFS o BFS en 4 direcciones."
+  - "Usa un boolean[][] de visitados (no modifiques grid). Con BFS y una cola evitas desbordar la pila en islas enormes."
+starterCode: |
+  public class Solution {
+      public static int countIslands(int[][] grid) {
+          // Tu código aquí
+          return 0;
+      }
+  }
+referenceSolution: |
+  import java.util.ArrayDeque;
+  import java.util.Deque;
+
+  public class Solution {
+      public static int countIslands(int[][] grid) {
+          if (grid == null || grid.length == 0) {
+              return 0;
+          }
+          int filas = grid.length;
+          int columnas = grid[0].length;
+          boolean[][] visitado = new boolean[filas][columnas];
+          int islas = 0;
+          int[] df = {1, -1, 0, 0};
+          int[] dc = {0, 0, 1, -1};
+          for (int f = 0; f < filas; f++) {
+              for (int c = 0; c < columnas; c++) {
+                  if (grid[f][c] == 1 && !visitado[f][c]) {
+                      islas++;
+                      Deque<int[]> cola = new ArrayDeque<>();
+                      cola.add(new int[] {f, c});
+                      visitado[f][c] = true;
+                      while (!cola.isEmpty()) {
+                          int[] actual = cola.poll();
+                          for (int d = 0; d < 4; d++) {
+                              int nf = actual[0] + df[d];
+                              int nc = actual[1] + dc[d];
+                              if (nf >= 0 && nf < filas && nc >= 0 && nc < columnas
+                                      && grid[nf][nc] == 1 && !visitado[nf][nc]) {
+                                  visitado[nf][nc] = true;
+                                  cola.add(new int[] {nf, nc});
+                              }
+                          }
+                      }
+                  }
+              }
+          }
+          return islas;
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Dos islas en un ejemplo básico")
+      void basico() {
+          int[][] grid = {{1, 1, 0, 0}, {1, 0, 0, 1}, {0, 0, 1, 1}};
+          assertEquals(2, Solution.countIslands(grid));
+      }
+
+      @Test
+      @DisplayName("Las diagonales no conectan")
+      void diagonales() {
+          assertEquals(2, Solution.countIslands(new int[][] {{1, 0}, {0, 1}}));
+      }
+
+      @Test
+      @DisplayName("Solo agua devuelve 0")
+      void soloAgua() {
+          assertEquals(0, Solution.countIslands(new int[][] {{0, 0}, {0, 0}}));
+      }
+
+      @Test
+      @DisplayName("Null y matriz vacía devuelven 0")
+      void nuloYVacio() {
+          assertEquals(0, Solution.countIslands(null));
+          assertEquals(0, Solution.countIslands(new int[0][0]));
+      }
+
+      @Test
+      @DisplayName("Todo tierra es una sola isla")
+      void todoTierra() {
+          assertEquals(1, Solution.countIslands(new int[][] {{1, 1, 1}, {1, 1, 1}}));
+      }
+
+      @Test
+      @DisplayName("Una isla con forma de U cuenta una vez")
+      void formaDeU() {
+          int[][] grid = {
+              {1, 0, 1},
+              {1, 0, 1},
+              {1, 1, 1}
+          };
+          assertEquals(1, Solution.countIslands(grid));
+      }
+
+      @Test
+      @DisplayName("Tablero de ajedrez 5x5 tiene 13 islas")
+      void tablero() {
+          int[][] grid = new int[5][5];
+          for (int f = 0; f < 5; f++) {
+              for (int c = 0; c < 5; c++) {
+                  grid[f][c] = (f + c) % 2 == 0 ? 1 : 0;
+              }
+          }
+          assertEquals(13, Solution.countIslands(grid));
+      }
+
+      @Test
+      @DisplayName("No modifica la matriz de entrada")
+      void noMuta() {
+          int[][] grid = {{1, 1, 0}, {0, 1, 0}, {1, 0, 1}};
+          Solution.countIslands(grid);
+          assertArrayEquals(new int[] {1, 1, 0}, grid[0]);
+          assertArrayEquals(new int[] {0, 1, 0}, grid[1]);
+          assertArrayEquals(new int[] {1, 0, 1}, grid[2]);
+      }
+
+      @Test
+      @DisplayName("Una isla gigante no desborda la pila")
+      void gigante() {
+          int n = 700;
+          int[][] grid = new int[n][n];
+          for (int[] fila : grid) {
+              java.util.Arrays.fill(fila, 1);
+          }
+          assertEquals(1, Solution.countIslands(grid));
+      }
+  }
+complexityQuestion:
+  prompt: "Para una matriz de m filas y n columnas, ¿cuál es la complejidad temporal de tu solución?"
+  options: ["O(m + n)", "O(m · n)", "O(m · n · log(m · n))", "O((m · n)²)"]
+  correctIndex: 1
+  explanation: "Cada celda se visita como máximo una vez gracias al arreglo de visitados, así que el costo total es proporcional al número de celdas."

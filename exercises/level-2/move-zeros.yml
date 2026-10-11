@@ -1,0 +1,131 @@
+slug: move-zeros
+level: 2
+topic: two-pointers
+title: Mover los ceros al final
+statement: |
+  Mueve todos los ceros de un arreglo al final, conservando el orden relativo de los elementos
+  distintos de cero. Hazlo en el mismo arreglo (sin crear otro) y devuelve ese mismo arreglo.
+
+  Ejemplo:
+  - Entrada: [0, 1, 0, 3, 12] -> Salida: [1, 3, 12, 0, 0]
+  - Entrada: [0, 0, 1] -> Salida: [1, 0, 0]
+  - Entrada: [4, 5] -> Salida: [4, 5]
+
+  Si el arreglo es null, devuelve null. Se espera O(n) tiempo y O(1) espacio extra.
+methodSignature: "public static int[] moveZeros(int[] numbers)"
+className: Solution
+estimatedMinutes: 15
+difficulty: medium
+hints:
+  - "Usa un puntero de escritura que indica la próxima posición para un elemento distinto de cero."
+  - "Recorre el arreglo: cada vez que encuentres un valor distinto de cero, colócalo en la posición de escritura y avanza ese puntero."
+  - "Al terminar el recorrido, rellena con ceros desde la posición de escritura hasta el final (o intercambia en lugar de copiar)."
+starterCode: |
+  public class Solution {
+      public static int[] moveZeros(int[] numbers) {
+          // Tu código aquí
+          return new int[0];
+      }
+  }
+referenceSolution: |
+  public class Solution {
+      public static int[] moveZeros(int[] numbers) {
+          if (numbers == null) {
+              return null;
+          }
+          int write = 0;
+          for (int read = 0; read < numbers.length; read++) {
+              if (numbers[read] != 0) {
+                  numbers[write] = numbers[read];
+                  write++;
+              }
+          }
+          while (write < numbers.length) {
+              numbers[write] = 0;
+              write++;
+          }
+          return numbers;
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Ejemplo básico [0, 1, 0, 3, 12]")
+      void ejemploBasico() {
+          assertArrayEquals(new int[] {1, 3, 12, 0, 0}, Solution.moveZeros(new int[] {0, 1, 0, 3, 12}));
+      }
+
+      @Test
+      @DisplayName("Ceros al principio")
+      void cerosAlPrincipio() {
+          assertArrayEquals(new int[] {1, 0, 0}, Solution.moveZeros(new int[] {0, 0, 1}));
+      }
+
+      @Test
+      @DisplayName("Sin ceros el arreglo no cambia")
+      void sinCeros() {
+          assertArrayEquals(new int[] {4, 5}, Solution.moveZeros(new int[] {4, 5}));
+      }
+
+      @Test
+      @DisplayName("Arreglo vacío devuelve vacío y null devuelve null")
+      void vacioONulo() {
+          assertArrayEquals(new int[0], Solution.moveZeros(new int[0]));
+          assertNull(Solution.moveZeros(null));
+      }
+
+      @Test
+      @DisplayName("Todos son ceros")
+      void todosCeros() {
+          assertArrayEquals(new int[] {0, 0, 0}, Solution.moveZeros(new int[] {0, 0, 0}));
+      }
+
+      @Test
+      @DisplayName("Un solo elemento")
+      void unElemento() {
+          assertArrayEquals(new int[] {0}, Solution.moveZeros(new int[] {0}));
+          assertArrayEquals(new int[] {8}, Solution.moveZeros(new int[] {8}));
+      }
+
+      @Test
+      @DisplayName("Conserva el orden relativo de negativos y duplicados")
+      void conservaOrden() {
+          assertArrayEquals(new int[] {-1, 2, -1, 2, 0, 0, 0},
+                  Solution.moveZeros(new int[] {-1, 0, 2, 0, -1, 0, 2}));
+      }
+
+      @Test
+      @DisplayName("Modifica y devuelve el mismo arreglo")
+      void mismoArreglo() {
+          int[] a = {0, 7, 0, 9};
+          int[] r = Solution.moveZeros(a);
+          assertSame(a, r);
+          assertArrayEquals(new int[] {7, 9, 0, 0}, a);
+      }
+
+      @Test
+      @DisplayName("Funciona rápido con 500000 elementos")
+      void grande() {
+          int[] a = new int[500000];
+          for (int i = 0; i < a.length; i++) {
+              a[i] = (i % 2 == 0) ? 0 : i;
+          }
+          int[] r = Solution.moveZeros(a);
+          assertEquals(1, r[0]);
+          assertEquals(3, r[1]);
+          assertEquals(0, r[r.length - 1]);
+          assertEquals(0, r[250000]);
+          assertEquals(499999, r[249999]);
+      }
+  }
+complexityQuestion:
+  prompt: "¿Cuál es la complejidad de la solución en el mismo arreglo con dos punteros?"
+  options: ["Tiempo O(n²), espacio O(1)", "Tiempo O(n), espacio O(n)", "Tiempo O(n log n), espacio O(1)", "Tiempo O(n), espacio O(1)"]
+  correctIndex: 3
+  explanation: "Un recorrido lineal que reescribe el arreglo con dos índices; no se necesita arreglo auxiliar, y desplazar cada cero con bucles anidados sería O(n²)."

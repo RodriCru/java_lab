@@ -1,0 +1,111 @@
+slug: grade-letter
+level: 0
+topic: operators-decisions
+title: "Calificación con letra"
+statement: |
+  Escribe un método que convierta una calificación numérica (0 a 100) en una letra, usando una cadena if / else if / else.
+
+  Escala:
+  - 90 a 100 -> "A"
+  - 80 a 89 -> "B"
+  - 70 a 79 -> "C"
+  - 60 a 69 -> "D"
+  - 0 a 59 -> "F"
+
+  Si la calificación es menor que 0 o mayor que 100, devuelve "inválido".
+
+  Ejemplos:
+  - Entrada: 95 -> Salida: "A"
+  - Entrada: 80 -> Salida: "B"
+  - Entrada: 59 -> Salida: "F"
+  - Entrada: 101 -> Salida: "inválido"
+methodSignature: "public static String letter(int score)"
+className: Solution
+estimatedMinutes: 8
+difficulty: easy
+hints:
+  - "Empieza por el caso inválido: if (score < 0 || score > 100) return \"inválido\";"
+  - "Revisa de mayor a menor: if (score >= 90) ... else if (score >= 80) ... Cada else if solo se evalúa si lo anterior fue falso, así no necesitas poner el límite superior."
+  - "El último else cubre todo lo que queda (0 a 59) y devuelve \"F\"."
+starterCode: |
+  public class Solution {
+
+      public static String letter(int score) {
+          // Tu código aquí
+          return "";
+      }
+  }
+referenceSolution: |
+  public class Solution {
+
+      public static String letter(int score) {
+          if (score < 0 || score > 100) {
+              return "inválido";
+          } else if (score >= 90) {
+              return "A";
+          } else if (score >= 80) {
+              return "B";
+          } else if (score >= 70) {
+              return "C";
+          } else if (score >= 60) {
+              return "D";
+          } else {
+              return "F";
+          }
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+      @Test
+      @DisplayName("95 es A")
+      void caso1() {
+          assertEquals("A", Solution.letter(95));
+      }
+
+      @Test
+      @DisplayName("Los límites inferiores de cada letra")
+      void caso2() {
+          assertEquals("A", Solution.letter(90));
+          assertEquals("B", Solution.letter(80));
+          assertEquals("C", Solution.letter(70));
+          assertEquals("D", Solution.letter(60));
+      }
+
+      @Test
+      @DisplayName("Los límites superiores de cada letra")
+      void caso3() {
+          assertEquals("A", Solution.letter(100));
+          assertEquals("B", Solution.letter(89));
+          assertEquals("C", Solution.letter(79));
+          assertEquals("D", Solution.letter(69));
+      }
+
+      @Test
+      @DisplayName("59 es F")
+      void caso4() {
+          assertEquals("F", Solution.letter(59));
+      }
+
+      @Test
+      @DisplayName("0 es F")
+      void caso5() {
+          assertEquals("F", Solution.letter(0));
+      }
+
+      @Test
+      @DisplayName("Menor que 0 es inválido")
+      void caso6() {
+          assertEquals("inválido", Solution.letter(-1));
+      }
+
+      @Test
+      @DisplayName("Mayor que 100 es inválido")
+      void caso7() {
+          assertEquals("inválido", Solution.letter(101));
+      }
+  }

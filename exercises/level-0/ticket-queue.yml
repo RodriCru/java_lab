@@ -1,0 +1,112 @@
+slug: ticket-queue
+level: 0
+topic: collections
+title: Cola de atención
+statement: |
+  Una cola (Queue) es FIFO: el primero en llegar es el primero en ser atendido. En Java se usa ArrayDeque con offer (encolar) y poll (sacar el primero).
+
+  Simula una ventanilla. Recibes una lista de eventos de tipo String:
+  - Un evento "ATENDER" significa que la ventanilla atiende a la persona que lleva más tiempo esperando.
+  - Cualquier otro texto es el nombre de una persona que llega y se pone al final de la cola.
+
+  Devuelve la lista de nombres atendidos, en el orden en que se atendieron. Si llega "ATENDER" y no hay nadie en la cola, agrega "VACÍA" a la lista de resultados. Las personas que sigan esperando al final simplemente no aparecen. Una lista null o vacía devuelve una lista vacía.
+
+  Ejemplos:
+  - ["Ana", "Luis", "ATENDER", "Marta", "ATENDER", "ATENDER"] -> ["Ana", "Luis", "Marta"]
+  - ["ATENDER", "Ana"] -> ["VACÍA"]
+  - ["Ana", "Luis"] -> []
+methodSignature: "public static List<String> processEvents(List<String> events)"
+className: Solution
+estimatedMinutes: 15
+difficulty: easy
+hints:
+  - "Crea una cola con Queue<String> queue = new ArrayDeque<>(); es una cola FIFO."
+  - "offer(nombre) agrega al final y poll() saca y devuelve el primero; poll() devuelve null si la cola está vacía."
+  - "Para cada evento: si es \"ATENDER\" haz poll y agrega el resultado (o \"VACÍA\" si fue null); si no, haz offer del nombre."
+starterCode: |
+  import java.util.*;
+
+  public class Solution {
+
+      public static List<String> processEvents(List<String> events) {
+          // Tu código aquí
+          return new ArrayList<>();
+      }
+  }
+referenceSolution: |
+  import java.util.*;
+
+  public class Solution {
+
+      public static List<String> processEvents(List<String> events) {
+          List<String> served = new ArrayList<>();
+          if (events == null) {
+              return served;
+          }
+          Queue<String> queue = new ArrayDeque<>();
+          for (String event : events) {
+              if ("ATENDER".equals(event)) {
+                  String next = queue.poll();
+                  served.add(next == null ? "VACÍA" : next);
+              } else {
+                  queue.offer(event);
+              }
+          }
+          return served;
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import java.util.*;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Se atiende en orden de llegada (FIFO)")
+      void ordenFifo() {
+          assertEquals(List.of("Ana", "Luis", "Marta"),
+                  Solution.processEvents(List.of("Ana", "Luis", "ATENDER", "Marta", "ATENDER", "ATENDER")));
+      }
+
+      @Test
+      @DisplayName("Atender con la cola vacía devuelve VACÍA")
+      void colaVacia() {
+          assertEquals(List.of("VACÍA"), Solution.processEvents(List.of("ATENDER", "Ana")));
+      }
+
+      @Test
+      @DisplayName("Quienes siguen esperando al final no aparecen")
+      void siguenEsperando() {
+          assertEquals(List.of(), Solution.processEvents(List.of("Ana", "Luis")));
+      }
+
+      @Test
+      @DisplayName("Una lista vacía devuelve una lista vacía")
+      void listaVacia() {
+          assertEquals(List.of(), Solution.processEvents(new ArrayList<>()));
+      }
+
+      @Test
+      @DisplayName("Una lista null devuelve una lista vacía")
+      void listaNula() {
+          assertEquals(List.of(), Solution.processEvents(null));
+      }
+
+      @Test
+      @DisplayName("Varios ATENDER seguidos agotan la cola y luego devuelven VACÍA")
+      void agotarCola() {
+          assertEquals(List.of("Ana", "VACÍA", "VACÍA"),
+                  Solution.processEvents(List.of("Ana", "ATENDER", "ATENDER", "ATENDER")));
+      }
+
+      @Test
+      @DisplayName("Una persona repetida se atiende tantas veces como llegó")
+      void nombresRepetidos() {
+          assertEquals(List.of("Ana", "Ana"),
+                  Solution.processEvents(List.of("Ana", "Ana", "ATENDER", "ATENDER")));
+      }
+  }

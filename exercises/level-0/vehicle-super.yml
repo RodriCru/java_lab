@@ -1,0 +1,219 @@
+slug: vehicle-super
+level: 0
+topic: oop-basics
+title: Constructores encadenados con super
+statement: |
+  En Solution existe la clase Vehicle (marca y número de ruedas) con un método describe(). Las subclases Car y Motorcycle deben llamar al constructor de la clase padre con super(...) y sobrescribir describe() reutilizando el del padre.
+
+  Completa:
+  - Car(brand, doors): llama a super(brand, 4). Su describe() devuelve super.describe() + " y " + doors + " puertas".
+  - Motorcycle(brand): llama a super(brand, 2). Su describe() devuelve super.describe() + " (moto)".
+  - Vehicle.describe() ya devuelve "Vehículo <marca> con <ruedas> ruedas".
+  - describeAll recibe una lista de vehículos y une sus descripciones separadas por "; " (punto y coma y un espacio), en el mismo orden.
+
+  Si la lista es null o está vacía, devuelve "".
+
+  Ejemplo:
+  - Entrada: [Car("Toyota", 4)] -> Salida: "Vehículo Toyota con 4 ruedas y 4 puertas"
+  - Entrada: [Motorcycle("Honda")] -> Salida: "Vehículo Honda con 2 ruedas (moto)"
+  - Entrada: [Motorcycle("Honda"), Car("Kia", 2)] -> Salida: "Vehículo Honda con 2 ruedas (moto); Vehículo Kia con 4 ruedas y 2 puertas"
+methodSignature: public static String describeAll(List<Vehicle> vehicles)
+className: Solution
+estimatedMinutes: 15
+difficulty: easy
+hints:
+- super(...) debe ser la primera instrucción del constructor de la subclase y envía los datos al constructor del padre.
+- Dentro de un método sobrescrito, super.describe() ejecuta la versión del padre; así no repites el texto base.
+- En describeAll puedes acumular las descripciones en una lista y unirlas con String.join("; ", lista).
+starterCode: |
+  import java.util.*;
+
+  public class Solution {
+
+      public static class Vehicle {
+          private final String brand;
+          private final int wheels;
+
+          public Vehicle(String brand, int wheels) {
+              this.brand = brand;
+              this.wheels = wheels;
+          }
+
+          public String getBrand() {
+              return brand;
+          }
+
+          public int getWheels() {
+              return wheels;
+          }
+
+          public String describe() {
+              return "Vehículo " + brand + " con " + wheels + " ruedas";
+          }
+      }
+
+      public static class Car extends Vehicle {
+          private final int doors;
+
+          public Car(String brand, int doors) {
+              super(brand, 0); // Tu código aquí: ¿cuántas ruedas tiene un coche?
+              this.doors = doors;
+          }
+
+          public int getDoors() {
+              return doors;
+          }
+
+          @Override
+          public String describe() {
+              return ""; // Tu código aquí: reutiliza super.describe()
+          }
+      }
+
+      public static class Motorcycle extends Vehicle {
+          public Motorcycle(String brand) {
+              super(brand, 0); // Tu código aquí: ¿cuántas ruedas tiene una moto?
+          }
+
+          @Override
+          public String describe() {
+              return ""; // Tu código aquí: reutiliza super.describe()
+          }
+      }
+
+      public static String describeAll(List<Vehicle> vehicles) {
+          if (vehicles == null) {
+              return "";
+          }
+          // Tu código aquí
+          return "";
+      }
+  }
+referenceSolution: |
+  import java.util.*;
+
+  public class Solution {
+
+      public static class Vehicle {
+          private final String brand;
+          private final int wheels;
+
+          public Vehicle(String brand, int wheels) {
+              this.brand = brand;
+              this.wheels = wheels;
+          }
+
+          public String getBrand() {
+              return brand;
+          }
+
+          public int getWheels() {
+              return wheels;
+          }
+
+          public String describe() {
+              return "Vehículo " + brand + " con " + wheels + " ruedas";
+          }
+      }
+
+      public static class Car extends Vehicle {
+          private final int doors;
+
+          public Car(String brand, int doors) {
+              super(brand, 4);
+              this.doors = doors;
+          }
+
+          public int getDoors() {
+              return doors;
+          }
+
+          @Override
+          public String describe() {
+              return super.describe() + " y " + doors + " puertas";
+          }
+      }
+
+      public static class Motorcycle extends Vehicle {
+          public Motorcycle(String brand) {
+              super(brand, 2);
+          }
+
+          @Override
+          public String describe() {
+              return super.describe() + " (moto)";
+          }
+      }
+
+      public static String describeAll(List<Vehicle> vehicles) {
+          if (vehicles == null) {
+              return "";
+          }
+          List<String> parts = new ArrayList<>();
+          for (Vehicle v : vehicles) {
+              parts.add(v.describe());
+          }
+          return String.join("; ", parts);
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+  import java.util.*;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("El coche pasa 4 ruedas al constructor del padre")
+      void cocheTieneCuatroRuedas() {
+          assertEquals(4, new Solution.Car("Toyota", 4).getWheels());
+      }
+
+      @Test
+      @DisplayName("La moto pasa 2 ruedas al constructor del padre")
+      void motoTieneDosRuedas() {
+          assertEquals(2, new Solution.Motorcycle("Honda").getWheels());
+      }
+
+      @Test
+      @DisplayName("Car conserva la marca y las puertas")
+      void cocheConservaDatos() {
+          Solution.Car car = new Solution.Car("Kia", 2);
+          assertEquals("Kia", car.getBrand());
+          assertEquals(2, car.getDoors());
+      }
+
+      @Test
+      @DisplayName("describe de Vehicle")
+      void describeBase() {
+          assertEquals("Vehículo Bici con 2 ruedas", new Solution.Vehicle("Bici", 2).describe());
+      }
+
+      @Test
+      @DisplayName("describe de Car reutiliza el del padre")
+      void describeCoche() {
+          assertEquals("Vehículo Toyota con 4 ruedas y 4 puertas", new Solution.Car("Toyota", 4).describe());
+      }
+
+      @Test
+      @DisplayName("describe de Motorcycle reutiliza el del padre")
+      void describeMoto() {
+          assertEquals("Vehículo Honda con 2 ruedas (moto)", new Solution.Motorcycle("Honda").describe());
+      }
+
+      @Test
+      @DisplayName("describeAll une con punto y coma y respeta el orden")
+      void describeTodos() {
+          List<Solution.Vehicle> lista = List.of(new Solution.Motorcycle("Honda"), new Solution.Car("Kia", 2));
+          assertEquals("Vehículo Honda con 2 ruedas (moto); Vehículo Kia con 4 ruedas y 2 puertas", Solution.describeAll(lista));
+      }
+
+      @Test
+      @DisplayName("describeAll con lista vacía o null devuelve cadena vacía")
+      void vaciaONull() {
+          assertEquals("", Solution.describeAll(new ArrayList<>()));
+          assertEquals("", Solution.describeAll(null));
+      }
+  }

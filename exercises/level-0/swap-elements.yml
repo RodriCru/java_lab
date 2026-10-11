@@ -1,0 +1,114 @@
+slug: swap-elements
+level: 0
+topic: functions
+title: "Intercambiar elementos de un arreglo"
+statement: |
+  Escribe un método que intercambie los elementos de las posiciones i y j de un arreglo. El método es void: no devuelve nada, MODIFICA el arreglo original. Esto funciona porque en Java los arreglos (y todos los objetos) se pasan por referencia: el método recibe la referencia al mismo arreglo que tiene quien lo llama. (Intercambiar dos int sueltos, en cambio, no afectaría al que llama, porque los tipos primitivos se pasan por valor.)
+
+  Reglas:
+  - Si i == j, el arreglo no cambia.
+  - Si arr es null, o i o j están fuera del rango [0, arr.length - 1], no hagas nada (sin lanzar excepción).
+
+  Ejemplos:
+  - Entrada: arr=[1, 2, 3, 4], i=0, j=3 -> arr queda [4, 2, 3, 1]
+  - Entrada: arr=[5, 6], i=1, j=1 -> arr queda [5, 6]
+  - Entrada: arr=[1, 2, 3], i=0, j=9 -> arr queda [1, 2, 3]
+methodSignature: "public static void swap(int[] arr, int i, int j)"
+className: Solution
+estimatedMinutes: 10
+difficulty: easy
+hints:
+  - "Como arr es una referencia, cualquier cambio dentro del método se ve fuera. Por eso no hace falta devolver nada."
+  - "Para intercambiar necesitas una variable temporal: int tmp = arr[i]; arr[i] = arr[j]; arr[j] = tmp; Sin ella perderías uno de los valores."
+  - "Antes de tocar el arreglo valida: arr != null, 0 <= i < arr.length y 0 <= j < arr.length. Si algo falla, return;"
+starterCode: |
+  public class Solution {
+
+      public static void swap(int[] arr, int i, int j) {
+          // Tu código aquí
+      }
+  }
+referenceSolution: |
+  public class Solution {
+
+      public static void swap(int[] arr, int i, int j) {
+          if (arr == null || i < 0 || j < 0 || i >= arr.length || j >= arr.length) {
+              return;
+          }
+          int tmp = arr[i];
+          arr[i] = arr[j];
+          arr[j] = tmp;
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+      @Test
+      @DisplayName("Intercambia el primero y el último")
+      void caso1() {
+          int[] arr = {1, 2, 3, 4};
+          Solution.swap(arr, 0, 3);
+          assertArrayEquals(new int[] {4, 2, 3, 1}, arr);
+      }
+
+      @Test
+      @DisplayName("Intercambia dos posiciones intermedias")
+      void caso2() {
+          int[] arr = {1, 2, 3, 4, 5};
+          Solution.swap(arr, 1, 3);
+          assertArrayEquals(new int[] {1, 4, 3, 2, 5}, arr);
+      }
+
+      @Test
+      @DisplayName("Es simétrico: el orden de i y j no importa")
+      void caso3() {
+          int[] arr = {1, 2, 3};
+          Solution.swap(arr, 2, 0);
+          assertArrayEquals(new int[] {3, 2, 1}, arr);
+      }
+
+      @Test
+      @DisplayName("Con i igual a j no cambia nada")
+      void caso4() {
+          int[] arr = {5, 6};
+          Solution.swap(arr, 1, 1);
+          assertArrayEquals(new int[] {5, 6}, arr);
+      }
+
+      @Test
+      @DisplayName("Índice fuera de rango no modifica el arreglo")
+      void caso5() {
+          int[] arr = {1, 2, 3};
+          Solution.swap(arr, 0, 9);
+          Solution.swap(arr, -1, 1);
+          Solution.swap(arr, 3, 0);
+          assertArrayEquals(new int[] {1, 2, 3}, arr);
+      }
+
+      @Test
+      @DisplayName("Arreglo null no lanza excepción")
+      void caso6() {
+          assertDoesNotThrow(() -> Solution.swap(null, 0, 1));
+      }
+
+      @Test
+      @DisplayName("Arreglo de un solo elemento")
+      void caso7() {
+          int[] arr = {7};
+          Solution.swap(arr, 0, 0);
+          assertArrayEquals(new int[] {7}, arr);
+      }
+
+      @Test
+      @DisplayName("Intercambiar dos veces restaura el original")
+      void caso8() {
+          int[] arr = {9, 8, 7, 6};
+          Solution.swap(arr, 0, 2);
+          Solution.swap(arr, 0, 2);
+          assertArrayEquals(new int[] {9, 8, 7, 6}, arr);
+      }
+  }

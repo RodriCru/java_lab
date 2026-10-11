@@ -1,0 +1,101 @@
+slug: is-power-of-two
+level: 0
+topic: operators-decisions
+title: "Potencia de dos con operadores bit a bit"
+statement: |
+  Escribe un método que indique si un entero es una potencia de dos (1, 2, 4, 8, 16...) usando operadores bit a bit, sin bucles ni Math.pow.
+
+  Pista de concepto: una potencia de dos tiene un único bit en 1 en su representación binaria (8 = 1000). Restarle 1 invierte ese bit y pone en 1 todos los de la derecha (7 = 0111), así que n & (n - 1) da 0 solo en las potencias de dos.
+
+  Ejemplos:
+  - Entrada: 1 -> Salida: true (2^0)
+  - Entrada: 16 -> Salida: true
+  - Entrada: 18 -> Salida: false
+  - Entrada: 0 -> Salida: false
+  - Entrada: -8 -> Salida: false (los negativos nunca son potencia de dos)
+methodSignature: "public static boolean isPowerOfTwo(int n)"
+className: Solution
+estimatedMinutes: 12
+difficulty: medium
+hints:
+  - "Escribe 8 y 7 en binario (1000 y 0111) y calcula su AND bit a bit (&). ¿Qué resultado obtienes?"
+  - "Si n & (n - 1) == 0, n tiene un solo bit en 1... pero 0 también cumple esa igualdad."
+  - "Combina ambas ideas: return n > 0 && (n & (n - 1)) == 0; Los paréntesis son necesarios porque == tiene mayor precedencia que &."
+starterCode: |
+  public class Solution {
+
+      public static boolean isPowerOfTwo(int n) {
+          // Tu código aquí
+          return false;
+      }
+  }
+referenceSolution: |
+  public class Solution {
+
+      public static boolean isPowerOfTwo(int n) {
+          return n > 0 && (n & (n - 1)) == 0;
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+      @Test
+      @DisplayName("1 es potencia de dos")
+      void caso1() {
+          assertTrue(Solution.isPowerOfTwo(1));
+      }
+
+      @Test
+      @DisplayName("Las primeras potencias de dos")
+      void caso2() {
+          assertTrue(Solution.isPowerOfTwo(2));
+          assertTrue(Solution.isPowerOfTwo(4));
+          assertTrue(Solution.isPowerOfTwo(8));
+          assertTrue(Solution.isPowerOfTwo(1024));
+      }
+
+      @Test
+      @DisplayName("16 es potencia de dos")
+      void caso3() {
+          assertTrue(Solution.isPowerOfTwo(16));
+      }
+
+      @Test
+      @DisplayName("18 no es potencia de dos")
+      void caso4() {
+          assertFalse(Solution.isPowerOfTwo(18));
+      }
+
+      @Test
+      @DisplayName("Números cercanos a una potencia")
+      void caso5() {
+          assertFalse(Solution.isPowerOfTwo(3));
+          assertFalse(Solution.isPowerOfTwo(15));
+          assertFalse(Solution.isPowerOfTwo(17));
+      }
+
+      @Test
+      @DisplayName("0 no es potencia de dos")
+      void caso6() {
+          assertFalse(Solution.isPowerOfTwo(0));
+      }
+
+      @Test
+      @DisplayName("Los negativos no son potencia de dos")
+      void caso7() {
+          assertFalse(Solution.isPowerOfTwo(-8));
+          assertFalse(Solution.isPowerOfTwo(-1));
+      }
+
+      @Test
+      @DisplayName("La mayor potencia de dos de un int")
+      void caso8() {
+          assertTrue(Solution.isPowerOfTwo(1 << 30));
+          assertFalse(Solution.isPowerOfTwo(Integer.MIN_VALUE));
+          assertFalse(Solution.isPowerOfTwo(Integer.MAX_VALUE));
+      }
+  }

@@ -1,0 +1,85 @@
+slug: recursive-sum
+level: 1
+topic: recursion
+title: Suma recursiva de un arreglo
+statement: |
+  Escribe un método RECURSIVO que sume todos los elementos del arreglo desde la
+  posición index hasta el final.
+
+  Reglas del contrato:
+  - Si index es igual o mayor que el largo del arreglo, la suma es 0 (caso base).
+  - Si numbers es null, devuelve 0.
+  - No puedes usar bucles: el enunciado exige una solución recursiva.
+
+  Ejemplo:
+  - Entrada: numbers=[1, 2, 3, 4], index=0 -> Salida: 10
+  - Entrada: numbers=[1, 2, 3, 4], index=2 -> Salida: 7
+  - Entrada: numbers=[1, 2, 3, 4], index=4 -> Salida: 0
+methodSignature: "public static int recursiveSum(int[] numbers, int index)"
+className: Solution
+estimatedMinutes: 12
+difficulty: easy
+hints:
+  - "El caso base es cuando index ya no apunta a ningún elemento: la suma de un rango vacío es 0."
+  - "El paso recursivo es el elemento actual más la suma del resto del arreglo."
+  - "Valida numbers == null antes de empezar a recursar."
+starterCode: |
+  public class Solution {
+      public static int recursiveSum(int[] numbers, int index) {
+          // Tu código aquí
+          return 0;
+      }
+  }
+referenceSolution: |
+  public class Solution {
+      public static int recursiveSum(int[] numbers, int index) {
+          if (numbers == null || index < 0 || index >= numbers.length) {
+              return 0;
+          }
+          return numbers[index] + recursiveSum(numbers, index + 1);
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Suma todo el arreglo cuando el índice es cero")
+      void sumaCompleta() {
+          assertEquals(10, Solution.recursiveSum(new int[] {1, 2, 3, 4}, 0));
+      }
+
+      @Test
+      @DisplayName("Suma desde una posición intermedia hasta el final")
+      void sumaDesdeElMedio() {
+          assertEquals(7, Solution.recursiveSum(new int[] {1, 2, 3, 4}, 2));
+      }
+
+      @Test
+      @DisplayName("Devuelve cero cuando el índice es igual al largo del arreglo")
+      void indiceFueraDeRango() {
+          assertEquals(0, Solution.recursiveSum(new int[] {1, 2, 3, 4}, 4));
+      }
+
+      @Test
+      @DisplayName("Devuelve cero cuando el índice es mayor que el largo del arreglo")
+      void indiceMuyGrande() {
+          assertEquals(0, Solution.recursiveSum(new int[] {5, 6}, 10));
+      }
+
+      @Test
+      @DisplayName("Devuelve cero cuando el arreglo es null")
+      void arregloNulo() {
+          assertEquals(0, Solution.recursiveSum(null, 0));
+      }
+
+      @Test
+      @DisplayName("Suma correctamente con números negativos")
+      void numerosNegativos() {
+          assertEquals(-4, Solution.recursiveSum(new int[] {-5, 1, 0}, 0));
+      }
+  }

@@ -1,0 +1,91 @@
+slug: sum-and-average
+level: 1
+topic: arrays
+title: "Suma y promedio"
+statement: |
+  Escribe un método que reciba un arreglo de números enteros y devuelva el promedio de sus elementos.
+
+  El promedio se calcula sumando todos los elementos y dividiendo la suma entre la cantidad de elementos. El resultado se devuelve como double.
+
+  Reglas del contrato:
+  - Si el arreglo es null o está vacío, el método lanza IllegalArgumentException.
+  - El arreglo puede contener números negativos y ceros.
+  - La división debe ser decimal: el promedio de [1, 2] es 1.5 y no 1.
+
+  Ejemplo:
+  - Entrada: [1, 2, 3, 4] -> Salida: 2.5
+  - Entrada: [-2, -4] -> Salida: -3.0
+  - Entrada: [5] -> Salida: 5.0
+methodSignature: "public static double average(int[] numbers)"
+className: Solution
+estimatedMinutes: 10
+difficulty: easy
+hints:
+  - "Valida primero si el arreglo es null o está vacío y lanza la excepción."
+  - "Acumula la suma en una variable long para evitar desbordamientos."
+  - "Ojo con la división entera: convierte la suma a double antes de dividir."
+starterCode: |
+  public class Solution {
+      public static double average(int[] numbers) {
+          // Tu código aquí
+          return 0.0;
+      }
+  }
+referenceSolution: |
+  public class Solution {
+      public static double average(int[] numbers) {
+          if (numbers == null || numbers.length == 0) {
+              throw new IllegalArgumentException("El arreglo no puede estar vacío");
+          }
+          long suma = 0;
+          for (int i = 0; i < numbers.length; i++) {
+              suma += numbers[i];
+          }
+          return (double) suma / numbers.length;
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import static org.junit.jupiter.api.Assertions.assertEquals;
+  import static org.junit.jupiter.api.Assertions.assertThrows;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Calcula el promedio con resultado decimal")
+      void promedioDecimal() {
+          assertEquals(2.5, Solution.average(new int[] {1, 2, 3, 4}), 0.0001);
+      }
+
+      @Test
+      @DisplayName("El promedio de un solo elemento es ese elemento")
+      void unSoloElemento() {
+          assertEquals(5.0, Solution.average(new int[] {5}), 0.0001);
+      }
+
+      @Test
+      @DisplayName("Calcula el promedio de números negativos")
+      void numerosNegativos() {
+          assertEquals(-3.0, Solution.average(new int[] {-2, -4}), 0.0001);
+      }
+
+      @Test
+      @DisplayName("Un arreglo vacío lanza IllegalArgumentException")
+      void arregloVacio() {
+          assertThrows(IllegalArgumentException.class, () -> Solution.average(new int[0]));
+      }
+
+      @Test
+      @DisplayName("Un arreglo null lanza IllegalArgumentException")
+      void arregloNull() {
+          assertThrows(IllegalArgumentException.class, () -> Solution.average(null));
+      }
+
+      @Test
+      @DisplayName("No desborda al sumar valores en los límites del int")
+      void valorLimite() {
+          assertEquals(1073741823.5, Solution.average(new int[] {Integer.MAX_VALUE, Integer.MAX_VALUE, 0, 0}), 0.0001);
+      }
+  }

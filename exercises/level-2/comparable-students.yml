@@ -1,0 +1,199 @@
+slug: comparable-students
+level: 2
+topic: oop
+title: Estudiantes comparables
+statement: |
+  Dentro de Solution existe la clase anidada Student (nombre y nota entera) que implementa Comparable<Student>. Completa compareTo y luego implementa sortStudents.
+
+  Orden natural de Student (compareTo):
+  - Primero la nota MAYOR (orden descendente por nota).
+  - Si la nota es igual, por nombre en orden alfabético ascendente (String.compareTo).
+
+  Reglas de sortStudents:
+  - Devuelve una lista NUEVA ordenada según el orden natural; la lista original no se modifica.
+  - Si la lista es null, devuelve una lista vacía.
+
+  Ejemplo:
+  - Entrada: [("Luis", 70), ("Ana", 90), ("Eva", 90)] -> Salida: [("Ana", 90), ("Eva", 90), ("Luis", 70)]
+  - Entrada: [] -> Salida: []
+methodSignature: "public static java.util.List<Student> sortStudents(java.util.List<Student> students)"
+className: Solution
+estimatedMinutes: 18
+difficulty: medium
+hints:
+  - "compareTo debe devolver negativo si this va antes que other. Para orden descendente invierte los operandos."
+  - "Integer.compare(other.grade, this.grade) ordena por nota descendente; si da 0, desempata con name.compareTo."
+  - "Copia la lista con new ArrayList<>(students) y ordénala con Collections.sort."
+starterCode: |
+  public class Solution {
+
+      public static class Student implements Comparable<Student> {
+          private final String name;
+          private final int grade;
+
+          public Student(String name, int grade) {
+              this.name = name;
+              this.grade = grade;
+          }
+
+          public String getName() {
+              return name;
+          }
+
+          public int getGrade() {
+              return grade;
+          }
+
+          @Override
+          public int compareTo(Student other) {
+              // Tu código aquí
+              return 0;
+          }
+      }
+
+      public static java.util.List<Student> sortStudents(java.util.List<Student> students) {
+          // Tu código aquí
+          return new java.util.ArrayList<>();
+      }
+  }
+referenceSolution: |
+  public class Solution {
+
+      public static class Student implements Comparable<Student> {
+          private final String name;
+          private final int grade;
+
+          public Student(String name, int grade) {
+              this.name = name;
+              this.grade = grade;
+          }
+
+          public String getName() {
+              return name;
+          }
+
+          public int getGrade() {
+              return grade;
+          }
+
+          @Override
+          public int compareTo(Student other) {
+              int porNota = Integer.compare(other.grade, this.grade);
+              if (porNota != 0) {
+                  return porNota;
+              }
+              return this.name.compareTo(other.name);
+          }
+      }
+
+      public static java.util.List<Student> sortStudents(java.util.List<Student> students) {
+          if (students == null) {
+              return new java.util.ArrayList<>();
+          }
+          java.util.List<Student> copia = new java.util.ArrayList<>(students);
+          java.util.Collections.sort(copia);
+          return copia;
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import java.util.ArrayList;
+  import java.util.Arrays;
+  import java.util.List;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      private static List<String> nombres(List<Solution.Student> lista) {
+          List<String> r = new ArrayList<>();
+          for (Solution.Student s : lista) {
+              r.add(s.getName());
+          }
+          return r;
+      }
+
+      @Test
+      @DisplayName("compareTo: la nota mayor va primero")
+      void notaMayorPrimero() {
+          Solution.Student alto = new Solution.Student("Luis", 90);
+          Solution.Student bajo = new Solution.Student("Ana", 50);
+          assertTrue(alto.compareTo(bajo) < 0);
+          assertTrue(bajo.compareTo(alto) > 0);
+      }
+
+      @Test
+      @DisplayName("compareTo: con la misma nota desempata por nombre")
+      void desempatePorNombre() {
+          Solution.Student ana = new Solution.Student("Ana", 80);
+          Solution.Student luis = new Solution.Student("Luis", 80);
+          assertTrue(ana.compareTo(luis) < 0);
+          assertTrue(luis.compareTo(ana) > 0);
+          assertEquals(0, ana.compareTo(new Solution.Student("Ana", 80)));
+      }
+
+      @Test
+      @DisplayName("Ordena por nota descendente y nombre")
+      void ordenCompleto() {
+          List<Solution.Student> in = Arrays.asList(
+                  new Solution.Student("Luis", 70),
+                  new Solution.Student("Eva", 90),
+                  new Solution.Student("Ana", 90));
+          assertEquals(Arrays.asList("Ana", "Eva", "Luis"), nombres(Solution.sortStudents(in)));
+      }
+
+      @Test
+      @DisplayName("No modifica la lista original")
+      void noMuta() {
+          List<Solution.Student> in = new ArrayList<>(Arrays.asList(
+                  new Solution.Student("Luis", 70),
+                  new Solution.Student("Ana", 90)));
+          Solution.sortStudents(in);
+          assertEquals(Arrays.asList("Luis", "Ana"), nombres(in));
+      }
+
+      @Test
+      @DisplayName("Lista vacía o null devuelve lista vacía")
+      void vacia() {
+          assertTrue(Solution.sortStudents(new ArrayList<>()).isEmpty());
+          assertTrue(Solution.sortStudents(null).isEmpty());
+      }
+
+      @Test
+      @DisplayName("Un solo estudiante")
+      void unoSolo() {
+          List<Solution.Student> r = Solution.sortStudents(Arrays.asList(new Solution.Student("Ana", 10)));
+          assertEquals(1, r.size());
+          assertEquals("Ana", r.get(0).getName());
+      }
+
+      @Test
+      @DisplayName("Notas con valores extremos no desbordan")
+      void extremos() {
+          List<Solution.Student> in = Arrays.asList(
+                  new Solution.Student("A", Integer.MIN_VALUE),
+                  new Solution.Student("B", Integer.MAX_VALUE));
+          assertEquals(Arrays.asList("B", "A"), nombres(Solution.sortStudents(in)));
+      }
+
+      @Test
+      @DisplayName("Ordena una lista grande")
+      void grande() {
+          List<Solution.Student> in = new ArrayList<>();
+          for (int i = 0; i < 20000; i++) {
+              in.add(new Solution.Student("E" + i, i % 100));
+          }
+          List<Solution.Student> r = Solution.sortStudents(in);
+          assertEquals(20000, r.size());
+          for (int i = 1; i < r.size(); i++) {
+              assertTrue(r.get(i - 1).compareTo(r.get(i)) <= 0);
+          }
+      }
+  }
+complexityQuestion:
+  prompt: "Ordenar n estudiantes con Collections.sort y un compareTo de costo constante, ¿qué complejidad temporal tiene?"
+  options: ["O(n)", "O(n²)", "O(n log n)", "O(log n)"]
+  correctIndex: 2
+  explanation: "Collections.sort usa TimSort, que es O(n log n) en el peor caso; copiar la lista antes añade solo O(n)."

@@ -1,0 +1,100 @@
+slug: safe-divide
+level: 0
+topic: exceptions
+title: División segura
+statement: |
+  Dividir enteros entre cero lanza ArithmeticException. Escribe un método que divida a entre b (división entera) y devuelva el resultado como texto; si b es 0, captura la excepción y devuelve el texto "ERROR: división entre cero".
+
+  Importante: realiza la división dentro de un try y captura ArithmeticException (no compruebes b == 0 antes).
+
+  Ejemplos:
+  - safeDivide(10, 2) -> "5"
+  - safeDivide(7, 2) -> "3"
+  - safeDivide(-7, 2) -> "-3"
+  - safeDivide(5, 0) -> "ERROR: división entre cero"
+  - safeDivide(0, 0) -> "ERROR: división entre cero"
+methodSignature: public static String safeDivide(int a, int b)
+className: Solution
+estimatedMinutes: 10
+difficulty: easy
+hints:
+- La división entera a / b lanza ArithmeticException solo cuando b es 0.
+- 'Estructura: try { return String.valueOf(a / b); } catch (ArithmeticException e) { return ...; }.'
+- 'El texto de error debe ser exactamente: ERROR: división entre cero (con el acento).'
+starterCode: |
+  public class Solution {
+
+      public static String safeDivide(int a, int b) {
+          // Tu código aquí
+          return "";
+      }
+  }
+referenceSolution: |
+  public class Solution {
+
+      public static String safeDivide(int a, int b) {
+          try {
+              return String.valueOf(a / b);
+          } catch (ArithmeticException e) {
+              return "ERROR: división entre cero";
+          }
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  import java.util.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("División exacta")
+      void t1() throws Exception {
+          assertEquals("5", Solution.safeDivide(10, 2));
+      }
+
+      @Test
+      @DisplayName("División entera trunca")
+      void t2() throws Exception {
+          assertEquals("3", Solution.safeDivide(7, 2));
+      }
+
+      @Test
+      @DisplayName("División con negativos trunca hacia cero")
+      void t3() throws Exception {
+          assertEquals("-3", Solution.safeDivide(-7, 2));
+      }
+
+      @Test
+      @DisplayName("División entre cero")
+      void t4() throws Exception {
+          assertEquals("ERROR: división entre cero", Solution.safeDivide(5, 0));
+      }
+
+      @Test
+      @DisplayName("Cero entre cero")
+      void t5() throws Exception {
+          assertEquals("ERROR: división entre cero", Solution.safeDivide(0, 0));
+      }
+
+      @Test
+      @DisplayName("Cero entre un número")
+      void t6() throws Exception {
+          assertEquals("0", Solution.safeDivide(0, 5));
+      }
+
+      @Test
+      @DisplayName("Divisor negativo")
+      void t7() throws Exception {
+          assertEquals("-4", Solution.safeDivide(8, -2));
+      }
+
+      @Test
+      @DisplayName("Valores extremos")
+      void t8() throws Exception {
+          assertEquals("1", Solution.safeDivide(Integer.MAX_VALUE, Integer.MAX_VALUE));
+      }
+  }

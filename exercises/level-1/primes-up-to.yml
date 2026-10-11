@@ -1,0 +1,105 @@
+slug: primes-up-to
+level: 1
+topic: divisibility
+title: "Primos hasta un límite"
+statement: |
+  Escribe un método que devuelva todos los números primos desde 2 hasta el límite indicado, ambos inclusive, en orden ascendente.
+
+  Reglas del contrato:
+  - Si el límite es menor que 2, devuelve un arreglo vacío (new int[0]).
+  - El 2 es el primo más pequeño y también se incluye.
+  - El arreglo devuelto debe tener exactamente la cantidad de primos encontrados, sin ceros de relleno.
+
+  Ejemplo:
+  - Entrada: 10 -> Salida: [2, 3, 5, 7]
+  - Entrada: 2 -> Salida: [2]
+  - Entrada: 1 -> Salida: []
+methodSignature: "public static int[] primesUpTo(int limit)"
+className: Solution
+estimatedMinutes: 15
+difficulty: easy
+hints:
+  - "Recorre los números desde 2 hasta el límite y decide cuáles son primos."
+  - "Puedes guardar los primos en un java.util.ArrayList y luego copiarlos a un arreglo con un bucle."
+  - "Si el límite es menor que 2, devuelve directamente new int[0]."
+starterCode: |
+  public class Solution {
+      public static int[] primesUpTo(int limit) {
+          // Tu código aquí
+          return new int[0];
+      }
+  }
+referenceSolution: |
+  public class Solution {
+      public static int[] primesUpTo(int limit) {
+          java.util.ArrayList<Integer> primos = new java.util.ArrayList<>();
+          for (int candidato = 2; candidato <= limit; candidato++) {
+              if (esPrimo(candidato)) {
+                  primos.add(candidato);
+              }
+          }
+          int[] resultado = new int[primos.size()];
+          for (int i = 0; i < primos.size(); i++) {
+              resultado[i] = primos.get(i);
+          }
+          return resultado;
+      }
+
+      private static boolean esPrimo(int numero) {
+          for (int divisor = 2; (long) divisor * divisor <= numero; divisor++) {
+              if (numero % divisor == 0) {
+                  return false;
+              }
+          }
+          return true;
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+  import static org.junit.jupiter.api.Assertions.assertEquals;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Los primos hasta 10 son 2, 3, 5 y 7")
+      void primosHastaDiez() {
+          assertArrayEquals(new int[] {2, 3, 5, 7}, Solution.primesUpTo(10));
+      }
+
+      @Test
+      @DisplayName("Un límite menor que 2 devuelve un arreglo vacío")
+      void limiteMenorQueDos() {
+          assertEquals(0, Solution.primesUpTo(1).length);
+          assertEquals(0, Solution.primesUpTo(0).length);
+          assertEquals(0, Solution.primesUpTo(-5).length);
+      }
+
+      @Test
+      @DisplayName("El límite 2 devuelve solo el 2")
+      void limiteIgualADos() {
+          assertArrayEquals(new int[] {2}, Solution.primesUpTo(2));
+      }
+
+      @Test
+      @DisplayName("El límite 3 incluye también el 3")
+      void limiteIgualATres() {
+          assertArrayEquals(new int[] {2, 3}, Solution.primesUpTo(3));
+      }
+
+      @Test
+      @DisplayName("Los primos hasta 30 incluyen el 29")
+      void primosHastaTreinta() {
+          assertArrayEquals(new int[] {2, 3, 5, 7, 11, 13, 17, 19, 23, 29}, Solution.primesUpTo(30));
+      }
+
+      @Test
+      @DisplayName("Los primos hasta 100 son 25")
+      void cantidadDePrimosHastaCien() {
+          int[] primos = Solution.primesUpTo(100);
+          assertEquals(25, primos.length);
+          assertEquals(97, primos[primos.length - 1]);
+      }
+  }

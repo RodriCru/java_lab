@@ -1,0 +1,91 @@
+slug: count-vowels
+level: 1
+topic: strings
+title: "Contar vocales"
+statement: |
+  Escribe un método que cuente cuántas vocales contiene una cadena de texto.
+
+  Reglas del contrato:
+  - Las vocales son a, e, i, o, u, sin distinguir mayúsculas de minúsculas.
+  - Las vocales acentuadas (á, é, í, ó, ú) y la diéresis (ü) NO se cuentan; solo se cuentan las cinco vocales básicas.
+  - Si el texto es null, el método devuelve 0.
+
+  Ejemplo:
+  - Entrada: "hola" -> Salida: 2
+  - Entrada: "AEIOU" -> Salida: 5
+  - Entrada: "" -> Salida: 0
+methodSignature: "public static int countVowels(String text)"
+className: Solution
+estimatedMinutes: 8
+difficulty: easy
+hints:
+  - "Recorre la cadena carácter por carácter."
+  - "Guarda las vocales en una cadena y usa indexOf para saber si el carácter está incluida."
+  - "Convierte el carácter a minúscula antes de compararlo, o incluye las mayúsculas en la lista de vocales."
+starterCode: |
+  public class Solution {
+      public static int countVowels(String text) {
+          // Tu código aquí
+          return 0;
+      }
+  }
+referenceSolution: |
+  public class Solution {
+      public static int countVowels(String text) {
+          if (text == null) {
+              return 0;
+          }
+          int contador = 0;
+          String vocales = "aeiouAEIOU";
+          for (int i = 0; i < text.length(); i++) {
+              if (vocales.indexOf(text.charAt(i)) >= 0) {
+                  contador++;
+              }
+          }
+          return contador;
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import static org.junit.jupiter.api.Assertions.assertEquals;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Cuenta las vocales en minúscula")
+      void vocalesMinusculas() {
+          assertEquals(2, Solution.countVowels("hola"));
+      }
+
+      @Test
+      @DisplayName("Cuenta las vocales sin distinguir mayúsculas")
+      void vocalesMayusculas() {
+          assertEquals(5, Solution.countVowels("AEIOU"));
+      }
+
+      @Test
+      @DisplayName("Una cadena vacía devuelve cero")
+      void cadenaVacia() {
+          assertEquals(0, Solution.countVowels(""));
+      }
+
+      @Test
+      @DisplayName("Un texto null devuelve cero")
+      void textoNull() {
+          assertEquals(0, Solution.countVowels(null));
+      }
+
+      @Test
+      @DisplayName("Devuelve cero cuando no hay vocales")
+      void sinVocales() {
+          assertEquals(0, Solution.countVowels("xyz"));
+      }
+
+      @Test
+      @DisplayName("Mezcla mayúsculas, minúsculas y consonantes")
+      void mezcla() {
+          assertEquals(6, Solution.countVowels("Programar en Java"));
+      }
+  }

@@ -1,0 +1,97 @@
+slug: fibonacci-sequence
+level: 1
+topic: recursion
+title: Secuencia de Fibonacci
+statement: |
+  Escribe un método que devuelva los primeros count números de la secuencia de
+  Fibonacci, empezando por 0 y 1.
+
+  Reglas del contrato:
+  - La secuencia empieza así: 0, 1, 1, 2, 3, 5, 8, ...
+  - Con count = 1 el resultado es [0].
+  - Si count <= 0, devuelve un arreglo vacío new long[0].
+  - El resultado se declara como long[] porque un valor como fib(90) ya no cabe en un int.
+
+  Ejemplo:
+  - Entrada: count=1 -> Salida: [0]
+  - Entrada: count=6 -> Salida: [0, 1, 1, 2, 3, 5]
+  - Entrada: count=0 -> Salida: []
+methodSignature: "public static long[] fibonacci(int count)"
+className: Solution
+estimatedMinutes: 15
+difficulty: easy
+hints:
+  - "Reserva un arreglo de tamaño count y ve llenando cada posición."
+  - "Cada valor es la suma de los dos anteriores; los dos primeros son 0 y 1."
+  - "Devuelve new long[0] cuando count es cero o negativo."
+starterCode: |
+  public class Solution {
+      public static long[] fibonacci(int count) {
+          // Tu código aquí
+          return new long[0];
+      }
+  }
+referenceSolution: |
+  public class Solution {
+      public static long[] fibonacci(int count) {
+          if (count <= 0) {
+              return new long[0];
+          }
+          long[] resultado = new long[count];
+          resultado[0] = 0;
+          if (count > 1) {
+              resultado[1] = 1;
+          }
+          for (int i = 2; i < count; i++) {
+              resultado[i] = resultado[i - 1] + resultado[i - 2];
+          }
+          return resultado;
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Devuelve solo el cero cuando se pide un número")
+      void unSoloNumero() {
+          assertArrayEquals(new long[] {0}, Solution.fibonacci(1));
+      }
+
+      @Test
+      @DisplayName("Devuelve los dos primeros números")
+      void dosNumeros() {
+          assertArrayEquals(new long[] {0, 1}, Solution.fibonacci(2));
+      }
+
+      @Test
+      @DisplayName("Devuelve los primeros seis números de Fibonacci")
+      void seisNumeros() {
+          assertArrayEquals(new long[] {0, 1, 1, 2, 3, 5}, Solution.fibonacci(6));
+      }
+
+      @Test
+      @DisplayName("Devuelve un arreglo vacío cuando la cantidad es cero")
+      void cantidadCero() {
+          assertArrayEquals(new long[0], Solution.fibonacci(0));
+      }
+
+      @Test
+      @DisplayName("Devuelve un arreglo vacío cuando la cantidad es negativa")
+      void cantidadNegativa() {
+          assertArrayEquals(new long[0], Solution.fibonacci(-5));
+      }
+
+      @Test
+      @DisplayName("Calcula un valor grande sin desbordar el long")
+      void valorGrande() {
+          long[] resultado = Solution.fibonacci(90);
+          assertEquals(90, resultado.length);
+          assertEquals(0L, resultado[0]);
+          assertEquals(1779979416004714189L, resultado[89]);
+      }
+  }

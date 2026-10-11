@@ -1,0 +1,146 @@
+slug: set-operations
+level: 0
+topic: collections
+title: Operaciones con conjuntos
+statement: |
+  Un Set guarda elementos sin repetir. Con los métodos addAll, retainAll y removeAll puedes hacer las operaciones clásicas de conjuntos.
+
+  Escribe tres métodos que reciben dos Set<Integer> y devuelven un TreeSet<Integer> (así el resultado sale ordenado de menor a mayor):
+  - union(a, b): elementos que están en a, en b o en ambos.
+  - intersection(a, b): elementos que están en a Y en b.
+  - difference(a, b): elementos que están en a pero NO en b.
+
+  Reglas:
+  - Los conjuntos recibidos NO deben modificarse (trabaja sobre una copia).
+  - Si un parámetro es null se trata como un conjunto vacío.
+
+  Ejemplos (a = {1, 2, 3}, b = {3, 4}):
+  - union -> [1, 2, 3, 4]
+  - intersection -> [3]
+  - difference(a, b) -> [1, 2]
+  - difference(b, a) -> [4]
+
+  El método principal es union; intersection y difference también deben implementarse.
+methodSignature: "public static TreeSet<Integer> union(Set<Integer> a, Set<Integer> b)"
+className: Solution
+estimatedMinutes: 15
+difficulty: easy
+hints:
+  - "new TreeSet<>(a) crea una copia ordenada de a, así no modificas el conjunto original."
+  - "Sobre la copia usa addAll(b) para la unión, retainAll(b) para la intersección y removeAll(b) para la diferencia."
+  - "Si a es null, la copia debe empezar vacía: new TreeSet<>() (y recuerda tratar b null como vacío)."
+starterCode: |
+  import java.util.*;
+
+  public class Solution {
+
+      public static TreeSet<Integer> union(Set<Integer> a, Set<Integer> b) {
+          // Tu código aquí
+          return new TreeSet<>();
+      }
+
+      public static TreeSet<Integer> intersection(Set<Integer> a, Set<Integer> b) {
+          // Tu código aquí
+          return new TreeSet<>();
+      }
+
+      public static TreeSet<Integer> difference(Set<Integer> a, Set<Integer> b) {
+          // Tu código aquí
+          return new TreeSet<>();
+      }
+  }
+referenceSolution: |
+  import java.util.*;
+
+  public class Solution {
+
+      private static TreeSet<Integer> copy(Set<Integer> s) {
+          return s == null ? new TreeSet<>() : new TreeSet<>(s);
+      }
+
+      public static TreeSet<Integer> union(Set<Integer> a, Set<Integer> b) {
+          TreeSet<Integer> result = copy(a);
+          result.addAll(copy(b));
+          return result;
+      }
+
+      public static TreeSet<Integer> intersection(Set<Integer> a, Set<Integer> b) {
+          TreeSet<Integer> result = copy(a);
+          result.retainAll(copy(b));
+          return result;
+      }
+
+      public static TreeSet<Integer> difference(Set<Integer> a, Set<Integer> b) {
+          TreeSet<Integer> result = copy(a);
+          result.removeAll(copy(b));
+          return result;
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import java.util.*;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      private static Set<Integer> set(Integer... values) {
+          return new HashSet<>(Arrays.asList(values));
+      }
+
+      @Test
+      @DisplayName("La unión junta los elementos de ambos conjuntos, ordenados")
+      void union() {
+          assertEquals(List.of(1, 2, 3, 4), new ArrayList<>(Solution.union(set(3, 1, 2), set(4, 3))));
+      }
+
+      @Test
+      @DisplayName("La intersección deja solo los elementos comunes")
+      void interseccion() {
+          assertEquals(List.of(3), new ArrayList<>(Solution.intersection(set(1, 2, 3), set(3, 4))));
+      }
+
+      @Test
+      @DisplayName("La diferencia a - b quita de a lo que está en b")
+      void diferencia() {
+          assertEquals(List.of(1, 2), new ArrayList<>(Solution.difference(set(1, 2, 3), set(3, 4))));
+          assertEquals(List.of(4), new ArrayList<>(Solution.difference(set(3, 4), set(1, 2, 3))));
+      }
+
+      @Test
+      @DisplayName("Conjuntos disjuntos: intersección vacía y diferencia igual a a")
+      void disjuntos() {
+          assertTrue(Solution.intersection(set(1, 2), set(8, 9)).isEmpty());
+          assertEquals(List.of(1, 2), new ArrayList<>(Solution.difference(set(1, 2), set(8, 9))));
+      }
+
+      @Test
+      @DisplayName("Los conjuntos de entrada no se modifican")
+      void noModificaEntradas() {
+          Set<Integer> a = set(1, 2, 3);
+          Set<Integer> b = set(3, 4);
+          Solution.union(a, b);
+          Solution.intersection(a, b);
+          Solution.difference(a, b);
+          assertEquals(set(1, 2, 3), a);
+          assertEquals(set(3, 4), b);
+      }
+
+      @Test
+      @DisplayName("Un conjunto null se trata como vacío")
+      void nulos() {
+          assertEquals(List.of(1, 2), new ArrayList<>(Solution.union(set(1, 2), null)));
+          assertEquals(List.of(5), new ArrayList<>(Solution.union(null, set(5))));
+          assertTrue(Solution.intersection(null, set(1)).isEmpty());
+          assertEquals(List.of(1), new ArrayList<>(Solution.difference(set(1), null)));
+          assertTrue(Solution.difference(null, set(1)).isEmpty());
+      }
+
+      @Test
+      @DisplayName("El resultado está ordenado con números negativos")
+      void ordenado() {
+          assertEquals(List.of(-5, -1, 0, 7), new ArrayList<>(Solution.union(set(7, -1), set(0, -5))));
+      }
+  }

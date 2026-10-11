@@ -1,0 +1,83 @@
+slug: count-down
+level: 1
+topic: recursion
+title: Cuenta regresiva
+statement: |
+  Escribe un método que devuelva un arreglo con la cuenta regresiva desde number
+  hasta 1.
+
+  Reglas del contrato:
+  - Con number = 5 el resultado es [5, 4, 3, 2, 1].
+  - Si number <= 0, devuelve un arreglo vacío new int[0].
+  - El arreglo devuelto siempre es nuevo; el método no recibe ningún arreglo que modificar.
+
+  Ejemplo:
+  - Entrada: 5 -> Salida: [5, 4, 3, 2, 1]
+  - Entrada: 1 -> Salida: [1]
+  - Entrada: 0 -> Salida: []
+methodSignature: "public static int[] countDown(int number)"
+className: Solution
+estimatedMinutes: 12
+difficulty: easy
+hints:
+  - "El arreglo debe tener exactamente number posiciones cuando number es positivo."
+  - "Puedes llenarlo con un bucle: en la posición i guarda number - i."
+  - "Recuerda devolver new int[0] si number es cero o negativo."
+starterCode: |
+  public class Solution {
+      public static int[] countDown(int number) {
+          // Tu código aquí
+          return new int[0];
+      }
+  }
+referenceSolution: |
+  public class Solution {
+      public static int[] countDown(int number) {
+          if (number <= 0) {
+              return new int[0];
+          }
+          int[] resultado = new int[number];
+          for (int i = 0; i < number; i++) {
+              resultado[i] = number - i;
+          }
+          return resultado;
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Devuelve la cuenta regresiva desde cinco")
+      void cuentaDesdeCinco() {
+          assertArrayEquals(new int[] {5, 4, 3, 2, 1}, Solution.countDown(5));
+      }
+
+      @Test
+      @DisplayName("Devuelve un arreglo de un elemento cuando la entrada es uno")
+      void cuentaDesdeUno() {
+          assertArrayEquals(new int[] {1}, Solution.countDown(1));
+      }
+
+      @Test
+      @DisplayName("Devuelve un arreglo vacío cuando la entrada es cero")
+      void entradaCero() {
+          assertArrayEquals(new int[0], Solution.countDown(0));
+      }
+
+      @Test
+      @DisplayName("Devuelve un arreglo vacío cuando la entrada es negativa")
+      void entradaNegativa() {
+          assertArrayEquals(new int[0], Solution.countDown(-3));
+      }
+
+      @Test
+      @DisplayName("Devuelve la cuenta regresiva completa desde diez")
+      void cuentaDesdeDiez() {
+          assertArrayEquals(new int[] {10, 9, 8, 7, 6, 5, 4, 3, 2, 1}, Solution.countDown(10));
+      }
+  }

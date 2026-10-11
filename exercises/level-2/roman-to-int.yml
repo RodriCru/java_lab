@@ -1,0 +1,117 @@
+slug: roman-to-int
+level: 2
+topic: strings
+title: "Número romano a entero"
+statement: |
+  Convierte un número romano a entero. Símbolos: I=1, V=5, X=10, L=50, C=100, D=500, M=1000.
+
+  Cuando un símbolo menor aparece antes de uno mayor, se resta (IV=4, IX=9, XL=40, XC=90, CD=400, CM=900).
+
+  Ejemplos:
+  - "III" -> 3
+  - "LVIII" -> 58
+  - "MCMXCIV" -> 1994
+
+  Las entradas siempre son números romanos válidos (en mayúsculas) entre 1 y 3999. Si el texto es null o vacío, devuelve 0.
+methodSignature: "public static int romanToInt(String roman)"
+className: Solution
+estimatedMinutes: 20
+difficulty: medium
+hints:
+  - "Crea un Map con el valor de cada símbolo."
+  - "Recorre la cadena y compara cada símbolo con el siguiente."
+  - "Si el valor actual es menor que el del siguiente, réstalo; en otro caso, súmalo."
+starterCode: |
+  public class Solution {
+      public static int romanToInt(String roman) {
+          // Tu código aquí
+          return 0;
+      }
+  }
+referenceSolution: |
+  import java.util.*;
+  public class Solution {
+      public static int romanToInt(String roman) {
+          if (roman == null || roman.isEmpty()) return 0;
+          Map<Character, Integer> valor = new HashMap<>();
+          valor.put('I', 1); valor.put('V', 5); valor.put('X', 10); valor.put('L', 50);
+          valor.put('C', 100); valor.put('D', 500); valor.put('M', 1000);
+          int total = 0;
+          for (int i = 0; i < roman.length(); i++) {
+              int actual = valor.get(roman.charAt(i));
+              if (i + 1 < roman.length() && actual < valor.get(roman.charAt(i + 1))) {
+                  total -= actual;
+              } else {
+                  total += actual;
+              }
+          }
+          return total;
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+  import java.util.*;
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("III es 3")
+      void t0() {
+          assertEquals(3, Solution.romanToInt("III"));
+      }
+
+      @Test
+      @DisplayName("LVIII es 58")
+      void t1() {
+          assertEquals(58, Solution.romanToInt("LVIII"));
+      }
+
+      @Test
+      @DisplayName("MCMXCIV es 1994")
+      void t2() {
+          assertEquals(1994, Solution.romanToInt("MCMXCIV"));
+      }
+
+      @Test
+      @DisplayName("Restas IV y IX")
+      void t3() {
+          assertEquals(4, Solution.romanToInt("IV"));
+          assertEquals(9, Solution.romanToInt("IX"));
+      }
+
+      @Test
+      @DisplayName("Restas XL, XC, CD y CM")
+      void t4() {
+          assertEquals(40, Solution.romanToInt("XL"));
+          assertEquals(90, Solution.romanToInt("XC"));
+          assertEquals(400, Solution.romanToInt("CD"));
+          assertEquals(900, Solution.romanToInt("CM"));
+      }
+
+      @Test
+      @DisplayName("Máximo 3999")
+      void t5() {
+          assertEquals(3999, Solution.romanToInt("MMMCMXCIX"));
+      }
+
+      @Test
+      @DisplayName("Vacío y null devuelven 0")
+      void t6() {
+          assertEquals(0, Solution.romanToInt(""));
+          assertEquals(0, Solution.romanToInt(null));
+      }
+
+      @Test
+      @DisplayName("Un solo símbolo")
+      void t7() {
+          assertEquals(1, Solution.romanToInt("I"));
+          assertEquals(1000, Solution.romanToInt("M"));
+      }
+  }
+complexityQuestion:
+  prompt: "¿Cuál es la complejidad temporal de tu solución, en función de la longitud n de la cadena?"
+  options: ["O(1)", "O(n)", "O(n log n)", "O(n²)"]
+  correctIndex: 1
+  explanation: "Se recorre la cadena una vez y cada consulta al Map de símbolos es O(1)."

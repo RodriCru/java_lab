@@ -1,0 +1,117 @@
+slug: squares-of-evens
+level: 2
+topic: modern-java
+title: Cuadrados de los pares
+statement: |
+  Dada una lista de enteros, devuelve una lista con el cuadrado de cada número PAR, conservando el orden original. Resuélvelo con Streams (filter, map y collect).
+
+  Reglas:
+  - Los números negativos también pueden ser pares (-4 es par); el 0 es par.
+  - Los duplicados se conservan.
+  - Si la lista es null o está vacía, devuelve una lista vacía.
+  - No modifiques la lista de entrada.
+
+  Ejemplo:
+  - Entrada: [1, 2, 3, 4] -> Salida: [4, 16]
+  - Entrada: [-2, 0, 5, 2] -> Salida: [4, 0, 4]
+  - Entrada: [1, 3, 5] -> Salida: []
+methodSignature: "public static java.util.List<Integer> squaresOfEvens(java.util.List<Integer> numbers)"
+className: Solution
+estimatedMinutes: 10
+difficulty: medium
+hints:
+  - "Empieza con numbers.stream() y filtra con n % 2 == 0 (funciona también con negativos)."
+  - "Transforma cada elemento con map(n -> n * n)."
+  - "Termina con collect(Collectors.toList()) o toList(); no olvides el caso null."
+starterCode: |
+  public class Solution {
+
+      public static java.util.List<Integer> squaresOfEvens(java.util.List<Integer> numbers) {
+          // Tu código aquí
+          return new java.util.ArrayList<>();
+      }
+  }
+referenceSolution: |
+  public class Solution {
+
+      public static java.util.List<Integer> squaresOfEvens(java.util.List<Integer> numbers) {
+          if (numbers == null) {
+              return new java.util.ArrayList<>();
+          }
+          return numbers.stream()
+                  .filter(n -> n % 2 == 0)
+                  .map(n -> n * n)
+                  .collect(java.util.stream.Collectors.toList());
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import java.util.ArrayList;
+  import java.util.Arrays;
+  import java.util.Collections;
+  import java.util.List;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Eleva al cuadrado solo los pares")
+      void basico() {
+          assertEquals(Arrays.asList(4, 16), Solution.squaresOfEvens(Arrays.asList(1, 2, 3, 4)));
+      }
+
+      @Test
+      @DisplayName("Incluye el cero y los pares negativos, conserva duplicados y orden")
+      void negativosYCero() {
+          assertEquals(Arrays.asList(4, 0, 4), Solution.squaresOfEvens(Arrays.asList(-2, 0, 5, 2)));
+      }
+
+      @Test
+      @DisplayName("Sin pares devuelve lista vacía")
+      void sinPares() {
+          assertTrue(Solution.squaresOfEvens(Arrays.asList(1, 3, 5)).isEmpty());
+      }
+
+      @Test
+      @DisplayName("Lista vacía o null devuelve lista vacía")
+      void vacia() {
+          assertTrue(Solution.squaresOfEvens(new ArrayList<>()).isEmpty());
+          assertTrue(Solution.squaresOfEvens(null).isEmpty());
+      }
+
+      @Test
+      @DisplayName("Un solo elemento")
+      void unoSolo() {
+          assertEquals(Arrays.asList(100), Solution.squaresOfEvens(Arrays.asList(10)));
+          assertTrue(Solution.squaresOfEvens(Arrays.asList(7)).isEmpty());
+      }
+
+      @Test
+      @DisplayName("No modifica la lista de entrada")
+      void noMuta() {
+          List<Integer> in = new ArrayList<>(Arrays.asList(1, 2, 3, 4));
+          Solution.squaresOfEvens(in);
+          assertEquals(Arrays.asList(1, 2, 3, 4), in);
+      }
+
+      @Test
+      @DisplayName("Lista grande")
+      void grande() {
+          List<Integer> in = new ArrayList<>();
+          for (int i = 0; i < 100000; i++) {
+              in.add(i % 100);
+          }
+          List<Integer> r = Solution.squaresOfEvens(in);
+          assertEquals(50000, r.size());
+          assertEquals(Integer.valueOf(0), r.get(0));
+          assertEquals(Integer.valueOf(4), r.get(1));
+      }
+  }
+complexityQuestion:
+  prompt: "Con filter, map y collect encadenados sobre n elementos, ¿cuántas pasadas hace el stream y qué complejidad temporal tiene?"
+  options: ["Tres pasadas independientes, O(n³)", "Una sola pasada perezosa, O(n)", "Dos pasadas, O(n²)", "Una pasada, O(log n)"]
+  correctIndex: 1
+  explanation: "Las operaciones intermedias de un stream son perezosas y se fusionan: cada elemento atraviesa filter y map en una sola pasada, O(n)."

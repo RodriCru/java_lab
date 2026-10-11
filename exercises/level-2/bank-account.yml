@@ -1,0 +1,187 @@
+slug: bank-account
+level: 2
+topic: oop
+title: Cuenta bancaria
+statement: |
+  Dentro de Solution existe una clase anidada Account con un saldo. Completa sus métodos deposit y withdraw y después implementa finalBalance, que aplica una lista de movimientos a una cuenta nueva y devuelve el saldo final.
+
+  Reglas de Account:
+  - deposit(amount): suma amount al saldo. Si amount <= 0 lanza IllegalArgumentException y el saldo no cambia.
+  - withdraw(amount): resta amount del saldo. Si amount <= 0 o amount es MAYOR que el saldo, lanza IllegalArgumentException y el saldo no cambia. Retirar exactamente el saldo es válido.
+  - getBalance(): devuelve el saldo actual (ya está hecho).
+
+  Reglas de finalBalance(initial, movements):
+  - Crea una Account con el saldo initial y recorre movements en orden.
+  - Un movimiento positivo es un depósito; uno negativo es un retiro por su valor absoluto; un 0 se ignora.
+  - Si un retiro no se puede realizar por falta de saldo, ese movimiento se ignora y se continúa con el siguiente.
+  - Si movements es null, devuelve initial.
+
+  Ejemplo:
+  - Entrada: initial=100, movements=[50, -30, -200, 20] -> Salida: 140.0 (el retiro de 200 se ignora)
+  - Entrada: initial=10, movements=[] -> Salida: 10.0
+  - Entrada: initial=0, movements=[0, 5] -> Salida: 5.0
+methodSignature: "public static double finalBalance(double initial, double[] movements)"
+className: Solution
+estimatedMinutes: 20
+difficulty: medium
+hints:
+  - "Empieza por Account: cada método valida primero su argumento y solo después modifica el saldo."
+  - "En finalBalance decide con el signo del movimiento si llamas a deposit o a withdraw (con el valor absoluto)."
+  - "Para ignorar un retiro imposible puedes capturar la IllegalArgumentException o comprobar el saldo antes de retirar."
+starterCode: |
+  public class Solution {
+
+      public static class Account {
+          private double balance;
+
+          public Account(double initial) {
+              this.balance = initial;
+          }
+
+          public void deposit(double amount) {
+              // Tu código aquí
+          }
+
+          public void withdraw(double amount) {
+              // Tu código aquí
+          }
+
+          public double getBalance() {
+              return balance;
+          }
+      }
+
+      public static double finalBalance(double initial, double[] movements) {
+          // Tu código aquí
+          return initial;
+      }
+  }
+referenceSolution: |
+  public class Solution {
+
+      public static class Account {
+          private double balance;
+
+          public Account(double initial) {
+              this.balance = initial;
+          }
+
+          public void deposit(double amount) {
+              if (amount <= 0) {
+                  throw new IllegalArgumentException("El depósito debe ser positivo");
+              }
+              balance += amount;
+          }
+
+          public void withdraw(double amount) {
+              if (amount <= 0 || amount > balance) {
+                  throw new IllegalArgumentException("Retiro inválido");
+              }
+              balance -= amount;
+          }
+
+          public double getBalance() {
+              return balance;
+          }
+      }
+
+      public static double finalBalance(double initial, double[] movements) {
+          Account account = new Account(initial);
+          if (movements == null) {
+              return account.getBalance();
+          }
+          for (double movement : movements) {
+              if (movement > 0) {
+                  account.deposit(movement);
+              } else if (movement < 0) {
+                  try {
+                      account.withdraw(-movement);
+                  } catch (IllegalArgumentException e) {
+                      // retiro sin saldo suficiente: se ignora
+                  }
+              }
+          }
+          return account.getBalance();
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("deposit suma al saldo")
+      void deposito() {
+          Solution.Account a = new Solution.Account(10);
+          a.deposit(5.5);
+          assertEquals(15.5, a.getBalance(), 1e-9);
+      }
+
+      @Test
+      @DisplayName("withdraw resta del saldo y permite retirar todo")
+      void retiro() {
+          Solution.Account a = new Solution.Account(10);
+          a.withdraw(4);
+          assertEquals(6, a.getBalance(), 1e-9);
+          a.withdraw(6);
+          assertEquals(0, a.getBalance(), 1e-9);
+      }
+
+      @Test
+      @DisplayName("withdraw mayor al saldo lanza excepción y no cambia el saldo")
+      void retiroExcesivo() {
+          Solution.Account a = new Solution.Account(10);
+          assertThrows(IllegalArgumentException.class, () -> a.withdraw(10.01));
+          assertEquals(10, a.getBalance(), 1e-9);
+      }
+
+      @Test
+      @DisplayName("deposit y withdraw rechazan montos no positivos")
+      void montosInvalidos() {
+          Solution.Account a = new Solution.Account(10);
+          assertThrows(IllegalArgumentException.class, () -> a.deposit(0));
+          assertThrows(IllegalArgumentException.class, () -> a.deposit(-1));
+          assertThrows(IllegalArgumentException.class, () -> a.withdraw(0));
+          assertThrows(IllegalArgumentException.class, () -> a.withdraw(-1));
+          assertEquals(10, a.getBalance(), 1e-9);
+      }
+
+      @Test
+      @DisplayName("finalBalance aplica depósitos y retiros en orden")
+      void saldoFinal() {
+          assertEquals(140.0, Solution.finalBalance(100, new double[]{50, -30, -200, 20}), 1e-9);
+      }
+
+      @Test
+      @DisplayName("El orden importa: un retiro antes del depósito se ignora")
+      void ordenImporta() {
+          assertEquals(100.0, Solution.finalBalance(0, new double[]{-50, 100}), 1e-9);
+          assertEquals(50.0, Solution.finalBalance(0, new double[]{100, -50}), 1e-9);
+      }
+
+      @Test
+      @DisplayName("Arreglo vacío, null o con ceros devuelve el saldo inicial")
+      void casosBorde() {
+          assertEquals(10.0, Solution.finalBalance(10, new double[]{}), 1e-9);
+          assertEquals(10.0, Solution.finalBalance(10, null), 1e-9);
+          assertEquals(5.0, Solution.finalBalance(0, new double[]{0, 5}), 1e-9);
+      }
+
+      @Test
+      @DisplayName("Muchos movimientos")
+      void muchos() {
+          double[] m = new double[10000];
+          for (int i = 0; i < m.length; i++) {
+              m[i] = (i % 2 == 0) ? 2 : -1;
+          }
+          assertEquals(5000.0, Solution.finalBalance(0, m), 1e-6);
+      }
+  }
+complexityQuestion:
+  prompt: "Si movements tiene n elementos, ¿cuál es la complejidad temporal de finalBalance?"
+  options: ["O(1)", "O(n)", "O(n log n)", "O(n²)"]
+  correctIndex: 1
+  explanation: "Se recorre el arreglo una sola vez y cada depósito o retiro es una operación de tiempo constante."

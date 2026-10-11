@@ -1,0 +1,217 @@
+slug: employee-payroll
+level: 2
+topic: oop
+title: Nómina con polimorfismo
+statement: |
+  Dentro de Solution existe la clase abstracta Employee con el método abstracto salary(), y dos subclases: FullTimeEmployee (ya completa, su salario es el sueldo mensual) y HourlyEmployee (debes completar su método salary()). Después implementa totalPayroll, que suma el salario de todos los empleados.
+
+  Reglas de HourlyEmployee.salary():
+  - Hasta 160 horas se paga hours * rate.
+  - Las horas por encima de 160 se pagan a 1.5 veces la tarifa.
+
+  Reglas de totalPayroll:
+  - Debe usar polimorfismo: llama a salary() sobre cada Employee sin preguntar su tipo (nada de instanceof).
+  - Los elementos null de la lista se ignoran.
+  - Si la lista es null o está vacía, devuelve 0.
+
+  Ejemplo:
+  - Entrada: [FullTime("Ana", 3000), Hourly("Luis", 100, 10)] -> Salida: 4000.0
+  - Entrada: [Hourly("Eva", 170, 10)] -> Salida: 1750.0 (1600 + 10 * 15)
+  - Entrada: [] -> Salida: 0.0
+methodSignature: "public static double totalPayroll(java.util.List<Employee> employees)"
+className: Solution
+estimatedMinutes: 20
+difficulty: medium
+hints:
+  - "salary() de HourlyEmployee necesita separar las horas normales (máximo 160) de las extra."
+  - "En totalPayroll basta un bucle for que llame a e.salary(); Java elige la versión correcta en tiempo de ejecución."
+  - "No olvides saltarte los elementos null antes de llamar a salary()."
+starterCode: |
+  public class Solution {
+
+      public static abstract class Employee {
+          protected final String name;
+
+          protected Employee(String name) {
+              this.name = name;
+          }
+
+          public abstract double salary();
+      }
+
+      public static class FullTimeEmployee extends Employee {
+          private final double monthlySalary;
+
+          public FullTimeEmployee(String name, double monthlySalary) {
+              super(name);
+              this.monthlySalary = monthlySalary;
+          }
+
+          @Override
+          public double salary() {
+              return monthlySalary;
+          }
+      }
+
+      public static class HourlyEmployee extends Employee {
+          private final double hours;
+          private final double rate;
+
+          public HourlyEmployee(String name, double hours, double rate) {
+              super(name);
+              this.hours = hours;
+              this.rate = rate;
+          }
+
+          @Override
+          public double salary() {
+              // Tu código aquí
+              return 0;
+          }
+      }
+
+      public static double totalPayroll(java.util.List<Employee> employees) {
+          // Tu código aquí
+          return 0;
+      }
+  }
+referenceSolution: |
+  public class Solution {
+
+      public static abstract class Employee {
+          protected final String name;
+
+          protected Employee(String name) {
+              this.name = name;
+          }
+
+          public abstract double salary();
+      }
+
+      public static class FullTimeEmployee extends Employee {
+          private final double monthlySalary;
+
+          public FullTimeEmployee(String name, double monthlySalary) {
+              super(name);
+              this.monthlySalary = monthlySalary;
+          }
+
+          @Override
+          public double salary() {
+              return monthlySalary;
+          }
+      }
+
+      public static class HourlyEmployee extends Employee {
+          private final double hours;
+          private final double rate;
+
+          public HourlyEmployee(String name, double hours, double rate) {
+              super(name);
+              this.hours = hours;
+              this.rate = rate;
+          }
+
+          @Override
+          public double salary() {
+              if (hours <= 160) {
+                  return hours * rate;
+              }
+              return 160 * rate + (hours - 160) * rate * 1.5;
+          }
+      }
+
+      public static double totalPayroll(java.util.List<Employee> employees) {
+          if (employees == null) {
+              return 0;
+          }
+          double total = 0;
+          for (Employee e : employees) {
+              if (e != null) {
+                  total += e.salary();
+              }
+          }
+          return total;
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import java.util.ArrayList;
+  import java.util.Arrays;
+  import java.util.List;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("El empleado de tiempo completo cobra su sueldo mensual")
+      void tiempoCompleto() {
+          assertEquals(3000.0, new Solution.FullTimeEmployee("Ana", 3000).salary(), 1e-9);
+      }
+
+      @Test
+      @DisplayName("El empleado por horas cobra hours * rate hasta 160 horas")
+      void porHoras() {
+          assertEquals(1000.0, new Solution.HourlyEmployee("Luis", 100, 10).salary(), 1e-9);
+          assertEquals(1600.0, new Solution.HourlyEmployee("Luis", 160, 10).salary(), 1e-9);
+      }
+
+      @Test
+      @DisplayName("Las horas extra pasadas de 160 se pagan a 1.5 veces")
+      void horasExtra() {
+          assertEquals(1750.0, new Solution.HourlyEmployee("Eva", 170, 10).salary(), 1e-9);
+      }
+
+      @Test
+      @DisplayName("totalPayroll suma empleados de distintos tipos")
+      void nominaMixta() {
+          List<Solution.Employee> lista = Arrays.asList(
+                  new Solution.FullTimeEmployee("Ana", 3000),
+                  new Solution.HourlyEmployee("Luis", 100, 10));
+          assertEquals(4000.0, Solution.totalPayroll(lista), 1e-9);
+      }
+
+      @Test
+      @DisplayName("Lista vacía o null devuelve 0")
+      void vacia() {
+          assertEquals(0.0, Solution.totalPayroll(new ArrayList<>()), 1e-9);
+          assertEquals(0.0, Solution.totalPayroll(null), 1e-9);
+      }
+
+      @Test
+      @DisplayName("Los elementos null se ignoran")
+      void conNulls() {
+          List<Solution.Employee> lista = Arrays.asList(null, new Solution.FullTimeEmployee("Ana", 100), null);
+          assertEquals(100.0, Solution.totalPayroll(lista), 1e-9);
+      }
+
+      @Test
+      @DisplayName("totalPayroll usa polimorfismo con una subclase nueva")
+      void polimorfismo() {
+          Solution.Employee fijo = new Solution.Employee("Bono") {
+              @Override
+              public double salary() {
+                  return 42;
+              }
+          };
+          assertEquals(42.0, Solution.totalPayroll(Arrays.asList(fijo)), 1e-9);
+      }
+
+      @Test
+      @DisplayName("Una nómina grande")
+      void grande() {
+          List<Solution.Employee> lista = new ArrayList<>();
+          for (int i = 0; i < 10000; i++) {
+              lista.add(new Solution.FullTimeEmployee("E" + i, 1));
+          }
+          assertEquals(10000.0, Solution.totalPayroll(lista), 1e-6);
+      }
+  }
+complexityQuestion:
+  prompt: "Con n empleados, ¿cuál es la complejidad temporal de totalPayroll (suponiendo que salary() es O(1))?"
+  options: ["O(n²)", "O(log n)", "O(1)", "O(n)"]
+  correctIndex: 3
+  explanation: "Se recorre la lista una vez y se llama a salary() por cada empleado; el despacho polimórfico cuesta tiempo constante."

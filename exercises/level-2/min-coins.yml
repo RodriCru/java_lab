@@ -1,0 +1,114 @@
+slug: min-coins
+level: 2
+topic: dynamic-programming
+title: Cambio con el mínimo de monedas
+statement: |
+  Dado un arreglo `coins` de denominaciones (enteros positivos, cada una con suministro
+  ilimitado) y una cantidad `amount`, devuelve el NÚMERO MÍNIMO de monedas necesarias para
+  sumar exactamente `amount`. Si es imposible, devuelve -1.
+
+  Ejemplo:
+  - Entrada: coins=[1, 2, 5], amount=11 -> Salida: 3   (5+5+1)
+  - Entrada: coins=[2], amount=3 -> Salida: -1
+  - Entrada: coins=[1], amount=0 -> Salida: 0
+
+  Con amount = 0 la respuesta siempre es 0. Atención: el enfoque voraz (tomar siempre la
+  moneda más grande) falla, por ejemplo con coins=[1, 3, 4] y amount=6 la respuesta es 2 (3+3).
+  Usa programación dinámica.
+methodSignature: "public static int minCoins(int[] coins, int amount)"
+className: Solution
+estimatedMinutes: 25
+difficulty: medium
+hints:
+  - "Define dp[a] como el mínimo de monedas para sumar a, con dp[0] = 0."
+  - "Para cada a de 1 a amount, prueba cada moneda c <= a: dp[a] = min(dp[a], dp[a - c] + 1)."
+  - "Inicializa dp con un valor 'infinito' (amount + 1) y al final devuelve -1 si dp[amount] sigue siendo infinito."
+starterCode: |
+  public class Solution {
+      public static int minCoins(int[] coins, int amount) {
+          // Tu código aquí
+          return 0;
+      }
+  }
+referenceSolution: |
+  import java.util.Arrays;
+
+  public class Solution {
+      public static int minCoins(int[] coins, int amount) {
+          int infinito = amount + 1;
+          int[] dp = new int[amount + 1];
+          Arrays.fill(dp, infinito);
+          dp[0] = 0;
+          for (int a = 1; a <= amount; a++) {
+              for (int c : coins) {
+                  if (c <= a && dp[a - c] + 1 < dp[a]) {
+                      dp[a] = dp[a - c] + 1;
+                  }
+              }
+          }
+          return dp[amount] >= infinito ? -1 : dp[amount];
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Caso clásico 11 con [1, 2, 5]")
+      void clasico() {
+          assertEquals(3, Solution.minCoins(new int[] {1, 2, 5}, 11));
+      }
+
+      @Test
+      @DisplayName("Imposible devuelve -1")
+      void imposible() {
+          assertEquals(-1, Solution.minCoins(new int[] {2}, 3));
+          assertEquals(-1, Solution.minCoins(new int[] {5, 10}, 7));
+      }
+
+      @Test
+      @DisplayName("Cantidad cero devuelve 0")
+      void cantidadCero() {
+          assertEquals(0, Solution.minCoins(new int[] {1}, 0));
+          assertEquals(0, Solution.minCoins(new int[] {7, 9}, 0));
+      }
+
+      @Test
+      @DisplayName("El enfoque voraz falla: [1, 3, 4] con 6")
+      void voraz() {
+          assertEquals(2, Solution.minCoins(new int[] {1, 3, 4}, 6));
+      }
+
+      @Test
+      @DisplayName("Una sola moneda que divide la cantidad")
+      void unaMoneda() {
+          assertEquals(4, Solution.minCoins(new int[] {5}, 20));
+      }
+
+      @Test
+      @DisplayName("Cantidad igual a una moneda")
+      void igualAMoneda() {
+          assertEquals(1, Solution.minCoins(new int[] {1, 7, 10}, 7));
+      }
+
+      @Test
+      @DisplayName("Cantidad grande con monedas mixtas")
+      void grande() {
+          assertEquals(20, Solution.minCoins(new int[] {186, 419, 83, 408}, 6249));
+      }
+
+      @Test
+      @DisplayName("Cantidad muy grande con monedas de 1 centavo termina rápido")
+      void muyGrande() {
+          assertEquals(100_002, Solution.minCoins(new int[] {1, 5, 10, 25}, 2_500_050));
+      }
+  }
+complexityQuestion:
+  prompt: "Con programación dinámica, ¿cuál es la complejidad temporal en función de la cantidad A y el número de monedas n?"
+  options: ["O(A + n)", "O(A · n)", "O(n log A)", "O(2^A)"]
+  correctIndex: 1
+  explanation: "La tabla tiene A+1 entradas y para cada una se prueban las n monedas, de modo que el costo es O(A · n)."

@@ -1,0 +1,106 @@
+slug: validate-parentheses
+level: 1
+topic: structures
+title: Corchetes balanceados
+statement: |
+  Escribe un método que determine si los corchetes de un texto están balanceados. Se consideran únicamente los caracteres (), [] y {}, y deben cerrarse en el orden correcto. Cualquier otro carácter se ignora.
+
+  Reglas del contrato:
+  - Cada apertura debe tener su cierre del mismo tipo.
+  - El orden importa: "(]" no es válido.
+  - Los caracteres que no son corchetes no afectan el resultado.
+
+  Ejemplo:
+  - Entrada: "(a+b)" -> Salida: true
+  - Entrada: "([)]" -> Salida: false
+  - Entrada: "sin corchetes" -> Salida: true
+
+  Si el texto es null o está vacío, devuelve true.
+methodSignature: "public static boolean isBalanced(String text)"
+className: Solution
+estimatedMinutes: 15
+difficulty: easy
+hints:
+  - "Usa una pila (java.util.Deque) para recordar las aperturas pendientes."
+  - "Cuando veas un cierre, el tope de la pila debe ser su apertura correspondiente; si no, ya es inválido."
+  - "Al terminar, la pila debe quedar vacía: cualquier apertura sin cerrar deja el texto desbalanceado."
+starterCode: |
+  public class Solution {
+      public static boolean isBalanced(String text) {
+          // Tu código aquí
+          return false;
+      }
+  }
+referenceSolution: |
+  public class Solution {
+      public static boolean isBalanced(String text) {
+          if (text == null || text.isEmpty()) {
+              return true;
+          }
+          java.util.Deque<Character> pila = new java.util.ArrayDeque<>();
+          for (int i = 0; i < text.length(); i++) {
+              char actual = text.charAt(i);
+              if (actual == '(' || actual == '[' || actual == '{') {
+                  pila.push(actual);
+              } else if (actual == ')' || actual == ']' || actual == '}') {
+                  if (pila.isEmpty()) {
+                      return false;
+                  }
+                  char apertura = pila.pop();
+                  if ((actual == ')' && apertura != '(')
+                          || (actual == ']' && apertura != '[')
+                          || (actual == '}' && apertura != '{')) {
+                      return false;
+                  }
+              }
+          }
+          return pila.isEmpty();
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Un texto con corchetes bien cerrados es válido")
+      void textoBalanceado() {
+          assertTrue(Solution.isBalanced("(a+b)"));
+      }
+
+      @Test
+      @DisplayName("Un texto con corchetes cruzados no es válido")
+      void corchetesCruzados() {
+          assertFalse(Solution.isBalanced("([)]"));
+      }
+
+      @Test
+      @DisplayName("Un texto sin corchetes es válido")
+      void sinCorchetes() {
+          assertTrue(Solution.isBalanced("sin corchetes"));
+      }
+
+      @Test
+      @DisplayName("Un texto null o vacío es válido")
+      void textoNullOVacio() {
+          assertTrue(Solution.isBalanced(null));
+          assertTrue(Solution.isBalanced(""));
+      }
+
+      @Test
+      @DisplayName("Un cierre sin apertura o una apertura sin cierre no es válido")
+      void cierresSinApertura() {
+          assertFalse(Solution.isBalanced(")"));
+          assertFalse(Solution.isBalanced("("));
+      }
+
+      @Test
+      @DisplayName("Valida textos largos con corchetes anidados")
+      void anidadosLargos() {
+          assertTrue(Solution.isBalanced("{[()(){}]}"));
+          assertFalse(Solution.isBalanced("{[()(){}]}{"));
+      }
+  }

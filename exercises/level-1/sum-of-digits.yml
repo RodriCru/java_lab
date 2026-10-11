@@ -1,0 +1,84 @@
+slug: sum-of-digits
+level: 1
+topic: digits
+title: "Suma de dígitos"
+statement: |
+  Escribe un método que reciba un número entero y devuelva la suma de sus dígitos.
+
+  Se trabaja con el valor absoluto, así que el signo no afecta al resultado: la suma de los dígitos de -123 es 6.
+
+  Ejemplo:
+  - Entrada: 12345 -> Salida: 15
+  - Entrada: 0 -> Salida: 0
+  - Entrada: -123 -> Salida: 6
+methodSignature: "public static int sumOfDigits(int number)"
+className: Solution
+estimatedMinutes: 10
+difficulty: easy
+hints:
+  - "Toma primero el valor absoluto para ignorar el signo."
+  - "El último dígito se obtiene con el resto de dividir entre 10."
+  - "Después de leer el dígito, divide entre 10 para descartarlo y repite mientras el número sea mayor que cero."
+starterCode: |
+  public class Solution {
+      public static int sumOfDigits(int number) {
+          // Tu código aquí
+          return 0;
+      }
+  }
+referenceSolution: |
+  public class Solution {
+      public static int sumOfDigits(int number) {
+          int resto = Math.abs(number);
+          int suma = 0;
+          while (resto > 0) {
+              suma += resto % 10;
+              resto /= 10;
+          }
+          return suma;
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import static org.junit.jupiter.api.Assertions.assertEquals;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Suma los dígitos de un número positivo")
+      void numeroPositivo() {
+          assertEquals(15, Solution.sumOfDigits(12345));
+      }
+
+      @Test
+      @DisplayName("La suma de los dígitos de cero es cero")
+      void numeroCero() {
+          assertEquals(0, Solution.sumOfDigits(0));
+      }
+
+      @Test
+      @DisplayName("Ignora el signo de un número negativo")
+      void numeroNegativo() {
+          assertEquals(6, Solution.sumOfDigits(-123));
+      }
+
+      @Test
+      @DisplayName("Un solo dígito se devuelve tal cual")
+      void unSoloDigito() {
+          assertEquals(9, Solution.sumOfDigits(9));
+      }
+
+      @Test
+      @DisplayName("Funciona con ceros intercalados")
+      void cerosIntercalados() {
+          assertEquals(1, Solution.sumOfDigits(1000000000));
+      }
+
+      @Test
+      @DisplayName("Funciona con un número de diez dígitos como Integer.MAX_VALUE")
+      void valorLimite() {
+          assertEquals(46, Solution.sumOfDigits(Integer.MAX_VALUE));
+      }
+  }

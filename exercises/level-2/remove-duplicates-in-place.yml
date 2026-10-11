@@ -1,0 +1,134 @@
+slug: remove-duplicates-in-place
+level: 2
+topic: two-pointers
+title: Eliminar duplicados en el mismo arreglo
+statement: |
+  Dado un arreglo de enteros ORDENADO ascendentemente, elimina los duplicados "en el lugar":
+  modifica el propio arreglo de modo que los primeros k elementos sean los valores únicos,
+  en el mismo orden, y devuelve k. Lo que haya después de la posición k no importa.
+
+  Ejemplo:
+  - Entrada: [1, 1, 2] -> Salida: 2 y el arreglo queda [1, 2, _]
+  - Entrada: [0, 0, 1, 1, 1, 2, 2, 3, 3, 4] -> Salida: 5 y el arreglo empieza con [0, 1, 2, 3, 4]
+  - Entrada: [] -> Salida: 0
+
+  Si el arreglo es null o vacío, devuelve 0. No crees un arreglo nuevo: usa O(1) de espacio extra.
+methodSignature: "public static int removeDuplicatesInPlace(int[] sorted)"
+className: Solution
+estimatedMinutes: 15
+difficulty: medium
+hints:
+  - "Usa dos punteros: uno de lectura que recorre todo el arreglo y uno de escritura que marca dónde va el siguiente valor único."
+  - "Un elemento es nuevo si es distinto del último valor escrito (sorted[write - 1])."
+  - "Empieza con write = 1 (el primer elemento siempre es único) y devuelve write al final."
+starterCode: |
+  public class Solution {
+      public static int removeDuplicatesInPlace(int[] sorted) {
+          // Tu código aquí
+          return 0;
+      }
+  }
+referenceSolution: |
+  public class Solution {
+      public static int removeDuplicatesInPlace(int[] sorted) {
+          if (sorted == null || sorted.length == 0) {
+              return 0;
+          }
+          int write = 1;
+          for (int read = 1; read < sorted.length; read++) {
+              if (sorted[read] != sorted[write - 1]) {
+                  sorted[write] = sorted[read];
+                  write++;
+              }
+          }
+          return write;
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import java.util.Arrays;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Ejemplo básico [1, 1, 2]")
+      void ejemploBasico() {
+          int[] a = {1, 1, 2};
+          int k = Solution.removeDuplicatesInPlace(a);
+          assertEquals(2, k);
+          assertArrayEquals(new int[] {1, 2}, Arrays.copyOf(a, k));
+      }
+
+      @Test
+      @DisplayName("Varios duplicados repartidos")
+      void variosDuplicados() {
+          int[] a = {0, 0, 1, 1, 1, 2, 2, 3, 3, 4};
+          int k = Solution.removeDuplicatesInPlace(a);
+          assertEquals(5, k);
+          assertArrayEquals(new int[] {0, 1, 2, 3, 4}, Arrays.copyOf(a, k));
+      }
+
+      @Test
+      @DisplayName("Arreglo vacío o null devuelve 0")
+      void vacioONulo() {
+          assertEquals(0, Solution.removeDuplicatesInPlace(new int[0]));
+          assertEquals(0, Solution.removeDuplicatesInPlace(null));
+      }
+
+      @Test
+      @DisplayName("Un solo elemento")
+      void unElemento() {
+          int[] a = {9};
+          assertEquals(1, Solution.removeDuplicatesInPlace(a));
+          assertEquals(9, a[0]);
+      }
+
+      @Test
+      @DisplayName("Todos los elementos iguales")
+      void todosIguales() {
+          int[] a = {5, 5, 5, 5};
+          int k = Solution.removeDuplicatesInPlace(a);
+          assertEquals(1, k);
+          assertEquals(5, a[0]);
+      }
+
+      @Test
+      @DisplayName("Sin duplicados el arreglo queda igual")
+      void sinDuplicados() {
+          int[] a = {-3, -1, 0, 4};
+          int k = Solution.removeDuplicatesInPlace(a);
+          assertEquals(4, k);
+          assertArrayEquals(new int[] {-3, -1, 0, 4}, a);
+      }
+
+      @Test
+      @DisplayName("Funciona con negativos y duplicados")
+      void negativos() {
+          int[] a = {-2, -2, -1, -1, 0, 0};
+          int k = Solution.removeDuplicatesInPlace(a);
+          assertEquals(3, k);
+          assertArrayEquals(new int[] {-2, -1, 0}, Arrays.copyOf(a, k));
+      }
+
+      @Test
+      @DisplayName("Funciona rápido con 500000 elementos")
+      void grande() {
+          int[] a = new int[500000];
+          for (int i = 0; i < a.length; i++) {
+              a[i] = i / 2;
+          }
+          int k = Solution.removeDuplicatesInPlace(a);
+          assertEquals(250000, k);
+          assertEquals(0, a[0]);
+          assertEquals(249999, a[k - 1]);
+      }
+  }
+complexityQuestion:
+  prompt: "¿Cuál es la complejidad de espacio extra de la solución con dos punteros?"
+  options: ["O(n)", "O(1)", "O(log n)", "O(n²)"]
+  correctIndex: 1
+  explanation: "Solo se usan dos índices (lectura y escritura) y se modifica el arreglo original; en tiempo es un único recorrido O(n). Usar un Set costaría O(n) de espacio."

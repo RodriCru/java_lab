@@ -1,0 +1,118 @@
+slug: longest-palindromic-substring
+level: 2
+topic: strings
+title: "Subcadena palíndroma más larga"
+statement: |
+  Devuelve la subcadena palíndroma más larga contenida en el texto.
+
+  Si hay varias con la misma longitud máxima, devuelve la que aparece más a la izquierda.
+
+  Ejemplos:
+  - "babad" -> "bab" (también "aba" tiene longitud 3, pero "bab" aparece primero)
+  - "cbbd" -> "bb"
+  - "a" -> "a"
+  - "abc" -> "a"
+
+  Si el texto es null o vacío, devuelve "". Se distinguen mayúsculas.
+methodSignature: "public static String longestPalindrome(String text)"
+className: Solution
+estimatedMinutes: 30
+difficulty: hard
+hints:
+  - "Todo palíndromo tiene un centro: un carácter (longitud impar) o entre dos caracteres (longitud par)."
+  - "Para cada centro, expande hacia los lados mientras los caracteres coincidan."
+  - "Actualiza el mejor resultado solo si encuentras uno estrictamente más largo, así el desempate favorece al de la izquierda."
+starterCode: |
+  public class Solution {
+      public static String longestPalindrome(String text) {
+          // Tu código aquí
+          return "";
+      }
+  }
+referenceSolution: |
+  public class Solution {
+      public static String longestPalindrome(String text) {
+          if (text == null || text.isEmpty()) return "";
+          int inicio = 0, largo = 1;
+          for (int centro = 0; centro < text.length(); centro++) {
+              for (int tipo = 0; tipo < 2; tipo++) {
+                  int l = centro;
+                  int r = centro + tipo;
+                  while (l >= 0 && r < text.length() && text.charAt(l) == text.charAt(r)) {
+                      l--;
+                      r++;
+                  }
+                  int len = r - l - 1;
+                  if (len > largo) {
+                      largo = len;
+                      inicio = l + 1;
+                  }
+              }
+          }
+          return text.substring(inicio, inicio + largo);
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+  import java.util.*;
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("babad devuelve bab")
+      void t0() {
+          assertEquals("bab", Solution.longestPalindrome("babad"));
+      }
+
+      @Test
+      @DisplayName("Palíndromo de longitud par")
+      void t1() {
+          assertEquals("bb", Solution.longestPalindrome("cbbd"));
+      }
+
+      @Test
+      @DisplayName("Un solo carácter")
+      void t2() {
+          assertEquals("a", Solution.longestPalindrome("a"));
+      }
+
+      @Test
+      @DisplayName("Sin palíndromos largos devuelve el primer carácter")
+      void t3() {
+          assertEquals("a", Solution.longestPalindrome("abc"));
+      }
+
+      @Test
+      @DisplayName("Vacío y null")
+      void t4() {
+          assertEquals("", Solution.longestPalindrome(""));
+          assertEquals("", Solution.longestPalindrome(null));
+      }
+
+      @Test
+      @DisplayName("Toda la cadena es palíndromo")
+      void t5() {
+          assertEquals("racecar", Solution.longestPalindrome("racecar"));
+      }
+
+      @Test
+      @DisplayName("Palíndromo en medio")
+      void t6() {
+          assertEquals("anana", Solution.longestPalindrome("bananas"));
+      }
+
+      @Test
+      @DisplayName("Entrada de 2000 caracteres iguales")
+      void t7() {
+          StringBuilder sb = new StringBuilder();
+          for (int i = 0; i < 2000; i++) sb.append('z');
+          assertEquals(2000, Solution.longestPalindrome(sb.toString()).length());
+      }
+  }
+complexityQuestion:
+  prompt: "¿Cuál es la complejidad temporal de tu solución óptima, en función de n?"
+  options: ["O(1)", "O(n)", "O(n log n)", "O(n²)"]
+  correctIndex: 3
+  explanation: "Expandir desde cada uno de los 2n-1 centros cuesta hasta O(n) cada uno, por lo que el total es cuadrático (existe Manacher en O(n), pero es muy avanzado)."

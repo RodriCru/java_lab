@@ -1,0 +1,103 @@
+slug: are-anagrams
+level: 1
+topic: strings
+title: ¿Son anagramas?
+statement: |
+  Escribe un método que determine si dos textos son anagramas, es decir, si contienen
+  exactamente las mismas letras con la misma cantidad de apariciones.
+
+  Ejemplo:
+  - Entrada: "roma", "amor" -> Salida: true
+  - Entrada: "Hola", "aloh" -> Salida: true
+  - Entrada: "casa", "casas" -> Salida: false
+
+  La comparación ignora mayúsculas y minúsculas, y también los espacios en blanco.
+  Si alguna de las cadenas es null, devuelve false.
+  Si las longitudes son distintas, devuelve false.
+  Dos cadenas vacías se consideran anagramas entre sí (devuelve true).
+methodSignature: "public static boolean areAnagrams(String first, String second)"
+className: Solution
+estimatedMinutes: 15
+difficulty: easy
+hints:
+  - "Normaliza ambas cadenas antes de comparar: pasa todo a minúsculas y quita los espacios."
+  - "Si las longitudes normalizadas son distintas, ya puedes devolver false."
+  - "Cuenta cuántas veces aparece cada carácter en la primera cadena y descuéntalas al recorrer la segunda."
+starterCode: |
+  public class Solution {
+      public static boolean areAnagrams(String first, String second) {
+          // Tu código aquí
+          return false;
+      }
+  }
+referenceSolution: |
+  public class Solution {
+      public static boolean areAnagrams(String first, String second) {
+          if (first == null || second == null) {
+              return false;
+          }
+          String a = first.toLowerCase().replace(" ", "");
+          String b = second.toLowerCase().replace(" ", "");
+          if (a.length() != b.length()) {
+              return false;
+          }
+          int[] conteo = new int[256];
+          for (int i = 0; i < a.length(); i++) {
+              conteo[a.charAt(i)]++;
+          }
+          for (int i = 0; i < b.length(); i++) {
+              conteo[b.charAt(i)]--;
+              if (conteo[b.charAt(i)] < 0) {
+                  return false;
+              }
+          }
+          return true;
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Reconoce dos palabras que son anagramas")
+      void anagramasSimples() {
+          assertTrue(Solution.areAnagrams("roma", "amor"));
+      }
+
+      @Test
+      @DisplayName("Ignora mayúsculas y espacios al comparar")
+      void ignorarMayusculasYEspacios() {
+          assertTrue(Solution.areAnagrams("Hola Mundo", "aloh odnum"));
+      }
+
+      @Test
+      @DisplayName("Distingue anagramas válidos de palabras con letras distintas")
+      void letrasDistintas() {
+          assertTrue(Solution.areAnagrams("roma", "amor"));
+          assertFalse(Solution.areAnagrams("casa", "ceja"));
+      }
+
+      @Test
+      @DisplayName("Reconoce anagramas con letras repetidas")
+      void anagramasConLetrasRepetidas() {
+          assertTrue(Solution.areAnagrams("perro", "repor"));
+      }
+
+      @Test
+      @DisplayName("Devuelve false solo cuando alguna cadena es null")
+      void algunaCadenaNula() {
+          assertTrue(Solution.areAnagrams("roma", "amor"));
+          assertFalse(Solution.areAnagrams(null, "amor"));
+          assertFalse(Solution.areAnagrams("roma", null));
+      }
+
+      @Test
+      @DisplayName("Considera dos cadenas vacías como anagramas")
+      void cadenasVacias() {
+          assertTrue(Solution.areAnagrams("", ""));
+      }
+  }

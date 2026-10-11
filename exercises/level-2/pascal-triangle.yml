@@ -1,0 +1,136 @@
+slug: pascal-triangle
+level: 2
+topic: logic-math
+title: Triángulo de Pascal
+statement: |
+  Devuelve las primeras `rows` filas del triángulo de Pascal. Cada fila empieza y termina en 1,
+  y cada elemento interior es la suma de los dos elementos que tiene encima en la fila anterior.
+
+  Ejemplo:
+  - Entrada: rows=5 -> Salida: [[1], [1,1], [1,2,1], [1,3,3,1], [1,4,6,4,1]]
+  - Entrada: rows=1 -> Salida: [[1]]
+  - Entrada: rows=0 -> Salida: []   (lista vacía)
+
+  Restricción: 0 <= rows <= 30 (los valores caben en un int).
+methodSignature: "public static java.util.List<java.util.List<Integer>> pascalTriangle(int rows)"
+className: Solution
+estimatedMinutes: 15
+difficulty: medium
+hints:
+  - "Construye el triángulo fila por fila; la fila i tiene i + 1 elementos."
+  - "Los extremos de cada fila son 1."
+  - "Cada elemento interior j de la fila i es prev.get(j - 1) + prev.get(j), donde prev es la fila anterior."
+starterCode: |
+  import java.util.ArrayList;
+  import java.util.List;
+
+  public class Solution {
+      public static java.util.List<java.util.List<Integer>> pascalTriangle(int rows) {
+          // Tu código aquí
+          return new ArrayList<>();
+      }
+  }
+referenceSolution: |
+  import java.util.ArrayList;
+  import java.util.List;
+
+  public class Solution {
+      public static java.util.List<java.util.List<Integer>> pascalTriangle(int rows) {
+          List<List<Integer>> triangulo = new ArrayList<>();
+          for (int i = 0; i < rows; i++) {
+              List<Integer> fila = new ArrayList<>();
+              for (int j = 0; j <= i; j++) {
+                  if (j == 0 || j == i) {
+                      fila.add(1);
+                  } else {
+                      List<Integer> previa = triangulo.get(i - 1);
+                      fila.add(previa.get(j - 1) + previa.get(j));
+                  }
+              }
+              triangulo.add(fila);
+          }
+          return triangulo;
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import java.util.Arrays;
+  import java.util.List;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Cinco filas")
+      void cincoFilas() {
+          List<List<Integer>> esperado = Arrays.asList(
+                  Arrays.asList(1),
+                  Arrays.asList(1, 1),
+                  Arrays.asList(1, 2, 1),
+                  Arrays.asList(1, 3, 3, 1),
+                  Arrays.asList(1, 4, 6, 4, 1));
+          assertEquals(esperado, Solution.pascalTriangle(5));
+      }
+
+      @Test
+      @DisplayName("Cero filas devuelve una lista vacía")
+      void ceroFilas() {
+          assertNotNull(Solution.pascalTriangle(0));
+          assertTrue(Solution.pascalTriangle(0).isEmpty());
+      }
+
+      @Test
+      @DisplayName("Una fila")
+      void unaFila() {
+          assertEquals(Arrays.asList(Arrays.asList(1)), Solution.pascalTriangle(1));
+      }
+
+      @Test
+      @DisplayName("Dos filas")
+      void dosFilas() {
+          assertEquals(Arrays.asList(Arrays.asList(1), Arrays.asList(1, 1)), Solution.pascalTriangle(2));
+      }
+
+      @Test
+      @DisplayName("La fila 7 es 1 6 15 20 15 6 1")
+      void filaSiete() {
+          List<List<Integer>> t = Solution.pascalTriangle(7);
+          assertEquals(7, t.size());
+          assertEquals(Arrays.asList(1, 6, 15, 20, 15, 6, 1), t.get(6));
+      }
+
+      @Test
+      @DisplayName("Cada fila i tiene i+1 elementos y es simétrica")
+      void estructura() {
+          List<List<Integer>> t = Solution.pascalTriangle(30);
+          assertEquals(30, t.size());
+          for (int i = 0; i < t.size(); i++) {
+              List<Integer> fila = t.get(i);
+              assertEquals(i + 1, fila.size());
+              for (int j = 0; j <= i; j++) {
+                  assertEquals(fila.get(j), fila.get(i - j));
+              }
+          }
+      }
+
+      @Test
+      @DisplayName("La suma de la fila i es 2^i")
+      void sumas() {
+          List<List<Integer>> t = Solution.pascalTriangle(25);
+          for (int i = 0; i < t.size(); i++) {
+              long suma = 0;
+              for (int v : t.get(i)) {
+                  suma += v;
+              }
+              assertEquals(1L << i, suma);
+          }
+      }
+  }
+complexityQuestion:
+  prompt: "¿Cuál es la complejidad temporal de construir las n filas, en función de n?"
+  options: ["O(n)", "O(n log n)", "O(2^n)", "O(n²)"]
+  correctIndex: 3
+  explanation: "La fila i tiene i + 1 elementos, y 1 + 2 + ... + n = n(n+1)/2, que es O(n²). Cada elemento se calcula en tiempo constante a partir de la fila anterior."

@@ -1,0 +1,130 @@
+slug: apply-all
+level: 2
+topic: modern-java
+title: Aplicar funciones en cadena
+statement: |
+  Dado un valor inicial y una lista de funciones Function<Integer, Integer>, aplícalas EN ORDEN: la salida de cada función es la entrada de la siguiente. Devuelve el resultado final.
+
+  Reglas:
+  - El orden de la lista importa: la primera función se aplica primero.
+  - Si la lista es null o está vacía, devuelve initial.
+  - Las funciones null de la lista se ignoran.
+
+  Ejemplo:
+  - Entrada: initial=3, functions=[x -> x + 1, x -> x * 2] -> Salida: 8   ((3 + 1) * 2)
+  - Entrada: initial=3, functions=[x -> x * 2, x -> x + 1] -> Salida: 7   ((3 * 2) + 1)
+  - Entrada: initial=5, functions=[] -> Salida: 5
+methodSignature: "public static int applyAll(int initial, java.util.List<java.util.function.Function<Integer, Integer>> functions)"
+className: Solution
+estimatedMinutes: 12
+difficulty: medium
+hints:
+  - "Mantén una variable result que empieza en initial."
+  - "En cada paso haz result = f.apply(result) recorriendo la lista en orden."
+  - "También puedes componer con Function.andThen o con un reduce sobre el stream; ambos respetan el orden."
+starterCode: |
+  public class Solution {
+
+      public static int applyAll(int initial, java.util.List<java.util.function.Function<Integer, Integer>> functions) {
+          // Tu código aquí
+          return 0;
+      }
+  }
+referenceSolution: |
+  public class Solution {
+
+      public static int applyAll(int initial, java.util.List<java.util.function.Function<Integer, Integer>> functions) {
+          if (functions == null) {
+              return initial;
+          }
+          int result = initial;
+          for (java.util.function.Function<Integer, Integer> f : functions) {
+              if (f != null) {
+                  result = f.apply(result);
+              }
+          }
+          return result;
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import java.util.ArrayList;
+  import java.util.Arrays;
+  import java.util.List;
+  import java.util.function.Function;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Aplica las funciones en orden: (3 + 1) * 2")
+      void sumarLuegoMultiplicar() {
+          List<Function<Integer, Integer>> fs = Arrays.asList(x -> x + 1, x -> x * 2);
+          assertEquals(8, Solution.applyAll(3, fs));
+      }
+
+      @Test
+      @DisplayName("El orden importa: (3 * 2) + 1")
+      void multiplicarLuegoSumar() {
+          List<Function<Integer, Integer>> fs = Arrays.asList(x -> x * 2, x -> x + 1);
+          assertEquals(7, Solution.applyAll(3, fs));
+      }
+
+      @Test
+      @DisplayName("Lista vacía o null devuelve el valor inicial")
+      void vacia() {
+          assertEquals(5, Solution.applyAll(5, new ArrayList<>()));
+          assertEquals(5, Solution.applyAll(5, null));
+      }
+
+      @Test
+      @DisplayName("Una sola función")
+      void una() {
+          List<Function<Integer, Integer>> fs = Arrays.asList(x -> x - 10);
+          assertEquals(-7, Solution.applyAll(3, fs));
+      }
+
+      @Test
+      @DisplayName("Las funciones null se ignoran")
+      void conNulls() {
+          List<Function<Integer, Integer>> fs = Arrays.asList(null, x -> x + 1, null);
+          assertEquals(4, Solution.applyAll(3, fs));
+      }
+
+      @Test
+      @DisplayName("Funciones con estado de entrada distinto en cada paso")
+      void encadenadasDistintas() {
+          List<Function<Integer, Integer>> fs = Arrays.asList(x -> x * x, x -> x - 1, x -> -x);
+          assertEquals(-8, Solution.applyAll(3, fs));
+      }
+
+      @Test
+      @DisplayName("Cada función se llama exactamente una vez")
+      void unaLlamadaPorFuncion() {
+          int[] llamadas = {0};
+          Function<Integer, Integer> contar = x -> {
+              llamadas[0]++;
+              return x + 1;
+          };
+          Solution.applyAll(0, Arrays.asList(contar, contar, contar));
+          assertEquals(3, llamadas[0]);
+      }
+
+      @Test
+      @DisplayName("Muchas funciones")
+      void muchas() {
+          List<Function<Integer, Integer>> fs = new ArrayList<>();
+          for (int i = 0; i < 100000; i++) {
+              fs.add(x -> x + 1);
+          }
+          assertEquals(100000, Solution.applyAll(0, fs));
+      }
+  }
+complexityQuestion:
+  prompt: "Si la lista tiene k funciones y cada una cuesta O(1), ¿qué complejidad temporal tiene applyAll?"
+  options: ["O(k²)", "O(1)", "O(log k)", "O(k)"]
+  correctIndex: 3
+  explanation: "Cada función se aplica exactamente una vez sobre el resultado anterior; no hay forma de saltarse ninguna, por lo que el costo es lineal en k."

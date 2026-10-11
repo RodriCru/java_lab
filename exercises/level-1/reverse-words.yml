@@ -1,0 +1,97 @@
+slug: reverse-words
+level: 1
+topic: strings
+title: Invertir el orden de las palabras
+statement: |
+  Escribe un método que invierta el orden de las palabras de un texto y normalice los
+  espacios: la salida lleva una sola espacio entre palabras y sin espacios en los extremos.
+
+  Ejemplo:
+  - Entrada: "hola mundo" -> Salida: "mundo hola"
+  - Entrada: "  java   es  genial " -> Salida: "genial es java"
+  - Entrada: "uno" -> Salida: "uno"
+
+  Si el texto es null, vacío o solo tiene espacios, devuelve una cadena vacía ("").
+methodSignature: "public static String reverseWords(String text)"
+className: Solution
+estimatedMinutes: 15
+difficulty: easy
+hints:
+  - "Primero quita los espacios de los extremos con trim y revisa si quedó vacío."
+  - "Separa las palabras con split(\"\\s+\") para que los espacios múltiples no generen elementos vacíos."
+  - "Recorre el arreglo de palabras desde el final hacia el inicio y concatena con un solo espacio."
+starterCode: |
+  public class Solution {
+      public static String reverseWords(String text) {
+          // Tu código aquí
+          return "";
+      }
+  }
+referenceSolution: |
+  public class Solution {
+      public static String reverseWords(String text) {
+          if (text == null) {
+              return "";
+          }
+          String limpio = text.trim();
+          if (limpio.isEmpty()) {
+              return "";
+          }
+          String[] palabras = limpio.split("\\s+");
+          StringBuilder resultado = new StringBuilder();
+          for (int i = palabras.length - 1; i >= 0; i--) {
+              resultado.append(palabras[i]);
+              if (i > 0) {
+                  resultado.append(" ");
+              }
+          }
+          return resultado.toString();
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Invierte el orden de dos palabras")
+      void dosPalabras() {
+          assertEquals("mundo hola", Solution.reverseWords("hola mundo"));
+      }
+
+      @Test
+      @DisplayName("Normaliza los espacios al invertir tres palabras")
+      void normalizaEspacios() {
+          assertEquals("genial es java", Solution.reverseWords("  java   es  genial "));
+      }
+
+      @Test
+      @DisplayName("Devuelve la misma palabra cuando solo hay una")
+      void unaPalabra() {
+          assertEquals("uno", Solution.reverseWords("uno"));
+      }
+
+      @Test
+      @DisplayName("Devuelve una cadena vacía solo cuando el texto es null o está vacío")
+      void textoNuloOVacio() {
+          assertEquals("mundo hola", Solution.reverseWords("hola mundo"));
+          assertEquals("", Solution.reverseWords(null));
+          assertEquals("", Solution.reverseWords(""));
+      }
+
+      @Test
+      @DisplayName("Devuelve una cadena vacía solo cuando el texto tiene espacios")
+      void soloEspacios() {
+          assertEquals("b a", Solution.reverseWords(" a b "));
+          assertEquals("", Solution.reverseWords("     "));
+      }
+
+      @Test
+      @DisplayName("Invierte el orden de tres palabras")
+      void tresPalabras() {
+          assertEquals("c b a", Solution.reverseWords("a b c"));
+      }
+  }

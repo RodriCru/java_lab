@@ -1,0 +1,135 @@
+slug: exception-cause-chain
+level: 0
+topic: exceptions
+title: Envolver una excepción con su causa
+statement: |
+  Dentro de Solution ya existe la excepción propia DataException (hereda de RuntimeException). Aprenderás a **encadenar** excepciones: cuando una excepción de bajo nivel (como NumberFormatException) se convierte en una de tu dominio, hay que conservar la original como causa para no perder información del error.
+
+  Escribe el método parsePositive, que convierte un texto en un entero positivo:
+  - Si el texto es un entero válido y mayor que 0, devuelve ese entero.
+  - Si el texto es null, lanza DataException con el mensaje "El texto no puede ser null" y SIN causa (getCause() == null).
+  - Si el texto no es un entero válido, captura la NumberFormatException y lanza DataException con el mensaje "Valor inválido: " + texto, pasando la excepción capturada como causa (getCause() debe ser esa NumberFormatException).
+  - Si el entero es 0 o negativo, lanza DataException con el mensaje "El valor debe ser positivo: " + texto y SIN causa.
+
+  Ejemplos:
+  - "42" -> 42
+  - "abc" -> DataException("Valor inválido: abc") con causa NumberFormatException
+  - "-5" -> DataException("El valor debe ser positivo: -5") sin causa
+  - null -> DataException("El texto no puede ser null") sin causa
+methodSignature: "public static int parsePositive(String text)"
+className: Solution
+estimatedMinutes: 15
+difficulty: medium
+hints:
+  - "Integer.parseInt lanza NumberFormatException cuando el texto no es un número. Envuelve esa llamada en un try/catch."
+  - "DataException tiene un constructor (String message, Throwable cause): úsalo dentro del catch pasando la excepción capturada, así getCause() la devuelve."
+  - "Valida null y el signo FUERA del try/catch (o lanza DataException sin causa): solo el caso de formato inválido lleva causa."
+starterCode: |
+  public class Solution {
+
+      public static class DataException extends RuntimeException {
+          public DataException(String message) {
+              super(message);
+          }
+
+          public DataException(String message, Throwable cause) {
+              super(message, cause);
+          }
+      }
+
+      public static int parsePositive(String text) {
+          // Tu código aquí
+          return 0;
+      }
+  }
+referenceSolution: |
+  public class Solution {
+
+      public static class DataException extends RuntimeException {
+          public DataException(String message) {
+              super(message);
+          }
+
+          public DataException(String message, Throwable cause) {
+              super(message, cause);
+          }
+      }
+
+      public static int parsePositive(String text) {
+          if (text == null) {
+              throw new DataException("El texto no puede ser null");
+          }
+          int value;
+          try {
+              value = Integer.parseInt(text);
+          } catch (NumberFormatException e) {
+              throw new DataException("Valor inválido: " + text, e);
+          }
+          if (value <= 0) {
+              throw new DataException("El valor debe ser positivo: " + text);
+          }
+          return value;
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Un entero positivo válido se devuelve tal cual")
+      void valorValido() {
+          assertEquals(42, Solution.parsePositive("42"));
+          assertEquals(1, Solution.parsePositive("1"));
+      }
+
+      @Test
+      @DisplayName("Un texto no numérico lanza DataException con el mensaje esperado")
+      void textoInvalidoMensaje() {
+          Solution.DataException ex = assertThrows(Solution.DataException.class, () -> Solution.parsePositive("abc"));
+          assertEquals("Valor inválido: abc", ex.getMessage());
+      }
+
+      @Test
+      @DisplayName("La causa de un texto inválido es la NumberFormatException original")
+      void textoInvalidoCausa() {
+          Solution.DataException ex = assertThrows(Solution.DataException.class, () -> Solution.parsePositive("12x"));
+          assertNotNull(ex.getCause());
+          assertInstanceOf(NumberFormatException.class, ex.getCause());
+      }
+
+      @Test
+      @DisplayName("Un texto vacío también es inválido y conserva la causa")
+      void textoVacio() {
+          Solution.DataException ex = assertThrows(Solution.DataException.class, () -> Solution.parsePositive(""));
+          assertEquals("Valor inválido: ", ex.getMessage());
+          assertInstanceOf(NumberFormatException.class, ex.getCause());
+      }
+
+      @Test
+      @DisplayName("Un número negativo lanza DataException sin causa")
+      void negativo() {
+          Solution.DataException ex = assertThrows(Solution.DataException.class, () -> Solution.parsePositive("-5"));
+          assertEquals("El valor debe ser positivo: -5", ex.getMessage());
+          assertNull(ex.getCause());
+      }
+
+      @Test
+      @DisplayName("El cero no es positivo y lanza DataException sin causa")
+      void cero() {
+          Solution.DataException ex = assertThrows(Solution.DataException.class, () -> Solution.parsePositive("0"));
+          assertEquals("El valor debe ser positivo: 0", ex.getMessage());
+          assertNull(ex.getCause());
+      }
+
+      @Test
+      @DisplayName("Un texto null lanza DataException sin causa")
+      void nulo() {
+          Solution.DataException ex = assertThrows(Solution.DataException.class, () -> Solution.parsePositive(null));
+          assertEquals("El texto no puede ser null", ex.getMessage());
+          assertNull(ex.getCause());
+      }
+  }

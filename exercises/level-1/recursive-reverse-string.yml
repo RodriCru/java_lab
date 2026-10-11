@@ -1,0 +1,87 @@
+slug: recursive-reverse-string
+level: 1
+topic: recursion
+title: Invertir recursivamente
+statement: |
+  Escribe un método RECURSIVO que devuelva la cadena de texto invertida.
+
+  Reglas del contrato:
+  - Si text es null, devuelve una cadena vacía "".
+  - Si text tiene un solo carácter, se devuelve igual.
+  - No puedes usar bucles ni StringBuilder.reverse(): el enunciado exige una solución recursiva.
+
+  Ejemplo:
+  - Entrada: "hola" -> Salida: "aloh"
+  - Entrada: "a" -> Salida: "a"
+  - Entrada: "" -> Salida: ""
+methodSignature: "public static String recursiveReverse(String text)"
+className: Solution
+estimatedMinutes: 15
+difficulty: easy
+hints:
+  - "El caso base es una cadena vacía o de un solo carácter: invertirla devuelve lo mismo."
+  - "Toma el primer carácter y colócalo DESPUÉS del resto ya invertido."
+  - "Puedes usar text.substring(1) para quedarte con el resto de la cadena."
+starterCode: |
+  public class Solution {
+      public static String recursiveReverse(String text) {
+          // Tu código aquí
+          return "";
+      }
+  }
+referenceSolution: |
+  public class Solution {
+      public static String recursiveReverse(String text) {
+          if (text == null) {
+              return "";
+          }
+          if (text.length() <= 1) {
+              return text;
+          }
+          return recursiveReverse(text.substring(1)) + text.charAt(0);
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Invierte una palabra normal")
+      void palabraNormal() {
+          assertEquals("aloh", Solution.recursiveReverse("hola"));
+      }
+
+      @Test
+      @DisplayName("Invierte una cadena con espacios")
+      void cadenaConEspacios() {
+          assertEquals("odnum aloh", Solution.recursiveReverse("hola mundo"));
+      }
+
+      @Test
+      @DisplayName("Devuelve la misma cadena cuando tiene un solo carácter")
+      void unSoloCaracter() {
+          assertEquals("a", Solution.recursiveReverse("a"));
+      }
+
+      @Test
+      @DisplayName("Devuelve una cadena vacía cuando la entrada está vacía")
+      void cadenaVacia() {
+          assertEquals("", Solution.recursiveReverse(""));
+      }
+
+      @Test
+      @DisplayName("Devuelve una cadena vacía cuando la entrada es null")
+      void entradaNula() {
+          assertEquals("", Solution.recursiveReverse(null));
+      }
+
+      @Test
+      @DisplayName("Invierte una cadena de longitud par")
+      void longitudPar() {
+          assertEquals("dcba", Solution.recursiveReverse("abcd"));
+      }
+  }

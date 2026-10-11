@@ -1,0 +1,101 @@
+slug: is-palindrome
+level: 1
+topic: strings
+title: "¿Es palíndromo?"
+statement: |
+  Escribe un método que determine si una cadena de texto es un palíndromo, es decir, si se lee igual de izquierda a derecha que de derecha a izquierda.
+
+  Reglas del contrato:
+  - Se ignoran las mayúsculas y las minúsculas.
+  - Se ignoran los caracteres que no sean letras ni dígitos (espacios, comas, dos puntos, etc.).
+  - Una cadena vacía es un palíndromo.
+  - Si el texto es null, el método devuelve false.
+
+  Ejemplo:
+  - Entrada: "reconocer" -> Salida: true
+  - Entrada: "Hola" -> Salida: false
+  - Entrada: "A man, a plan, a canal: Panama" -> Salida: true
+methodSignature: "public static boolean isPalindrome(String text)"
+className: Solution
+estimatedMinutes: 12
+difficulty: easy
+hints:
+  - "Usa dos índices: uno al inicio y otro al final de la cadena."
+  - "Salta los caracteres que no sean letras ni dígitos con Character.isLetterOrDigit."
+  - "Compara los caracteres ya convertidos a minúscula con Character.toLowerCase; si alguno no coincide, no es palíndromo."
+starterCode: |
+  public class Solution {
+      public static boolean isPalindrome(String text) {
+          // Tu código aquí
+          return false;
+      }
+  }
+referenceSolution: |
+  public class Solution {
+      public static boolean isPalindrome(String text) {
+          if (text == null) {
+              return false;
+          }
+          int izquierda = 0;
+          int derecha = text.length() - 1;
+          while (izquierda < derecha) {
+              char caracterIzquierda = text.charAt(izquierda);
+              char caracterDerecha = text.charAt(derecha);
+              if (!Character.isLetterOrDigit(caracterIzquierda)) {
+                  izquierda++;
+              } else if (!Character.isLetterOrDigit(caracterDerecha)) {
+                  derecha--;
+              } else if (Character.toLowerCase(caracterIzquierda) != Character.toLowerCase(caracterDerecha)) {
+                  return false;
+              } else {
+                  izquierda++;
+                  derecha--;
+              }
+          }
+          return true;
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import static org.junit.jupiter.api.Assertions.assertEquals;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Una palabra palíndroma devuelve true")
+      void palabraPalindroma() {
+          assertEquals(true, Solution.isPalindrome("reconocer"));
+      }
+
+      @Test
+      @DisplayName("Una palabra que no es palíndroma devuelve false")
+      void palabraNoPalindroma() {
+          assertEquals(false, Solution.isPalindrome("Hola"));
+      }
+
+      @Test
+      @DisplayName("Una cadena vacía es un palíndromo")
+      void cadenaVacia() {
+          assertEquals(true, Solution.isPalindrome(""));
+      }
+
+      @Test
+      @DisplayName("Un texto null devuelve false")
+      void textoNull() {
+          assertEquals(false, Solution.isPalindrome(null));
+      }
+
+      @Test
+      @DisplayName("Ignora mayúsculas, espacios y signos de puntuación")
+      void ignoraFormato() {
+          assertEquals(true, Solution.isPalindrome("A man, a plan, a canal: Panama"));
+      }
+
+      @Test
+      @DisplayName("Reconoce un palíndromo con mayúsculas y espacios")
+      void mayusculasYEspacios() {
+          assertEquals(true, Solution.isPalindrome("Anita lava la tina"));
+      }
+  }

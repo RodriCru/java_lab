@@ -1,0 +1,99 @@
+slug: title-case
+level: 1
+topic: strings
+title: Formato de título
+statement: |
+  Escribe un método que convierta un texto a formato de título: la primera letra de cada
+  palabra en mayúscula y el resto en minúscula.
+
+  Ejemplo:
+  - Entrada: "hola mundo" -> Salida: "Hola Mundo"
+  - Entrada: "JAVA es GENIAL" -> Salida: "Java Es Genial"
+  - Entrada: "  hola   mundo  " -> Salida: "  Hola   Mundo  "
+
+  Respeta los espacios existentes sin colapsarlos: los espacios múltiples se conservan
+  igual que en la entrada. Si el texto es null, devuelve una cadena vacía ("").
+methodSignature: "public static String titleCase(String text)"
+className: Solution
+estimatedMinutes: 12
+difficulty: easy
+hints:
+  - "Recorre el texto carácter por carácter llevando un arreglo de caracteres de salida."
+  - "Necesitas una bandera que indique si el carácter anterior fue un espacio (o si estás al inicio)."
+  - "Usa Character.toUpperCase y Character.toLowerCase según corresponda a cada posición."
+starterCode: |
+  public class Solution {
+      public static String titleCase(String text) {
+          // Tu código aquí
+          return "";
+      }
+  }
+referenceSolution: |
+  public class Solution {
+      public static String titleCase(String text) {
+          if (text == null) {
+              return "";
+          }
+          char[] caracteres = text.toCharArray();
+          boolean inicioDePalabra = true;
+          for (int i = 0; i < caracteres.length; i++) {
+              if (caracteres[i] == ' ') {
+                  inicioDePalabra = true;
+              } else {
+                  if (inicioDePalabra) {
+                      caracteres[i] = Character.toUpperCase(caracteres[i]);
+                  } else {
+                      caracteres[i] = Character.toLowerCase(caracteres[i]);
+                  }
+                  inicioDePalabra = false;
+              }
+          }
+          return new String(caracteres);
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Convierte dos palabras minúsculas a formato de título")
+      void dosPalabras() {
+          assertEquals("Hola Mundo", Solution.titleCase("hola mundo"));
+      }
+
+      @Test
+      @DisplayName("Normaliza mayúsculas mezcladas y deja el resto en minúscula")
+      void mezclaDeMayusculas() {
+          assertEquals("Java Es Genial", Solution.titleCase("JAVA es GENIAL"));
+      }
+
+      @Test
+      @DisplayName("Conserva los espacios múltiples sin colapsarlos")
+      void espaciosMultiples() {
+          assertEquals("  Hola   Mundo  ", Solution.titleCase("  hola   mundo  "));
+      }
+
+      @Test
+      @DisplayName("Devuelve una cadena vacía solo cuando el texto es null o está vacío")
+      void textoNuloOVacio() {
+          assertEquals("Hola", Solution.titleCase("hola"));
+          assertEquals("", Solution.titleCase(null));
+          assertEquals("", Solution.titleCase(""));
+      }
+
+      @Test
+      @DisplayName("Formatea correctamente una sola palabra")
+      void unaPalabra() {
+          assertEquals("Java", Solution.titleCase("jAVA"));
+      }
+
+      @Test
+      @DisplayName("Deja en minúscula las letras internas de cada palabra")
+      void letrasInternasEnMinuscula() {
+          assertEquals("Hola Mundo", Solution.titleCase("hOLA mUNDO"));
+      }
+  }

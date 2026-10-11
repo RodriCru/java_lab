@@ -1,0 +1,191 @@
+slug: singleton-scope
+level: 0
+topic: spring-principles
+title: Scope singleton y prototype
+statement: |
+  En Spring cada bean tiene un **scope**:
+  - **singleton** (por defecto): se crea UNA sola instancia y se reutiliza siempre.
+  - **prototype**: se crea una instancia NUEVA cada vez que se pide.
+
+  Dentro de Solution existen el enum Scope (SINGLETON, PROTOTYPE) y la clase anidada Container (con esqueleto). Impleméntala sin reflexión:
+  - register(String name, Supplier<Object> supplier, Scope scope): registra la receta con su scope. No crea nada todavía. Si el nombre ya existe, lanza IllegalStateException. Si supplier o scope son null, lanza IllegalArgumentException.
+  - get(String name): para SINGLETON, llama al supplier la primera vez y devuelve siempre esa misma instancia; para PROTOTYPE, llama al supplier en CADA llamada y devuelve el objeto nuevo. Si el nombre no está registrado, lanza IllegalArgumentException.
+
+  El método newContainer devuelve un contenedor nuevo y vacío.
+
+  Ejemplo (el supplier cuenta cuántas veces se llama):
+  - SINGLETON, tres get -> el supplier se llamó 1 vez y los tres resultados son el mismo objeto
+  - PROTOTYPE, tres get -> el supplier se llamó 3 veces y los tres resultados son objetos distintos
+methodSignature: "public static Container newContainer()"
+className: Solution
+estimatedMinutes: 20
+difficulty: medium
+hints:
+  - "Guarda la receta junto con su scope: por ejemplo un Map<String, Supplier<Object>> y un Map<String, Scope>, o una clase anidada privada con ambos datos."
+  - "En get, mira el scope: si es PROTOTYPE devuelve supplier.get() directamente, sin guardar nada."
+  - "Si es SINGLETON, usa un Map<String, Object> de instancias: si ya existe (containsKey) devuélvelo; si no, créalo, guárdalo y devuélvelo."
+starterCode: |
+  import java.util.*;
+  import java.util.function.Supplier;
+
+  public class Solution {
+
+      public enum Scope {
+          SINGLETON,
+          PROTOTYPE
+      }
+
+      public static class Container {
+          // Tu código aquí: recetas, scopes e instancias singleton
+
+          public void register(String name, Supplier<Object> supplier, Scope scope) {
+              // Tu código aquí
+          }
+
+          public Object get(String name) {
+              // Tu código aquí
+              return null;
+          }
+      }
+
+      public static Container newContainer() {
+          return new Container();
+      }
+  }
+referenceSolution: |
+  import java.util.*;
+  import java.util.function.Supplier;
+
+  public class Solution {
+
+      public enum Scope {
+          SINGLETON,
+          PROTOTYPE
+      }
+
+      public static class Container {
+          private final Map<String, Supplier<Object>> recipes = new HashMap<>();
+          private final Map<String, Scope> scopes = new HashMap<>();
+          private final Map<String, Object> singletons = new HashMap<>();
+
+          public void register(String name, Supplier<Object> supplier, Scope scope) {
+              if (supplier == null || scope == null) {
+                  throw new IllegalArgumentException("supplier y scope son obligatorios");
+              }
+              if (recipes.containsKey(name)) {
+                  throw new IllegalStateException("Bean ya registrado: " + name);
+              }
+              recipes.put(name, supplier);
+              scopes.put(name, scope);
+          }
+
+          public Object get(String name) {
+              Supplier<Object> supplier = recipes.get(name);
+              if (supplier == null) {
+                  throw new IllegalArgumentException("Bean no registrado: " + name);
+              }
+              if (scopes.get(name) == Scope.PROTOTYPE) {
+                  return supplier.get();
+              }
+              if (!singletons.containsKey(name)) {
+                  singletons.put(name, supplier.get());
+              }
+              return singletons.get(name);
+          }
+      }
+
+      public static Container newContainer() {
+          return new Container();
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("SINGLETON devuelve siempre la misma instancia")
+      void singletonMismaInstancia() {
+          Solution.Container c = Solution.newContainer();
+          c.register("o", Object::new, Solution.Scope.SINGLETON);
+          assertSame(c.get("o"), c.get("o"));
+      }
+
+      @Test
+      @DisplayName("SINGLETON crea una sola instancia aunque se pida varias veces")
+      void singletonCuentaInstancias() {
+          int[] created = {0};
+          Solution.Container c = Solution.newContainer();
+          c.register("o", () -> {
+              created[0]++;
+              return new Object();
+          }, Solution.Scope.SINGLETON);
+          c.get("o");
+          c.get("o");
+          c.get("o");
+          assertEquals(1, created[0]);
+      }
+
+      @Test
+      @DisplayName("PROTOTYPE devuelve una instancia distinta en cada llamada")
+      void prototypeInstanciasDistintas() {
+          Solution.Container c = Solution.newContainer();
+          c.register("o", Object::new, Solution.Scope.PROTOTYPE);
+          assertNotSame(c.get("o"), c.get("o"));
+      }
+
+      @Test
+      @DisplayName("PROTOTYPE crea una instancia por cada get")
+      void prototypeCuentaInstancias() {
+          int[] created = {0};
+          Solution.Container c = Solution.newContainer();
+          c.register("o", () -> {
+              created[0]++;
+              return new Object();
+          }, Solution.Scope.PROTOTYPE);
+          c.get("o");
+          c.get("o");
+          c.get("o");
+          assertEquals(3, created[0]);
+      }
+
+      @Test
+      @DisplayName("Registrar no crea instancias: es perezoso en ambos scopes")
+      void creacionPerezosa() {
+          int[] created = {0};
+          Solution.Container c = Solution.newContainer();
+          c.register("s", () -> {
+              created[0]++;
+              return new Object();
+          }, Solution.Scope.SINGLETON);
+          c.register("p", () -> {
+              created[0]++;
+              return new Object();
+          }, Solution.Scope.PROTOTYPE);
+          assertEquals(0, created[0]);
+      }
+
+      @Test
+      @DisplayName("Un singleton y un prototype conviven en el mismo contenedor")
+      void convivencia() {
+          Solution.Container c = Solution.newContainer();
+          c.register("s", Object::new, Solution.Scope.SINGLETON);
+          c.register("p", Object::new, Solution.Scope.PROTOTYPE);
+          assertSame(c.get("s"), c.get("s"));
+          assertNotSame(c.get("p"), c.get("p"));
+      }
+
+      @Test
+      @DisplayName("Errores: nombre desconocido, duplicado y argumentos null")
+      void errores() {
+          Solution.Container c = Solution.newContainer();
+          assertThrows(IllegalArgumentException.class, () -> c.get("x"));
+          c.register("a", Object::new, Solution.Scope.SINGLETON);
+          assertThrows(IllegalStateException.class, () -> c.register("a", Object::new, Solution.Scope.PROTOTYPE));
+          assertThrows(IllegalArgumentException.class, () -> c.register("b", null, Solution.Scope.SINGLETON));
+          assertThrows(IllegalArgumentException.class, () -> c.register("b", Object::new, null));
+      }
+  }

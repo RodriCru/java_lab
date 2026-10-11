@@ -1,0 +1,91 @@
+slug: sum-matrix
+level: 1
+topic: matrices-patterns
+title: Suma de una matriz
+statement: |
+  Escribe un método que devuelva la suma de todos los elementos de una matriz de enteros.
+
+  Ejemplo:
+  - Entrada: matrix=[[1, 2], [3, 4]] -> Salida: 10
+  - Entrada: matrix=[[5]] -> Salida: 5
+  - Entrada: matrix=[[-1, -2], [1, 2]] -> Salida: 0
+
+  Si la matriz es null, devuelve 0. La matriz de entrada nunca debe modificarse.
+methodSignature: "public static int sumMatrix(int[][] matrix)"
+className: Solution
+estimatedMinutes: 10
+difficulty: easy
+hints:
+  - "Necesitas dos ciclos: uno para las filas y otro para las columnas de cada fila."
+  - "Acumula cada elemento en una variable suma y devuélvela al final."
+  - "Antes de recorrer, revisa si matrix es null para no provocar un NullPointerException."
+starterCode: |
+  public class Solution {
+      public static int sumMatrix(int[][] matrix) {
+          // Tu código aquí
+          return 0;
+      }
+  }
+referenceSolution: |
+  public class Solution {
+      public static int sumMatrix(int[][] matrix) {
+          if (matrix == null) {
+              return 0;
+          }
+          int suma = 0;
+          for (int i = 0; i < matrix.length; i++) {
+              for (int j = 0; j < matrix[i].length; j++) {
+                  suma += matrix[i][j];
+              }
+          }
+          return suma;
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Suma todos los elementos de una matriz de 2x2")
+      void matrizDosPorDos() {
+          assertEquals(10, Solution.sumMatrix(new int[][] {{1, 2}, {3, 4}}));
+      }
+
+      @Test
+      @DisplayName("Suma una matriz de un solo elemento")
+      void matrizUnElemento() {
+          assertEquals(5, Solution.sumMatrix(new int[][] {{5}}));
+      }
+
+      @Test
+      @DisplayName("Suma correctamente valores negativos")
+      void valoresNegativos() {
+          assertEquals(0, Solution.sumMatrix(new int[][] {{-1, -2}, {1, 2}}));
+      }
+
+      @Test
+      @DisplayName("Devuelve 0 cuando la matriz está vacía")
+      void matrizVacia() {
+          assertEquals(0, Solution.sumMatrix(new int[0][0]));
+      }
+
+      @Test
+      @DisplayName("Devuelve 0 cuando la matriz es null")
+      void entradaNula() {
+          assertEquals(0, Solution.sumMatrix(null));
+      }
+
+      @Test
+      @DisplayName("No modifica la matriz de entrada")
+      void noModificaLaEntrada() {
+          int[][] original = {{1, 2}, {3, 4}};
+          int[][] copia = {{1, 2}, {3, 4}};
+          Solution.sumMatrix(original);
+          assertArrayEquals(copia[0], original[0]);
+          assertArrayEquals(copia[1], original[1]);
+      }
+  }

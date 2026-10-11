@@ -1,0 +1,79 @@
+slug: sum-one-to-n
+level: 0
+topic: basics
+title: Sumar del 1 al n
+statement: |
+  Un ciclo que acumula un resultado. Escribe un método que devuelva la suma de los enteros del 1 al n. Si n es menor que 1 devuelve 0.
+
+  Ejemplos:
+  - sumOneToN(4) -> 10 (1+2+3+4)
+  - sumOneToN(1) -> 1
+  - sumOneToN(0) -> 0
+methodSignature: public static int sumOneToN(int n)
+className: Solution
+estimatedMinutes: 8
+difficulty: easy
+hints:
+- Crea una variable suma = 0 antes del ciclo.
+- En cada vuelta del for suma += i.
+- Si n < 1 el ciclo no se ejecuta y devuelves 0 sin caso especial.
+starterCode: |
+  public class Solution {
+
+      public static int sumOneToN(int n) {
+          // Tu código aquí
+          return 0;
+      }
+  }
+referenceSolution: |
+  public class Solution {
+
+      public static int sumOneToN(int n) {
+          int suma = 0;
+          for (int i = 1; i <= n; i++) {
+              suma += i;
+          }
+          return suma;
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  import java.io.ByteArrayOutputStream;
+  import java.io.PrintStream;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Hasta 4")
+      void t1() {
+          assertEquals(10, Solution.sumOneToN(4));
+      }
+
+      @Test
+      @DisplayName("Hasta 1")
+      void t2() {
+          assertEquals(1, Solution.sumOneToN(1));
+      }
+
+      @Test
+      @DisplayName("Cero")
+      void t3() {
+          assertEquals(0, Solution.sumOneToN(0));
+      }
+
+      @Test
+      @DisplayName("Negativo")
+      void t4() {
+          assertEquals(0, Solution.sumOneToN(-5));
+      }
+
+      @Test
+      @DisplayName("Hasta 100")
+      void t5() {
+          assertEquals(5050, Solution.sumOneToN(100));
+      }
+  }

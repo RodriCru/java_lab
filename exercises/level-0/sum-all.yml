@@ -1,0 +1,90 @@
+slug: sum-all
+level: 0
+topic: functions
+title: "Suma con varargs"
+statement: |
+  Escribe un método que sume todos los enteros que reciba, sin importar cuántos sean. Para eso Java ofrece los parámetros variables (varargs): int... numbers. Dentro del método, numbers se comporta como un arreglo int[].
+
+  Ejemplos:
+  - Entrada: sumAll(1, 2, 3) -> Salida: 6
+  - Entrada: sumAll(10) -> Salida: 10
+  - Entrada: sumAll() -> Salida: 0 (sin argumentos, el arreglo está vacío)
+  - Entrada: sumAll(5, -5, 7) -> Salida: 7
+
+  El método también se puede llamar pasando un arreglo: sumAll(new int[]{1, 2, 3}) -> 6.
+methodSignature: "public static int sumAll(int... numbers)"
+className: Solution
+estimatedMinutes: 8
+difficulty: easy
+hints:
+  - "int... numbers permite llamar al método con 0, 1 o muchos argumentos; Java los empaqueta en un arreglo."
+  - "Recorre numbers con un for-each: for (int n : numbers) { ... }"
+  - "Acumula en una variable int total = 0; Si no hay argumentos el bucle no se ejecuta y devuelves 0."
+starterCode: |
+  public class Solution {
+
+      public static int sumAll(int... numbers) {
+          // Tu código aquí
+          return -1;
+      }
+  }
+referenceSolution: |
+  public class Solution {
+
+      public static int sumAll(int... numbers) {
+          int total = 0;
+          for (int n : numbers) {
+              total += n;
+          }
+          return total;
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+      @Test
+      @DisplayName("Suma de varios argumentos")
+      void caso1() {
+          assertEquals(6, Solution.sumAll(1, 2, 3));
+      }
+
+      @Test
+      @DisplayName("Un solo argumento")
+      void caso2() {
+          assertEquals(10, Solution.sumAll(10));
+      }
+
+      @Test
+      @DisplayName("Sin argumentos devuelve 0")
+      void caso3() {
+          assertEquals(0, Solution.sumAll());
+      }
+
+      @Test
+      @DisplayName("Con números negativos")
+      void caso4() {
+          assertEquals(7, Solution.sumAll(5, -5, 7));
+      }
+
+      @Test
+      @DisplayName("Acepta un arreglo directamente")
+      void caso5() {
+          assertEquals(15, Solution.sumAll(new int[] {1, 2, 3, 4, 5}));
+      }
+
+      @Test
+      @DisplayName("Arreglo vacío devuelve 0")
+      void caso6() {
+          assertEquals(0, Solution.sumAll(new int[0]));
+      }
+
+      @Test
+      @DisplayName("Muchos argumentos")
+      void caso7() {
+          assertEquals(55, Solution.sumAll(1, 2, 3, 4, 5, 6, 7, 8, 9, 10));
+      }
+  }

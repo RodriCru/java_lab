@@ -1,0 +1,99 @@
+slug: sum-map-values
+level: 0
+topic: collections
+title: Sumar los valores de un mapa
+statement: |
+  Escribe un método que sume todos los valores de un Map<String, Integer> usando un ciclo for-each (sobre map.values() o sobre map.entrySet()).
+
+  Ejemplos:
+  - {a=1, b=2, c=3} -> 6
+  - {x=-5, y=5} -> 0
+  - {} -> 0
+
+  Si el mapa es null o está vacío, devuelve 0.
+methodSignature: public static int sumMapValues(Map<String, Integer> map)
+className: Solution
+estimatedMinutes: 10
+difficulty: easy
+hints:
+- 'Un for-each tiene la forma for (int v : map.values()) { ... } y recorre cada valor sin usar índices.'
+- Declara un acumulador int suma = 0 antes del ciclo y súmale cada valor dentro de él.
+- 'Si recorres entrySet(), cada elemento es un Map.Entry<String, Integer>: usa entry.getValue() para el número.'
+starterCode: |
+  import java.util.Map;
+
+  public class Solution {
+      public static int sumMapValues(Map<String, Integer> map) {
+          // Tu código aquí
+          return -1;
+      }
+  }
+referenceSolution: |
+  import java.util.Map;
+
+  public class Solution {
+      public static int sumMapValues(Map<String, Integer> map) {
+          if (map == null) {
+              return 0;
+          }
+          int suma = 0;
+          for (int valor : map.values()) {
+              suma += valor;
+          }
+          return suma;
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import java.util.*;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Suma los valores de un mapa")
+      void t47171() {
+          Map<String, Integer> m = new HashMap<>();
+          m.put("a", 1);
+          m.put("b", 2);
+          m.put("c", 3);
+          assertEquals(6, Solution.sumMapValues(m));
+      }
+
+      @Test
+      @DisplayName("Valores positivos y negativos se compensan")
+      void t49860() {
+          assertEquals(0, Solution.sumMapValues(Map.of("x", -5, "y", 5)));
+      }
+
+      @Test
+      @DisplayName("Un mapa vacío suma cero")
+      void t56215() {
+          assertEquals(0, Solution.sumMapValues(new HashMap<>()));
+      }
+
+      @Test
+      @DisplayName("Un mapa null suma cero")
+      void t12257() {
+          assertEquals(0, Solution.sumMapValues(null));
+      }
+
+      @Test
+      @DisplayName("Un solo elemento")
+      void t99766() {
+          assertEquals(42, Solution.sumMapValues(Map.of("k", 42)));
+      }
+
+      @Test
+      @DisplayName("Funciona con un mapa grande")
+      void t30870() {
+          Map<String, Integer> m = new HashMap<>();
+          for (int i = 1; i <= 1000; i++) {
+              m.put("k" + i, i);
+          }
+          assertEquals(500500, Solution.sumMapValues(m));
+      }
+  }

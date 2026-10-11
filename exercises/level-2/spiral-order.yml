@@ -1,0 +1,137 @@
+slug: spiral-order
+level: 2
+topic: matrices-patterns
+title: Recorrido en espiral
+statement: |
+  Devuelve los elementos de una matriz rectangular en orden de espiral en sentido horario,
+  empezando por la esquina superior izquierda: primero la fila superior de izquierda a
+  derecha, luego la columna derecha hacia abajo, luego la fila inferior hacia la izquierda y
+  la columna izquierda hacia arriba, y así hacia el centro.
+
+  Ejemplo:
+  - Entrada: [[1,2,3],[4,5,6],[7,8,9]] -> Salida: [1,2,3,6,9,8,7,4,5]
+  - Entrada: [[1,2,3,4],[5,6,7,8],[9,10,11,12]] -> Salida: [1,2,3,4,8,12,11,10,9,5,6,7]
+  - Entrada: [[1],[2],[3]] -> Salida: [1,2,3]
+
+  Si `matrix` es null o vacía, devuelve un arreglo vacío.
+methodSignature: "public static int[] spiralOrder(int[][] matrix)"
+className: Solution
+estimatedMinutes: 25
+difficulty: medium
+hints:
+  - "Mantén cuatro límites: top, bottom, left y right."
+  - "Recorre la fila superior, la columna derecha, la fila inferior y la columna izquierda, y después acerca los límites hacia el centro."
+  - "Cuidado con matrices de una sola fila o columna: comprueba que top <= bottom y left <= right antes de recorrer la fila inferior y la columna izquierda."
+starterCode: |
+  public class Solution {
+      public static int[] spiralOrder(int[][] matrix) {
+          // Tu código aquí
+          return new int[0];
+      }
+  }
+referenceSolution: |
+  public class Solution {
+      public static int[] spiralOrder(int[][] matrix) {
+          if (matrix == null || matrix.length == 0 || matrix[0].length == 0) {
+              return new int[0];
+          }
+          int filas = matrix.length;
+          int columnas = matrix[0].length;
+          int[] resultado = new int[filas * columnas];
+          int top = 0;
+          int bottom = filas - 1;
+          int left = 0;
+          int right = columnas - 1;
+          int k = 0;
+          while (top <= bottom && left <= right) {
+              for (int c = left; c <= right; c++) {
+                  resultado[k++] = matrix[top][c];
+              }
+              top++;
+              for (int f = top; f <= bottom; f++) {
+                  resultado[k++] = matrix[f][right];
+              }
+              right--;
+              if (top <= bottom) {
+                  for (int c = right; c >= left; c--) {
+                      resultado[k++] = matrix[bottom][c];
+                  }
+                  bottom--;
+              }
+              if (left <= right) {
+                  for (int f = bottom; f >= top; f--) {
+                      resultado[k++] = matrix[f][left];
+                  }
+                  left++;
+              }
+          }
+          return resultado;
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Matriz cuadrada 3x3")
+      void cuadrada() {
+          assertArrayEquals(new int[] {1, 2, 3, 6, 9, 8, 7, 4, 5},
+                  Solution.spiralOrder(new int[][] {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}}));
+      }
+
+      @Test
+      @DisplayName("Matriz rectangular 3x4")
+      void rectangularAncha() {
+          assertArrayEquals(new int[] {1, 2, 3, 4, 8, 12, 11, 10, 9, 5, 6, 7},
+                  Solution.spiralOrder(new int[][] {{1, 2, 3, 4}, {5, 6, 7, 8}, {9, 10, 11, 12}}));
+      }
+
+      @Test
+      @DisplayName("Matriz rectangular alta 4x2")
+      void rectangularAlta() {
+          assertArrayEquals(new int[] {1, 2, 4, 6, 8, 7, 5, 3},
+                  Solution.spiralOrder(new int[][] {{1, 2}, {3, 4}, {5, 6}, {7, 8}}));
+      }
+
+      @Test
+      @DisplayName("Una sola fila")
+      void unaFila() {
+          assertArrayEquals(new int[] {1, 2, 3}, Solution.spiralOrder(new int[][] {{1, 2, 3}}));
+      }
+
+      @Test
+      @DisplayName("Una sola columna")
+      void unaColumna() {
+          assertArrayEquals(new int[] {1, 2, 3}, Solution.spiralOrder(new int[][] {{1}, {2}, {3}}));
+      }
+
+      @Test
+      @DisplayName("Un solo elemento")
+      void unElemento() {
+          assertArrayEquals(new int[] {5}, Solution.spiralOrder(new int[][] {{5}}));
+      }
+
+      @Test
+      @DisplayName("Null y matriz vacía devuelven un arreglo vacío")
+      void nuloYVacio() {
+          assertArrayEquals(new int[0], Solution.spiralOrder(null));
+          assertArrayEquals(new int[0], Solution.spiralOrder(new int[0][0]));
+      }
+
+      @Test
+      @DisplayName("Matriz 4x4")
+      void cuatroPorCuatro() {
+          int[][] m = {{1, 2, 3, 4}, {5, 6, 7, 8}, {9, 10, 11, 12}, {13, 14, 15, 16}};
+          assertArrayEquals(new int[] {1, 2, 3, 4, 8, 12, 16, 15, 14, 13, 9, 5, 6, 7, 11, 10},
+                  Solution.spiralOrder(m));
+      }
+  }
+complexityQuestion:
+  prompt: "Para una matriz de m filas y n columnas, ¿cuál es la complejidad temporal de tu solución?"
+  options: ["O(m + n)", "O(min(m, n))", "O(m · n)", "O(m · n · log n)"]
+  correctIndex: 2
+  explanation: "Hay que visitar y escribir cada elemento exactamente una vez, por lo que no se puede hacer mejor que O(m · n)."

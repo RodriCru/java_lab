@@ -1,0 +1,121 @@
+slug: merge-sort
+level: 2
+topic: sorting
+title: "Ordenamiento por mezcla"
+statement: |
+  Implementa merge sort: divide el arreglo por la mitad, ordena cada mitad recursivamente y mezcla las dos mitades ordenadas.
+
+  El arreglo original NO debe modificarse: devuelve un arreglo NUEVO ordenado de forma ascendente.
+
+  Ejemplos:
+  - [5, 2, 9, 1] -> [1, 2, 5, 9]
+  - [3, 3, 1] -> [1, 3, 3]
+  - [] -> []
+
+  Si el arreglo es null, devuelve un arreglo vacío.
+methodSignature: "public static int[] mergeSort(int[] numbers)"
+className: Solution
+estimatedMinutes: 30
+difficulty: medium
+hints:
+  - "Caso base: un arreglo de 0 o 1 elementos ya está ordenado (devuelve una copia)."
+  - "Divide con Arrays.copyOfRange en dos mitades y ordena cada una recursivamente."
+  - "Mezcla las dos mitades ordenadas con dos índices, como en el ejercicio de combinar arreglos ordenados."
+starterCode: |
+  public class Solution {
+      public static int[] mergeSort(int[] numbers) {
+          // Tu código aquí
+          return new int[0];
+      }
+  }
+referenceSolution: |
+  import java.util.*;
+  public class Solution {
+      public static int[] mergeSort(int[] numbers) {
+          if (numbers == null) return new int[0];
+          if (numbers.length <= 1) return numbers.clone();
+          int medio = numbers.length / 2;
+          int[] izq = mergeSort(Arrays.copyOfRange(numbers, 0, medio));
+          int[] der = mergeSort(Arrays.copyOfRange(numbers, medio, numbers.length));
+          int[] resultado = new int[numbers.length];
+          int i = 0, j = 0, k = 0;
+          while (i < izq.length && j < der.length) {
+              resultado[k++] = izq[i] <= der[j] ? izq[i++] : der[j++];
+          }
+          while (i < izq.length) resultado[k++] = izq[i++];
+          while (j < der.length) resultado[k++] = der[j++];
+          return resultado;
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+  import java.util.*;
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Ordena un arreglo simple")
+      void t0() {
+          assertArrayEquals(new int[] {1, 2, 5, 9}, Solution.mergeSort(new int[] {5, 2, 9, 1}));
+      }
+
+      @Test
+      @DisplayName("Conserva duplicados")
+      void t1() {
+          assertArrayEquals(new int[] {1, 3, 3}, Solution.mergeSort(new int[] {3, 3, 1}));
+      }
+
+      @Test
+      @DisplayName("Arreglo vacío y null")
+      void t2() {
+          assertArrayEquals(new int[0], Solution.mergeSort(new int[0]));
+          assertArrayEquals(new int[0], Solution.mergeSort(null));
+      }
+
+      @Test
+      @DisplayName("Un solo elemento")
+      void t3() {
+          assertArrayEquals(new int[] {7}, Solution.mergeSort(new int[] {7}));
+      }
+
+      @Test
+      @DisplayName("Números negativos")
+      void t4() {
+          assertArrayEquals(new int[] {-5, -1, 0, 3}, Solution.mergeSort(new int[] {3, -1, 0, -5}));
+      }
+
+      @Test
+      @DisplayName("No modifica el arreglo original")
+      void t5() {
+          int[] original = {4, 3, 2, 1};
+          int[] r = Solution.mergeSort(original);
+          assertArrayEquals(new int[] {4, 3, 2, 1}, original);
+          assertNotSame(original, r);
+          assertArrayEquals(new int[] {1, 2, 3, 4}, r);
+      }
+
+      @Test
+      @DisplayName("Un arreglo de un elemento devuelve una copia")
+      void t6() {
+          int[] original = {7};
+          assertNotSame(original, Solution.mergeSort(original));
+      }
+
+      @Test
+      @DisplayName("Arreglo grande ordenado correctamente")
+      void t7() {
+          int n = 200000;
+          int[] a = new int[n];
+          for (int i = 0; i < n; i++) a[i] = (int) ((i * 2654435761L) % 100003);
+          int[] esperado = a.clone();
+          Arrays.sort(esperado);
+          assertArrayEquals(esperado, Solution.mergeSort(a));
+      }
+  }
+complexityQuestion:
+  prompt: "¿Cuál es la complejidad temporal de tu solución óptima, en función de n?"
+  options: ["O(1)", "O(n)", "O(n log n)", "O(n²)"]
+  correctIndex: 2
+  explanation: "El arreglo se divide log n veces y en cada nivel la mezcla recorre n elementos, para un total de O(n log n)."

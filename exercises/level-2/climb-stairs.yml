@@ -1,0 +1,102 @@
+slug: climb-stairs
+level: 2
+topic: dynamic-programming
+title: Subir escaleras
+statement: |
+  Para subir una escalera de `steps` escalones puedes dar pasos de 1 o de 2 escalones.
+  Devuelve de cuántas maneras distintas se puede llegar hasta arriba (el orden importa).
+
+  Ejemplo:
+  - Entrada: steps=2 -> Salida: 2   (1+1, 2)
+  - Entrada: steps=3 -> Salida: 3   (1+1+1, 1+2, 2+1)
+  - Entrada: steps=0 -> Salida: 1   (una sola manera: no dar ningún paso)
+
+  Restricción: 0 <= steps <= 60. La recursión ingenua sin memoria es demasiado lenta:
+  usa programación dinámica o memoización.
+methodSignature: "public static long climbStairs(int steps)"
+className: Solution
+estimatedMinutes: 15
+difficulty: medium
+hints:
+  - "Para llegar al escalón n, vienes del n-1 (paso de 1) o del n-2 (paso de 2)."
+  - "Entonces ways(n) = ways(n-1) + ways(n-2), con ways(0) = 1 y ways(1) = 1."
+  - "Evita recalcular: guarda resultados en un arreglo o usa dos variables que avancen."
+starterCode: |
+  public class Solution {
+      public static long climbStairs(int steps) {
+          // Tu código aquí
+          return 0;
+      }
+  }
+referenceSolution: |
+  public class Solution {
+      public static long climbStairs(int steps) {
+          long anterior = 1;
+          long actual = 1;
+          for (int i = 2; i <= steps; i++) {
+              long siguiente = anterior + actual;
+              anterior = actual;
+              actual = siguiente;
+          }
+          return actual;
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Cero escalones: una sola manera")
+      void cero() {
+          assertEquals(1, Solution.climbStairs(0));
+      }
+
+      @Test
+      @DisplayName("Un escalón")
+      void uno() {
+          assertEquals(1, Solution.climbStairs(1));
+      }
+
+      @Test
+      @DisplayName("Dos y tres escalones")
+      void dosYTres() {
+          assertEquals(2, Solution.climbStairs(2));
+          assertEquals(3, Solution.climbStairs(3));
+      }
+
+      @Test
+      @DisplayName("Cinco y diez escalones")
+      void cincoYDiez() {
+          assertEquals(8, Solution.climbStairs(5));
+          assertEquals(89, Solution.climbStairs(10));
+      }
+
+      @Test
+      @DisplayName("Treinta escalones")
+      void treinta() {
+          assertEquals(1346269L, Solution.climbStairs(30));
+      }
+
+      @Test
+      @DisplayName("Sesenta escalones termina rápido y cabe en un long")
+      void sesenta() {
+          assertEquals(2504730781961L, Solution.climbStairs(60));
+      }
+
+      @Test
+      @DisplayName("Cumple la relación ways(n) = ways(n-1) + ways(n-2)")
+      void relacion() {
+          for (int n = 2; n <= 60; n++) {
+              assertEquals(Solution.climbStairs(n - 1) + Solution.climbStairs(n - 2), Solution.climbStairs(n));
+          }
+      }
+  }
+complexityQuestion:
+  prompt: "¿Cuál es la complejidad temporal de la solución con programación dinámica, en función de steps (n)?"
+  options: ["O(2^n)", "O(n²)", "O(log n)", "O(n)"]
+  correctIndex: 3
+  explanation: "Cada valor ways(i) se calcula una sola vez a partir de los dos anteriores. Sin memoria, la recursión ingenua sería O(2^n)."

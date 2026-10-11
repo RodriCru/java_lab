@@ -1,0 +1,82 @@
+slug: reverse-array
+level: 1
+topic: arrays
+title: Invertir un arreglo
+statement: |
+  Escribe un método que devuelva un arreglo NUEVO con los elementos del arreglo recibido en orden inverso. El arreglo original NUNCA debe modificarse.
+
+  Ejemplo:
+  - Entrada: numbers=[1, 2, 3] -> Salida: [3, 2, 1]
+  - Entrada: numbers=[10, 20] -> Salida: [20, 10]
+  - Entrada: numbers=[] -> Salida: []
+
+  Si el arreglo es null, devuelve un arreglo vacío (new int[0]).
+methodSignature: "public static int[] reverse(int[] numbers)"
+className: Solution
+estimatedMinutes: 10
+difficulty: easy
+hints:
+  - "Crea un arreglo del mismo tamaño que la entrada para guardar el resultado."
+  - "La posición i del resultado corresponde a la posición (numbers.length - 1 - i) de la entrada."
+  - "Antes de recorrer, revisa si numbers es null para no provocar un NullPointerException."
+starterCode: |
+  public class Solution {
+      public static int[] reverse(int[] numbers) {
+          // Tu código aquí
+          return new int[0];
+      }
+  }
+referenceSolution: |
+  public class Solution {
+      public static int[] reverse(int[] numbers) {
+          if (numbers == null) {
+              return new int[0];
+          }
+          int[] resultado = new int[numbers.length];
+          for (int i = 0; i < numbers.length; i++) {
+              resultado[i] = numbers[numbers.length - 1 - i];
+          }
+          return resultado;
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Invierte un arreglo con varios elementos")
+      void arregloNormal() {
+          assertArrayEquals(new int[] {3, 2, 1}, Solution.reverse(new int[] {1, 2, 3}));
+      }
+
+      @Test
+      @DisplayName("Invierte un arreglo con un solo elemento")
+      void unSoloElemento() {
+          assertArrayEquals(new int[] {7}, Solution.reverse(new int[] {7}));
+      }
+
+      @Test
+      @DisplayName("Devuelve un arreglo vacío cuando la entrada está vacía")
+      void arregloVacio() {
+          assertArrayEquals(new int[0], Solution.reverse(new int[0]));
+      }
+
+      @Test
+      @DisplayName("Devuelve un arreglo vacío cuando la entrada es null")
+      void entradaNula() {
+          assertArrayEquals(new int[0], Solution.reverse(null));
+      }
+
+      @Test
+      @DisplayName("No modifica el arreglo de entrada")
+      void noModificaLaEntrada() {
+          int[] original = {1, 2, 3, 4};
+          int[] copia = {1, 2, 3, 4};
+          Solution.reverse(original);
+          assertArrayEquals(copia, original);
+      }
+  }

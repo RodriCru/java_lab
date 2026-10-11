@@ -1,0 +1,92 @@
+slug: reverse-integer
+level: 1
+topic: digits
+title: "Invertir un número"
+statement: |
+  Escribe un método que invierta los dígitos de un número entero.
+
+  Reglas del contrato:
+  - Los números negativos conservan el signo: -123 -> -321.
+  - Los ceros a la izquierda desaparecen: 100 -> 1, y 1200 -> 21.
+  - Si el resultado invertido se sale del rango de int (de -2147483648 a 2147483647), devuelve 0. Por ejemplo, 1534236469 invertido sería 9646324351, que no cabe en un int, así que devuelve 0.
+
+  Ejemplo:
+  - Entrada: 123 -> Salida: 321
+  - Entrada: -123 -> Salida: -321
+  - Entrada: 100 -> Salida: 1
+  - Entrada: 1534236469 -> Salida: 0
+methodSignature: "public static int reverseInteger(int number)"
+className: Solution
+estimatedMinutes: 15
+difficulty: easy
+hints:
+  - "Ve tomando el último dígito con el resto de dividir entre 10 y constrúyelo al otro lado multiplicando por 10."
+  - "Trabaja con long para el resultado y al final comprueba si cabe en un int."
+  - "Recuerda conservar el signo del número original."
+starterCode: |
+  public class Solution {
+      public static int reverseInteger(int number) {
+          // Tu código aquí
+          return 0;
+      }
+  }
+referenceSolution: |
+  public class Solution {
+      public static int reverseInteger(int number) {
+          long invertido = 0;
+          long resto = number;
+          while (resto != 0) {
+              invertido = invertido * 10 + resto % 10;
+              resto /= 10;
+          }
+          if (invertido > Integer.MAX_VALUE || invertido < Integer.MIN_VALUE) {
+              return 0;
+          }
+          return (int) invertido;
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import static org.junit.jupiter.api.Assertions.assertEquals;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("El 123 invertido es 321")
+      void numeroPositivo() {
+          assertEquals(321, Solution.reverseInteger(123));
+      }
+
+      @Test
+      @DisplayName("El -123 invertido conserva el signo y es -321")
+      void numeroNegativo() {
+          assertEquals(-321, Solution.reverseInteger(-123));
+      }
+
+      @Test
+      @DisplayName("El cero invertido es cero")
+      void numeroCero() {
+          assertEquals(0, Solution.reverseInteger(0));
+      }
+
+      @Test
+      @DisplayName("Los ceros a la izquierda desaparecen al invertir")
+      void cerosAlFinal() {
+          assertEquals(1, Solution.reverseInteger(100));
+          assertEquals(21, Solution.reverseInteger(1200));
+      }
+
+      @Test
+      @DisplayName("Invertir 1534236469 desborda el rango de int y devuelve cero")
+      void desbordamientoDevuelveCero() {
+          assertEquals(0, Solution.reverseInteger(1534236469));
+      }
+
+      @Test
+      @DisplayName("Se invierte correctamente un múltiplo de 10 negativo")
+      void multiploDeDiezNegativo() {
+          assertEquals(-1, Solution.reverseInteger(-10));
+      }
+  }

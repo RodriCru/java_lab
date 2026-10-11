@@ -1,0 +1,115 @@
+slug: first-long-word
+level: 2
+topic: modern-java
+title: Primera palabra larga
+statement: |
+  Devuelve, dentro de un Optional, la PRIMERA palabra de la lista cuya longitud sea mayor o igual que minLength. Si ninguna cumple, devuelve Optional.empty().
+
+  Reglas:
+  - "Primera" significa según el orden de la lista, no la más larga.
+  - Los elementos null se ignoran.
+  - Si la lista es null o está vacía, devuelve Optional.empty().
+  - Nunca devuelvas null: usa siempre Optional.
+
+  Ejemplo:
+  - Entrada: words=["sol", "casa", "elefante", "mar"], minLength=4 -> Salida: Optional["casa"]
+  - Entrada: words=["a", "bb"], minLength=5 -> Salida: Optional.empty
+  - Entrada: words=null, minLength=1 -> Salida: Optional.empty
+methodSignature: "public static java.util.Optional<String> firstLongWord(java.util.List<String> words, int minLength)"
+className: Solution
+estimatedMinutes: 12
+difficulty: medium
+hints:
+  - "Filtra con w != null && w.length() >= minLength."
+  - "findFirst() devuelve el primer elemento del stream dentro de un Optional."
+  - "Para el caso de la lista null puedes usar Optional.ofNullable(words).orElse(List.of()) o un if al inicio."
+starterCode: |
+  public class Solution {
+
+      public static java.util.Optional<String> firstLongWord(java.util.List<String> words, int minLength) {
+          // Tu código aquí
+          return java.util.Optional.empty();
+      }
+  }
+referenceSolution: |
+  public class Solution {
+
+      public static java.util.Optional<String> firstLongWord(java.util.List<String> words, int minLength) {
+          return java.util.Optional.ofNullable(words)
+                  .flatMap(list -> list.stream()
+                          .filter(w -> w != null && w.length() >= minLength)
+                          .findFirst());
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import java.util.ArrayList;
+  import java.util.Arrays;
+  import java.util.List;
+  import java.util.Optional;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Devuelve la primera palabra con la longitud mínima")
+      void basico() {
+          assertEquals(Optional.of("casa"), Solution.firstLongWord(Arrays.asList("sol", "casa", "elefante", "mar"), 4));
+      }
+
+      @Test
+      @DisplayName("La longitud igual a minLength cuenta")
+      void limiteInclusivo() {
+          assertEquals(Optional.of("abc"), Solution.firstLongWord(Arrays.asList("ab", "abc"), 3));
+      }
+
+      @Test
+      @DisplayName("Si ninguna cumple devuelve Optional vacío")
+      void ninguna() {
+          assertEquals(Optional.empty(), Solution.firstLongWord(Arrays.asList("a", "bb"), 5));
+      }
+
+      @Test
+      @DisplayName("Lista vacía o null devuelve Optional vacío")
+      void vacia() {
+          assertEquals(Optional.empty(), Solution.firstLongWord(new ArrayList<>(), 1));
+          assertEquals(Optional.empty(), Solution.firstLongWord(null, 1));
+      }
+
+      @Test
+      @DisplayName("Los null se ignoran")
+      void nulls() {
+          assertEquals(Optional.of("hola"), Solution.firstLongWord(Arrays.asList(null, "hola", null), 2));
+      }
+
+      @Test
+      @DisplayName("Es la primera, no la más larga")
+      void primeraNoLaMasLarga() {
+          assertEquals(Optional.of("sol"), Solution.firstLongWord(Arrays.asList("a", "sol", "elefante"), 3));
+      }
+
+      @Test
+      @DisplayName("Con minLength 0 devuelve la primera palabra, aunque sea vacía")
+      void minCero() {
+          assertEquals(Optional.of(""), Solution.firstLongWord(Arrays.asList("", "a"), 0));
+      }
+
+      @Test
+      @DisplayName("Lista grande donde la coincidencia está al final")
+      void grande() {
+          List<String> in = new ArrayList<>();
+          for (int i = 0; i < 100000; i++) {
+              in.add("ab");
+          }
+          in.add("palabra");
+          assertEquals(Optional.of("palabra"), Solution.firstLongWord(in, 5));
+      }
+  }
+complexityQuestion:
+  prompt: "En el peor caso (la coincidencia está al final o no existe), ¿qué complejidad temporal tiene firstLongWord con n palabras?"
+  options: ["O(1)", "O(n²)", "O(n log n)", "O(n)"]
+  correctIndex: 3
+  explanation: "findFirst es un cortocircuito: se detiene en la primera coincidencia, pero en el peor caso debe revisar las n palabras una vez."

@@ -1,0 +1,93 @@
+slug: is-prime
+level: 1
+topic: divisibility
+title: "¿Es primo?"
+statement: |
+  Escribe un método que determine si un número entero es primo.
+
+  Un número primo es mayor que 1 y solo es divisible entre 1 y él mismo. Por eso:
+  - Los números menores o iguales a 1 no son primos.
+  - Los números negativos tampoco son primos.
+
+  Ejemplo:
+  - Entrada: 7 -> Salida: true
+  - Entrada: 10 -> Salida: false
+  - Entrada: 1 -> Salida: false
+methodSignature: "public static boolean isPrime(int number)"
+className: Solution
+estimatedMinutes: 12
+difficulty: easy
+hints:
+  - "Si el número es menor o igual a 1, ya sabes la respuesta: no es primo."
+  - "Prueba a dividir entre 2, 3, 4... y si encuentras un divisor exacto, el número no es primo."
+  - "No hace falta probar todos los divisores: basta con llegar hasta la raíz cuadrada del número."
+starterCode: |
+  public class Solution {
+      public static boolean isPrime(int number) {
+          // Tu código aquí
+          return false;
+      }
+  }
+referenceSolution: |
+  public class Solution {
+      public static boolean isPrime(int number) {
+          if (number <= 1) {
+              return false;
+          }
+          for (int divisor = 2; (long) divisor * divisor <= number; divisor++) {
+              if (number % divisor == 0) {
+                  return false;
+              }
+          }
+          return true;
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import static org.junit.jupiter.api.Assertions.assertFalse;
+  import static org.junit.jupiter.api.Assertions.assertTrue;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("El 7 es primo")
+      void numeroPrimoSencillo() {
+          assertTrue(Solution.isPrime(7));
+      }
+
+      @Test
+      @DisplayName("El 10 no es primo porque es divisible entre 2")
+      void numeroCompuestoSencillo() {
+          assertFalse(Solution.isPrime(10));
+      }
+
+      @Test
+      @DisplayName("El 2 y el 3 son primos")
+      void primosMasPequenos() {
+          assertTrue(Solution.isPrime(2));
+          assertTrue(Solution.isPrime(3));
+      }
+
+      @Test
+      @DisplayName("El 1, el 0 y los negativos no son primos")
+      void casosBorde() {
+          assertFalse(Solution.isPrime(1));
+          assertFalse(Solution.isPrime(0));
+          assertFalse(Solution.isPrime(-7));
+      }
+
+      @Test
+      @DisplayName("El cuadrado de un primo no es primo y el primo anterior sí")
+      void cuadradoDePrimo() {
+          assertFalse(Solution.isPrime(49));
+          assertTrue(Solution.isPrime(47));
+      }
+
+      @Test
+      @DisplayName("Un primo de cuatro cifras como 7919 es primo")
+      void primoGrande() {
+          assertTrue(Solution.isPrime(7919));
+      }
+  }

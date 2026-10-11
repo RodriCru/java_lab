@@ -1,0 +1,145 @@
+slug: payment-methods-interface
+level: 0
+topic: abstraction
+title: Métodos de pago con interfaz
+statement: |
+  Una interfaz define QUÉ se puede hacer sin decir CÓMO. Dentro de Solution ya existe la interfaz Payment con un único método:
+
+    int commission(int amount)
+
+  Todas las cantidades son enteros (por ejemplo, centavos). Completa:
+  - La clase CardPayment: su comisión es el 3 % del monto, con división entera (amount * 3 / 100).
+  - La clase CashPayment: no cobra comisión (0).
+  - El método totalToPay(payment, amount): devuelve el monto más la comisión que calcule el pago recibido. No importa qué implementación sea: usa solo la interfaz.
+
+  Ejemplos:
+  - totalToPay(new CardPayment(), 100) -> 103
+  - totalToPay(new CardPayment(), 250) -> 257 (250 * 3 / 100 = 7)
+  - totalToPay(new CashPayment(), 100) -> 100
+
+  Si payment es null, devuelve el monto sin comisión.
+methodSignature: public static int totalToPay(Payment payment, int amount)
+className: Solution
+estimatedMinutes: 15
+difficulty: easy
+hints:
+- Una interfaz solo declara el método; cada clase que la implementa (implements Payment) debe darle cuerpo con @Override.
+- CardPayment.commission devuelve amount * 3 / 100. CashPayment.commission devuelve 0.
+- 'En totalToPay llama a payment.commission(amount): Java elige la implementación correcta en tiempo de ejecución (polimorfismo). No olvides el caso null.'
+starterCode: |
+  public class Solution {
+
+      public interface Payment {
+          int commission(int amount);
+      }
+
+      public static class CardPayment implements Payment {
+          @Override
+          public int commission(int amount) {
+              // Tu código aquí
+              return 0;
+          }
+      }
+
+      public static class CashPayment implements Payment {
+          @Override
+          public int commission(int amount) {
+              // Tu código aquí
+              return 0;
+          }
+      }
+
+      public static int totalToPay(Payment payment, int amount) {
+          // Tu código aquí
+          return amount;
+      }
+  }
+referenceSolution: |
+  public class Solution {
+
+      public interface Payment {
+          int commission(int amount);
+      }
+
+      public static class CardPayment implements Payment {
+          @Override
+          public int commission(int amount) {
+              return amount * 3 / 100;
+          }
+      }
+
+      public static class CashPayment implements Payment {
+          @Override
+          public int commission(int amount) {
+              return 0;
+          }
+      }
+
+      public static int totalToPay(Payment payment, int amount) {
+          if (payment == null) {
+              return amount;
+          }
+          return amount + payment.commission(amount);
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  import java.util.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Con tarjeta se suma el 3 % de comisión")
+      void t1() throws Exception {
+          assertEquals(103, Solution.totalToPay(new Solution.CardPayment(), 100));
+      }
+
+      @Test
+      @DisplayName("La comisión de tarjeta usa división entera")
+      void t2() throws Exception {
+          assertEquals(257, Solution.totalToPay(new Solution.CardPayment(), 250));
+      }
+
+      @Test
+      @DisplayName("Con efectivo no hay comisión")
+      void t3() throws Exception {
+          assertEquals(100, Solution.totalToPay(new Solution.CashPayment(), 100));
+      }
+
+      @Test
+      @DisplayName("Monto cero")
+      void t4() throws Exception {
+          assertEquals(0, Solution.totalToPay(new Solution.CardPayment(), 0));
+          assertEquals(0, Solution.totalToPay(new Solution.CashPayment(), 0));
+      }
+
+      @Test
+      @DisplayName("Montos pequeños no generan comisión por la división entera")
+      void t5() throws Exception {
+          assertEquals(30, Solution.totalToPay(new Solution.CardPayment(), 30));
+      }
+
+      @Test
+      @DisplayName("Un pago null no añade comisión")
+      void t6() throws Exception {
+          assertEquals(500, Solution.totalToPay(null, 500));
+      }
+
+      @Test
+      @DisplayName("Funciona con cualquier implementación de Payment")
+      void t7() throws Exception {
+          Solution.Payment diezPorCiento = amount -> amount / 10;
+          assertEquals(110, Solution.totalToPay(diezPorCiento, 100));
+      }
+
+      @Test
+      @DisplayName("Las clases implementan la interfaz Payment")
+      void t8() throws Exception {
+          assertTrue(new Solution.CardPayment() instanceof Solution.Payment);
+          assertTrue(new Solution.CashPayment() instanceof Solution.Payment);
+      }
+  }

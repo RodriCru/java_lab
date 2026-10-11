@@ -1,0 +1,88 @@
+slug: print-one-to-n
+level: 0
+topic: basics
+title: Imprimir del 1 al n
+statement: |
+  Combina un ciclo con la impresión: escribe un método que imprima los números del 1 al n, cada uno en su propia línea. Si n es menor que 1 no imprime nada.
+
+  Ejemplos:
+  - printOneToN(3) imprime: 1, 2 y 3, uno por línea
+  - printOneToN(1) imprime: 1
+  - printOneToN(0) no imprime nada
+methodSignature: public static void printOneToN(int n)
+className: Solution
+estimatedMinutes: 8
+difficulty: easy
+hints:
+- Un for con i desde 1 hasta n (incluido) recorre los números.
+- Dentro del ciclo usa System.out.println(i).
+- Si n < 1 el for no entra, así que no hace falta un caso especial.
+starterCode: |
+  public class Solution {
+
+      public static void printOneToN(int n) {
+          // Tu código aquí
+      }
+  }
+referenceSolution: |
+  public class Solution {
+
+      public static void printOneToN(int n) {
+          for (int i = 1; i <= n; i++) {
+              System.out.println(i);
+          }
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  import java.io.ByteArrayOutputStream;
+  import java.io.PrintStream;
+
+  class SolutionTest {
+
+      private static String capturar(Runnable accion) {
+          PrintStream original = System.out;
+          ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+          System.setOut(new PrintStream(buffer, true));
+          try {
+              accion.run();
+          } finally {
+              System.setOut(original);
+          }
+          return buffer.toString().replace("\r\n", "\n");
+      }
+
+      @Test
+      @DisplayName("Del 1 al 3")
+      void t1() {
+          assertEquals("1\n2\n3\n", capturar(() -> Solution.printOneToN(3)));
+      }
+
+      @Test
+      @DisplayName("Solo el 1")
+      void t2() {
+          assertEquals("1\n", capturar(() -> Solution.printOneToN(1)));
+      }
+
+      @Test
+      @DisplayName("Cero no imprime")
+      void t3() {
+          assertEquals("", capturar(() -> Solution.printOneToN(0)));
+      }
+
+      @Test
+      @DisplayName("Negativo no imprime")
+      void t4() {
+          assertEquals("", capturar(() -> Solution.printOneToN(-4)));
+      }
+
+      @Test
+      @DisplayName("Del 1 al 5")
+      void t5() {
+          assertEquals("1\n2\n3\n4\n5\n", capturar(() -> Solution.printOneToN(5)));
+      }
+  }

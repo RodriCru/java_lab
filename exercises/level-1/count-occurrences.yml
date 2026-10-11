@@ -1,0 +1,87 @@
+slug: count-occurrences
+level: 1
+topic: arrays
+title: Contar ocurrencias
+statement: |
+  Escribe un método que cuente cuántas veces aparece el valor 'target' dentro del arreglo.
+
+  Ejemplo:
+  - Entrada: numbers=[1, 2, 1, 3, 1], target=1 -> Salida: 3
+  - Entrada: numbers=[4, 5], target=9 -> Salida: 0
+  - Entrada: numbers=[], target=7 -> Salida: 0
+
+  Si el arreglo es null, devuelve 0. El arreglo de entrada nunca debe modificarse.
+methodSignature: "public static int countOccurrences(int[] numbers, int target)"
+className: Solution
+estimatedMinutes: 10
+difficulty: easy
+hints:
+  - "Recorre el arreglo con un for y lleva un contador."
+  - "Compara cada elemento con target usando == antes de incrementar el contador."
+  - "Antes de recorrer, revisa si numbers es null para no provocar un NullPointerException."
+starterCode: |
+  public class Solution {
+      public static int countOccurrences(int[] numbers, int target) {
+          // Tu código aquí
+          return 0;
+      }
+  }
+referenceSolution: |
+  public class Solution {
+      public static int countOccurrences(int[] numbers, int target) {
+          if (numbers == null) {
+              return 0;
+          }
+          int contador = 0;
+          for (int numero : numbers) {
+              if (numero == target) {
+                  contador++;
+              }
+          }
+          return contador;
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Cuenta las ocurrencias en un arreglo con repetidos")
+      void arregloConRepetidos() {
+          assertEquals(3, Solution.countOccurrences(new int[] {1, 2, 1, 3, 1}, 1));
+      }
+
+      @Test
+      @DisplayName("Devuelve 0 cuando el valor no aparece")
+      void sinOcurrencias() {
+          assertEquals(0, Solution.countOccurrences(new int[] {4, 5}, 9));
+      }
+
+      @Test
+      @DisplayName("Cuenta el valor cuando aparece en todas las posiciones")
+      void apareceEnTodasLasPosiciones() {
+          assertEquals(4, Solution.countOccurrences(new int[] {6, 6, 6, 6}, 6));
+      }
+
+      @Test
+      @DisplayName("Cuenta correctamente un target negativo")
+      void targetNegativo() {
+          assertEquals(2, Solution.countOccurrences(new int[] {-1, 0, -1, 5}, -1));
+      }
+
+      @Test
+      @DisplayName("Devuelve 0 cuando el arreglo está vacío")
+      void arregloVacio() {
+          assertEquals(0, Solution.countOccurrences(new int[0], 3));
+      }
+
+      @Test
+      @DisplayName("Devuelve 0 cuando el arreglo es null")
+      void entradaNula() {
+          assertEquals(0, Solution.countOccurrences(null, 3));
+      }
+  }

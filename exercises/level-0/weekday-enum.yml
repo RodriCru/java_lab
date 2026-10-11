@@ -1,0 +1,161 @@
+slug: weekday-enum
+level: 0
+topic: enums
+title: Enum de días de la semana
+statement: |
+  Un enum es un tipo con un conjunto fijo de valores, y puede tener campos, constructor y métodos. En Solution existe el enum Day con los siete días, de MONDAY a SUNDAY, en ese orden.
+
+  Completa:
+  - Cada día lleva su número (MONDAY=1, TUESDAY=2, ... SUNDAY=7) en un campo; getNumber() lo devuelve.
+  - isWeekend(): true solo para SATURDAY y SUNDAY.
+  - next(): devuelve el día siguiente; después de SUNDAY vuelve a MONDAY.
+
+  Además, advance(day, n) devuelve el día que resulta de avanzar n días desde day (usa next()). Si n es 0 devuelve el mismo día. Si day es null devuelve null. n no será negativo.
+
+  Ejemplo:
+  - Entrada: day=MONDAY, n=1 -> Salida: TUESDAY
+  - Entrada: day=SATURDAY, n=2 -> Salida: MONDAY
+  - Entrada: day=WEDNESDAY, n=7 -> Salida: WEDNESDAY
+methodSignature: public static Day advance(Day day, int n)
+className: Solution
+estimatedMinutes: 15
+difficulty: easy
+hints:
+- 'Los valores de un enum con campos se declaran así: MONDAY(1), TUESDAY(2)... y el constructor (privado) recibe ese número.'
+- values() devuelve un arreglo con todos los días en orden; ordinal() es la posición (0 para MONDAY). Usa values()[(ordinal() + 1) % 7] para dar la vuelta.
+- advance es un bucle de n repeticiones que va haciendo day = day.next().
+starterCode: |
+  public class Solution {
+
+      public enum Day {
+          MONDAY(1), TUESDAY(2), WEDNESDAY(3), THURSDAY(4), FRIDAY(5), SATURDAY(6), SUNDAY(7);
+
+          private final int number;
+
+          Day(int number) {
+              this.number = number;
+          }
+
+          public int getNumber() {
+              // Tu código aquí
+              return 0;
+          }
+
+          public boolean isWeekend() {
+              // Tu código aquí
+              return false;
+          }
+
+          public Day next() {
+              // Tu código aquí
+              return this;
+          }
+      }
+
+      public static Day advance(Day day, int n) {
+          // Tu código aquí
+          return day;
+      }
+  }
+referenceSolution: |
+  public class Solution {
+
+      public enum Day {
+          MONDAY(1), TUESDAY(2), WEDNESDAY(3), THURSDAY(4), FRIDAY(5), SATURDAY(6), SUNDAY(7);
+
+          private final int number;
+
+          Day(int number) {
+              this.number = number;
+          }
+
+          public int getNumber() {
+              return number;
+          }
+
+          public boolean isWeekend() {
+              return this == SATURDAY || this == SUNDAY;
+          }
+
+          public Day next() {
+              return values()[(ordinal() + 1) % values().length];
+          }
+      }
+
+      public static Day advance(Day day, int n) {
+          if (day == null) {
+              return null;
+          }
+          Day current = day;
+          for (int i = 0; i < n; i++) {
+              current = current.next();
+          }
+          return current;
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+  import java.util.*;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Cada día tiene su número de 1 a 7")
+      void numeros() {
+          assertEquals(1, Solution.Day.MONDAY.getNumber());
+          assertEquals(4, Solution.Day.THURSDAY.getNumber());
+          assertEquals(7, Solution.Day.SUNDAY.getNumber());
+      }
+
+      @Test
+      @DisplayName("Sábado y domingo son fin de semana")
+      void finDeSemana() {
+          assertTrue(Solution.Day.SATURDAY.isWeekend());
+          assertTrue(Solution.Day.SUNDAY.isWeekend());
+      }
+
+      @Test
+      @DisplayName("Los días entre semana no son fin de semana")
+      void entreSemana() {
+          assertFalse(Solution.Day.MONDAY.isWeekend());
+          assertFalse(Solution.Day.WEDNESDAY.isWeekend());
+          assertFalse(Solution.Day.FRIDAY.isWeekend());
+      }
+
+      @Test
+      @DisplayName("next devuelve el día siguiente")
+      void siguiente() {
+          assertEquals(Solution.Day.TUESDAY, Solution.Day.MONDAY.next());
+          assertEquals(Solution.Day.SATURDAY, Solution.Day.FRIDAY.next());
+      }
+
+      @Test
+      @DisplayName("Después de domingo viene lunes")
+      void vueltaCompleta() {
+          assertEquals(Solution.Day.MONDAY, Solution.Day.SUNDAY.next());
+      }
+
+      @Test
+      @DisplayName("advance avanza n días")
+      void avanzar() {
+          assertEquals(Solution.Day.TUESDAY, Solution.advance(Solution.Day.MONDAY, 1));
+          assertEquals(Solution.Day.MONDAY, Solution.advance(Solution.Day.SATURDAY, 2));
+      }
+
+      @Test
+      @DisplayName("advance con 0 devuelve el mismo día y con 7 da la vuelta completa")
+      void casosBorde() {
+          assertEquals(Solution.Day.THURSDAY, Solution.advance(Solution.Day.THURSDAY, 0));
+          assertEquals(Solution.Day.WEDNESDAY, Solution.advance(Solution.Day.WEDNESDAY, 7));
+          assertEquals(Solution.Day.FRIDAY, Solution.advance(Solution.Day.FRIDAY, 14));
+      }
+
+      @Test
+      @DisplayName("advance con day null devuelve null")
+      void diaNull() {
+          assertNull(Solution.advance(null, 3));
+      }
+  }

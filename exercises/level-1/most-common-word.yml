@@ -1,0 +1,109 @@
+slug: most-common-word
+level: 1
+topic: structures
+title: Palabra más frecuente
+statement: |
+  Escribe un método que reciba un texto y devuelva la palabra que más veces aparece.
+
+  Reglas del contrato:
+  - Las palabras están separadas por espacios.
+  - La comparación ignora mayúsculas y minúsculas.
+  - El resultado se devuelve en minúsculas.
+  - Si dos palabras empatan en frecuencia, devuelve la que aparece primero en el texto.
+
+  Ejemplo:
+  - Entrada: "el gato y el perro" -> Salida: "el"
+  - Entrada: "Java java JAVA" -> Salida: "java"
+  - Entrada: "Hola" -> Salida: "hola"
+
+  Si el texto es null o está vacío, devuelve una cadena vacía ("").
+methodSignature: "public static String mostCommonWord(String text)"
+className: Solution
+estimatedMinutes: 15
+difficulty: easy
+hints:
+  - "Normaliza el texto a minúsculas y sepáralo con split(\" \")."
+  - "Cuenta las apariciones con un java.util.HashMap<String, Integer>."
+  - "Al empate gana la primera palabra: guarda una referencia a la mejor posición encontrada mientras recorres por primera vez."
+starterCode: |
+  public class Solution {
+      public static String mostCommonWord(String text) {
+          // Tu código aquí
+          return "";
+      }
+  }
+referenceSolution: |
+  public class Solution {
+      public static String mostCommonWord(String text) {
+          if (text == null || text.isEmpty()) {
+              return "";
+          }
+          String[] palabras = text.toLowerCase().split(" ");
+          java.util.Map<String, Integer> conteo = new java.util.HashMap<>();
+          for (int i = 0; i < palabras.length; i++) {
+              String palabra = palabras[i];
+              if (palabra.isEmpty()) {
+                  continue;
+              }
+              conteo.put(palabra, conteo.getOrDefault(palabra, 0) + 1);
+          }
+          String masFrecuente = "";
+          int mejorConteo = 0;
+          for (int i = 0; i < palabras.length; i++) {
+              String palabra = palabras[i];
+              if (palabra.isEmpty()) {
+                  continue;
+              }
+              int actual = conteo.get(palabra);
+              if (actual > mejorConteo || masFrecuente.isEmpty()) {
+                  masFrecuente = palabra;
+                  mejorConteo = actual;
+              }
+          }
+          return masFrecuente;
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Devuelve la palabra más frecuente")
+      void palabraMasFrecuente() {
+          assertEquals("el", Solution.mostCommonWord("el gato y el perro"));
+      }
+
+      @Test
+      @DisplayName("Ignora mayúsculas y minúsculas y devuelve en minúsculas")
+      void ignoraMayusculas() {
+          assertEquals("java", Solution.mostCommonWord("Java java JAVA"));
+      }
+
+      @Test
+      @DisplayName("Ante un empate devuelve la primera palabra del texto")
+      void empatePrimeraPalabra() {
+          assertEquals("sol", Solution.mostCommonWord("sol luna"));
+      }
+
+      @Test
+      @DisplayName("Un texto de una sola palabra la devuelve en minúsculas")
+      void unaSolaPalabra() {
+          assertEquals("hola", Solution.mostCommonWord("Hola"));
+      }
+
+      @Test
+      @DisplayName("Un texto null devuelve una cadena vacía")
+      void textoNull() {
+          assertEquals("", Solution.mostCommonWord(null));
+      }
+
+      @Test
+      @DisplayName("Un texto vacío devuelve una cadena vacía")
+      void textoVacio() {
+          assertEquals("", Solution.mostCommonWord(""));
+      }
+  }

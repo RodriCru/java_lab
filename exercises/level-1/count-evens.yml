@@ -1,0 +1,93 @@
+slug: count-evens
+level: 1
+topic: first-steps
+title: Contar pares
+statement: |
+  Escribe un método que cuente cuántos números pares hay en el arreglo recibido.
+
+  Ejemplo:
+  - Entrada: numbers=[1, 2, 3, 4] -> Salida: 2
+  - Entrada: numbers=[2, 4, 6] -> Salida: 3
+  - Entrada: numbers=[] -> Salida: 0
+
+  Reglas:
+  - Un número es par cuando el resto de dividirlo entre 2 es 0.
+  - Los números negativos también pueden ser pares: -4 es par y -3 es impar.
+  - Si el arreglo es null, devuelve 0. El arreglo de entrada nunca debe modificarse.
+methodSignature: "public static int countEvens(int[] numbers)"
+className: Solution
+estimatedMinutes: 8
+difficulty: easy
+hints:
+  - "Recorre el arreglo con un for y lleva un contador de pares."
+  - "Para saber si un número es par usa la condición numero % 2 == 0."
+  - "Antes de recorrer, revisa si numbers es null para no provocar un NullPointerException."
+starterCode: |
+  public class Solution {
+      public static int countEvens(int[] numbers) {
+          // Tu código aquí
+          return 0;
+      }
+  }
+referenceSolution: |
+  public class Solution {
+      public static int countEvens(int[] numbers) {
+          if (numbers == null) {
+              return 0;
+          }
+          int contador = 0;
+          for (int numero : numbers) {
+              if (numero % 2 == 0) {
+                  contador++;
+              }
+          }
+          return contador;
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Cuenta los pares en un arreglo mixto")
+      void arregloMixto() {
+          assertEquals(2, Solution.countEvens(new int[] {1, 2, 3, 4}));
+      }
+
+      @Test
+      @DisplayName("Cuenta todos los elementos cuando todos son pares")
+      void todosPares() {
+          assertEquals(3, Solution.countEvens(new int[] {2, 4, 6}));
+      }
+
+      @Test
+      @DisplayName("Cuenta correctamente los pares negativos")
+      void numerosNegativos() {
+          assertEquals(2, Solution.countEvens(new int[] {-4, -3, 0, 5}));
+      }
+
+      @Test
+      @DisplayName("Devuelve 0 cuando el arreglo está vacío")
+      void arregloVacio() {
+          assertEquals(0, Solution.countEvens(new int[0]));
+      }
+
+      @Test
+      @DisplayName("Devuelve 0 cuando el arreglo es null")
+      void entradaNula() {
+          assertEquals(0, Solution.countEvens(null));
+      }
+
+      @Test
+      @DisplayName("No modifica el arreglo de entrada")
+      void noModificaLaEntrada() {
+          int[] original = {1, 2, 3, 4};
+          int[] copia = {1, 2, 3, 4};
+          Solution.countEvens(original);
+          assertArrayEquals(copia, original);
+      }
+  }

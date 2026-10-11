@@ -1,0 +1,112 @@
+slug: fizzbuzz
+level: 1
+topic: divisibility
+title: "FizzBuzz"
+statement: |
+  Escribe un método que devuelva un arreglo de textos con la secuencia de FizzBuzz desde el 1 hasta el límite indicado.
+
+  El arreglo tiene tantas posiciones como el límite, y la posición i (empezando en 0) corresponde al número i + 1:
+  - "FizzBuzz" si el número es divisible entre 3 y entre 5.
+  - "Fizz" si el número solo es divisible entre 3.
+  - "Buzz" si el número solo es divisible entre 5.
+  - El número convertido a texto en cualquier otro caso.
+
+  Reglas del contrato:
+  - Si el límite es menor o igual a 0, devuelve un arreglo vacío (new String[0]).
+  - Comprueba primero la condición de "FizzBuzz", porque un múltiplo de 15 cumple las otras dos a la vez.
+
+  Ejemplo:
+  - Entrada: 5 -> Salida: ["1", "2", "Fizz", "4", "Buzz"]
+  - Entrada: 15 -> la posición 14 (el número 15) es "FizzBuzz"
+  - Entrada: 0 -> Salida: []
+methodSignature: "public static String[] fizzBuzz(int limit)"
+className: Solution
+estimatedMinutes: 15
+difficulty: easy
+hints:
+  - "El arreglo debe tener exactamente limit posiciones, y el texto de la posición i corresponde al número i + 1."
+  - "Usa el operador módulo para saber si un número es divisible entre 3 o entre 5."
+  - "Pregunta primero si es divisible entre 15; si no, después por 3 y por 5 por separado."
+starterCode: |
+  public class Solution {
+      public static String[] fizzBuzz(int limit) {
+          // Tu código aquí
+          return new String[0];
+      }
+  }
+referenceSolution: |
+  public class Solution {
+      public static String[] fizzBuzz(int limit) {
+          if (limit <= 0) {
+              return new String[0];
+          }
+          String[] resultado = new String[limit];
+          for (int i = 0; i < limit; i++) {
+              int numero = i + 1;
+              if (numero % 15 == 0) {
+                  resultado[i] = "FizzBuzz";
+              } else if (numero % 3 == 0) {
+                  resultado[i] = "Fizz";
+              } else if (numero % 5 == 0) {
+                  resultado[i] = "Buzz";
+              } else {
+                  resultado[i] = String.valueOf(numero);
+              }
+          }
+          return resultado;
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+  import static org.junit.jupiter.api.Assertions.assertEquals;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Los primeros cinco valores son 1, 2, Fizz, 4 y Buzz")
+      void primerosCinco() {
+          assertArrayEquals(new String[] {"1", "2", "Fizz", "4", "Buzz"}, Solution.fizzBuzz(5));
+      }
+
+      @Test
+      @DisplayName("Un límite menor o igual a cero devuelve un arreglo vacío")
+      void limiteNoPositivo() {
+          assertEquals(0, Solution.fizzBuzz(0).length);
+          assertEquals(0, Solution.fizzBuzz(-3).length);
+      }
+
+      @Test
+      @DisplayName("El límite 1 devuelve solo el texto \"1\"")
+      void limiteIgualAUno() {
+          assertArrayEquals(new String[] {"1"}, Solution.fizzBuzz(1));
+      }
+
+      @Test
+      @DisplayName("El número 15 es FizzBuzz y no Fizz ni Buzz")
+      void multiploDeQuince() {
+          String[] resultado = Solution.fizzBuzz(15);
+          assertEquals("FizzBuzz", resultado[14]);
+      }
+
+      @Test
+      @DisplayName("Los múltiplos de 3 y de 5 se etiquetan correctamente hasta 15")
+      void secuenciaHastaQuince() {
+          assertArrayEquals(
+                  new String[] {
+                      "1", "2", "Fizz", "4", "Buzz",
+                      "Fizz", "7", "8", "Fizz", "Buzz",
+                      "11", "Fizz", "13", "14", "FizzBuzz"
+                  },
+                  Solution.fizzBuzz(15));
+      }
+
+      @Test
+      @DisplayName("La posición 29 corresponde al número 30, que es FizzBuzz")
+      void ultimaPosicion() {
+          String[] resultado = Solution.fizzBuzz(30);
+          assertEquals("FizzBuzz", resultado[29]);
+      }
+  }

@@ -1,0 +1,104 @@
+slug: stats-of-numbers
+level: 0
+topic: functions
+title: Estadísticas con argumentos variables
+statement: |
+  Escribe un método que reciba una cantidad variable de enteros (varargs) y devuelva un arreglo de 3 posiciones con el mínimo, el máximo y la suma, en ese orden: {min, max, suma}.
+
+  Los varargs (int... nums) permiten llamar al método con cualquier cantidad de argumentos, incluso ninguno; dentro del método, nums se comporta como un int[].
+
+  Ejemplos:
+  - statsOfNumbers(4, 9, 1) -> {1, 9, 14}
+  - statsOfNumbers(7) -> {7, 7, 7}
+  - statsOfNumbers(-3, 5) -> {-3, 5, 2}
+
+  Si no se recibe ningún número (o nums es null), devuelve {0, 0, 0}.
+methodSignature: public static int[] statsOfNumbers(int... nums)
+className: Solution
+estimatedMinutes: 10
+difficulty: easy
+hints:
+- 'Un parámetro int... nums se usa dentro del método exactamente como un arreglo int[]: puedes usar nums.length y nums[i].'
+- 'Maneja primero el caso especial: si nums es null o nums.length == 0, devuelve new int[] {0, 0, 0}.'
+- Inicializa min y max con nums[0] y recorre el arreglo actualizando min, max y la suma en el mismo ciclo.
+starterCode: |
+  public class Solution {
+      public static int[] statsOfNumbers(int... nums) {
+          // Tu código aquí
+          return new int[3];
+      }
+  }
+referenceSolution: |
+  public class Solution {
+      public static int[] statsOfNumbers(int... nums) {
+          if (nums == null || nums.length == 0) {
+              return new int[] {0, 0, 0};
+          }
+          int min = nums[0];
+          int max = nums[0];
+          int suma = 0;
+          for (int n : nums) {
+              if (n < min) {
+                  min = n;
+              }
+              if (n > max) {
+                  max = n;
+              }
+              suma += n;
+          }
+          return new int[] {min, max, suma};
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import java.util.*;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Calcula mínimo, máximo y suma de varios números")
+      void t30242() {
+          assertArrayEquals(new int[] {1, 9, 14}, Solution.statsOfNumbers(4, 9, 1));
+      }
+
+      @Test
+      @DisplayName("Con un solo número los tres valores dependen de él")
+      void t41302() {
+          assertArrayEquals(new int[] {7, 7, 7}, Solution.statsOfNumbers(7));
+      }
+
+      @Test
+      @DisplayName("Funciona con negativos")
+      void t72205() {
+          assertArrayEquals(new int[] {-3, 5, 2}, Solution.statsOfNumbers(-3, 5));
+          assertArrayEquals(new int[] {-9, -1, -15}, Solution.statsOfNumbers(-5, -1, -9));
+      }
+
+      @Test
+      @DisplayName("Sin argumentos devuelve ceros")
+      void t80510() {
+          assertArrayEquals(new int[] {0, 0, 0}, Solution.statsOfNumbers());
+      }
+
+      @Test
+      @DisplayName("Un arreglo null devuelve ceros")
+      void t2241() {
+          assertArrayEquals(new int[] {0, 0, 0}, Solution.statsOfNumbers((int[]) null));
+      }
+
+      @Test
+      @DisplayName("También acepta un arreglo como argumento")
+      void t67027() {
+          assertArrayEquals(new int[] {2, 8, 17}, Solution.statsOfNumbers(new int[] {8, 2, 7}));
+      }
+
+      @Test
+      @DisplayName("Los valores repetidos se suman todos")
+      void t37808() {
+          assertArrayEquals(new int[] {5, 5, 20}, Solution.statsOfNumbers(5, 5, 5, 5));
+      }
+  }

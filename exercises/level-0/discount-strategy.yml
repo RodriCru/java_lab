@@ -1,0 +1,182 @@
+slug: discount-strategy
+level: 0
+topic: abstraction
+title: Estrategia de descuento
+statement: |
+  El patrón estrategia permite cambiar un algoritmo sin tocar el código que lo usa. Dentro de Solution existe la interfaz DiscountStrategy con el método:
+
+    int apply(int price)    // devuelve el precio ya con descuento
+
+  Completa las implementaciones (todo en enteros):
+  - NoDiscount: devuelve el precio sin cambios.
+  - PercentDiscount(int percent): resta percent % del precio, con división entera: price - price * percent / 100.
+  - FixedDiscount(int amount): resta una cantidad fija, pero nunca devuelve menos de 0.
+
+  Y el método finalPrice(price, strategy), que devuelve lo que calcule la estrategia. Si strategy es null, devuelve el precio sin cambios.
+
+  Ejemplos:
+  - finalPrice(200, new PercentDiscount(10)) -> 180
+  - finalPrice(200, new FixedDiscount(50)) -> 150
+  - finalPrice(30, new FixedDiscount(50)) -> 0
+  - finalPrice(200, new NoDiscount()) -> 200
+methodSignature: public static int finalPrice(int price, DiscountStrategy strategy)
+className: Solution
+estimatedMinutes: 15
+difficulty: easy
+hints:
+- Cada estrategia es una clase que implementa DiscountStrategy; el código que la usa no necesita saber cuál es.
+- PercentDiscount guarda el porcentaje en un campo (constructor) y lo usa en apply. FixedDiscount usa Math.max(0, price - amount).
+- 'finalPrice solo delega: strategy.apply(price). Antes comprueba si strategy es null.'
+starterCode: |
+  public class Solution {
+
+      public interface DiscountStrategy {
+          int apply(int price);
+      }
+
+      public static class NoDiscount implements DiscountStrategy {
+          @Override
+          public int apply(int price) {
+              return price;
+          }
+      }
+
+      public static class PercentDiscount implements DiscountStrategy {
+          private final int percent;
+
+          public PercentDiscount(int percent) {
+              this.percent = percent;
+          }
+
+          @Override
+          public int apply(int price) {
+              // Tu código aquí
+              return price;
+          }
+      }
+
+      public static class FixedDiscount implements DiscountStrategy {
+          private final int amount;
+
+          public FixedDiscount(int amount) {
+              this.amount = amount;
+          }
+
+          @Override
+          public int apply(int price) {
+              // Tu código aquí
+              return price;
+          }
+      }
+
+      public static int finalPrice(int price, DiscountStrategy strategy) {
+          // Tu código aquí
+          return price;
+      }
+  }
+referenceSolution: |
+  public class Solution {
+
+      public interface DiscountStrategy {
+          int apply(int price);
+      }
+
+      public static class NoDiscount implements DiscountStrategy {
+          @Override
+          public int apply(int price) {
+              return price;
+          }
+      }
+
+      public static class PercentDiscount implements DiscountStrategy {
+          private final int percent;
+
+          public PercentDiscount(int percent) {
+              this.percent = percent;
+          }
+
+          @Override
+          public int apply(int price) {
+              return price - price * percent / 100;
+          }
+      }
+
+      public static class FixedDiscount implements DiscountStrategy {
+          private final int amount;
+
+          public FixedDiscount(int amount) {
+              this.amount = amount;
+          }
+
+          @Override
+          public int apply(int price) {
+              return Math.max(0, price - amount);
+          }
+      }
+
+      public static int finalPrice(int price, DiscountStrategy strategy) {
+          if (strategy == null) {
+              return price;
+          }
+          return strategy.apply(price);
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  import java.util.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Descuento porcentual")
+      void t1() throws Exception {
+          assertEquals(180, Solution.finalPrice(200, new Solution.PercentDiscount(10)));
+      }
+
+      @Test
+      @DisplayName("Descuento porcentual con división entera")
+      void t2() throws Exception {
+          assertEquals(97, Solution.finalPrice(99, new Solution.PercentDiscount(3)));
+      }
+
+      @Test
+      @DisplayName("Descuento fijo")
+      void t3() throws Exception {
+          assertEquals(150, Solution.finalPrice(200, new Solution.FixedDiscount(50)));
+      }
+
+      @Test
+      @DisplayName("El descuento fijo nunca deja el precio negativo")
+      void t4() throws Exception {
+          assertEquals(0, Solution.finalPrice(30, new Solution.FixedDiscount(50)));
+      }
+
+      @Test
+      @DisplayName("Sin descuento el precio no cambia")
+      void t5() throws Exception {
+          assertEquals(200, Solution.finalPrice(200, new Solution.NoDiscount()));
+      }
+
+      @Test
+      @DisplayName("Estrategia null devuelve el precio original")
+      void t6() throws Exception {
+          assertEquals(200, Solution.finalPrice(200, null));
+      }
+
+      @Test
+      @DisplayName("Porcentaje 100 deja el precio en cero")
+      void t7() throws Exception {
+          assertEquals(0, Solution.finalPrice(80, new Solution.PercentDiscount(100)));
+      }
+
+      @Test
+      @DisplayName("Se puede usar una estrategia propia (lambda)")
+      void t8() throws Exception {
+          Solution.DiscountStrategy mitad = p -> p / 2;
+          assertEquals(50, Solution.finalPrice(100, mitad));
+      }
+  }

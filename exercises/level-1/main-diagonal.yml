@@ -1,0 +1,95 @@
+slug: main-diagonal
+level: 1
+topic: matrices-patterns
+title: Diagonal principal
+statement: |
+  Escribe un método que devuelva un arreglo NUEVO con los elementos de la diagonal principal de una matriz, es decir, los elementos en la posición (i, i).
+
+  Ejemplo:
+  - Entrada: matrix=[[1, 2, 3], [4, 5, 6], [7, 8, 9]] -> Salida: [1, 5, 9]
+  - Entrada: matrix=[[1, 2, 3], [4, 5, 6]] -> Salida: [1, 5]
+  - Entrada: matrix=[[4]] -> Salida: [4]
+
+  Reglas:
+  - Si la matriz no es cuadrada, la diagonal tiene min(número de filas, número de columnas) elementos.
+  - Si la matriz es null o está vacía, devuelve un arreglo vacío (new int[0]).
+  - La matriz de entrada nunca debe modificarse.
+methodSignature: "public static int[] mainDiagonal(int[][] matrix)"
+className: Solution
+estimatedMinutes: 10
+difficulty: easy
+hints:
+  - "Un solo ciclo es suficiente: el elemento i de la diagonal es matrix[i][i]."
+  - "El tamaño del resultado es el menor entre el número de filas y el de columnas; puedes usar Math.min."
+  - "Antes de acceder a matrix[0], revisa si la matriz es null o si no tiene filas."
+starterCode: |
+  public class Solution {
+      public static int[] mainDiagonal(int[][] matrix) {
+          // Tu código aquí
+          return new int[0];
+      }
+  }
+referenceSolution: |
+  public class Solution {
+      public static int[] mainDiagonal(int[][] matrix) {
+          if (matrix == null || matrix.length == 0) {
+              return new int[0];
+          }
+          int tamanio = Math.min(matrix.length, matrix[0].length);
+          int[] diagonal = new int[tamanio];
+          for (int i = 0; i < tamanio; i++) {
+              diagonal[i] = matrix[i][i];
+          }
+          return diagonal;
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Extrae la diagonal de una matriz de 3x3")
+      void matrizCuadrada() {
+          int[][] matrix = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+          assertArrayEquals(new int[] {1, 5, 9}, Solution.mainDiagonal(matrix));
+      }
+
+      @Test
+      @DisplayName("Usa el mínimo entre filas y columnas cuando la matriz no es cuadrada")
+      void matrizRectangular() {
+          int[][] matrix = {{1, 2, 3}, {4, 5, 6}};
+          assertArrayEquals(new int[] {1, 5}, Solution.mainDiagonal(matrix));
+      }
+
+      @Test
+      @DisplayName("Devuelve un solo elemento para una matriz de 1x1")
+      void matrizUnElemento() {
+          assertArrayEquals(new int[] {4}, Solution.mainDiagonal(new int[][] {{4}}));
+      }
+
+      @Test
+      @DisplayName("Devuelve un arreglo vacío cuando la matriz es null")
+      void entradaNula() {
+          assertArrayEquals(new int[0], Solution.mainDiagonal(null));
+      }
+
+      @Test
+      @DisplayName("Devuelve un arreglo vacío cuando la matriz está vacía")
+      void matrizVacia() {
+          assertArrayEquals(new int[0], Solution.mainDiagonal(new int[0][0]));
+      }
+
+      @Test
+      @DisplayName("No modifica la matriz de entrada")
+      void noModificaLaEntrada() {
+          int[][] original = {{1, 2}, {3, 4}};
+          int[][] copia = {{1, 2}, {3, 4}};
+          Solution.mainDiagonal(original);
+          assertArrayEquals(copia[0], original[0]);
+          assertArrayEquals(copia[1], original[1]);
+      }
+  }

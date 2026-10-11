@@ -1,0 +1,128 @@
+slug: subarray-with-sum
+level: 2
+topic: structures
+title: Subarreglo con suma objetivo
+statement: |
+  Escribe un método que indique si existe un subarreglo CONTIGUO y no vacío cuya suma sea
+  exactamente `target`. El arreglo puede contener números negativos y ceros.
+
+  Ejemplo:
+  - Entrada: numbers=[1, 2, 3, 7], target=5 -> Salida: true ([2, 3])
+  - Entrada: numbers=[4, -1, 2, 1], target=6 -> Salida: true (todo el arreglo)
+  - Entrada: numbers=[1, 2, 3], target=7 -> Salida: false
+
+  Si el arreglo es null o vacío, devuelve false. Usa long para acumular las sumas.
+methodSignature: "public static boolean hasSubarrayWithSum(int[] numbers, int target)"
+className: Solution
+estimatedMinutes: 25
+difficulty: hard
+hints:
+  - "La suma del subarreglo [i..j] es prefijo[j] - prefijo[i-1]."
+  - "Buscas dos prefijos que difieran exactamente en target: prefijo_actual - target debe haberse visto antes."
+  - "Guarda en un Set las sumas prefijas ya vistas, incluyendo el 0 inicial (prefijo vacío), y consulta antes de insertar la actual."
+starterCode: |
+  public class Solution {
+      public static boolean hasSubarrayWithSum(int[] numbers, int target) {
+          // Tu código aquí
+          return false;
+      }
+  }
+referenceSolution: |
+  import java.util.HashSet;
+  import java.util.Set;
+
+  public class Solution {
+      public static boolean hasSubarrayWithSum(int[] numbers, int target) {
+          if (numbers == null || numbers.length == 0) {
+              return false;
+          }
+          Set<Long> prefijos = new HashSet<>();
+          prefijos.add(0L);
+          long suma = 0;
+          for (int n : numbers) {
+              suma += n;
+              if (prefijos.contains(suma - target)) {
+                  return true;
+              }
+              prefijos.add(suma);
+          }
+          return false;
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Subarreglo en el medio")
+      void enElMedio() {
+          assertTrue(Solution.hasSubarrayWithSum(new int[] {1, 2, 3, 7}, 5));
+      }
+
+      @Test
+      @DisplayName("El subarreglo es todo el arreglo")
+      void todoElArreglo() {
+          assertTrue(Solution.hasSubarrayWithSum(new int[] {4, -1, 2, 1}, 6));
+      }
+
+      @Test
+      @DisplayName("No existe ningún subarreglo con esa suma")
+      void noExiste() {
+          assertFalse(Solution.hasSubarrayWithSum(new int[] {1, 2, 3}, 7));
+      }
+
+      @Test
+      @DisplayName("Arreglo vacío o null devuelve false")
+      void vacioONulo() {
+          assertFalse(Solution.hasSubarrayWithSum(new int[0], 0));
+          assertFalse(Solution.hasSubarrayWithSum(null, 0));
+      }
+
+      @Test
+      @DisplayName("Un solo elemento")
+      void unElemento() {
+          assertTrue(Solution.hasSubarrayWithSum(new int[] {5}, 5));
+          assertFalse(Solution.hasSubarrayWithSum(new int[] {5}, 4));
+      }
+
+      @Test
+      @DisplayName("Con negativos, un subarreglo suma el objetivo aunque los prefijos suban y bajen")
+      void conNegativos() {
+          assertTrue(Solution.hasSubarrayWithSum(new int[] {10, -4, -6, 8, 1}, 9));
+          assertFalse(Solution.hasSubarrayWithSum(new int[] {-1, -1, -1}, 1));
+      }
+
+      @Test
+      @DisplayName("Objetivo 0 con un subarreglo que se cancela")
+      void objetivoCero() {
+          assertTrue(Solution.hasSubarrayWithSum(new int[] {3, 4, -4, 1}, 0));
+          assertFalse(Solution.hasSubarrayWithSum(new int[] {1, 2, 3}, 0));
+      }
+
+      @Test
+      @DisplayName("No desborda con valores grandes")
+      void sinDesbordamiento() {
+          int m = Integer.MAX_VALUE;
+          assertFalse(Solution.hasSubarrayWithSum(new int[] {m, m, m}, -5));
+      }
+
+      @Test
+      @DisplayName("Funciona rápido con 200000 elementos")
+      void grande() {
+          int[] a = new int[200000];
+          for (int i = 0; i < a.length; i++) {
+              a[i] = 1;
+          }
+          assertTrue(Solution.hasSubarrayWithSum(a, 199999));
+          assertFalse(Solution.hasSubarrayWithSum(a, 200001));
+      }
+  }
+complexityQuestion:
+  prompt: "¿Cuál es la complejidad temporal y de espacio de la solución con sumas prefijas y Set?"
+  options: ["Tiempo O(n²), espacio O(1)", "Tiempo O(n log n), espacio O(1)", "Tiempo O(n), espacio O(n)", "Tiempo O(n), espacio O(1)"]
+  correctIndex: 2
+  explanation: "Con negativos no sirve la ventana deslizante; se recorre una vez y el Set de prefijos guarda hasta n+1 sumas, por eso el espacio es O(n)."

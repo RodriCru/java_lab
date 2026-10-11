@@ -1,0 +1,169 @@
+slug: mini-container
+level: 0
+topic: spring-principles
+title: Mini contenedor IoC
+statement: |
+  Un contenedor de **Inversión de Control (IoC)**, como el ApplicationContext de Spring, guarda "recetas" para crear objetos (beans) y los entrega cuando se piden. Por defecto cada bean es un **singleton**: se crea una sola vez y siempre se devuelve la misma instancia.
+
+  Dentro de Solution existe la clase anidada Container (con esqueleto). Impleméntala SIN reflexión, usando Map:
+  - register(String name, Supplier<Object> supplier): registra la receta para crear el bean. NO crea el objeto todavía (creación perezosa). Si ya hay una receta con ese nombre, lanza IllegalStateException.
+  - get(String name): devuelve el bean. La primera vez llama al supplier y guarda el resultado; las siguientes veces devuelve exactamente el mismo objeto (sin volver a llamar al supplier). Si el nombre no está registrado, lanza IllegalArgumentException.
+
+  Además, el método newContainer devuelve un contenedor nuevo y vacío.
+
+  Ejemplo:
+  - c.register("saludo", () -> new StringBuilder("hola")); c.get("saludo") == c.get("saludo") -> true
+  - c.get("noExiste") -> lanza IllegalArgumentException
+methodSignature: "public static Container newContainer()"
+className: Solution
+estimatedMinutes: 20
+difficulty: medium
+hints:
+  - "Usa dos mapas: Map<String, Supplier<Object>> recipes (las recetas) y Map<String, Object> instances (los beans ya creados)."
+  - "En get: si instances ya contiene el nombre, devuélvelo; si no, comprueba que exista la receta, llama a supplier.get(), guárdalo en instances y devuélvelo."
+  - "Usa containsKey para decidir si ya existe (y no get == null), así un bean cacheado nunca se vuelve a crear."
+starterCode: |
+  import java.util.*;
+  import java.util.function.Supplier;
+
+  public class Solution {
+
+      public static class Container {
+          // Tu código aquí: mapas de recetas y de instancias
+
+          public void register(String name, Supplier<Object> supplier) {
+              // Tu código aquí
+          }
+
+          public Object get(String name) {
+              // Tu código aquí
+              return null;
+          }
+      }
+
+      public static Container newContainer() {
+          return new Container();
+      }
+  }
+referenceSolution: |
+  import java.util.*;
+  import java.util.function.Supplier;
+
+  public class Solution {
+
+      public static class Container {
+          private final Map<String, Supplier<Object>> recipes = new HashMap<>();
+          private final Map<String, Object> instances = new HashMap<>();
+
+          public void register(String name, Supplier<Object> supplier) {
+              if (recipes.containsKey(name)) {
+                  throw new IllegalStateException("Bean ya registrado: " + name);
+              }
+              recipes.put(name, supplier);
+          }
+
+          public Object get(String name) {
+              if (instances.containsKey(name)) {
+                  return instances.get(name);
+              }
+              Supplier<Object> supplier = recipes.get(name);
+              if (supplier == null) {
+                  throw new IllegalArgumentException("Bean no registrado: " + name);
+              }
+              Object bean = supplier.get();
+              instances.put(name, bean);
+              return bean;
+          }
+      }
+
+      public static Container newContainer() {
+          return new Container();
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Un bean registrado se puede obtener")
+      void registrarYObtener() {
+          Solution.Container c = Solution.newContainer();
+          c.register("saludo", () -> "hola");
+          assertEquals("hola", c.get("saludo"));
+      }
+
+      @Test
+      @DisplayName("Por defecto es singleton: siempre la misma instancia")
+      void singleton() {
+          Solution.Container c = Solution.newContainer();
+          c.register("sb", () -> new StringBuilder("x"));
+          assertSame(c.get("sb"), c.get("sb"));
+      }
+
+      @Test
+      @DisplayName("El supplier se llama una sola vez aunque se pida muchas veces")
+      void supplierUnaVez() {
+          int[] created = {0};
+          Solution.Container c = Solution.newContainer();
+          c.register("obj", () -> {
+              created[0]++;
+              return new Object();
+          });
+          c.get("obj");
+          c.get("obj");
+          c.get("obj");
+          assertEquals(1, created[0]);
+      }
+
+      @Test
+      @DisplayName("Registrar no crea el objeto: la creación es perezosa")
+      void creacionPerezosa() {
+          int[] created = {0};
+          Solution.Container c = Solution.newContainer();
+          c.register("obj", () -> {
+              created[0]++;
+              return new Object();
+          });
+          assertEquals(0, created[0]);
+          c.get("obj");
+          assertEquals(1, created[0]);
+      }
+
+      @Test
+      @DisplayName("Pedir un bean no registrado lanza IllegalArgumentException")
+      void noRegistrado() {
+          Solution.Container c = Solution.newContainer();
+          assertThrows(IllegalArgumentException.class, () -> c.get("noExiste"));
+      }
+
+      @Test
+      @DisplayName("Registrar dos veces el mismo nombre lanza IllegalStateException")
+      void duplicado() {
+          Solution.Container c = Solution.newContainer();
+          c.register("a", () -> 1);
+          assertThrows(IllegalStateException.class, () -> c.register("a", () -> 2));
+          assertEquals(1, c.get("a"));
+      }
+
+      @Test
+      @DisplayName("Beans con nombres distintos son instancias distintas")
+      void nombresDistintos() {
+          Solution.Container c = Solution.newContainer();
+          c.register("a", Object::new);
+          c.register("b", Object::new);
+          assertNotSame(c.get("a"), c.get("b"));
+      }
+
+      @Test
+      @DisplayName("Cada contenedor nuevo es independiente")
+      void contenedoresIndependientes() {
+          Solution.Container c1 = Solution.newContainer();
+          Solution.Container c2 = Solution.newContainer();
+          c1.register("a", () -> "uno");
+          assertThrows(IllegalArgumentException.class, () -> c2.get("a"));
+      }
+  }

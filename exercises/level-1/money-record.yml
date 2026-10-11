@@ -1,0 +1,95 @@
+slug: money-record
+level: 1
+topic: oop
+title: Un registro para dinero
+statement: |
+  Dentro del archivo Solution.java ya existe un record llamado Money con un único componente: los centavos. Escribe un método que reciba un objeto Money y un precio en centavos, y devuelva true si el saldo alcanza para pagar el precio.
+
+  Reglas del contrato:
+  - El precio también viene expresado en centavos.
+  - Alcanza si el saldo es mayor o igual que el precio.
+  - El record Money tiene un accesor cents() que devuelve los centavos.
+
+  Ejemplo:
+  - Entrada: wallet=Money(500), price=300 -> Salida: true
+  - Entrada: wallet=Money(300), price=300 -> Salida: true
+  - Entrada: wallet=Money(100), price=250 -> Salida: false
+
+  Si wallet es null, devuelve false.
+methodSignature: "public static boolean hasEnough(Money wallet, int price)"
+className: Solution
+estimatedMinutes: 12
+difficulty: easy
+hints:
+  - "Un record genera automáticamente el accesor cents() para leer el valor."
+  - "Compara cents() con el precio usando >=."
+  - "Valida primero si wallet es null para evitar un NullPointerException."
+starterCode: |
+  public class Solution {
+
+      public record Money(long cents) {
+      }
+
+      public static boolean hasEnough(Money wallet, int price) {
+          // Tu código aquí
+          return false;
+      }
+  }
+referenceSolution: |
+  public class Solution {
+
+      public record Money(long cents) {
+      }
+
+      public static boolean hasEnough(Money wallet, int price) {
+          if (wallet == null) {
+              return false;
+          }
+          return wallet.cents() >= price;
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Alcanza cuando el saldo supera el precio")
+      void saldoMayor() {
+          assertTrue(Solution.hasEnough(new Solution.Money(500), 300));
+      }
+
+      @Test
+      @DisplayName("Alcanza cuando el saldo es exactamente el precio")
+      void saldoExacto() {
+          assertTrue(Solution.hasEnough(new Solution.Money(300), 300));
+      }
+
+      @Test
+      @DisplayName("No alcanza cuando el saldo es menor que el precio")
+      void saldoInsuficiente() {
+          assertFalse(Solution.hasEnough(new Solution.Money(100), 250));
+      }
+
+      @Test
+      @DisplayName("Un saldo de cero alcanza solo si el precio es cero")
+      void saldoCero() {
+          assertTrue(Solution.hasEnough(new Solution.Money(0), 0));
+          assertFalse(Solution.hasEnough(new Solution.Money(0), 1));
+      }
+
+      @Test
+      @DisplayName("Un wallet null devuelve false")
+      void walletNull() {
+          assertFalse(Solution.hasEnough(null, 100));
+      }
+
+      @Test
+      @DisplayName("Un saldo muy grande alcanza cualquier precio del rango int")
+      void valoresLimite() {
+          assertTrue(Solution.hasEnough(new Solution.Money(Long.MAX_VALUE), Integer.MAX_VALUE));
+      }
+  }

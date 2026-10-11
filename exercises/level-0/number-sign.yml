@@ -1,0 +1,86 @@
+slug: number-sign
+level: 0
+topic: basics
+title: Signo de un número
+statement: |
+  Tu primer condicional: if / else if / else. Escribe un método que reciba un entero y devuelva el texto "positivo", "negativo" o "cero" según corresponda.
+
+  Ejemplos:
+  - numberSign(8) -> "positivo"
+  - numberSign(-2) -> "negativo"
+  - numberSign(0) -> "cero"
+methodSignature: public static String numberSign(int n)
+className: Solution
+estimatedMinutes: 5
+difficulty: easy
+hints:
+- 'Compara con 0: n > 0, n < 0 y, si ninguna se cumple, es cero.'
+- Usa if, else if y else, y devuelve el texto en cada rama.
+starterCode: |
+  public class Solution {
+
+      public static String numberSign(int n) {
+          // Tu código aquí
+          return "";
+      }
+  }
+referenceSolution: |
+  public class Solution {
+
+      public static String numberSign(int n) {
+          if (n > 0) {
+              return "positivo";
+          } else if (n < 0) {
+              return "negativo";
+          }
+          return "cero";
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  import java.io.ByteArrayOutputStream;
+  import java.io.PrintStream;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Positivo")
+      void t1() {
+          assertEquals("positivo", Solution.numberSign(8));
+      }
+
+      @Test
+      @DisplayName("Negativo")
+      void t2() {
+          assertEquals("negativo", Solution.numberSign(-2));
+      }
+
+      @Test
+      @DisplayName("Cero")
+      void t3() {
+          assertEquals("cero", Solution.numberSign(0));
+      }
+
+      @Test
+      @DisplayName("Uno")
+      void t4() {
+          assertEquals("positivo", Solution.numberSign(1));
+      }
+
+      @Test
+      @DisplayName("Menos uno")
+      void t5() {
+          assertEquals("negativo", Solution.numberSign(-1));
+      }
+
+      @Test
+      @DisplayName("Extremos")
+      void t6() {
+          assertEquals("positivo", Solution.numberSign(Integer.MAX_VALUE));
+          assertEquals("negativo", Solution.numberSign(Integer.MIN_VALUE));
+      }
+  }

@@ -1,0 +1,103 @@
+slug: join-with-separator
+level: 0
+topic: functions
+title: "Unir con separador"
+statement: |
+  Escribe un método que una varias cadenas poniendo un separador ENTRE ellas (no al principio ni al final). El primer parámetro es el separador y el resto son varargs: String... parts. Un parámetro variable debe ser siempre el último de la lista.
+
+  Reglas:
+  - Sin partes (ninguna cadena después del separador) devuelve "".
+  - Con una sola parte devuelve esa parte, sin separador.
+  - No uses String.join: practica con un bucle y StringBuilder.
+
+  Ejemplos:
+  - Entrada: separator=", ", parts="a", "b", "c" -> Salida: "a, b, c"
+  - Entrada: separator="-", parts="2024", "10", "08" -> Salida: "2024-10-08"
+  - Entrada: separator="-", parts="solo" -> Salida: "solo"
+  - Entrada: separator="-" (sin partes) -> Salida: ""
+  - Entrada: separator="", parts="x", "y" -> Salida: "xy"
+methodSignature: "public static String joinWith(String separator, String... parts)"
+className: Solution
+estimatedMinutes: 12
+difficulty: easy
+hints:
+  - "parts es un String[] dentro del método; puedes preguntar parts.length y recorrerlo con un for con índice."
+  - "El truco para no dejar un separador sobrante: añade el separador ANTES de cada elemento, excepto del primero (i > 0)."
+  - "Usa StringBuilder sb = new StringBuilder(); y sb.append(...); al final return sb.toString(); Con 0 partes devuelve \"\" de forma natural."
+starterCode: |
+  public class Solution {
+
+      public static String joinWith(String separator, String... parts) {
+          // Tu código aquí
+          return null;
+      }
+  }
+referenceSolution: |
+  public class Solution {
+
+      public static String joinWith(String separator, String... parts) {
+          StringBuilder sb = new StringBuilder();
+          for (int i = 0; i < parts.length; i++) {
+              if (i > 0) {
+                  sb.append(separator);
+              }
+              sb.append(parts[i]);
+          }
+          return sb.toString();
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+      @Test
+      @DisplayName("Une tres partes con coma y espacio")
+      void caso1() {
+          assertEquals("a, b, c", Solution.joinWith(", ", "a", "b", "c"));
+      }
+
+      @Test
+      @DisplayName("Une una fecha con guiones")
+      void caso2() {
+          assertEquals("2024-10-08", Solution.joinWith("-", "2024", "10", "08"));
+      }
+
+      @Test
+      @DisplayName("Una sola parte no lleva separador")
+      void caso3() {
+          assertEquals("solo", Solution.joinWith("-", "solo"));
+      }
+
+      @Test
+      @DisplayName("Sin partes devuelve cadena vacía")
+      void caso4() {
+          assertEquals("", Solution.joinWith("-"));
+      }
+
+      @Test
+      @DisplayName("Separador vacío concatena")
+      void caso5() {
+          assertEquals("xy", Solution.joinWith("", "x", "y"));
+      }
+
+      @Test
+      @DisplayName("Acepta un arreglo de cadenas")
+      void caso6() {
+          assertEquals("a|b", Solution.joinWith("|", new String[] {"a", "b"}));
+      }
+
+      @Test
+      @DisplayName("Las partes vacías se conservan")
+      void caso7() {
+          assertEquals("a,,b", Solution.joinWith(",", "a", "", "b"));
+      }
+
+      @Test
+      @DisplayName("Separador de varios caracteres")
+      void caso8() {
+          assertEquals("1 y 2 y 3", Solution.joinWith(" y ", "1", "2", "3"));
+      }
+  }

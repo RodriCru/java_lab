@@ -1,0 +1,100 @@
+slug: collatz-steps
+level: 0
+topic: loops
+title: Pasos de Collatz
+statement: |
+  La conjetura de Collatz parte de un entero positivo n y repite: si n es par, n = n / 2; si es impar, n = 3 * n + 1; hasta llegar a 1. Escribe un método con un ciclo while que cuente cuántos pasos se necesitan para llegar a 1.
+
+  Ejemplos:
+  - 1 -> 0 (ya está en 1)
+  - 2 -> 1 (2 -> 1)
+  - 6 -> 8 (6, 3, 10, 5, 16, 8, 4, 2, 1)
+  - 27 -> 111
+
+  Si n es menor o igual a 0, devuelve 0.
+methodSignature: public static int collatzSteps(int n)
+className: Solution
+estimatedMinutes: 10
+difficulty: easy
+hints:
+- 'Un while se usa cuando no sabes de antemano cuántas vueltas dará el ciclo: aquí, while (n != 1).'
+- Dentro del ciclo, decide con n % 2 == 0 si n es par (n = n / 2) o impar (n = 3 * n + 1), y suma 1 al contador de pasos.
+- Antes del ciclo, devuelve 0 si n <= 0; sin ese control, un n no positivo nunca llegaría a 1 y el ciclo sería infinito.
+starterCode: |
+  public class Solution {
+      public static int collatzSteps(int n) {
+          // Tu código aquí
+          return -1;
+      }
+  }
+referenceSolution: |
+  public class Solution {
+      public static int collatzSteps(int n) {
+          if (n <= 0) {
+              return 0;
+          }
+          int pasos = 0;
+          while (n != 1) {
+              if (n % 2 == 0) {
+                  n = n / 2;
+              } else {
+                  n = 3 * n + 1;
+              }
+              pasos++;
+          }
+          return pasos;
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import java.util.*;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("El 1 ya está en el destino")
+      void t66373() {
+          assertEquals(0, Solution.collatzSteps(1));
+      }
+
+      @Test
+      @DisplayName("El 2 necesita un paso")
+      void t12912() {
+          assertEquals(1, Solution.collatzSteps(2));
+      }
+
+      @Test
+      @DisplayName("El 6 necesita 8 pasos")
+      void t22618() {
+          assertEquals(8, Solution.collatzSteps(6));
+      }
+
+      @Test
+      @DisplayName("El 27 necesita 111 pasos")
+      void t82939() {
+          assertEquals(111, Solution.collatzSteps(27));
+      }
+
+      @Test
+      @DisplayName("Las potencias de dos bajan en línea recta")
+      void t98400() {
+          assertEquals(10, Solution.collatzSteps(1024));
+      }
+
+      @Test
+      @DisplayName("Cero y negativos devuelven 0")
+      void t21065() {
+          assertEquals(0, Solution.collatzSteps(0));
+          assertEquals(0, Solution.collatzSteps(-7));
+      }
+
+      @Test
+      @DisplayName("El 7 necesita 16 pasos")
+      void t2791() {
+          assertEquals(16, Solution.collatzSteps(7));
+      }
+  }

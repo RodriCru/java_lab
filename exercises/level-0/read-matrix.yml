@@ -1,0 +1,110 @@
+slug: read-matrix
+level: 0
+topic: input-parsing
+title: Leer una matriz desde texto
+statement: |
+  Escribe un método que construya una matriz a partir de un texto. La primera línea trae dos enteros: "filas columnas". Después vienen filas*columnas valores enteros (en una o varias líneas), que se llenan por filas, de izquierda a derecha. Usa un Scanner sobre el String.
+
+  Ejemplos:
+  - "2 3\n1 2 3\n4 5 6" -> {{1, 2, 3}, {4, 5, 6}}
+  - "1 1\n9" -> {{9}}
+  - "2 2 1 2 3 4" -> {{1, 2}, {3, 4}} (los saltos de línea no importan para el Scanner)
+
+  Si el texto es null, está vacío, o filas o columnas es 0, devuelve una matriz vacía (new int[0][]). Puedes asumir que hay suficientes valores.
+methodSignature: public static int[][] readMatrix(String input)
+className: Solution
+estimatedMinutes: 20
+difficulty: medium
+hints:
+- Lee primero filas y columnas con scanner.nextInt() dos veces, antes de crear la matriz.
+- Crea la matriz con new int[filas][columnas] y llénala con dos ciclos anidados, llamando a nextInt() en cada celda.
+- nextInt() ignora los saltos de línea y los espacios entre valores, así que no necesitas procesar las líneas por separado.
+starterCode: |
+  public class Solution {
+      public static int[][] readMatrix(String input) {
+          // Tu código aquí
+          return null;
+      }
+  }
+referenceSolution: |
+  import java.util.Scanner;
+
+  public class Solution {
+      public static int[][] readMatrix(String input) {
+          if (input == null || input.trim().isEmpty()) {
+              return new int[0][];
+          }
+          Scanner scanner = new Scanner(input);
+          int filas = scanner.nextInt();
+          int columnas = scanner.nextInt();
+          if (filas == 0 || columnas == 0) {
+              scanner.close();
+              return new int[0][];
+          }
+          int[][] matriz = new int[filas][columnas];
+          for (int i = 0; i < filas; i++) {
+              for (int j = 0; j < columnas; j++) {
+                  matriz[i][j] = scanner.nextInt();
+              }
+          }
+          scanner.close();
+          return matriz;
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import java.util.*;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Lee una matriz de 2x3")
+      void t78747() {
+          assertArrayEquals(new int[][] {{1, 2, 3}, {4, 5, 6}}, Solution.readMatrix("2 3\n1 2 3\n4 5 6"));
+      }
+
+      @Test
+      @DisplayName("Lee una matriz de 1x1")
+      void t13292() {
+          assertArrayEquals(new int[][] {{9}}, Solution.readMatrix("1 1\n9"));
+      }
+
+      @Test
+      @DisplayName("Los saltos de línea no importan")
+      void t65814() {
+          assertArrayEquals(new int[][] {{1, 2}, {3, 4}}, Solution.readMatrix("2 2 1 2 3 4"));
+      }
+
+      @Test
+      @DisplayName("Una matriz de una columna")
+      void t86375() {
+          assertArrayEquals(new int[][] {{1}, {-2}, {3}}, Solution.readMatrix("3 1\n1\n-2\n3"));
+      }
+
+      @Test
+      @DisplayName("Texto null o vacío da matriz vacía")
+      void t42512() {
+          assertEquals(0, Solution.readMatrix(null).length);
+          assertEquals(0, Solution.readMatrix("").length);
+      }
+
+      @Test
+      @DisplayName("Dimensiones cero dan matriz vacía")
+      void t83316() {
+          assertEquals(0, Solution.readMatrix("0 0").length);
+          assertEquals(0, Solution.readMatrix("0 5").length);
+      }
+
+      @Test
+      @DisplayName("Mantiene las dimensiones de cada fila")
+      void t93818() {
+          int[][] m = Solution.readMatrix("2 4\n1 2 3 4\n5 6 7 8");
+          assertEquals(2, m.length);
+          assertEquals(4, m[1].length);
+          assertEquals(8, m[1][3]);
+      }
+  }

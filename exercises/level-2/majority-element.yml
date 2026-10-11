@@ -1,0 +1,119 @@
+slug: majority-element
+level: 2
+topic: structures
+title: Elemento mayoritario
+statement: |
+  Dado un arreglo de enteros, devuelve el elemento mayoritario: el que aparece MÁS de n/2 veces
+  (n = longitud del arreglo). Se garantiza que siempre existe, así que no necesitas validarlo.
+
+  Ejemplo:
+  - Entrada: [3, 2, 3] -> Salida: 3
+  - Entrada: [2, 2, 1, 1, 1, 2, 2] -> Salida: 2
+  - Entrada: [7] -> Salida: 7
+
+  Se espera una solución O(n) tiempo y O(1) espacio (algoritmo de votación de Boyer-Moore).
+  No modifiques el arreglo de entrada.
+methodSignature: "public static int majorityElement(int[] numbers)"
+className: Solution
+estimatedMinutes: 20
+difficulty: medium
+hints:
+  - "Contar frecuencias con un Map funciona, pero usa O(n) de espacio."
+  - "Boyer-Moore: mantén un candidato y un contador. Si el contador llega a 0, el elemento actual es el nuevo candidato."
+  - "Si el elemento actual es igual al candidato suma 1 al contador, si no, réstale 1. Al final el candidato es el mayoritario."
+starterCode: |
+  public class Solution {
+      public static int majorityElement(int[] numbers) {
+          // Tu código aquí
+          return 0;
+      }
+  }
+referenceSolution: |
+  public class Solution {
+      public static int majorityElement(int[] numbers) {
+          int candidato = 0;
+          int cuenta = 0;
+          for (int n : numbers) {
+              if (cuenta == 0) {
+                  candidato = n;
+              }
+              cuenta += (n == candidato) ? 1 : -1;
+          }
+          return candidato;
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Ejemplo básico [3, 2, 3]")
+      void ejemploBasico() {
+          assertEquals(3, Solution.majorityElement(new int[] {3, 2, 3}));
+      }
+
+      @Test
+      @DisplayName("Mayoritario con muchos otros valores")
+      void variosValores() {
+          assertEquals(2, Solution.majorityElement(new int[] {2, 2, 1, 1, 1, 2, 2}));
+      }
+
+      @Test
+      @DisplayName("Un solo elemento")
+      void unElemento() {
+          assertEquals(7, Solution.majorityElement(new int[] {7}));
+      }
+
+      @Test
+      @DisplayName("Todos los elementos iguales")
+      void todosIguales() {
+          assertEquals(4, Solution.majorityElement(new int[] {4, 4, 4, 4}));
+      }
+
+      @Test
+      @DisplayName("El mayoritario aparece solo al final")
+      void alFinal() {
+          assertEquals(9, Solution.majorityElement(new int[] {1, 2, 3, 9, 9, 9, 9}));
+      }
+
+      @Test
+      @DisplayName("Funciona con negativos")
+      void negativos() {
+          assertEquals(-5, Solution.majorityElement(new int[] {-5, 1, -5, 2, -5}));
+      }
+
+      @Test
+      @DisplayName("Mayoría mínima: n/2 + 1 apariciones")
+      void mayoriaMinima() {
+          assertEquals(8, Solution.majorityElement(new int[] {1, 8, 2, 8, 3, 8, 8}));
+          assertEquals(6, Solution.majorityElement(new int[] {6, 1, 6, 2, 6, 3, 6, 4, 6}));
+      }
+
+      @Test
+      @DisplayName("No modifica el arreglo de entrada")
+      void noModifica() {
+          int[] a = {3, 2, 3};
+          Solution.majorityElement(a);
+          assertArrayEquals(new int[] {3, 2, 3}, a);
+      }
+
+      @Test
+      @DisplayName("Funciona rápido con 1000001 elementos")
+      void grande() {
+          int n = 1000001;
+          int[] a = new int[n];
+          for (int i = 0; i < n; i++) {
+              a[i] = (i % 2 == 0) ? 42 : i;
+          }
+          assertEquals(42, Solution.majorityElement(a));
+      }
+  }
+complexityQuestion:
+  prompt: "¿Cuál es la complejidad temporal y de espacio del algoritmo de Boyer-Moore?"
+  options: ["Tiempo O(n), espacio O(n)", "Tiempo O(n log n), espacio O(1)", "Tiempo O(n), espacio O(1)", "Tiempo O(n²), espacio O(1)"]
+  correctIndex: 2
+  explanation: "Un único recorrido con solo dos variables (candidato y contador). Contar con un HashMap también sería O(n) en tiempo pero O(n) en espacio."

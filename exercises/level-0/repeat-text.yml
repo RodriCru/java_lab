@@ -1,0 +1,79 @@
+slug: repeat-text
+level: 0
+topic: basics
+title: Repetir un texto
+statement: |
+  Un ciclo que construye un String. Escribe un método que devuelva el texto repetido n veces, pegado, sin separadores. Si n es 0 o negativo devuelve la cadena vacía. No uses String.repeat.
+
+  Ejemplos:
+  - repeatText("ab", 3) -> "ababab"
+  - repeatText("x", 1) -> "x"
+  - repeatText("hola", 0) -> "" (cadena vacía)
+methodSignature: public static String repeatText(String text, int times)
+className: Solution
+estimatedMinutes: 8
+difficulty: easy
+hints:
+- Empieza con un String resultado = "" y añade text en cada vuelta.
+- Para muchas repeticiones es mejor un StringBuilder, pero aquí con + basta.
+- Un for de 0 a times-1 no se ejecuta si times <= 0.
+starterCode: |
+  public class Solution {
+
+      public static String repeatText(String text, int times) {
+          // Tu código aquí
+          return "";
+      }
+  }
+referenceSolution: |
+  public class Solution {
+
+      public static String repeatText(String text, int times) {
+          StringBuilder sb = new StringBuilder();
+          for (int i = 0; i < times; i++) {
+              sb.append(text);
+          }
+          return sb.toString();
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  import java.io.ByteArrayOutputStream;
+  import java.io.PrintStream;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Tres veces")
+      void t1() {
+          assertEquals("ababab", Solution.repeatText("ab", 3));
+      }
+
+      @Test
+      @DisplayName("Una vez")
+      void t2() {
+          assertEquals("x", Solution.repeatText("x", 1));
+      }
+
+      @Test
+      @DisplayName("Cero veces")
+      void t3() {
+          assertEquals("", Solution.repeatText("hola", 0));
+      }
+
+      @Test
+      @DisplayName("Negativo")
+      void t4() {
+          assertEquals("", Solution.repeatText("hola", -2));
+      }
+
+      @Test
+      @DisplayName("Texto vacío")
+      void t5() {
+          assertEquals("", Solution.repeatText("", 5));
+      }
+  }

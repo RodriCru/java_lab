@@ -1,0 +1,172 @@
+slug: traffic-light-enum
+level: 0
+topic: enums
+title: Semáforo como máquina de estados
+statement: |
+  Un enum puede modelar una máquina de estados: cada valor es un estado y un método dice cuál es el siguiente. En Solution existe el enum Light con tres estados.
+
+  Completa:
+  - RED dura 30 segundos, GREEN dura 25 y YELLOW dura 5. getSeconds() devuelve la duración.
+  - next(): el ciclo es RED -> GREEN -> YELLOW -> RED.
+  - canGo(): true solo en GREEN.
+
+  Además, totalSeconds(start, changes) devuelve el tiempo total que transcurre desde que se enciende la luz start hasta que se han completado exactamente `changes` cambios de luz. Es decir, suma la duración de start y de las luces siguientes, en total `changes` luces. Si changes es 0 devuelve 0. Si start es null devuelve 0. changes no será negativo.
+
+  Ejemplo:
+  - Entrada: start=RED, changes=1 -> Salida: 30
+  - Entrada: start=RED, changes=3 -> Salida: 60 (30 + 25 + 5)
+  - Entrada: start=GREEN, changes=3 -> Salida: 60 (25 + 5 + 30)
+  - Entrada: start=YELLOW, changes=2 -> Salida: 35 (5 + 30)
+methodSignature: public static int totalSeconds(Light start, int changes)
+className: Solution
+estimatedMinutes: 18
+difficulty: medium
+hints:
+- 'Un enum puede llevar un campo y un constructor: RED(30), GREEN(25), YELLOW(5).'
+- Dentro de next() puedes usar un switch sobre this, o values()[...]; recuerda que el orden de declaración debe coincidir con el ciclo si usas ordinal().
+- 'totalSeconds: empieza con current = start y, en un bucle de changes vueltas, suma current.getSeconds() y avanza con current = current.next().'
+starterCode: |
+  public class Solution {
+
+      public enum Light {
+          RED(30), GREEN(25), YELLOW(5);
+
+          private final int seconds;
+
+          Light(int seconds) {
+              this.seconds = seconds;
+          }
+
+          public int getSeconds() {
+              // Tu código aquí
+              return 0;
+          }
+
+          public Light next() {
+              // Tu código aquí
+              return this;
+          }
+
+          public boolean canGo() {
+              // Tu código aquí
+              return false;
+          }
+      }
+
+      public static int totalSeconds(Light start, int changes) {
+          // Tu código aquí
+          return 0;
+      }
+  }
+referenceSolution: |
+  public class Solution {
+
+      public enum Light {
+          RED(30), GREEN(25), YELLOW(5);
+
+          private final int seconds;
+
+          Light(int seconds) {
+              this.seconds = seconds;
+          }
+
+          public int getSeconds() {
+              return seconds;
+          }
+
+          public Light next() {
+              switch (this) {
+                  case RED:
+                      return GREEN;
+                  case GREEN:
+                      return YELLOW;
+                  default:
+                      return RED;
+              }
+          }
+
+          public boolean canGo() {
+              return this == GREEN;
+          }
+      }
+
+      public static int totalSeconds(Light start, int changes) {
+          if (start == null) {
+              return 0;
+          }
+          int total = 0;
+          Light current = start;
+          for (int i = 0; i < changes; i++) {
+              total += current.getSeconds();
+              current = current.next();
+          }
+          return total;
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+  import java.util.*;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Duración de cada luz")
+      void duraciones() {
+          assertEquals(30, Solution.Light.RED.getSeconds());
+          assertEquals(25, Solution.Light.GREEN.getSeconds());
+          assertEquals(5, Solution.Light.YELLOW.getSeconds());
+      }
+
+      @Test
+      @DisplayName("El ciclo es rojo, verde, amarillo, rojo")
+      void ciclo() {
+          assertEquals(Solution.Light.GREEN, Solution.Light.RED.next());
+          assertEquals(Solution.Light.YELLOW, Solution.Light.GREEN.next());
+          assertEquals(Solution.Light.RED, Solution.Light.YELLOW.next());
+      }
+
+      @Test
+      @DisplayName("Solo se puede avanzar en verde")
+      void puedeAvanzar() {
+          assertTrue(Solution.Light.GREEN.canGo());
+          assertFalse(Solution.Light.RED.canGo());
+          assertFalse(Solution.Light.YELLOW.canGo());
+      }
+
+      @Test
+      @DisplayName("totalSeconds con un cambio es la duración de la luz inicial")
+      void unCambio() {
+          assertEquals(30, Solution.totalSeconds(Solution.Light.RED, 1));
+          assertEquals(5, Solution.totalSeconds(Solution.Light.YELLOW, 1));
+      }
+
+      @Test
+      @DisplayName("totalSeconds con un ciclo completo")
+      void cicloCompleto() {
+          assertEquals(60, Solution.totalSeconds(Solution.Light.RED, 3));
+          assertEquals(60, Solution.totalSeconds(Solution.Light.GREEN, 3));
+      }
+
+      @Test
+      @DisplayName("totalSeconds empezando en amarillo")
+      void empezandoEnAmarillo() {
+          assertEquals(35, Solution.totalSeconds(Solution.Light.YELLOW, 2));
+      }
+
+      @Test
+      @DisplayName("totalSeconds con varios ciclos")
+      void variosCiclos() {
+          assertEquals(120, Solution.totalSeconds(Solution.Light.RED, 6));
+          assertEquals(90, Solution.totalSeconds(Solution.Light.RED, 4));
+      }
+
+      @Test
+      @DisplayName("totalSeconds con 0 cambios o start null devuelve 0")
+      void casosBorde() {
+          assertEquals(0, Solution.totalSeconds(Solution.Light.RED, 0));
+          assertEquals(0, Solution.totalSeconds(null, 5));
+      }
+  }

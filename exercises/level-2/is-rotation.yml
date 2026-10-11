@@ -1,0 +1,101 @@
+slug: is-rotation
+level: 2
+topic: strings
+title: "¿Es una rotación?"
+statement: |
+  Determina si la segunda cadena es una rotación de la primera. Una rotación mueve algunos caracteres del inicio al final, manteniendo el orden.
+
+  Ejemplos:
+  - "abcde", "cdeab" -> true
+  - "abcde", "abced" -> false
+  - "abc", "abcd" -> false (distinta longitud)
+  - "", "" -> true
+
+  Si alguna de las cadenas es null, devuelve false. Se distinguen mayúsculas.
+methodSignature: "public static boolean isRotation(String first, String second)"
+className: Solution
+estimatedMinutes: 15
+difficulty: medium
+hints:
+  - "Si las longitudes difieren, no puede ser una rotación."
+  - "Piensa en qué ocurre al concatenar la primera cadena consigo misma."
+  - "Toda rotación de first aparece como subcadena de first + first."
+starterCode: |
+  public class Solution {
+      public static boolean isRotation(String first, String second) {
+          // Tu código aquí
+          return false;
+      }
+  }
+referenceSolution: |
+  public class Solution {
+      public static boolean isRotation(String first, String second) {
+          if (first == null || second == null) return false;
+          if (first.length() != second.length()) return false;
+          return (first + first).contains(second);
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+  import java.util.*;
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Rotación válida")
+      void t0() {
+          assertTrue(Solution.isRotation("abcde", "cdeab"));
+      }
+
+      @Test
+      @DisplayName("No es rotación")
+      void t1() {
+          assertFalse(Solution.isRotation("abcde", "abced"));
+      }
+
+      @Test
+      @DisplayName("Distinta longitud")
+      void t2() {
+          assertFalse(Solution.isRotation("abc", "abcd"));
+      }
+
+      @Test
+      @DisplayName("Cadenas vacías")
+      void t3() {
+          assertTrue(Solution.isRotation("", ""));
+      }
+
+      @Test
+      @DisplayName("Null devuelve false")
+      void t4() {
+          assertFalse(Solution.isRotation(null, "a"));
+          assertFalse(Solution.isRotation("a", null));
+      }
+
+      @Test
+      @DisplayName("Rotación idéntica (cero desplazamiento)")
+      void t5() {
+          assertTrue(Solution.isRotation("hola", "hola"));
+      }
+
+      @Test
+      @DisplayName("Mismos caracteres pero no rotación")
+      void t6() {
+          assertFalse(Solution.isRotation("aab", "aba") && !Solution.isRotation("aab", "baa") );
+          assertTrue(Solution.isRotation("aab", "aba"));
+          assertFalse(Solution.isRotation("abc", "acb"));
+      }
+
+      @Test
+      @DisplayName("Distingue mayúsculas")
+      void t7() {
+          assertFalse(Solution.isRotation("Abc", "bca"));
+      }
+  }
+complexityQuestion:
+  prompt: "¿Cuál es la complejidad temporal de tu solución óptima, en función de n?"
+  options: ["O(1)", "O(n)", "O(n log n)", "O(n²)"]
+  correctIndex: 1
+  explanation: "Concatenar y buscar la subcadena es lineal con un buscador eficiente (como KMP) y el costo de concatenar es O(n)."

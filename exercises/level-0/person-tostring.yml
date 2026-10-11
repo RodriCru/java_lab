@@ -1,0 +1,161 @@
+slug: person-tostring
+level: 0
+topic: oop-basics
+title: toString, equals y hashCode de Person
+statement: |
+  Todas las clases heredan de Object los métodos toString, equals y hashCode, pero su versión por defecto compara referencias y muestra algo poco útil. En Solution existe la clase Person (nombre y edad) sin esos métodos.
+
+  Completa Person sobrescribiendo (con @Override):
+  - toString(): devuelve exactamente "Person{name='Ana', age=30}" (con el nombre y la edad del objeto).
+  - equals(Object): dos personas son iguales si tienen el MISMO nombre y la MISMA edad. Con null o con un objeto de otra clase devuelve false.
+  - hashCode(): debe ser coherente con equals (personas iguales, mismo hashCode).
+
+  Además, countDistinct recibe una lista de personas y devuelve cuántas son distintas según equals (usa un HashSet, que depende de equals y hashCode). Si la lista es null o vacía, devuelve 0.
+
+  Ejemplo:
+  - Entrada: [Person("Ana", 30), Person("Ana", 30), Person("Luis", 25)] -> Salida: 2
+  - Entrada: [Person("Ana", 30), Person("Ana", 31)] -> Salida: 2
+  - Entrada: [] -> Salida: 0
+methodSignature: public static int countDistinct(List<Person> people)
+className: Solution
+estimatedMinutes: 18
+difficulty: medium
+hints:
+- Usa Objects.equals(a, b) para comparar nombres (puede ser null) y Objects.hash(name, age) para el hashCode; java.util.Objects está permitido.
+- 'En equals: primero if (this == other) return true; luego if (!(other instanceof Person)) return false; después compara los campos.'
+- 'Un HashSet usa hashCode para ubicar y equals para confirmar: si no los sobrescribes, dos Person iguales cuentan como distintos.'
+starterCode: |
+  import java.util.*;
+
+  public class Solution {
+
+      public static class Person {
+          private final String name;
+          private final int age;
+
+          public Person(String name, int age) {
+              this.name = name;
+              this.age = age;
+          }
+
+          // Tu código aquí: toString, equals y hashCode
+      }
+
+      public static int countDistinct(List<Person> people) {
+          // Tu código aquí
+          return 0;
+      }
+  }
+referenceSolution: |
+  import java.util.*;
+
+  public class Solution {
+
+      public static class Person {
+          private final String name;
+          private final int age;
+
+          public Person(String name, int age) {
+              this.name = name;
+              this.age = age;
+          }
+
+          @Override
+          public String toString() {
+              return "Person{name='" + name + "', age=" + age + "}";
+          }
+
+          @Override
+          public boolean equals(Object other) {
+              if (this == other) {
+                  return true;
+              }
+              if (!(other instanceof Person)) {
+                  return false;
+              }
+              Person p = (Person) other;
+              return age == p.age && Objects.equals(name, p.name);
+          }
+
+          @Override
+          public int hashCode() {
+              return Objects.hash(name, age);
+          }
+      }
+
+      public static int countDistinct(List<Person> people) {
+          if (people == null) {
+              return 0;
+          }
+          return new HashSet<>(people).size();
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+  import java.util.*;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("toString muestra nombre y edad con el formato exacto")
+      void formatoToString() {
+          assertEquals("Person{name='Ana', age=30}", new Solution.Person("Ana", 30).toString());
+          assertEquals("Person{name='Luis', age=5}", new Solution.Person("Luis", 5).toString());
+      }
+
+      @Test
+      @DisplayName("Personas con mismo nombre y edad son iguales")
+      void igualesPorValor() {
+          assertEquals(new Solution.Person("Ana", 30), new Solution.Person("Ana", 30));
+      }
+
+      @Test
+      @DisplayName("Distinto nombre o distinta edad no son iguales")
+      void distintas() {
+          assertNotEquals(new Solution.Person("Ana", 30), new Solution.Person("Ana", 31));
+          assertNotEquals(new Solution.Person("Ana", 30), new Solution.Person("Luis", 30));
+      }
+
+      @Test
+      @DisplayName("equals con null y con otro tipo devuelve false")
+      void nullYOtroTipo() {
+          Solution.Person p = new Solution.Person("Ana", 30);
+          assertFalse(p.equals(null));
+          assertFalse(p.equals("Ana"));
+          assertTrue(p.equals(p));
+      }
+
+      @Test
+      @DisplayName("Personas iguales tienen el mismo hashCode")
+      void hashCoherente() {
+          assertEquals(new Solution.Person("Ana", 30).hashCode(), new Solution.Person("Ana", 30).hashCode());
+      }
+
+      @Test
+      @DisplayName("Un nombre null no rompe equals, hashCode ni toString")
+      void nombreNull() {
+          Solution.Person a = new Solution.Person(null, 1);
+          Solution.Person b = new Solution.Person(null, 1);
+          assertEquals(a, b);
+          assertEquals(a.hashCode(), b.hashCode());
+          assertEquals("Person{name='null', age=1}", a.toString());
+      }
+
+      @Test
+      @DisplayName("countDistinct elimina duplicados por valor")
+      void contarDistintas() {
+          List<Solution.Person> lista = List.of(new Solution.Person("Ana", 30), new Solution.Person("Ana", 30), new Solution.Person("Luis", 25));
+          assertEquals(2, Solution.countDistinct(lista));
+      }
+
+      @Test
+      @DisplayName("countDistinct distingue por edad y acepta vacío o null")
+      void contarCasosBorde() {
+          assertEquals(2, Solution.countDistinct(List.of(new Solution.Person("Ana", 30), new Solution.Person("Ana", 31))));
+          assertEquals(0, Solution.countDistinct(new ArrayList<>()));
+          assertEquals(0, Solution.countDistinct(null));
+      }
+  }

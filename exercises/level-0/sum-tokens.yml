@@ -1,0 +1,103 @@
+slug: sum-tokens
+level: 0
+topic: input-parsing
+title: Sumar tokens numéricos
+statement: |
+  Escribe un método que reciba un texto con "palabras" separadas por espacios o saltos de línea y devuelva la suma de todos los tokens que sean enteros, ignorando los demás. Usa un Scanner sobre el String con hasNextInt() para saber si el siguiente token es un entero y next() para descartar el que no lo es.
+
+  Ejemplos:
+  - "1 a 2 b 3" -> 6
+  - "hola mundo" -> 0
+  - "10 -4\nx 5" -> 11
+  - "3.5 7" -> 7 (3.5 no es un entero)
+
+  Si el texto es null o vacío, devuelve 0.
+methodSignature: public static int sumTokens(String input)
+className: Solution
+estimatedMinutes: 15
+difficulty: easy
+hints:
+- Un ciclo while (scanner.hasNext()) recorre todos los tokens, sean del tipo que sean.
+- 'Dentro del ciclo, pregunta scanner.hasNextInt(): si es true, súmalo con nextInt().'
+- Si no es entero, DEBES consumirlo con scanner.next(); si no, hasNextInt() seguirá viendo el mismo token y el ciclo no termina.
+starterCode: |
+  public class Solution {
+      public static int sumTokens(String input) {
+          // Tu código aquí
+          return -1;
+      }
+  }
+referenceSolution: |
+  import java.util.Scanner;
+
+  public class Solution {
+      public static int sumTokens(String input) {
+          if (input == null) {
+              return 0;
+          }
+          Scanner scanner = new Scanner(input);
+          int suma = 0;
+          while (scanner.hasNext()) {
+              if (scanner.hasNextInt()) {
+                  suma += scanner.nextInt();
+              } else {
+                  scanner.next();
+              }
+          }
+          scanner.close();
+          return suma;
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import java.util.*;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Suma los enteros e ignora las palabras")
+      void t52710() {
+          assertEquals(6, Solution.sumTokens("1 a 2 b 3"));
+      }
+
+      @Test
+      @DisplayName("Sin números la suma es cero")
+      void t44396() {
+          assertEquals(0, Solution.sumTokens("hola mundo"));
+      }
+
+      @Test
+      @DisplayName("Funciona con negativos y saltos de línea")
+      void t27726() {
+          assertEquals(11, Solution.sumTokens("10 -4\nx 5"));
+      }
+
+      @Test
+      @DisplayName("Un decimal no cuenta como entero")
+      void t85553() {
+          assertEquals(7, Solution.sumTokens("3.5 7"));
+      }
+
+      @Test
+      @DisplayName("Texto null o vacío da cero")
+      void t50101() {
+          assertEquals(0, Solution.sumTokens(null));
+          assertEquals(0, Solution.sumTokens(""));
+      }
+
+      @Test
+      @DisplayName("Solo números")
+      void t67985() {
+          assertEquals(100, Solution.sumTokens("10 20 30 40"));
+      }
+
+      @Test
+      @DisplayName("Mezcla tokens raros sin quedarse en un ciclo infinito")
+      void t69267() {
+          assertEquals(3, Solution.sumTokens("a1 1 -- 2 3x"));
+      }
+  }

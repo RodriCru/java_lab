@@ -1,0 +1,117 @@
+slug: overloaded-area
+level: 0
+topic: functions
+title: "Sobrecarga de métodos: áreas"
+statement: |
+  La sobrecarga (overloading) permite tener varios métodos con el MISMO nombre pero distintos parámetros; Java elige cuál ejecutar según los argumentos de la llamada. Implementa tres versiones de area en la clase Solution:
+
+  1. area(double width, double height): área de un RECTÁNGULO = width * height. (Es la firma principal.)
+  2. area(double radius): área de un CÍRCULO = Math.PI * radius * radius.
+  3. area(double base, double height, boolean triangle): si triangle es true, área de un TRIÁNGULO = base * height / 2; si es false, área de un rectángulo = base * height.
+
+  Ejemplos:
+  - area(3.0, 4.0) -> 12.0
+  - area(1.0) -> 3.14159... (Math.PI)
+  - area(2.0) -> 12.566... (4 * Math.PI)
+  - area(6.0, 5.0, true) -> 15.0
+  - area(6.0, 5.0, false) -> 30.0
+
+  Se garantiza que los valores recibidos son mayores o iguales que 0.
+methodSignature: "public static double area(double width, double height)"
+className: Solution
+estimatedMinutes: 12
+difficulty: easy
+hints:
+  - "Los tres métodos se llaman area; el compilador los distingue por el número y tipo de parámetros, no por el nombre ni por el tipo de retorno."
+  - "Círculo: Math.PI * radius * radius. Rectángulo: width * height."
+  - "En la tercera versión usa el booleano: if (triangle) { return base * height / 2; } return base * height; (o un ternario)."
+starterCode: |
+  public class Solution {
+
+      public static double area(double width, double height) {
+          // Tu código aquí
+          return -1;
+      }
+
+      public static double area(double radius) {
+          // Tu código aquí
+          return -1;
+      }
+
+      public static double area(double base, double height, boolean triangle) {
+          // Tu código aquí
+          return -1;
+      }
+  }
+referenceSolution: |
+  public class Solution {
+
+      public static double area(double width, double height) {
+          return width * height;
+      }
+
+      public static double area(double radius) {
+          return Math.PI * radius * radius;
+      }
+
+      public static double area(double base, double height, boolean triangle) {
+          return triangle ? base * height / 2 : base * height;
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+      @Test
+      @DisplayName("Área de un rectángulo")
+      void caso1() {
+          assertEquals(12.0, Solution.area(3.0, 4.0), 1e-9);
+      }
+
+      @Test
+      @DisplayName("Rectángulo con un lado cero")
+      void caso2() {
+          assertEquals(0.0, Solution.area(0.0, 5.0), 1e-9);
+      }
+
+      @Test
+      @DisplayName("Área de un círculo de radio 1")
+      void caso3() {
+          assertEquals(Math.PI, Solution.area(1.0), 1e-9);
+      }
+
+      @Test
+      @DisplayName("Área de un círculo de radio 2")
+      void caso4() {
+          assertEquals(4 * Math.PI, Solution.area(2.0), 1e-9);
+      }
+
+      @Test
+      @DisplayName("Círculo de radio cero")
+      void caso5() {
+          assertEquals(0.0, Solution.area(0.0), 1e-9);
+      }
+
+      @Test
+      @DisplayName("Área de un triángulo")
+      void caso6() {
+          assertEquals(15.0, Solution.area(6.0, 5.0, true), 1e-9);
+      }
+
+      @Test
+      @DisplayName("Con triangle en false calcula un rectángulo")
+      void caso7() {
+          assertEquals(30.0, Solution.area(6.0, 5.0, false), 1e-9);
+      }
+
+      @Test
+      @DisplayName("Cada sobrecarga se elige según los argumentos")
+      void caso8() {
+          assertEquals(10.0, Solution.area(2.0, 5.0), 1e-9);
+          assertEquals(5.0, Solution.area(2.0, 5.0, true), 1e-9);
+          assertEquals(Math.PI * 25, Solution.area(5.0), 1e-9);
+      }
+  }

@@ -1,0 +1,112 @@
+# Catálogo de temas: nombre, descripción, orden y teoría (Markdown) de cada sección.
+# Todo `topic` de un ejercicio debe existir aquí. `order` ordena las secciones dentro de un nivel.
+# La clave `theory` se rellena por tema; si falta, la pantalla del ejercicio no muestra teoría.
+topics:
+  - id: basics
+    name: Lo más básico
+    description: Tus primeros programas en Java - imprimir, usar variables, condicionales y ciclos sencillos.
+    order: 1
+  - id: first-steps
+    name: Primeros pasos
+    description: Calentamiento con condicionales y ciclos sencillos para soltar la mano.
+    order: 5
+  - id: logic-math
+    name: Lógica y matemáticas
+    description: Problemas de razonamiento numérico que combinan condicionales, ciclos y operadores.
+    order: 6
+  - id: divisibility
+    name: Divisibilidad y primos
+    description: Múltiplos, divisores, MCD, MCM y números primos con el operador módulo.
+    order: 7
+  - id: digits
+    name: Dígitos de un número
+    description: Separar, sumar e invertir los dígitos con división y módulo entre 10.
+    order: 8
+  - id: operators-decisions
+    name: Operadores y decisiones
+    description: if, else, switch, operadores lógicos y bit a bit para decidir qué camino sigue el programa.
+    order: 10
+  - id: functions
+    name: Funciones y argumentos
+    description: Métodos, sobrecarga y varargs; cómo se pasan los datos a una función.
+    order: 20
+  - id: loops
+    name: Ciclos y foreach
+    description: for, while y foreach para repetir y recorrer datos.
+    order: 30
+  - id: input-parsing
+    name: Entrada de datos
+    description: Convertir texto en números, pares y matrices, como llegan los datos en una entrevista.
+    order: 40
+  - id: strings
+    name: Cadenas de texto
+    description: Recorrer, comparar, invertir y transformar String y StringBuilder.
+    order: 50
+  - id: collections
+    name: Colecciones
+    description: List, Set, Map, Queue y Deque; cuándo usar cada una y cómo recorrerlas con seguridad.
+    order: 60
+  - id: oop-basics
+    name: POO - herencia y polimorfismo
+    description: Clases, encapsulamiento, herencia, super, polimorfismo y equals/hashCode/toString.
+    order: 70
+  - id: enums
+    name: Enums
+    description: Conjuntos fijos de valores, con campos, métodos y máquinas de estados sencillas.
+    order: 75
+  - id: abstraction
+    name: Clases abstractas e interfaces
+    description: Contratos, métodos default y el patrón método plantilla y estrategia.
+    order: 80
+  - id: exceptions
+    name: Excepciones
+    description: try, catch, finally, try-with-resources y excepciones propias.
+    order: 90
+  - id: spring-principles
+    name: Principios de Spring
+    description: Inyección de dependencias e inversión de control explicadas en Java puro.
+    order: 100
+  - id: arrays
+    name: Arreglos
+    description: Recorrer, buscar, invertir y combinar arreglos de una dimensión.
+    order: 140
+  - id: matrices-patterns
+    name: Matrices y patrones
+    description: Arreglos de dos dimensiones, recorridos y transformaciones.
+    order: 150
+  - id: recursion
+    name: Recursión
+    description: Funciones que se llaman a sí mismas, con caso base y avance hacia él.
+    order: 160
+  - id: structures
+    name: Estructuras de datos
+    description: Pilas, conjuntos y mapas para resolver problemas de conteo y búsqueda rápida.
+    order: 170
+  - id: sorting
+    name: Ordenamiento
+    description: Algoritmos clásicos de ordenamiento y selección de elementos.
+    order: 180
+  - id: binary-search
+    name: Búsqueda binaria
+    description: Buscar en datos ordenados dividiendo el espacio a la mitad en cada paso.
+    order: 190
+  - id: oop
+    name: Objetos y clases
+    description: equals, Comparable, Comparator, records e inmutabilidad aplicados a problemas.
+    order: 200
+  - id: two-pointers
+    name: Dos punteros
+    description: Dos índices que recorren el arreglo para evitar ciclos anidados.
+    order: 210
+  - id: sliding-window
+    name: Ventana deslizante
+    description: Mantener un rango que se desplaza para resolver problemas de subarreglos.
+    order: 220
+  - id: dynamic-programming
+    name: Programación dinámica
+    description: Guardar resultados de subproblemas para no recalcularlos.
+    order: 230
+  - id: modern-java
+    name: Java moderno
+    description: Lambdas, Optional y streams para escribir código más corto y declarativo.
+    order: 240

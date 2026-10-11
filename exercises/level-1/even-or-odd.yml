@@ -1,0 +1,78 @@
+slug: even-or-odd
+level: 1
+topic: first-steps
+title: "Par o impar"
+statement: |
+  Escribe un método que reciba un número entero y devuelva true si el número es par, o false si es impar.
+
+  El cero se considera par. Los números negativos siguen la misma regla: -4 es par porque el resto de dividirlo entre 2 es 0.
+
+  Ejemplo:
+  - Entrada: 4 -> Salida: true
+  - Entrada: 7 -> Salida: false
+  - Entrada: -3 -> Salida: false
+methodSignature: "public static boolean isEven(int number)"
+className: Solution
+estimatedMinutes: 5
+difficulty: easy
+hints:
+  - "Un número es par cuando el resto de dividirlo entre 2 es cero."
+  - "En Java el operador % devuelve el resto de la división."
+  - "Compara ese resto con 0 en la expresión booleana que devuelve el método."
+starterCode: |
+  public class Solution {
+      public static boolean isEven(int number) {
+          // Tu código aquí
+          return false;
+      }
+  }
+referenceSolution: |
+  public class Solution {
+      public static boolean isEven(int number) {
+          return number % 2 == 0;
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import static org.junit.jupiter.api.Assertions.assertEquals;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Devuelve true para un número par")
+      void numeroPar() {
+          assertEquals(true, Solution.isEven(4));
+      }
+
+      @Test
+      @DisplayName("Devuelve false para un número impar")
+      void numeroImpar() {
+          assertEquals(false, Solution.isEven(7));
+      }
+
+      @Test
+      @DisplayName("El cero se considera par")
+      void ceroEsPar() {
+          assertEquals(true, Solution.isEven(0));
+      }
+
+      @Test
+      @DisplayName("Un negativo par devuelve true")
+      void negativoPar() {
+          assertEquals(true, Solution.isEven(-4));
+      }
+
+      @Test
+      @DisplayName("Un negativo impar devuelve false")
+      void negativoImpar() {
+          assertEquals(false, Solution.isEven(-3));
+      }
+
+      @Test
+      @DisplayName("Funciona con el valor máximo de un int")
+      void valorLimite() {
+          assertEquals(false, Solution.isEven(Integer.MAX_VALUE));
+      }
+  }

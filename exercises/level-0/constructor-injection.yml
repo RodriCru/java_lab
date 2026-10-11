@@ -1,0 +1,144 @@
+slug: constructor-injection
+level: 0
+topic: spring-principles
+title: Inyección por constructor
+statement: |
+  La **inyección de dependencias** significa que una clase no crea lo que necesita: se lo entregan desde fuera. La forma más recomendada (la que usa Spring) es la **inyección por constructor**: el servicio recibe su dependencia como parámetro y la guarda en un campo final. Así depende de una interfaz y se puede probar con una implementación falsa.
+
+  Dentro de Solution ya existe la interfaz UserRepository con el método String findNameById(int id) (devuelve null si el usuario no existe). Completa la clase anidada GreetingService:
+  - Su constructor recibe un UserRepository y lo guarda. Si es null, lanza IllegalArgumentException.
+  - greet(int id) devuelve "Hola, " + nombre + "!" usando el repositorio; si el repositorio devuelve null, devuelve "Hola, invitado!".
+
+  Además, escribe el método greetUser, que crea un GreetingService con el repositorio recibido y devuelve greet(id).
+
+  Ejemplos (repositorio donde 1 -> "Ana"):
+  - greetUser(repo, 1) -> "Hola, Ana!"
+  - greetUser(repo, 99) -> "Hola, invitado!"
+  - greetUser(null, 1) -> lanza IllegalArgumentException
+methodSignature: "public static String greetUser(UserRepository repository, int id)"
+className: Solution
+estimatedMinutes: 15
+difficulty: easy
+hints:
+  - "Declara el campo como private final UserRepository repository y asígnalo en el constructor: this.repository = repository."
+  - "Valida el parámetro antes de asignarlo: if (repository == null) throw new IllegalArgumentException(...)."
+  - "greet pide el nombre con repository.findNameById(id) y decide el saludo según sea null o no. greetUser solo hace new GreetingService(repository).greet(id)."
+starterCode: |
+  public class Solution {
+
+      public interface UserRepository {
+          String findNameById(int id);
+      }
+
+      public static class GreetingService {
+          // Tu código aquí: campo final para el repositorio
+
+          public GreetingService(UserRepository repository) {
+              // Tu código aquí: validar null y guardar el repositorio
+          }
+
+          public String greet(int id) {
+              // Tu código aquí
+              return null;
+          }
+      }
+
+      public static String greetUser(UserRepository repository, int id) {
+          // Tu código aquí
+          return null;
+      }
+  }
+referenceSolution: |
+  public class Solution {
+
+      public interface UserRepository {
+          String findNameById(int id);
+      }
+
+      public static class GreetingService {
+          private final UserRepository repository;
+
+          public GreetingService(UserRepository repository) {
+              if (repository == null) {
+                  throw new IllegalArgumentException("El repositorio es obligatorio");
+              }
+              this.repository = repository;
+          }
+
+          public String greet(int id) {
+              String name = repository.findNameById(id);
+              return name == null ? "Hola, invitado!" : "Hola, " + name + "!";
+          }
+      }
+
+      public static String greetUser(UserRepository repository, int id) {
+          return new GreetingService(repository).greet(id);
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      private static Solution.UserRepository fake() {
+          return id -> id == 1 ? "Ana" : (id == 2 ? "Luis" : null);
+      }
+
+      @Test
+      @DisplayName("Saluda al usuario que devuelve el repositorio")
+      void usuarioExistente() {
+          assertEquals("Hola, Ana!", Solution.greetUser(fake(), 1));
+          assertEquals("Hola, Luis!", Solution.greetUser(fake(), 2));
+      }
+
+      @Test
+      @DisplayName("Si el usuario no existe saluda al invitado")
+      void usuarioInexistente() {
+          assertEquals("Hola, invitado!", Solution.greetUser(fake(), 99));
+      }
+
+      @Test
+      @DisplayName("Un repositorio null lanza IllegalArgumentException")
+      void repositorioNulo() {
+          assertThrows(IllegalArgumentException.class, () -> Solution.greetUser(null, 1));
+          assertThrows(IllegalArgumentException.class, () -> new Solution.GreetingService(null));
+      }
+
+      @Test
+      @DisplayName("El servicio usa exactamente el repositorio inyectado")
+      void usaElRepositorioInyectado() {
+          int[] calls = {0};
+          int[] lastId = {-1};
+          Solution.UserRepository spy = id -> {
+              calls[0]++;
+              lastId[0] = id;
+              return "Mia";
+          };
+          Solution.GreetingService service = new Solution.GreetingService(spy);
+          assertEquals("Hola, Mia!", service.greet(7));
+          assertEquals(1, calls[0]);
+          assertEquals(7, lastId[0]);
+      }
+
+      @Test
+      @DisplayName("El mismo servicio reacciona a cambios del repositorio")
+      void repositorioCambiante() {
+          String[] current = {"Ana"};
+          Solution.GreetingService service = new Solution.GreetingService(id -> current[0]);
+          assertEquals("Hola, Ana!", service.greet(1));
+          current[0] = null;
+          assertEquals("Hola, invitado!", service.greet(1));
+      }
+
+      @Test
+      @DisplayName("Dos servicios con repositorios distintos no se mezclan")
+      void serviciosIndependientes() {
+          Solution.GreetingService a = new Solution.GreetingService(id -> "A");
+          Solution.GreetingService b = new Solution.GreetingService(id -> "B");
+          assertEquals("Hola, A!", a.greet(1));
+          assertEquals("Hola, B!", b.greet(1));
+      }
+  }

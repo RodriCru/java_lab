@@ -1,0 +1,84 @@
+slug: power
+level: 1
+topic: recursion
+title: Potencia
+statement: |
+  Escribe un método que calcule base elevado a exponent y devuelva el resultado como long, sin usar Math.pow.
+
+  Ejemplo:
+  - Entrada: base=2, exponent=10 -> Salida: 1024
+  - Entrada: base=5, exponent=0 -> Salida: 1
+  - Entrada: base=-2, exponent=3 -> Salida: -8
+
+  Reglas:
+  - exponent siempre es mayor o igual a 0.
+  - Cuando exponent es 0 el resultado siempre es 1, incluso si base es 0.
+methodSignature: "public static long power(int base, int exponent)"
+className: Solution
+estimatedMinutes: 12
+difficulty: easy
+hints:
+  - "Empieza con un resultado igual a 1 y multiplica base tantas veces como indique exponent."
+  - "Con un ciclo que se repita exponent veces basta; recuerda que el caso exponent = 0 no debe multiplicar nada."
+  - "Puedes resolverlo también de forma recursiva: power(base, exponent) = base * power(base, exponent - 1), con caso base exponent = 0."
+starterCode: |
+  public class Solution {
+      public static long power(int base, int exponent) {
+          // Tu código aquí
+          return 0L;
+      }
+  }
+referenceSolution: |
+  public class Solution {
+      public static long power(int base, int exponent) {
+          long resultado = 1L;
+          for (int i = 0; i < exponent; i++) {
+              resultado *= base;
+          }
+          return resultado;
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Calcula una potencia con exponente mayor que uno")
+      void potenciaNormal() {
+          assertEquals(1024L, Solution.power(2, 10));
+      }
+
+      @Test
+      @DisplayName("Devuelve 1 cuando el exponente es 0")
+      void exponenteCero() {
+          assertEquals(1L, Solution.power(5, 0));
+      }
+
+      @Test
+      @DisplayName("Devuelve 1 cuando la base es 0 y el exponente es 0")
+      void baseCeroExponenteCero() {
+          assertEquals(1L, Solution.power(0, 0));
+      }
+
+      @Test
+      @DisplayName("Calcula potencias con base negativa y exponente impar")
+      void baseNegativa() {
+          assertEquals(-8L, Solution.power(-2, 3));
+      }
+
+      @Test
+      @DisplayName("Devuelve la base cuando el exponente es 1")
+      void exponenteUno() {
+          assertEquals(7L, Solution.power(7, 1));
+      }
+
+      @Test
+      @DisplayName("Devuelve 0 cuando la base es 0 y el exponente es positivo")
+      void baseCero() {
+          assertEquals(0L, Solution.power(0, 5));
+      }
+  }

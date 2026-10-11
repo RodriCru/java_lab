@@ -1,0 +1,111 @@
+slug: longest-unique-substring
+level: 2
+topic: strings
+title: "Subcadena más larga sin repetidos"
+statement: |
+  Dada una cadena, devuelve la longitud de la subcadena (caracteres contiguos) más larga que no contiene caracteres repetidos.
+
+  Ejemplos:
+  - "abcabcbb" -> 3 (la subcadena "abc")
+  - "bbbbb" -> 1
+  - "pwwkew" -> 3 (la subcadena "wke")
+  - "" -> 0
+
+  Si el texto es null o vacío, devuelve 0. Se distinguen mayúsculas de minúsculas.
+methodSignature: "public static int lengthOfLongestSubstring(String text)"
+className: Solution
+estimatedMinutes: 25
+difficulty: medium
+hints:
+  - "La fuerza bruta revisa todas las subcadenas; piensa en cómo evitar reexaminar caracteres."
+  - "Mantén una ventana [inicio, fin] y un Set o Map con los caracteres que contiene."
+  - "Si el carácter nuevo ya está en la ventana, mueve el inicio (guardando la última posición de cada carácter en un Map puedes saltar directamente)."
+starterCode: |
+  public class Solution {
+      public static int lengthOfLongestSubstring(String text) {
+          // Tu código aquí
+          return 0;
+      }
+  }
+referenceSolution: |
+  import java.util.*;
+  public class Solution {
+      public static int lengthOfLongestSubstring(String text) {
+          if (text == null) return 0;
+          Map<Character, Integer> ultima = new HashMap<>();
+          int inicio = 0, mejor = 0;
+          for (int fin = 0; fin < text.length(); fin++) {
+              char c = text.charAt(fin);
+              Integer previa = ultima.get(c);
+              if (previa != null && previa >= inicio) inicio = previa + 1;
+              ultima.put(c, fin);
+              mejor = Math.max(mejor, fin - inicio + 1);
+          }
+          return mejor;
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+  import java.util.*;
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Ejemplo básico abcabcbb")
+      void t0() {
+          assertEquals(3, Solution.lengthOfLongestSubstring("abcabcbb"));
+      }
+
+      @Test
+      @DisplayName("Todos los caracteres iguales")
+      void t1() {
+          assertEquals(1, Solution.lengthOfLongestSubstring("bbbbb"));
+      }
+
+      @Test
+      @DisplayName("pwwkew devuelve 3")
+      void t2() {
+          assertEquals(3, Solution.lengthOfLongestSubstring("pwwkew"));
+      }
+
+      @Test
+      @DisplayName("Cadena vacía y null devuelven 0")
+      void t3() {
+          assertEquals(0, Solution.lengthOfLongestSubstring(""));
+          assertEquals(0, Solution.lengthOfLongestSubstring(null));
+      }
+
+      @Test
+      @DisplayName("Un solo carácter")
+      void t4() {
+          assertEquals(1, Solution.lengthOfLongestSubstring("a"));
+      }
+
+      @Test
+      @DisplayName("Repetido separado: abba y dvdf")
+      void t5() {
+          assertEquals(2, Solution.lengthOfLongestSubstring("abba"));
+          assertEquals(3, Solution.lengthOfLongestSubstring("dvdf"));
+      }
+
+      @Test
+      @DisplayName("Distingue mayúsculas de minúsculas")
+      void t6() {
+          assertEquals(4, Solution.lengthOfLongestSubstring("aAbB"));
+      }
+
+      @Test
+      @DisplayName("Entrada grande rápida")
+      void t7() {
+          StringBuilder sb = new StringBuilder();
+          for (int i = 0; i < 200000; i++) sb.append((char) ('a' + i % 26));
+          assertEquals(26, Solution.lengthOfLongestSubstring(sb.toString()));
+      }
+  }
+complexityQuestion:
+  prompt: "¿Cuál es la complejidad temporal de tu solución óptima, en función de n?"
+  options: ["O(1)", "O(n)", "O(n log n)", "O(n²)"]
+  correctIndex: 1
+  explanation: "Cada carácter entra y sale de la ventana como máximo una vez, así que el recorrido total es lineal."

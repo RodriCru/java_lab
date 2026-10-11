@@ -1,0 +1,126 @@
+slug: sort-people
+level: 1
+topic: oop
+title: Ordenar personas por edad
+statement: |
+  Dentro de la clase Solution ya existe una clase anidada Person con los campos públicos name y age. Escribe un método que reciba dos arreglos PARALELOS, uno con nombres y otro con edades, y devuelva los NOMBRES ordenados por edad ascendente.
+
+  Reglas del contrato:
+  - El arreglo names[i] corresponde a la persona con edad ages[i].
+  - Si dos edades coinciden, ordena por nombre alfabéticamente.
+  - El resultado contiene solo los nombres, no las edades.
+
+  Ejemplo:
+  - Entrada: names=["Ana", "Luis", "Eva"], ages=[30, 20, 25] -> Salida: ["Luis", "Eva", "Ana"]
+  - Entrada: names=["Zoe", "Amy"], ages=[20, 20] -> Salida: ["Amy", "Zoe"]
+  - Entrada: names=["Ana"], ages=[40] -> Salida: ["Ana"]
+
+  Si algún arreglo es null o las longitudes no coinciden, devuelve un arreglo vacío (new String[0]).
+methodSignature: "public static String[] sortByAge(String[] names, int[] ages)"
+className: Solution
+estimatedMinutes: 15
+difficulty: easy
+hints:
+  - "Valida primero si algún arreglo es null o si las longitudes son distintas."
+  - "Construye un arreglo de objetos Person con los datos paralelos."
+  - "Puedes ordenar con java.util.Arrays.sort y un comparador, o con un ordenamiento simple por selección."
+starterCode: |
+  public class Solution {
+
+      public static class Person {
+          public String name;
+          public int age;
+
+          public Person(String name, int age) {
+              this.name = name;
+              this.age = age;
+          }
+      }
+
+      public static String[] sortByAge(String[] names, int[] ages) {
+          // Tu código aquí
+          return new String[0];
+      }
+  }
+referenceSolution: |
+  public class Solution {
+
+      public static class Person {
+          public String name;
+          public int age;
+
+          public Person(String name, int age) {
+              this.name = name;
+              this.age = age;
+          }
+      }
+
+      public static String[] sortByAge(String[] names, int[] ages) {
+          if (names == null || ages == null || names.length != ages.length) {
+              return new String[0];
+          }
+          Person[] personas = new Person[names.length];
+          for (int i = 0; i < names.length; i++) {
+              personas[i] = new Person(names[i], ages[i]);
+          }
+          java.util.Arrays.sort(personas, (a, b) -> {
+              if (a.age != b.age) {
+                  return Integer.compare(a.age, b.age);
+              }
+              return a.name.compareTo(b.name);
+          });
+          String[] resultado = new String[personas.length];
+          for (int i = 0; i < personas.length; i++) {
+              resultado[i] = personas[i].name;
+          }
+          return resultado;
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Ordena los nombres por edad ascendente")
+      void ordenaPorEdad() {
+          String[] resultado = Solution.sortByAge(new String[] {"Ana", "Luis", "Eva"}, new int[] {30, 20, 25});
+          assertArrayEquals(new String[] {"Luis", "Eva", "Ana"}, resultado);
+      }
+
+      @Test
+      @DisplayName("Ante edades iguales ordena por nombre")
+      void empatePorNombre() {
+          String[] resultado = Solution.sortByAge(new String[] {"Zoe", "Amy", "Mia"}, new int[] {20, 20, 20});
+          assertArrayEquals(new String[] {"Amy", "Mia", "Zoe"}, resultado);
+      }
+
+      @Test
+      @DisplayName("Un solo par nombre-edad se devuelve igual")
+      void unSoloPar() {
+          assertArrayEquals(new String[] {"Ana"}, Solution.sortByAge(new String[] {"Ana"}, new int[] {40}));
+      }
+
+      @Test
+      @DisplayName("Arreglos de distinta longitud devuelven un arreglo vacío")
+      void longitudesDistintas() {
+          assertArrayEquals(new String[0], Solution.sortByAge(new String[] {"Ana", "Luis"}, new int[] {30}));
+      }
+
+      @Test
+      @DisplayName("Un arreglo null devuelve un arreglo vacío")
+      void arregloNull() {
+          assertArrayEquals(new String[0], Solution.sortByAge(null, new int[] {30}));
+          assertArrayEquals(new String[0], Solution.sortByAge(new String[] {"Ana"}, null));
+      }
+
+      @Test
+      @DisplayName("Ordena edades que incluyen negativos y el mínimo entero")
+      void valoresLimite() {
+          String[] resultado = Solution.sortByAge(new String[] {"Ana", "Luis", "Eva"}, new int[] {0, Integer.MIN_VALUE, -7});
+          assertArrayEquals(new String[] {"Luis", "Eva", "Ana"}, resultado);
+      }
+  }

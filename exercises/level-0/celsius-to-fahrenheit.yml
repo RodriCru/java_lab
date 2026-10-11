@@ -1,0 +1,76 @@
+slug: celsius-to-fahrenheit
+level: 0
+topic: basics
+title: De Celsius a Fahrenheit
+statement: |
+  Variables numéricas y una fórmula. Escribe un método que convierta grados Celsius a Fahrenheit con la fórmula F = C * 9 / 5 + 32 y devuelva un double.
+
+  Cuidado: 9 / 5 con enteros da 1, no 1.8. Usa 9.0 / 5 (o multiplica primero) para no perder decimales.
+
+  Ejemplos:
+  - celsiusToFahrenheit(0) -> 32.0
+  - celsiusToFahrenheit(100) -> 212.0
+  - celsiusToFahrenheit(37) -> 98.6
+methodSignature: public static double celsiusToFahrenheit(double celsius)
+className: Solution
+estimatedMinutes: 6
+difficulty: easy
+hints:
+- El parámetro ya es double, así que celsius * 9 / 5 no pierde decimales.
+- Suma 32 al final.
+starterCode: |
+  public class Solution {
+
+      public static double celsiusToFahrenheit(double celsius) {
+          // Tu código aquí
+          return 0;
+      }
+  }
+referenceSolution: |
+  public class Solution {
+
+      public static double celsiusToFahrenheit(double celsius) {
+          return celsius * 9 / 5 + 32;
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  import java.io.ByteArrayOutputStream;
+  import java.io.PrintStream;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Punto de congelación")
+      void t1() {
+          assertEquals(32.0, Solution.celsiusToFahrenheit(0), 0.0001);
+      }
+
+      @Test
+      @DisplayName("Punto de ebullición")
+      void t2() {
+          assertEquals(212.0, Solution.celsiusToFahrenheit(100), 0.0001);
+      }
+
+      @Test
+      @DisplayName("Temperatura corporal")
+      void t3() {
+          assertEquals(98.6, Solution.celsiusToFahrenheit(37), 0.0001);
+      }
+
+      @Test
+      @DisplayName("Negativos")
+      void t4() {
+          assertEquals(-40.0, Solution.celsiusToFahrenheit(-40), 0.0001);
+      }
+
+      @Test
+      @DisplayName("Decimales")
+      void t5() {
+          assertEquals(79.7, Solution.celsiusToFahrenheit(26.5), 0.0001);
+      }
+  }

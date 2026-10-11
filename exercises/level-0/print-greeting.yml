@@ -1,0 +1,78 @@
+slug: print-greeting
+level: 0
+topic: basics
+title: Imprimir un saludo
+statement: |
+  Imprimir en pantalla se hace con System.out.println(...). Escribe un método que imprima el saludo "Hola, " seguido del nombre y un signo de exclamación, en una sola línea.
+
+  Ejemplos:
+  - printGreeting("Ana") imprime: Hola, Ana!
+  - printGreeting("Luis") imprime: Hola, Luis!
+methodSignature: public static void printGreeting(String name)
+className: Solution
+estimatedMinutes: 5
+difficulty: easy
+hints:
+- System.out.println imprime el texto y salta de línea.
+- 'Une el texto con + : "Hola, " + name + "!".'
+starterCode: |
+  public class Solution {
+
+      public static void printGreeting(String name) {
+          // Tu código aquí
+      }
+  }
+referenceSolution: |
+  public class Solution {
+
+      public static void printGreeting(String name) {
+          System.out.println("Hola, " + name + "!");
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  import java.io.ByteArrayOutputStream;
+  import java.io.PrintStream;
+
+  class SolutionTest {
+
+      private static String capturar(Runnable accion) {
+          PrintStream original = System.out;
+          ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+          System.setOut(new PrintStream(buffer, true));
+          try {
+              accion.run();
+          } finally {
+              System.setOut(original);
+          }
+          return buffer.toString().replace("\r\n", "\n");
+      }
+
+      @Test
+      @DisplayName("Saludo a Ana")
+      void t1() {
+          assertEquals("Hola, Ana!\n", capturar(() -> Solution.printGreeting("Ana")));
+      }
+
+      @Test
+      @DisplayName("Saludo a Luis")
+      void t2() {
+          assertEquals("Hola, Luis!\n", capturar(() -> Solution.printGreeting("Luis")));
+      }
+
+      @Test
+      @DisplayName("Nombre vacío")
+      void t3() {
+          assertEquals("Hola, !\n", capturar(() -> Solution.printGreeting("")));
+      }
+
+      @Test
+      @DisplayName("Nombre con espacios")
+      void t4() {
+          assertEquals("Hola, Ana María!\n", capturar(() -> Solution.printGreeting("Ana María")));
+      }
+  }

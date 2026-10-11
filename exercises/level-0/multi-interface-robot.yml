@@ -1,0 +1,156 @@
+slug: multi-interface-robot
+level: 0
+topic: abstraction
+title: Un robot, dos interfaces
+statement: |
+  Una clase puede implementar VARIAS interfaces (a diferencia de la herencia, que es de una sola clase). Dentro de Solution existen:
+
+    interface Walker { String walk(); }
+    interface Talker { String talk(); }
+
+  Completa la clase Robot, que implementa ambas y guarda su nombre:
+  - walk() devuelve nombre + " camina"
+  - talk() devuelve nombre + " dice: beep"
+
+  Y el método demo(name): crea un Robot con ese nombre, y lo usa una vez como Walker y otra como Talker, devolviendo walk() + " y " + talk().
+
+  Ejemplos:
+  - demo("R2") -> "R2 camina y R2 dice: beep"
+  - demo("") -> " camina y  dice: beep"
+methodSignature: public static String demo(String name)
+className: Solution
+estimatedMinutes: 15
+difficulty: easy
+hints:
+- 'Se declara así: class Robot implements Walker, Talker, separando las interfaces con coma.'
+- Robot debe sobrescribir los dos métodos (walk y talk) con @Override y usar el campo name.
+- 'En demo: Walker w = new Robot(name); Talker t = new Robot(name); y concatena w.walk() + '' y '' + t.talk().'
+starterCode: |
+  public class Solution {
+
+      public interface Walker {
+          String walk();
+      }
+
+      public interface Talker {
+          String talk();
+      }
+
+      public static class Robot implements Walker, Talker {
+          private final String name;
+
+          public Robot(String name) {
+              this.name = name;
+          }
+
+          @Override
+          public String walk() {
+              // Tu código aquí
+              return "";
+          }
+
+          @Override
+          public String talk() {
+              // Tu código aquí
+              return "";
+          }
+      }
+
+      public static String demo(String name) {
+          // Tu código aquí
+          return "";
+      }
+  }
+referenceSolution: |
+  public class Solution {
+
+      public interface Walker {
+          String walk();
+      }
+
+      public interface Talker {
+          String talk();
+      }
+
+      public static class Robot implements Walker, Talker {
+          private final String name;
+
+          public Robot(String name) {
+              this.name = name;
+          }
+
+          @Override
+          public String walk() {
+              return name + " camina";
+          }
+
+          @Override
+          public String talk() {
+              return name + " dice: beep";
+          }
+      }
+
+      public static String demo(String name) {
+          Walker walker = new Robot(name);
+          Talker talker = new Robot(name);
+          return walker.walk() + " y " + talker.talk();
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  import java.util.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("walk del robot")
+      void t1() throws Exception {
+          assertEquals("R2 camina", new Solution.Robot("R2").walk());
+      }
+
+      @Test
+      @DisplayName("talk del robot")
+      void t2() throws Exception {
+          assertEquals("R2 dice: beep", new Solution.Robot("R2").talk());
+      }
+
+      @Test
+      @DisplayName("demo combina ambas acciones")
+      void t3() throws Exception {
+          assertEquals("R2 camina y R2 dice: beep", Solution.demo("R2"));
+      }
+
+      @Test
+      @DisplayName("demo con otro nombre")
+      void t4() throws Exception {
+          assertEquals("Wall-E camina y Wall-E dice: beep", Solution.demo("Wall-E"));
+      }
+
+      @Test
+      @DisplayName("demo con nombre vacío")
+      void t5() throws Exception {
+          assertEquals(" camina y  dice: beep", Solution.demo(""));
+      }
+
+      @Test
+      @DisplayName("Robot es a la vez un Walker y un Talker")
+      void t6() throws Exception {
+          Object r = new Solution.Robot("X");
+          assertTrue(r instanceof Solution.Walker);
+          assertTrue(r instanceof Solution.Talker);
+      }
+
+      @Test
+      @DisplayName("Un mismo robot se puede usar con ambas interfaces")
+      void t7() throws Exception {
+          Solution.Robot r = new Solution.Robot("Max");
+          Solution.Walker w = r;
+          Solution.Talker t = r;
+          assertEquals("Max camina", w.walk());
+          assertEquals("Max dice: beep", t.talk());
+      }
+  }

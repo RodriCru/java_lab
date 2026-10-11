@@ -1,0 +1,164 @@
+slug: temperature-record
+level: 2
+topic: oop
+title: Registro de temperaturas
+statement: |
+  Dentro de Solution existe el record CityTemp(String city, double celsius) con un constructor compacto sin validar. Complétalo y después implementa hottestCity.
+
+  Validación del constructor compacto (lanza IllegalArgumentException):
+  - city no puede ser null ni estar vacía o contener solo espacios.
+  - celsius debe estar entre -90 y 60, ambos incluidos. Cualquier otro valor (incluido NaN) es inválido.
+
+  Reglas de hottestCity(readings):
+  - Devuelve el nombre de la ciudad con la temperatura MÁS ALTA.
+  - Si hay empate, devuelve la que aparece primero en la lista.
+  - Si la lista es null o está vacía, devuelve null.
+
+  Ejemplo:
+  - Entrada: [("Madrid", 35.5), ("Sevilla", 41.0), ("Oslo", 12.0)] -> Salida: "Sevilla"
+  - Entrada: [("A", 20), ("B", 20)] -> Salida: "A"
+  - Entrada: new CityTemp("X", 100) -> lanza IllegalArgumentException
+methodSignature: "public static String hottestCity(java.util.List<CityTemp> readings)"
+className: Solution
+estimatedMinutes: 18
+difficulty: medium
+hints:
+  - "En un record, el constructor compacto no lleva lista de parámetros: record CityTemp(...) { CityTemp { /* validar */ } }."
+  - "Usa city == null || city.isBlank() y la condición !(celsius >= -90 && celsius <= 60), que también atrapa NaN."
+  - "Para hottestCity recorre la lista guardando la mejor lectura; solo reemplázala si la nueva es ESTRICTAMENTE mayor."
+starterCode: |
+  public class Solution {
+
+      public record CityTemp(String city, double celsius) {
+          public CityTemp {
+              // Tu código aquí: valida city y celsius
+          }
+      }
+
+      public static String hottestCity(java.util.List<CityTemp> readings) {
+          // Tu código aquí
+          return null;
+      }
+  }
+referenceSolution: |
+  public class Solution {
+
+      public record CityTemp(String city, double celsius) {
+          public CityTemp {
+              if (city == null || city.isBlank()) {
+                  throw new IllegalArgumentException("La ciudad es obligatoria");
+              }
+              if (!(celsius >= -90 && celsius <= 60)) {
+                  throw new IllegalArgumentException("Temperatura fuera de rango");
+              }
+          }
+      }
+
+      public static String hottestCity(java.util.List<CityTemp> readings) {
+          if (readings == null || readings.isEmpty()) {
+              return null;
+          }
+          CityTemp best = readings.get(0);
+          for (CityTemp r : readings) {
+              if (r.celsius() > best.celsius()) {
+                  best = r;
+              }
+          }
+          return best.city();
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import java.util.ArrayList;
+  import java.util.Arrays;
+  import java.util.List;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Un registro válido se construye y expone sus datos")
+      void registroValido() {
+          Solution.CityTemp t = new Solution.CityTemp("Madrid", 35.5);
+          assertEquals("Madrid", t.city());
+          assertEquals(35.5, t.celsius(), 1e-9);
+      }
+
+      @Test
+      @DisplayName("Los límites -90 y 60 son válidos")
+      void limitesValidos() {
+          assertDoesNotThrow(() -> new Solution.CityTemp("Polo", -90));
+          assertDoesNotThrow(() -> new Solution.CityTemp("Desierto", 60));
+      }
+
+      @Test
+      @DisplayName("Temperaturas fuera de rango lanzan excepción")
+      void fueraDeRango() {
+          assertThrows(IllegalArgumentException.class, () -> new Solution.CityTemp("X", 60.1));
+          assertThrows(IllegalArgumentException.class, () -> new Solution.CityTemp("X", -90.1));
+          assertThrows(IllegalArgumentException.class, () -> new Solution.CityTemp("X", Double.NaN));
+      }
+
+      @Test
+      @DisplayName("Una ciudad null o vacía lanza excepción")
+      void ciudadInvalida() {
+          assertThrows(IllegalArgumentException.class, () -> new Solution.CityTemp(null, 10));
+          assertThrows(IllegalArgumentException.class, () -> new Solution.CityTemp("", 10));
+          assertThrows(IllegalArgumentException.class, () -> new Solution.CityTemp("   ", 10));
+      }
+
+      @Test
+      @DisplayName("hottestCity devuelve la ciudad más calurosa")
+      void masCalurosa() {
+          List<Solution.CityTemp> in = Arrays.asList(
+                  new Solution.CityTemp("Madrid", 35.5),
+                  new Solution.CityTemp("Sevilla", 41.0),
+                  new Solution.CityTemp("Oslo", 12.0));
+          assertEquals("Sevilla", Solution.hottestCity(in));
+      }
+
+      @Test
+      @DisplayName("En caso de empate gana la primera de la lista")
+      void empate() {
+          List<Solution.CityTemp> in = Arrays.asList(
+                  new Solution.CityTemp("A", 20),
+                  new Solution.CityTemp("B", 20));
+          assertEquals("A", Solution.hottestCity(in));
+      }
+
+      @Test
+      @DisplayName("Lista vacía o null devuelve null")
+      void vacia() {
+          assertNull(Solution.hottestCity(new ArrayList<>()));
+          assertNull(Solution.hottestCity(null));
+      }
+
+      @Test
+      @DisplayName("Funciona con temperaturas negativas y un solo elemento")
+      void negativas() {
+          assertEquals("Oslo", Solution.hottestCity(Arrays.asList(new Solution.CityTemp("Oslo", -20))));
+          List<Solution.CityTemp> in = Arrays.asList(
+                  new Solution.CityTemp("A", -30),
+                  new Solution.CityTemp("B", -5));
+          assertEquals("B", Solution.hottestCity(in));
+      }
+
+      @Test
+      @DisplayName("Lista grande")
+      void grande() {
+          List<Solution.CityTemp> in = new ArrayList<>();
+          for (int i = 0; i < 20000; i++) {
+              in.add(new Solution.CityTemp("C" + i, (i % 50) - 20));
+          }
+          in.add(new Solution.CityTemp("Top", 59));
+          assertEquals("Top", Solution.hottestCity(in));
+      }
+  }
+complexityQuestion:
+  prompt: "Para encontrar la ciudad más calurosa entre n lecturas sin ordenar la lista, ¿qué complejidad temporal tiene tu solución?"
+  options: ["O(n²)", "O(log n)", "O(n)", "O(n log n)"]
+  correctIndex: 2
+  explanation: "Basta una pasada guardando el máximo visto; ordenar costaría O(n log n) y no hace falta."

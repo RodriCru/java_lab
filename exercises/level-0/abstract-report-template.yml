@@ -1,0 +1,229 @@
+slug: abstract-report-template
+level: 0
+topic: abstraction
+title: Informe con método plantilla
+statement: |
+  Una clase abstracta puede definir el ESQUELETO de un algoritmo (método plantilla) y dejar pasos abstractos para que las subclases los rellenen. En Solution la clase abstracta Report ya declara los pasos title(), body() y footer() (este último con un valor por defecto).
+
+  Completa:
+  - Report.generate(): método plantilla, debe ser final. Devuelve tres líneas separadas por "\n": "=== " + title() + " ===", luego body(), luego footer().
+  - SalesReport(total): title() = "Ventas", body() = "Total: " + total (el double tal cual, p. ej. "Total: 150.5").
+  - InventoryReport(items): title() = "Inventario", body() = "Artículos: " + items, y sobrescribe footer() para devolver "-- Inventario cerrado --".
+  - buildAll recibe una lista de informes y une el resultado de generate() de cada uno separándolos por una línea en blanco ("\n\n"). Si la lista es null o vacía devuelve "".
+
+  Ejemplo:
+  - Entrada: [SalesReport(150.5)] -> Salida:
+    "=== Ventas ===\nTotal: 150.5\n-- Fin --"
+  - Entrada: [InventoryReport(12)] -> Salida:
+    "=== Inventario ===\nArtículos: 12\n-- Inventario cerrado --"
+methodSignature: public static String buildAll(List<Report> reports)
+className: Solution
+estimatedMinutes: 20
+difficulty: medium
+hints:
+- Un método abstract no tiene cuerpo y obliga a cada subclase concreta a implementarlo; el método plantilla llama a esos pasos sin saber quién los implementa.
+- 'Marca generate() como final para que ninguna subclase pueda cambiar el orden del esqueleto: public final String generate().'
+- Para la separación usa "\n" dentro del String de Java; en buildAll junta los informes con String.join("\n\n", lista).
+starterCode: |
+  import java.util.*;
+
+  public class Solution {
+
+      public abstract static class Report {
+          protected abstract String title();
+
+          protected abstract String body();
+
+          protected String footer() {
+              return "-- Fin --";
+          }
+
+          public String generate() {
+              // Tu código aquí: método plantilla; hazlo final
+              return "";
+          }
+      }
+
+      public static class SalesReport extends Report {
+          private final double total;
+
+          public SalesReport(double total) {
+              this.total = total;
+          }
+
+          @Override
+          protected String title() {
+              // Tu código aquí
+              return "";
+          }
+
+          @Override
+          protected String body() {
+              // Tu código aquí
+              return "";
+          }
+      }
+
+      public static class InventoryReport extends Report {
+          private final int items;
+
+          public InventoryReport(int items) {
+              this.items = items;
+          }
+
+          @Override
+          protected String title() {
+              // Tu código aquí
+              return "";
+          }
+
+          @Override
+          protected String body() {
+              // Tu código aquí
+              return "";
+          }
+
+          // Tu código aquí: sobrescribe footer()
+      }
+
+      public static String buildAll(List<Report> reports) {
+          // Tu código aquí
+          return "";
+      }
+  }
+referenceSolution: |
+  import java.util.*;
+
+  public class Solution {
+
+      public abstract static class Report {
+          protected abstract String title();
+
+          protected abstract String body();
+
+          protected String footer() {
+              return "-- Fin --";
+          }
+
+          public final String generate() {
+              return "=== " + title() + " ===\n" + body() + "\n" + footer();
+          }
+      }
+
+      public static class SalesReport extends Report {
+          private final double total;
+
+          public SalesReport(double total) {
+              this.total = total;
+          }
+
+          @Override
+          protected String title() {
+              return "Ventas";
+          }
+
+          @Override
+          protected String body() {
+              return "Total: " + total;
+          }
+      }
+
+      public static class InventoryReport extends Report {
+          private final int items;
+
+          public InventoryReport(int items) {
+              this.items = items;
+          }
+
+          @Override
+          protected String title() {
+              return "Inventario";
+          }
+
+          @Override
+          protected String body() {
+              return "Artículos: " + items;
+          }
+
+          @Override
+          protected String footer() {
+              return "-- Inventario cerrado --";
+          }
+      }
+
+      public static String buildAll(List<Report> reports) {
+          if (reports == null) {
+              return "";
+          }
+          List<String> parts = new ArrayList<>();
+          for (Report r : reports) {
+              parts.add(r.generate());
+          }
+          return String.join("\n\n", parts);
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+  import java.util.*;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("SalesReport usa el pie por defecto")
+      void ventas() {
+          assertEquals("=== Ventas ===\nTotal: 150.5\n-- Fin --", new Solution.SalesReport(150.5).generate());
+      }
+
+      @Test
+      @DisplayName("InventoryReport sobrescribe el pie")
+      void inventario() {
+          assertEquals("=== Inventario ===\nArtículos: 12\n-- Inventario cerrado --", new Solution.InventoryReport(12).generate());
+      }
+
+      @Test
+      @DisplayName("Un informe guardado como Report genera el texto de su clase real")
+      void polimorfismo() {
+          Solution.Report r = new Solution.InventoryReport(0);
+          assertEquals("=== Inventario ===\nArtículos: 0\n-- Inventario cerrado --", r.generate());
+      }
+
+      @Test
+      @DisplayName("Una subclase anónima solo debe implementar los pasos abstractos")
+      void subclaseAnonima() {
+          Solution.Report r = new Solution.Report() {
+              @Override
+              protected String title() {
+                  return "Prueba";
+              }
+
+              @Override
+              protected String body() {
+                  return "cuerpo";
+              }
+          };
+          assertEquals("=== Prueba ===\ncuerpo\n-- Fin --", r.generate());
+      }
+
+      @Test
+      @DisplayName("buildAll con un informe")
+      void unInforme() {
+          assertEquals("=== Ventas ===\nTotal: 0.0\n-- Fin --", Solution.buildAll(List.of(new Solution.SalesReport(0))));
+      }
+
+      @Test
+      @DisplayName("buildAll separa los informes con una línea en blanco y respeta el orden")
+      void variosInformes() {
+          List<Solution.Report> lista = List.of(new Solution.SalesReport(150.5), new Solution.InventoryReport(12));
+          assertEquals("=== Ventas ===\nTotal: 150.5\n-- Fin --\n\n=== Inventario ===\nArtículos: 12\n-- Inventario cerrado --", Solution.buildAll(lista));
+      }
+
+      @Test
+      @DisplayName("buildAll con lista vacía o null devuelve cadena vacía")
+      void vaciaONull() {
+          assertEquals("", Solution.buildAll(new ArrayList<>()));
+          assertEquals("", Solution.buildAll(null));
+      }
+  }

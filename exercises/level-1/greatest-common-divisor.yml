@@ -1,0 +1,90 @@
+slug: greatest-common-divisor
+level: 1
+topic: divisibility
+title: "Máximo común divisor"
+statement: |
+  Escribe un método que calcule el máximo común divisor (MCD) de dos números enteros usando el algoritmo de Euclides.
+
+  Reglas del contrato:
+  - Se trabaja con el valor absoluto, así que el signo no importa: el MCD de -18 y 24 es 6.
+  - El MCD de (0, 0) es 0.
+  - El MCD de (n, 0) y de (0, n) es el valor absoluto del número distinto de cero.
+
+  Ejemplo:
+  - Entrada: 48 y 18 -> Salida: 6
+  - Entrada: 0 y 0 -> Salida: 0
+  - Entrada: -18 y 24 -> Salida: 6
+methodSignature: "public static int gcd(int a, int b)"
+className: Solution
+estimatedMinutes: 12
+difficulty: easy
+hints:
+  - "Empieza tomando el valor absoluto de los dos números."
+  - "El algoritmo de Euclides repite: mientras el segundo número no sea cero, calcula el resto de la división."
+  - "En cada paso, el primer número pasa a ser el segundo y el resto pasa a ser el nuevo segundo."
+starterCode: |
+  public class Solution {
+      public static int gcd(int a, int b) {
+          // Tu código aquí
+          return 0;
+      }
+  }
+referenceSolution: |
+  public class Solution {
+      public static int gcd(int a, int b) {
+          int primero = Math.abs(a);
+          int segundo = Math.abs(b);
+          while (segundo != 0) {
+              int resto = primero % segundo;
+              primero = segundo;
+              segundo = resto;
+          }
+          return primero;
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import static org.junit.jupiter.api.Assertions.assertEquals;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("El MCD de 48 y 18 es 6")
+      void casoNormal() {
+          assertEquals(6, Solution.gcd(48, 18));
+      }
+
+      @Test
+      @DisplayName("El MCD de dos números primos entre sí es 1")
+      void primosRelativos() {
+          assertEquals(1, Solution.gcd(17, 13));
+      }
+
+      @Test
+      @DisplayName("El MCD de cero y cero es cero")
+      void ambosCero() {
+          assertEquals(0, Solution.gcd(0, 0));
+      }
+
+      @Test
+      @DisplayName("El MCD de un número y cero es el valor absoluto del número")
+      void unoEsCero() {
+          assertEquals(5, Solution.gcd(5, 0));
+          assertEquals(5, Solution.gcd(0, 5));
+          assertEquals(9, Solution.gcd(0, -9));
+      }
+
+      @Test
+      @DisplayName("El MCD ignora los signos de los números")
+      void numerosNegativos() {
+          assertEquals(6, Solution.gcd(-18, 24));
+      }
+
+      @Test
+      @DisplayName("Cuando un número es múltiplo del otro, el MCD es el menor")
+      void unoDivideAlOtro() {
+          assertEquals(7, Solution.gcd(7, 21));
+      }
+  }

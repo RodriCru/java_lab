@@ -1,0 +1,103 @@
+slug: remove-duplicates
+level: 1
+topic: arrays
+title: Eliminar duplicados
+statement: |
+  Escribe un método que devuelva un arreglo NUEVO sin valores duplicados, conservando el ORDEN de primera aparición de cada valor.
+
+  Ejemplo:
+  - Entrada: numbers=[1, 2, 1, 3, 2] -> Salida: [1, 2, 3]
+  - Entrada: numbers=[5, 5, 5] -> Salida: [5]
+  - Entrada: numbers=[] -> Salida: []
+
+  Si el arreglo es null, devuelve un arreglo vacío (new int[0]). El arreglo de entrada nunca debe modificarse.
+methodSignature: "public static int[] removeDuplicates(int[] numbers)"
+className: Solution
+estimatedMinutes: 15
+difficulty: easy
+hints:
+  - "Usa un arreglo auxiliar del mismo tamaño para ir guardando los valores que ya aparecieron."
+  - "Antes de agregar un valor, revisa si ya lo guardaste recorriendo el arreglo auxiliar."
+  - "Lleva un contador con la cantidad de valores únicos y copia solo esa cantidad al arreglo final."
+starterCode: |
+  public class Solution {
+      public static int[] removeDuplicates(int[] numbers) {
+          // Tu código aquí
+          return new int[0];
+      }
+  }
+referenceSolution: |
+  public class Solution {
+      public static int[] removeDuplicates(int[] numbers) {
+          if (numbers == null) {
+              return new int[0];
+          }
+          int[] unicos = new int[numbers.length];
+          int cantidad = 0;
+          for (int i = 0; i < numbers.length; i++) {
+              boolean repetido = false;
+              for (int j = 0; j < cantidad; j++) {
+                  if (unicos[j] == numbers[i]) {
+                      repetido = true;
+                      break;
+                  }
+              }
+              if (!repetido) {
+                  unicos[cantidad] = numbers[i];
+                  cantidad++;
+              }
+          }
+          int[] resultado = new int[cantidad];
+          for (int i = 0; i < cantidad; i++) {
+              resultado[i] = unicos[i];
+          }
+          return resultado;
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Elimina duplicados conservando el orden de primera aparición")
+      void eliminaDuplicados() {
+          assertArrayEquals(new int[] {1, 2, 3}, Solution.removeDuplicates(new int[] {1, 2, 1, 3, 2}));
+      }
+
+      @Test
+      @DisplayName("Devuelve un solo elemento cuando todos los valores son iguales")
+      void todosIguales() {
+          assertArrayEquals(new int[] {5}, Solution.removeDuplicates(new int[] {5, 5, 5}));
+      }
+
+      @Test
+      @DisplayName("Devuelve el mismo contenido cuando no hay duplicados")
+      void sinDuplicados() {
+          assertArrayEquals(new int[] {4, 9, 2}, Solution.removeDuplicates(new int[] {4, 9, 2}));
+      }
+
+      @Test
+      @DisplayName("Devuelve un arreglo vacío cuando la entrada está vacía")
+      void arregloVacio() {
+          assertArrayEquals(new int[0], Solution.removeDuplicates(new int[0]));
+      }
+
+      @Test
+      @DisplayName("Devuelve un arreglo vacío cuando la entrada es null")
+      void entradaNula() {
+          assertArrayEquals(new int[0], Solution.removeDuplicates(null));
+      }
+
+      @Test
+      @DisplayName("No modifica el arreglo de entrada")
+      void noModificaLaEntrada() {
+          int[] original = {1, 1, 2, 3, 3};
+          int[] copia = {1, 1, 2, 3, 3};
+          Solution.removeDuplicates(original);
+          assertArrayEquals(copia, original);
+      }
+  }

@@ -1,0 +1,145 @@
+slug: equals-books
+level: 1
+topic: oop
+title: Dos libros son iguales
+statement: |
+  Dentro de la clase Solution ya existe una clase anidada Book con título y autor, que sobrescribe equals y hashCode. Escribe un método que determine si dos libros son iguales.
+
+  Reglas del contrato:
+  - Dos libros son iguales cuando tienen el MISMO título y el MISMO autor.
+  - El método debe delegar la comparación en equals del propio libro.
+
+  Ejemplo:
+  - Entrada: first=Book("Java", "Ana"), second=Book("Java", "Ana") -> Salida: true
+  - Entrada: first=Book("Java", "Ana"), second=Book("Java", "Luis") -> Salida: false
+  - Entrada: first=Book("Java", "Ana"), second=Book("Python", "Ana") -> Salida: false
+
+  Si cualquiera de los dos libros es null, devuelve false.
+methodSignature: "public static boolean sameBook(Book first, Book second)"
+className: Solution
+estimatedMinutes: 12
+difficulty: easy
+hints:
+  - "No compares campos a mano: listo, el propio Book ya sabe compararse."
+  - "Usa first.equals(second) después de validar que ninguno sea null."
+  - "Recuerda que los objetos iguales deben tener el mismo hashCode."
+starterCode: |
+  public class Solution {
+
+      public static class Book {
+          private final String title;
+          private final String author;
+
+          public Book(String title, String author) {
+              this.title = title;
+              this.author = author;
+          }
+
+          @Override
+          public boolean equals(Object other) {
+              if (this == other) {
+                  return true;
+              }
+              if (!(other instanceof Book)) {
+                  return false;
+              }
+              Book otro = (Book) other;
+              return java.util.Objects.equals(title, otro.title) && java.util.Objects.equals(author, otro.author);
+          }
+
+          @Override
+          public int hashCode() {
+              return java.util.Objects.hash(title, author);
+          }
+      }
+
+      public static boolean sameBook(Book first, Book second) {
+          // Tu código aquí
+          return false;
+      }
+  }
+referenceSolution: |
+  public class Solution {
+
+      public static class Book {
+          private final String title;
+          private final String author;
+
+          public Book(String title, String author) {
+              this.title = title;
+              this.author = author;
+          }
+
+          @Override
+          public boolean equals(Object other) {
+              if (this == other) {
+                  return true;
+              }
+              if (!(other instanceof Book)) {
+                  return false;
+              }
+              Book otro = (Book) other;
+              return java.util.Objects.equals(title, otro.title) && java.util.Objects.equals(author, otro.author);
+          }
+
+          @Override
+          public int hashCode() {
+              return java.util.Objects.hash(title, author);
+          }
+      }
+
+      public static boolean sameBook(Book first, Book second) {
+          if (first == null || second == null) {
+              return false;
+          }
+          return first.equals(second);
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Dos libros con el mismo título y autor son iguales")
+      void librosIguales() {
+          assertTrue(Solution.sameBook(new Solution.Book("Java", "Ana"), new Solution.Book("Java", "Ana")));
+      }
+
+      @Test
+      @DisplayName("Dos libros con el mismo título pero distinto autor no son iguales")
+      void distintoAutor() {
+          assertFalse(Solution.sameBook(new Solution.Book("Java", "Ana"), new Solution.Book("Java", "Luis")));
+      }
+
+      @Test
+      @DisplayName("Dos libros con distinto título no son iguales")
+      void distintoTitulo() {
+          assertFalse(Solution.sameBook(new Solution.Book("Java", "Ana"), new Solution.Book("Python", "Ana")));
+      }
+
+      @Test
+      @DisplayName("Un libro nunca es igual a null")
+      void libroConNull() {
+          assertFalse(Solution.sameBook(new Solution.Book("Java", "Ana"), null));
+          assertFalse(Solution.sameBook(null, new Solution.Book("Java", "Ana")));
+      }
+
+      @Test
+      @DisplayName("Dos libros iguales tienen el mismo hashCode")
+      void mismoHashCode() {
+          Solution.Book uno = new Solution.Book("Java", "Ana");
+          Solution.Book dos = new Solution.Book("Java", "Ana");
+          assertEquals(uno.hashCode(), dos.hashCode());
+      }
+
+      @Test
+      @DisplayName("Un libro es igual a sí mismo")
+      void mismaReferencia() {
+          Solution.Book libro = new Solution.Book("Java", "Ana");
+          assertTrue(Solution.sameBook(libro, libro));
+      }
+  }

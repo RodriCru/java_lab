@@ -1,0 +1,117 @@
+slug: word-count-map
+level: 2
+topic: structures
+title: "Conteo de palabras con Map"
+statement: |
+  Devuelve un Map con la cantidad de veces que aparece cada palabra del texto.
+
+  Reglas:
+  - Las palabras están separadas por uno o más espacios.
+  - Se convierten a minúsculas antes de contar.
+  - Se ignoran los espacios iniciales, finales y múltiples.
+  - No hay signos de puntuación en las entradas.
+
+  Ejemplos:
+  - "Hola hola Mundo" -> {hola=2, mundo=1}
+  - "  a   b  a " -> {a=2, b=1}
+  - "" -> {} (Map vacío)
+
+  Si el texto es null o vacío, devuelve un Map vacío.
+methodSignature: "public static java.util.Map<String, Integer> wordCount(String text)"
+className: Solution
+estimatedMinutes: 20
+difficulty: medium
+hints:
+  - "Maneja primero null y texto vacío (después de quitar espacios)."
+  - "Usa trim() y split(\"\\\\s+\") para separar las palabras ignorando espacios múltiples."
+  - "Con Map.merge(palabra, 1, Integer::sum) o getOrDefault acumulas los conteos."
+starterCode: |
+  public class Solution {
+      public static java.util.Map<String, Integer> wordCount(String text) {
+          // Tu código aquí
+          return null;
+      }
+  }
+referenceSolution: |
+  import java.util.*;
+  public class Solution {
+      public static Map<String, Integer> wordCount(String text) {
+          Map<String, Integer> conteo = new TreeMap<>();
+          if (text == null) return conteo;
+          String limpio = text.trim();
+          if (limpio.isEmpty()) return conteo;
+          for (String palabra : limpio.toLowerCase().split("\\s+")) {
+              conteo.merge(palabra, 1, Integer::sum);
+          }
+          return conteo;
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+  import java.util.*;
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Ignora mayúsculas")
+      void t0() {
+          Map<String, Integer> esperado = new HashMap<>();
+          esperado.put("hola", 2);
+          esperado.put("mundo", 1);
+          assertEquals(esperado, Solution.wordCount("Hola hola Mundo"));
+      }
+
+      @Test
+      @DisplayName("Ignora espacios múltiples y de los extremos")
+      void t1() {
+          Map<String, Integer> esperado = new HashMap<>();
+          esperado.put("a", 2);
+          esperado.put("b", 1);
+          assertEquals(esperado, Solution.wordCount("  a   b  a "));
+      }
+
+      @Test
+      @DisplayName("Texto vacío devuelve Map vacío")
+      void t2() {
+          assertEquals(new HashMap<String, Integer>(), Solution.wordCount(""));
+      }
+
+      @Test
+      @DisplayName("Solo espacios devuelve Map vacío")
+      void t3() {
+          assertEquals(new HashMap<String, Integer>(), Solution.wordCount("    "));
+      }
+
+      @Test
+      @DisplayName("Null devuelve Map vacío")
+      void t4() {
+          assertNotNull(Solution.wordCount(null));
+          assertTrue(Solution.wordCount(null).isEmpty());
+      }
+
+      @Test
+      @DisplayName("Una sola palabra")
+      void t5() {
+          Map<String, Integer> esperado = new HashMap<>();
+          esperado.put("java", 1);
+          assertEquals(esperado, Solution.wordCount("JAVA"));
+      }
+
+      @Test
+      @DisplayName("Muchas repeticiones")
+      void t6() {
+          StringBuilder sb = new StringBuilder();
+          for (int i = 0; i < 50000; i++) sb.append("x Y ");
+          Map<String, Integer> r = Solution.wordCount(sb.toString());
+          assertEquals(50000, r.get("x"));
+          assertEquals(50000, r.get("y"));
+          assertEquals(2, r.size());
+      }
+  }
+complexityQuestion:
+  prompt: "¿Cuál es la complejidad temporal esperada de tu solución, en función del número de palabras n (con HashMap)?"
+  options: ["O(1)", "O(n)", "O(n log n)", "O(n²)"]
+  correctIndex: 1
+  explanation: "Cada palabra se procesa una vez con una operación O(1) amortizada en el HashMap."

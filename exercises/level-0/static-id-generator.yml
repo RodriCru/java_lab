@@ -1,0 +1,170 @@
+slug: static-id-generator
+level: 0
+topic: oop-basics
+title: Generador de ids con static
+statement: |
+  Un campo static pertenece a la CLASE (se comparte entre todos los objetos); un campo normal pertenece a cada INSTANCIA. En Solution existe la clase Ticket, que debe asignar ids autoincrementales.
+
+  Completa Ticket:
+  - Un contador static privado (count) que cuenta cuántos tickets se han creado.
+  - Cada ticket tiene su propio id (campo de instancia, final). Al crearlo, el contador sube en 1 y el id es el nuevo valor: el primer ticket tiene id 1, el segundo id 2, etc.
+  - getId() devuelve el id del ticket.
+  - static getCount() devuelve cuántos tickets se han creado desde el último reset.
+  - static reset() deja el contador en 0.
+
+  Además, createTickets(n): llama primero a Ticket.reset(), crea n tickets y devuelve la lista de sus ids en orden de creación. Si n <= 0 devuelve una lista vacía.
+
+  Ejemplo:
+  - Entrada: n=3 -> Salida: [1, 2, 3]
+  - Entrada: n=1 -> Salida: [1] (porque createTickets reinicia el contador)
+  - Entrada: n=0 -> Salida: []
+methodSignature: public static List<Integer> createTickets(int n)
+className: Solution
+estimatedMinutes: 15
+difficulty: easy
+hints:
+- 'static significa ''de la clase'': existe una sola copia del campo, aunque crees mil objetos.'
+- En el constructor haz count++ (o ++count) y asigna this.id = count; así cada objeto guarda su propio id mientras count sigue compartido.
+- getCount() y reset() son métodos static porque trabajan con el campo static; se llaman como Ticket.getCount().
+starterCode: |
+  import java.util.*;
+
+  public class Solution {
+
+      public static class Ticket {
+          // Tu código aquí: campo static count
+          private final int id;
+
+          public Ticket() {
+              // Tu código aquí
+              this.id = 0;
+          }
+
+          public int getId() {
+              return id;
+          }
+
+          public static int getCount() {
+              // Tu código aquí
+              return 0;
+          }
+
+          public static void reset() {
+              // Tu código aquí
+          }
+      }
+
+      public static List<Integer> createTickets(int n) {
+          // Tu código aquí
+          return new ArrayList<>();
+      }
+  }
+referenceSolution: |
+  import java.util.*;
+
+  public class Solution {
+
+      public static class Ticket {
+          private static int count = 0;
+          private final int id;
+
+          public Ticket() {
+              count++;
+              this.id = count;
+          }
+
+          public int getId() {
+              return id;
+          }
+
+          public static int getCount() {
+              return count;
+          }
+
+          public static void reset() {
+              count = 0;
+          }
+      }
+
+      public static List<Integer> createTickets(int n) {
+          Ticket.reset();
+          List<Integer> ids = new ArrayList<>();
+          for (int i = 0; i < n; i++) {
+              ids.add(new Ticket().getId());
+          }
+          return ids;
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+  import java.util.*;
+
+  import org.junit.jupiter.api.BeforeEach;
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      @BeforeEach
+      void reiniciar() {
+          Solution.Ticket.reset();
+      }
+
+      @Test
+      @DisplayName("El primer ticket tiene id 1")
+      void primerId() {
+          assertEquals(1, new Solution.Ticket().getId());
+      }
+
+      @Test
+      @DisplayName("Los ids son consecutivos y cada objeto conserva el suyo")
+      void idsConsecutivos() {
+          Solution.Ticket a = new Solution.Ticket();
+          Solution.Ticket b = new Solution.Ticket();
+          Solution.Ticket c = new Solution.Ticket();
+          assertEquals(1, a.getId());
+          assertEquals(2, b.getId());
+          assertEquals(3, c.getId());
+      }
+
+      @Test
+      @DisplayName("getCount cuenta los tickets creados")
+      void contador() {
+          assertEquals(0, Solution.Ticket.getCount());
+          new Solution.Ticket();
+          new Solution.Ticket();
+          assertEquals(2, Solution.Ticket.getCount());
+      }
+
+      @Test
+      @DisplayName("reset reinicia el contador y los ids vuelven a empezar en 1")
+      void reinicio() {
+          new Solution.Ticket();
+          new Solution.Ticket();
+          Solution.Ticket.reset();
+          assertEquals(0, Solution.Ticket.getCount());
+          assertEquals(1, new Solution.Ticket().getId());
+      }
+
+      @Test
+      @DisplayName("createTickets devuelve los ids en orden")
+      void crearTickets() {
+          assertEquals(List.of(1, 2, 3), Solution.createTickets(3));
+      }
+
+      @Test
+      @DisplayName("createTickets reinicia el contador antes de crear")
+      void crearReinicia() {
+          new Solution.Ticket();
+          new Solution.Ticket();
+          assertEquals(List.of(1), Solution.createTickets(1));
+          assertEquals(1, Solution.Ticket.getCount());
+      }
+
+      @Test
+      @DisplayName("createTickets con n cero o negativo devuelve lista vacía")
+      void sinTickets() {
+          assertTrue(Solution.createTickets(0).isEmpty());
+          assertTrue(Solution.createTickets(-4).isEmpty());
+      }
+  }

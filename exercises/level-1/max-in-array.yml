@@ -1,0 +1,90 @@
+slug: max-in-array
+level: 1
+topic: arrays
+title: "Máximo de un arreglo"
+statement: |
+  Escribe un método que reciba un arreglo de números enteros y devuelva el valor máximo que contiene.
+
+  Reglas del contrato:
+  - Si el arreglo es null o está vacío, el método lanza IllegalArgumentException.
+  - El arreglo puede contener números negativos y valores repetidos.
+
+  Ejemplo:
+  - Entrada: [3, 7, 2, 9, 5] -> Salida: 9
+  - Entrada: [-4, -1, -8] -> Salida: -1
+  - Entrada: [42] -> Salida: 42
+methodSignature: "public static int max(int[] numbers)"
+className: Solution
+estimatedMinutes: 8
+difficulty: easy
+hints:
+  - "Valida primero si el arreglo es null o está vacío y lanza la excepción."
+  - "Toma el primer elemento como el mayor provisional."
+  - "Recorre el resto del arreglo y actualiza el mayor cuando encuentres un valor más grande."
+starterCode: |
+  public class Solution {
+      public static int max(int[] numbers) {
+          // Tu código aquí
+          return 0;
+      }
+  }
+referenceSolution: |
+  public class Solution {
+      public static int max(int[] numbers) {
+          if (numbers == null || numbers.length == 0) {
+              throw new IllegalArgumentException("El arreglo no puede estar vacío");
+          }
+          int mayor = numbers[0];
+          for (int i = 1; i < numbers.length; i++) {
+              if (numbers[i] > mayor) {
+                  mayor = numbers[i];
+              }
+          }
+          return mayor;
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import static org.junit.jupiter.api.Assertions.assertEquals;
+  import static org.junit.jupiter.api.Assertions.assertThrows;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Devuelve el máximo de un arreglo desordenado")
+      void arregloNormal() {
+          assertEquals(9, Solution.max(new int[] {3, 7, 2, 9, 5}));
+      }
+
+      @Test
+      @DisplayName("Devuelve el único elemento de un arreglo de tamaño uno")
+      void unSoloElemento() {
+          assertEquals(42, Solution.max(new int[] {42}));
+      }
+
+      @Test
+      @DisplayName("Devuelve el máximo aunque todos sean negativos")
+      void todosNegativos() {
+          assertEquals(-1, Solution.max(new int[] {-4, -1, -8}));
+      }
+
+      @Test
+      @DisplayName("Un arreglo vacío lanza IllegalArgumentException")
+      void arregloVacio() {
+          assertThrows(IllegalArgumentException.class, () -> Solution.max(new int[0]));
+      }
+
+      @Test
+      @DisplayName("Un arreglo null lanza IllegalArgumentException")
+      void arregloNull() {
+          assertThrows(IllegalArgumentException.class, () -> Solution.max(null));
+      }
+
+      @Test
+      @DisplayName("Devuelve el mayor valor posible de un int")
+      void valorLimite() {
+          assertEquals(Integer.MAX_VALUE, Solution.max(new int[] {Integer.MIN_VALUE, Integer.MAX_VALUE, 0}));
+      }
+  }

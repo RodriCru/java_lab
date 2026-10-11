@@ -1,0 +1,110 @@
+slug: classify-triangle
+level: 0
+topic: operators-decisions
+title: "Clasificar un triángulo"
+statement: |
+  Escribe un método que clasifique un triángulo según la longitud de sus tres lados, usando if / else if y operadores lógicos (&&, ||).
+
+  Reglas, evaluadas en este orden:
+  - Si algún lado es menor o igual que 0, o si no se cumple la desigualdad triangular (la suma de dos lados cualesquiera debe ser ESTRICTAMENTE mayor que el tercero), devuelve "inválido".
+  - Si los tres lados son iguales, devuelve "equilátero".
+  - Si exactamente dos lados son iguales, devuelve "isósceles".
+  - En otro caso, devuelve "escaleno".
+
+  Ejemplos:
+  - Entrada: a=3, b=3, c=3 -> Salida: "equilátero"
+  - Entrada: a=5, b=5, c=8 -> Salida: "isósceles"
+  - Entrada: a=3, b=4, c=5 -> Salida: "escaleno"
+  - Entrada: a=1, b=2, c=3 -> Salida: "inválido" (1 + 2 no es mayor que 3)
+  - Entrada: a=0, b=4, c=4 -> Salida: "inválido"
+
+  Los textos se devuelven exactamente así, en minúsculas y con acentos.
+methodSignature: "public static String classify(int a, int b, int c)"
+className: Solution
+estimatedMinutes: 10
+difficulty: easy
+hints:
+  - "Primero descarta lo inválido: if (a <= 0 || b <= 0 || c <= 0 || a + b <= c || a + c <= b || b + c <= a). El operador || significa 'o'."
+  - "Con if / else if, el orden importa: solo llegas a la siguiente condición si la anterior fue falsa."
+  - "Equilátero: a == b && b == c. Isósceles: a == b || b == c || a == c (ya sabes que no es equilátero)."
+starterCode: |
+  public class Solution {
+
+      public static String classify(int a, int b, int c) {
+          // Tu código aquí
+          return "";
+      }
+  }
+referenceSolution: |
+  public class Solution {
+
+      public static String classify(int a, int b, int c) {
+          if (a <= 0 || b <= 0 || c <= 0 || a + b <= c || a + c <= b || b + c <= a) {
+              return "inválido";
+          } else if (a == b && b == c) {
+              return "equilátero";
+          } else if (a == b || b == c || a == c) {
+              return "isósceles";
+          } else {
+              return "escaleno";
+          }
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+      @Test
+      @DisplayName("Tres lados iguales es equilátero")
+      void caso1() {
+          assertEquals("equilátero", Solution.classify(3, 3, 3));
+      }
+
+      @Test
+      @DisplayName("Dos lados iguales es isósceles")
+      void caso2() {
+          assertEquals("isósceles", Solution.classify(5, 5, 8));
+      }
+
+      @Test
+      @DisplayName("El par igual puede estar en cualquier posición")
+      void caso3() {
+          assertEquals("isósceles", Solution.classify(8, 5, 5));
+          assertEquals("isósceles", Solution.classify(5, 8, 5));
+      }
+
+      @Test
+      @DisplayName("Tres lados distintos es escaleno")
+      void caso4() {
+          assertEquals("escaleno", Solution.classify(3, 4, 5));
+      }
+
+      @Test
+      @DisplayName("Si la suma de dos lados iguala al tercero es inválido")
+      void caso5() {
+          assertEquals("inválido", Solution.classify(1, 2, 3));
+      }
+
+      @Test
+      @DisplayName("Si la suma de dos lados es menor que el tercero es inválido")
+      void caso6() {
+          assertEquals("inválido", Solution.classify(1, 2, 10));
+          assertEquals("inválido", Solution.classify(10, 1, 2));
+      }
+
+      @Test
+      @DisplayName("Un lado cero o negativo es inválido")
+      void caso7() {
+          assertEquals("inválido", Solution.classify(0, 4, 4));
+          assertEquals("inválido", Solution.classify(-3, -3, -3));
+      }
+
+      @Test
+      @DisplayName("Tres ceros es inválido, no equilátero")
+      void caso8() {
+          assertEquals("inválido", Solution.classify(0, 0, 0));
+      }
+  }

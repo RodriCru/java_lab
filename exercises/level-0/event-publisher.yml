@@ -1,0 +1,190 @@
+slug: event-publisher
+level: 0
+topic: spring-principles
+title: Publicador de eventos
+statement: |
+  El **patrón observador** permite que unos objetos (suscriptores) reaccionen a lo que ocurre en otro sin que este los conozca en detalle. Spring lo usa con ApplicationEventPublisher y @EventListener: quien publica no sabe quién escucha.
+
+  Dentro de Solution existe la interfaz Listener (con el método void onEvent(String message)) y la clase anidada EventPublisher (con esqueleto). Impleméntala:
+  - subscribe(String topic, Listener listener): suscribe el listener a ese tema. Si listener es null, lanza IllegalArgumentException.
+  - publish(String topic, String message): llama a onEvent(message) de TODOS los listeners suscritos a ese tema, en el orden en que se suscribieron, y devuelve cuántos fueron notificados. Un tema sin suscriptores devuelve 0 (no es un error).
+  - unsubscribe(String topic, Listener listener): quita la suscripción y devuelve true si existía, false si no.
+
+  Los listeners de un tema no reciben los eventos de otros temas. Si el mismo listener se suscribe dos veces al mismo tema, recibe el evento dos veces.
+
+  El método newPublisher devuelve un publicador nuevo y sin suscriptores.
+
+  Ejemplo:
+  - Dos listeners suscritos a "pedidos"; publish("pedidos", "nuevo") -> ambos reciben "nuevo" y devuelve 2
+  - publish("otro", "x") -> devuelve 0
+methodSignature: "public static EventPublisher newPublisher()"
+className: Solution
+estimatedMinutes: 20
+difficulty: medium
+hints:
+  - "Guarda los suscriptores en un Map<String, List<Listener>>: la clave es el tema y la lista conserva el orden de suscripción."
+  - "Para subscribe usa computeIfAbsent(topic, t -> new ArrayList<>()).add(listener). Para publish, usa getOrDefault(topic, List.of()) y recorre la lista llamando a onEvent."
+  - "unsubscribe: obtén la lista del tema (puede no existir) y devuelve el resultado de list.remove(listener), que quita solo la primera coincidencia."
+starterCode: |
+  import java.util.*;
+
+  public class Solution {
+
+      public interface Listener {
+          void onEvent(String message);
+      }
+
+      public static class EventPublisher {
+          // Tu código aquí: Map de tema -> lista de listeners
+
+          public void subscribe(String topic, Listener listener) {
+              // Tu código aquí
+          }
+
+          public int publish(String topic, String message) {
+              // Tu código aquí
+              return 0;
+          }
+
+          public boolean unsubscribe(String topic, Listener listener) {
+              // Tu código aquí
+              return false;
+          }
+      }
+
+      public static EventPublisher newPublisher() {
+          return new EventPublisher();
+      }
+  }
+referenceSolution: |
+  import java.util.*;
+
+  public class Solution {
+
+      public interface Listener {
+          void onEvent(String message);
+      }
+
+      public static class EventPublisher {
+          private final Map<String, List<Listener>> listeners = new HashMap<>();
+
+          public void subscribe(String topic, Listener listener) {
+              if (listener == null) {
+                  throw new IllegalArgumentException("El listener es obligatorio");
+              }
+              listeners.computeIfAbsent(topic, t -> new ArrayList<>()).add(listener);
+          }
+
+          public int publish(String topic, String message) {
+              List<Listener> subscribed = listeners.getOrDefault(topic, List.of());
+              for (Listener listener : new ArrayList<>(subscribed)) {
+                  listener.onEvent(message);
+              }
+              return subscribed.size();
+          }
+
+          public boolean unsubscribe(String topic, Listener listener) {
+              List<Listener> subscribed = listeners.get(topic);
+              return subscribed != null && subscribed.remove(listener);
+          }
+      }
+
+      public static EventPublisher newPublisher() {
+          return new EventPublisher();
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import java.util.*;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Todos los suscriptores del tema reciben el mensaje y se devuelve cuántos fueron")
+      void variosSuscriptores() {
+          Solution.EventPublisher p = Solution.newPublisher();
+          List<String> received = new ArrayList<>();
+          p.subscribe("pedidos", m -> received.add("A:" + m));
+          p.subscribe("pedidos", m -> received.add("B:" + m));
+          assertEquals(2, p.publish("pedidos", "nuevo"));
+          assertEquals(List.of("A:nuevo", "B:nuevo"), received);
+      }
+
+      @Test
+      @DisplayName("Un tema sin suscriptores devuelve 0")
+      void sinSuscriptores() {
+          Solution.EventPublisher p = Solution.newPublisher();
+          assertEquals(0, p.publish("nadie", "x"));
+      }
+
+      @Test
+      @DisplayName("Los suscriptores no reciben eventos de otros temas")
+      void aislamientoPorTema() {
+          Solution.EventPublisher p = Solution.newPublisher();
+          List<String> received = new ArrayList<>();
+          p.subscribe("a", received::add);
+          assertEquals(0, p.publish("b", "x"));
+          assertTrue(received.isEmpty());
+          assertEquals(1, p.publish("a", "y"));
+          assertEquals(List.of("y"), received);
+      }
+
+      @Test
+      @DisplayName("Se notifica en el orden de suscripción")
+      void ordenDeSuscripcion() {
+          Solution.EventPublisher p = Solution.newPublisher();
+          List<Integer> order = new ArrayList<>();
+          p.subscribe("t", m -> order.add(1));
+          p.subscribe("t", m -> order.add(2));
+          p.subscribe("t", m -> order.add(3));
+          p.publish("t", "go");
+          assertEquals(List.of(1, 2, 3), order);
+      }
+
+      @Test
+      @DisplayName("unsubscribe quita la suscripción y devuelve true; si no existía, false")
+      void desuscribir() {
+          Solution.EventPublisher p = Solution.newPublisher();
+          List<String> received = new ArrayList<>();
+          Solution.Listener l = received::add;
+          p.subscribe("t", l);
+          assertTrue(p.unsubscribe("t", l));
+          assertEquals(0, p.publish("t", "x"));
+          assertTrue(received.isEmpty());
+          assertFalse(p.unsubscribe("t", l));
+          assertFalse(p.unsubscribe("otro", l));
+      }
+
+      @Test
+      @DisplayName("Suscribir un listener null lanza IllegalArgumentException")
+      void listenerNulo() {
+          Solution.EventPublisher p = Solution.newPublisher();
+          assertThrows(IllegalArgumentException.class, () -> p.subscribe("t", null));
+      }
+
+      @Test
+      @DisplayName("El mismo listener suscrito dos veces recibe el evento dos veces")
+      void suscripcionDoble() {
+          Solution.EventPublisher p = Solution.newPublisher();
+          int[] count = {0};
+          Solution.Listener l = m -> count[0]++;
+          p.subscribe("t", l);
+          p.subscribe("t", l);
+          assertEquals(2, p.publish("t", "x"));
+          assertEquals(2, count[0]);
+      }
+
+      @Test
+      @DisplayName("Cada publicador nuevo es independiente")
+      void publicadoresIndependientes() {
+          Solution.EventPublisher p1 = Solution.newPublisher();
+          Solution.EventPublisher p2 = Solution.newPublisher();
+          p1.subscribe("t", m -> { });
+          assertEquals(1, p1.publish("t", "x"));
+          assertEquals(0, p2.publish("t", "x"));
+      }
+  }

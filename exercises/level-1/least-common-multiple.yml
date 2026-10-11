@@ -1,0 +1,100 @@
+slug: least-common-multiple
+level: 1
+topic: divisibility
+title: "Mínimo común múltiplo"
+statement: |
+  Escribe un método que calcule el mínimo común múltiplo (MCM) de dos números enteros.
+
+  Reglas del contrato:
+  - El resultado se declara como long porque el MCM puede superar el rango de int.
+  - Se trabaja con el valor absoluto, así que el signo no importa.
+  - Si alguno de los dos números es 0, el resultado es 0.
+  - Se puede calcular como el producto de los valores absolutos dividido entre su máximo común divisor.
+
+  Ejemplo:
+  - Entrada: 4 y 6 -> Salida: 12
+  - Entrada: 0 y 5 -> Salida: 0
+  - Entrada: -4 y 6 -> Salida: 12
+methodSignature: "public static long lcm(int a, int b)"
+className: Solution
+estimatedMinutes: 12
+difficulty: easy
+hints:
+  - "Si alguno de los números es cero, devuelve 0 directamente."
+  - "Primero calcula el máximo común divisor con el algoritmo de Euclides."
+  - "El MCM es el producto de los valores absolutos dividido entre el MCD, y esa división es exacta."
+starterCode: |
+  public class Solution {
+      public static long lcm(int a, int b) {
+          // Tu código aquí
+          return 0L;
+      }
+  }
+referenceSolution: |
+  public class Solution {
+      public static long lcm(int a, int b) {
+          if (a == 0 || b == 0) {
+              return 0L;
+          }
+          long absolutoA = Math.abs((long) a);
+          long absolutoB = Math.abs((long) b);
+          return (absolutoA / gcd(a, b)) * absolutoB;
+      }
+
+      private static int gcd(int a, int b) {
+          int primero = Math.abs(a);
+          int segundo = Math.abs(b);
+          while (segundo != 0) {
+              int resto = primero % segundo;
+              primero = segundo;
+              segundo = resto;
+          }
+          return primero;
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import static org.junit.jupiter.api.Assertions.assertEquals;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("El MCM de 4 y 6 es 12")
+      void casoNormal() {
+          assertEquals(12L, Solution.lcm(4, 6));
+      }
+
+      @Test
+      @DisplayName("El MCM de números primos entre sí es su producto")
+      void primosRelativos() {
+          assertEquals(15L, Solution.lcm(3, 5));
+      }
+
+      @Test
+      @DisplayName("Si algún número es cero, el MCM es cero")
+      void algunoEsCero() {
+          assertEquals(0L, Solution.lcm(0, 5));
+          assertEquals(0L, Solution.lcm(5, 0));
+          assertEquals(0L, Solution.lcm(0, 0));
+      }
+
+      @Test
+      @DisplayName("El MCM ignora los signos de los números")
+      void numerosNegativos() {
+          assertEquals(12L, Solution.lcm(-4, 6));
+      }
+
+      @Test
+      @DisplayName("Cuando uno es múltiplo del otro, el MCM es el mayor")
+      void unoDivideAlOtro() {
+          assertEquals(21L, Solution.lcm(7, 21));
+      }
+
+      @Test
+      @DisplayName("El MCM es el mismo sin importar el orden de los argumentos")
+      void ordenIndiferente() {
+          assertEquals(Solution.lcm(7, 21), Solution.lcm(21, 7));
+      }
+  }

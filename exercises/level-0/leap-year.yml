@@ -1,0 +1,93 @@
+slug: leap-year
+level: 0
+topic: operators-decisions
+title: "Año bisiesto"
+statement: |
+  Escribe un método que indique si un año es bisiesto, usando operadores lógicos (&&, ||, !) y el operador módulo (%).
+
+  Reglas del calendario gregoriano:
+  - Un año es bisiesto si es divisible entre 4,
+  - EXCEPTO si es divisible entre 100,
+  - salvo que también sea divisible entre 400 (en ese caso sí es bisiesto).
+
+  Ejemplos:
+  - Entrada: 2024 -> Salida: true
+  - Entrada: 2023 -> Salida: false
+  - Entrada: 1900 -> Salida: false (divisible entre 100 pero no entre 400)
+  - Entrada: 2000 -> Salida: true (divisible entre 400)
+
+  Se garantiza que year >= 1.
+methodSignature: "public static boolean isLeap(int year)"
+className: Solution
+estimatedMinutes: 8
+difficulty: easy
+hints:
+  - "Un número es divisible entre n cuando year % n == 0."
+  - "Traduce la regla: (divisible entre 4 Y NO divisible entre 100) O divisible entre 400."
+  - "En Java: return (year % 4 == 0 && year % 100 != 0) || year % 400 == 0; Los paréntesis dejan clara la precedencia."
+starterCode: |
+  public class Solution {
+
+      public static boolean isLeap(int year) {
+          // Tu código aquí
+          return false;
+      }
+  }
+referenceSolution: |
+  public class Solution {
+
+      public static boolean isLeap(int year) {
+          return (year % 4 == 0 && year % 100 != 0) || year % 400 == 0;
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+      @Test
+      @DisplayName("2024 es bisiesto")
+      void caso1() {
+          assertTrue(Solution.isLeap(2024));
+      }
+
+      @Test
+      @DisplayName("2023 no es bisiesto")
+      void caso2() {
+          assertFalse(Solution.isLeap(2023));
+      }
+
+      @Test
+      @DisplayName("1900 no es bisiesto (divisible entre 100)")
+      void caso3() {
+          assertFalse(Solution.isLeap(1900));
+      }
+
+      @Test
+      @DisplayName("2000 es bisiesto (divisible entre 400)")
+      void caso4() {
+          assertTrue(Solution.isLeap(2000));
+      }
+
+      @Test
+      @DisplayName("2100 no es bisiesto")
+      void caso5() {
+          assertFalse(Solution.isLeap(2100));
+      }
+
+      @Test
+      @DisplayName("Un año divisible entre 4 pero no entre 100")
+      void caso6() {
+          assertTrue(Solution.isLeap(1996));
+          assertTrue(Solution.isLeap(4));
+      }
+
+      @Test
+      @DisplayName("Años impares y el año 1")
+      void caso7() {
+          assertFalse(Solution.isLeap(1));
+          assertFalse(Solution.isLeap(2019));
+      }
+  }

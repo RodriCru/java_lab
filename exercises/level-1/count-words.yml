@@ -1,0 +1,89 @@
+slug: count-words
+level: 1
+topic: strings
+title: Contar palabras
+statement: |
+  Escribe un método que cuente cuántas palabras tiene un texto.
+
+  Ejemplo:
+  - Entrada: "hola mundo" -> Salida: 2
+  - Entrada: "   hola    mundo   " -> Salida: 2
+  - Entrada: "java" -> Salida: 1
+
+  Una palabra es una secuencia de caracteres separada por uno o más espacios.
+  Si el texto es null, vacío o solo tiene espacios, devuelve 0.
+methodSignature: "public static int countWords(String text)"
+className: Solution
+estimatedMinutes: 10
+difficulty: easy
+hints:
+  - "Quita los espacios de los extremos y revisa si el texto quedó vacío."
+  - "Puedes dividir por espacios con split(\"\\s+\")."
+  - "Antes de dividir, revisa si text es null para no provocar un NullPointerException."
+starterCode: |
+  public class Solution {
+      public static int countWords(String text) {
+          // Tu código aquí
+          return 0;
+      }
+  }
+referenceSolution: |
+  public class Solution {
+      public static int countWords(String text) {
+          if (text == null) {
+              return 0;
+          }
+          String limpio = text.trim();
+          if (limpio.isEmpty()) {
+              return 0;
+          }
+          return limpio.split("\\s+").length;
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Cuenta dos palabras separadas por un espacio")
+      void dosPalabras() {
+          assertEquals(2, Solution.countWords("hola mundo"));
+      }
+
+      @Test
+      @DisplayName("Ignora los espacios múltiples al inicio, entre palabras y al final")
+      void espaciosMultiples() {
+          assertEquals(2, Solution.countWords("   hola    mundo   "));
+      }
+
+      @Test
+      @DisplayName("Cuenta una sola palabra sin espacios")
+      void unaPalabra() {
+          assertEquals(1, Solution.countWords("java"));
+      }
+
+      @Test
+      @DisplayName("Cuenta correctamente tres palabras en minúsculas")
+      void tresPalabras() {
+          assertEquals(3, Solution.countWords("una dos tres"));
+      }
+
+      @Test
+      @DisplayName("Devuelve 0 solo cuando el texto es null o está vacío")
+      void textoNuloOVacio() {
+          assertEquals(1, Solution.countWords("hola"));
+          assertEquals(0, Solution.countWords(null));
+          assertEquals(0, Solution.countWords(""));
+      }
+
+      @Test
+      @DisplayName("Cuenta las palabras aunque el texto tenga espacios en los extremos")
+      void espaciosEnLosExtremos() {
+          assertEquals(2, Solution.countWords(" hola mundo "));
+          assertEquals(0, Solution.countWords("     "));
+      }
+  }

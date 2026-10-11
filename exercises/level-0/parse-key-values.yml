@@ -1,0 +1,111 @@
+slug: parse-key-values
+level: 0
+topic: input-parsing
+title: Parsear pares clave=valor
+statement: |
+  Escribe un método que convierta un texto con pares "clave=valor" separados por punto y coma en un Map<String, Integer>. Respeta el orden en que aparecen los pares: usa un LinkedHashMap, que conserva el orden de inserción (HashMap no lo garantiza).
+
+  Ejemplos:
+  - "a=1;b=2" -> {a=1, b=2}
+  - "x=10" -> {x=10}
+  - "a=1;b=2;a=5" -> {a=5, b=2} (si una clave se repite, el último valor gana y la clave conserva su posición original)
+
+  Reglas: las claves no contienen espacios ni "=" ni ";" y los valores son enteros válidos. Si el texto es null, vacío o solo espacios, devuelve un mapa vacío. Ignora los fragmentos vacíos (por ejemplo, el que deja un ";" final).
+methodSignature: public static Map<String, Integer> parseKeyValues(String text)
+className: Solution
+estimatedMinutes: 20
+difficulty: medium
+hints:
+- text.split(";") te da cada par como un String. Recórrelos con un for-each.
+- 'Salta los fragmentos vacíos (isEmpty()) y separa cada par con split("="): la parte [0] es la clave y la [1] el valor.'
+- Convierte el valor con Integer.parseInt(...) y guárdalo con map.put(clave, valor) en un LinkedHashMap para conservar el orden.
+starterCode: |
+  import java.util.Map;
+
+  public class Solution {
+      public static Map<String, Integer> parseKeyValues(String text) {
+          // Tu código aquí
+          return null;
+      }
+  }
+referenceSolution: |
+  import java.util.LinkedHashMap;
+  import java.util.Map;
+
+  public class Solution {
+      public static Map<String, Integer> parseKeyValues(String text) {
+          Map<String, Integer> resultado = new LinkedHashMap<>();
+          if (text == null || text.trim().isEmpty()) {
+              return resultado;
+          }
+          for (String par : text.split(";")) {
+              if (par.isEmpty()) {
+                  continue;
+              }
+              String[] partes = par.split("=");
+              resultado.put(partes[0], Integer.parseInt(partes[1]));
+          }
+          return resultado;
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import java.util.*;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Parsea dos pares")
+      void t98880() {
+          Map<String, Integer> m = Solution.parseKeyValues("a=1;b=2");
+          assertEquals(2, m.size());
+          assertEquals(1, m.get("a"));
+          assertEquals(2, m.get("b"));
+      }
+
+      @Test
+      @DisplayName("Parsea un solo par")
+      void t75266() {
+          assertEquals(Map.of("x", 10), Solution.parseKeyValues("x=10"));
+      }
+
+      @Test
+      @DisplayName("Conserva el orden de aparición")
+      void t1223() {
+          Map<String, Integer> m = Solution.parseKeyValues("z=1;a=2;m=3");
+          assertEquals(Arrays.asList("z", "a", "m"), new ArrayList<>(m.keySet()));
+      }
+
+      @Test
+      @DisplayName("Una clave repetida conserva el último valor y su posición")
+      void t5575() {
+          Map<String, Integer> m = Solution.parseKeyValues("a=1;b=2;a=5");
+          assertEquals(5, m.get("a"));
+          assertEquals(Arrays.asList("a", "b"), new ArrayList<>(m.keySet()));
+      }
+
+      @Test
+      @DisplayName("Texto null, vacío o en blanco da un mapa vacío")
+      void t8247() {
+          assertTrue(Solution.parseKeyValues(null).isEmpty());
+          assertTrue(Solution.parseKeyValues("").isEmpty());
+          assertTrue(Solution.parseKeyValues("   ").isEmpty());
+      }
+
+      @Test
+      @DisplayName("Ignora el fragmento vacío de un punto y coma final")
+      void t96801() {
+          Map<String, Integer> m = Solution.parseKeyValues("a=1;b=2;");
+          assertEquals(2, m.size());
+      }
+
+      @Test
+      @DisplayName("Acepta valores negativos")
+      void t73341() {
+          assertEquals(Map.of("temp", -15, "max", 0), Solution.parseKeyValues("temp=-15;max=0"));
+      }
+  }

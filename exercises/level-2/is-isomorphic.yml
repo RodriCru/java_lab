@@ -1,0 +1,117 @@
+slug: is-isomorphic
+level: 2
+topic: strings
+title: "Cadenas isomorfas"
+statement: |
+  Dos cadenas son isomorfas si los caracteres de la primera se pueden reemplazar para obtener la segunda, con un mapeo uno a uno: un mismo carácter siempre se reemplaza por el mismo, y dos caracteres distintos nunca se reemplazan por el mismo carácter. El orden se conserva.
+
+  Ejemplos:
+  - "egg", "add" -> true
+  - "foo", "bar" -> false (o no puede ser a la vez a y r)
+  - "paper", "title" -> true
+  - "ab", "aa" -> false (a y b irían ambas a "a")
+
+  Si las longitudes difieren o alguna cadena es null, devuelve false. Dos cadenas vacías son isomorfas (true).
+methodSignature: "public static boolean isIsomorphic(String first, String second)"
+className: Solution
+estimatedMinutes: 20
+difficulty: medium
+hints:
+  - "Si las longitudes son distintas, la respuesta es false."
+  - "Necesitas verificar el mapeo en ambos sentidos."
+  - "Usa dos Map<Character, Character> (de first a second y de second a first) y revisa que cada par sea consistente."
+starterCode: |
+  public class Solution {
+      public static boolean isIsomorphic(String first, String second) {
+          // Tu código aquí
+          return false;
+      }
+  }
+referenceSolution: |
+  import java.util.*;
+  public class Solution {
+      public static boolean isIsomorphic(String first, String second) {
+          if (first == null || second == null) return false;
+          if (first.length() != second.length()) return false;
+          Map<Character, Character> ida = new HashMap<>();
+          Map<Character, Character> vuelta = new HashMap<>();
+          for (int i = 0; i < first.length(); i++) {
+              char a = first.charAt(i);
+              char b = second.charAt(i);
+              Character mapeadoA = ida.get(a);
+              Character mapeadoB = vuelta.get(b);
+              if (mapeadoA == null && mapeadoB == null) {
+                  ida.put(a, b);
+                  vuelta.put(b, a);
+              } else if (mapeadoA == null || mapeadoB == null || mapeadoA != b || mapeadoB != a) {
+                  return false;
+              }
+          }
+          return true;
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+  import java.util.*;
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("egg y add son isomorfas")
+      void t0() {
+          assertTrue(Solution.isIsomorphic("egg", "add"));
+      }
+
+      @Test
+      @DisplayName("foo y bar no son isomorfas")
+      void t1() {
+          assertFalse(Solution.isIsomorphic("foo", "bar"));
+      }
+
+      @Test
+      @DisplayName("paper y title son isomorfas")
+      void t2() {
+          assertTrue(Solution.isIsomorphic("paper", "title"));
+      }
+
+      @Test
+      @DisplayName("Dos caracteres no pueden mapear al mismo")
+      void t3() {
+          assertFalse(Solution.isIsomorphic("ab", "aa"));
+      }
+
+      @Test
+      @DisplayName("Un carácter no puede mapear a dos distintos")
+      void t4() {
+          assertFalse(Solution.isIsomorphic("aa", "ab"));
+      }
+
+      @Test
+      @DisplayName("Distinta longitud o null")
+      void t5() {
+          assertFalse(Solution.isIsomorphic("abc", "ab"));
+          assertFalse(Solution.isIsomorphic(null, "a"));
+      }
+
+      @Test
+      @DisplayName("Cadenas vacías")
+      void t6() {
+          assertTrue(Solution.isIsomorphic("", ""));
+      }
+
+      @Test
+      @DisplayName("Entrada grande")
+      void t7() {
+          StringBuilder a = new StringBuilder();
+          StringBuilder b = new StringBuilder();
+          for (int i = 0; i < 100000; i++) { a.append((char) ('a' + i % 26)); b.append((char) ('A' + i % 26)); }
+          assertTrue(Solution.isIsomorphic(a.toString(), b.toString()));
+      }
+  }
+complexityQuestion:
+  prompt: "¿Cuál es la complejidad temporal de tu solución óptima, en función de n?"
+  options: ["O(1)", "O(n)", "O(n log n)", "O(n²)"]
+  correctIndex: 1
+  explanation: "Una sola pasada con consultas O(1) en los Map; no hace falta comparar cada par de posiciones."

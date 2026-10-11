@@ -1,0 +1,108 @@
+slug: finally-order
+level: 0
+topic: exceptions
+title: Orden de try, catch y finally
+statement: |
+  El bloque finally se ejecuta SIEMPRE, haya o no excepción. Escribe un método que registre el orden de ejecución en una lista y devuelva la traza unida por comas (sin espacios).
+
+  Debes seguir exactamente esta estructura:
+  1. Crea una lista de texto vacía.
+  2. try: agrega "try" y luego convierte input con Integer.parseInt (descarta el resultado).
+  3. catch (NumberFormatException): agrega "catch".
+  4. finally: agrega "finally".
+  5. Después de todo el bloque, agrega "end" y devuelve la lista unida con ",".
+
+  Ejemplos:
+  - traceOrder("5") -> "try,finally,end"
+  - traceOrder("abc") -> "try,catch,finally,end"
+  - traceOrder(null) -> "try,catch,finally,end"
+methodSignature: public static String traceOrder(String input)
+className: Solution
+estimatedMinutes: 15
+difficulty: easy
+hints:
+- Usa una List<String> (por ejemplo ArrayList) y String.join(',', lista) para unirla.
+- Si parseInt no falla, el catch se salta pero el finally se ejecuta igual.
+- 'Estructura: try { log.add(''try''); Integer.parseInt(input); } catch (NumberFormatException e) { log.add(''catch''); } finally { log.add(''finally''); } log.add(''end'');'
+starterCode: |
+  import java.util.*;
+
+  public class Solution {
+
+      public static String traceOrder(String input) {
+          List<String> log = new ArrayList<>();
+          // Tu código aquí
+          return "";
+      }
+  }
+referenceSolution: |
+  import java.util.*;
+
+  public class Solution {
+
+      public static String traceOrder(String input) {
+          List<String> log = new ArrayList<>();
+          try {
+              log.add("try");
+              Integer.parseInt(input);
+          } catch (NumberFormatException e) {
+              log.add("catch");
+          } finally {
+              log.add("finally");
+          }
+          log.add("end");
+          return String.join(",", log);
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  import java.util.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Sin excepción: try, finally, end")
+      void t1() throws Exception {
+          assertEquals("try,finally,end", Solution.traceOrder("5"));
+      }
+
+      @Test
+      @DisplayName("Con excepción: try, catch, finally, end")
+      void t2() throws Exception {
+          assertEquals("try,catch,finally,end", Solution.traceOrder("abc"));
+      }
+
+      @Test
+      @DisplayName("null provoca excepción")
+      void t3() throws Exception {
+          assertEquals("try,catch,finally,end", Solution.traceOrder(null));
+      }
+
+      @Test
+      @DisplayName("Cadena vacía provoca excepción")
+      void t4() throws Exception {
+          assertEquals("try,catch,finally,end", Solution.traceOrder(""));
+      }
+
+      @Test
+      @DisplayName("Número negativo válido")
+      void t5() throws Exception {
+          assertEquals("try,finally,end", Solution.traceOrder("-12"));
+      }
+
+      @Test
+      @DisplayName("Decimal provoca excepción")
+      void t6() throws Exception {
+          assertEquals("try,catch,finally,end", Solution.traceOrder("3.14"));
+      }
+
+      @Test
+      @DisplayName("Fuera de rango provoca excepción")
+      void t7() throws Exception {
+          assertEquals("try,catch,finally,end", Solution.traceOrder("99999999999"));
+      }
+  }

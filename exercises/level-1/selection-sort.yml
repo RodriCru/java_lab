@@ -1,0 +1,101 @@
+slug: selection-sort
+level: 1
+topic: sorting
+title: Ordenamiento por selección
+statement: |
+  Escribe un método que ordene un arreglo de enteros de menor a mayor usando el
+  algoritmo de selección.
+
+  Reglas del contrato:
+  - Devuelve un arreglo NUEVO con los valores ordenados.
+  - El arreglo de entrada NO debe modificarse.
+  - Si el arreglo es null, devuelve null.
+  - Si el arreglo está vacío, devuelve un arreglo vacío.
+
+  Ejemplo:
+  - Entrada: [64, 25, 12, 22] -> Salida: [12, 22, 25, 64]
+  - Entrada: [-3, -1, -7] -> Salida: [-7, -3, -1]
+  - Entrada: [] -> Salida: []
+methodSignature: "public static int[] selectionSort(int[] numbers)"
+className: Solution
+estimatedMinutes: 20
+difficulty: easy
+hints:
+  - "En cada posición busca el valor más pequeño del resto del arreglo."
+  - "Guarda el índice del mínimo y luego intercámbialo con la posición actual."
+  - "Trabaja sobre una copia del arreglo para no modificar la entrada."
+starterCode: |
+  public class Solution {
+      public static int[] selectionSort(int[] numbers) {
+          // Tu código aquí
+          return new int[0];
+      }
+  }
+referenceSolution: |
+  public class Solution {
+      public static int[] selectionSort(int[] numbers) {
+          if (numbers == null) {
+              return null;
+          }
+          int[] resultado = numbers.clone();
+          for (int i = 0; i < resultado.length - 1; i++) {
+              int minimo = i;
+              for (int j = i + 1; j < resultado.length; j++) {
+                  if (resultado[j] < resultado[minimo]) {
+                      minimo = j;
+                  }
+              }
+              int temporal = resultado[i];
+              resultado[i] = resultado[minimo];
+              resultado[minimo] = temporal;
+          }
+          return resultado;
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Ordena un arreglo desordenado")
+      void arregloDesordenado() {
+          assertArrayEquals(new int[] {12, 22, 25, 64}, Solution.selectionSort(new int[] {64, 25, 12, 22}));
+      }
+
+      @Test
+      @DisplayName("Ordena un arreglo en orden inverso")
+      void ordenInverso() {
+          assertArrayEquals(new int[] {1, 2, 3, 4}, Solution.selectionSort(new int[] {4, 3, 2, 1}));
+      }
+
+      @Test
+      @DisplayName("Ordena un arreglo con números negativos")
+      void numerosNegativos() {
+          assertArrayEquals(new int[] {-7, -3, -1}, Solution.selectionSort(new int[] {-3, -1, -7}));
+      }
+
+      @Test
+      @DisplayName("No modifica el arreglo de entrada")
+      void noModificaLaEntrada() {
+          int[] original = {64, 25, 12, 22};
+          int[] copia = {64, 25, 12, 22};
+          Solution.selectionSort(original);
+          assertArrayEquals(copia, original);
+      }
+
+      @Test
+      @DisplayName("Ordena un arreglo de un solo elemento")
+      void unSoloElemento() {
+          assertArrayEquals(new int[] {7}, Solution.selectionSort(new int[] {7}));
+      }
+
+      @Test
+      @DisplayName("Devuelve null cuando el arreglo es null")
+      void arregloNulo() {
+          assertNull(Solution.selectionSort(null));
+      }
+  }

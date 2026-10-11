@@ -1,0 +1,85 @@
+slug: max-of-three
+level: 1
+topic: first-steps
+title: "Mayor de tres números"
+statement: |
+  Escribe un método que reciba tres números enteros y devuelva el mayor de los tres.
+
+  Los tres números pueden ser negativos; el método siempre devuelve el mayor según el orden natural de los enteros.
+
+  Ejemplo:
+  - Entrada: a=3, b=7, c=5 -> Salida: 7
+  - Entrada: a=-1, b=-8, c=-3 -> Salida: -1
+  - Entrada: a=9, b=9, c=2 -> Salida: 9
+methodSignature: "public static int maxOfThree(int a, int b, int c)"
+className: Solution
+estimatedMinutes: 8
+difficulty: easy
+hints:
+  - "Asume primero que 'a' es el mayor y compáralo con los otros dos."
+  - "Si 'b' supera al mayor actual, actualízalo; haz lo mismo con 'c'."
+  - "También puedes resolverlo en una sola línea con Math.max(a, Math.max(b, c))."
+starterCode: |
+  public class Solution {
+      public static int maxOfThree(int a, int b, int c) {
+          // Tu código aquí
+          return 0;
+      }
+  }
+referenceSolution: |
+  public class Solution {
+      public static int maxOfThree(int a, int b, int c) {
+          int mayor = a;
+          if (b > mayor) {
+              mayor = b;
+          }
+          if (c > mayor) {
+              mayor = c;
+          }
+          return mayor;
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import static org.junit.jupiter.api.Assertions.assertEquals;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Devuelve el mayor cuando está al inicio")
+      void mayorAlInicio() {
+          assertEquals(9, Solution.maxOfThree(9, 2, 4));
+      }
+
+      @Test
+      @DisplayName("Devuelve el mayor cuando está en el medio")
+      void mayorEnElMedio() {
+          assertEquals(7, Solution.maxOfThree(3, 7, 5));
+      }
+
+      @Test
+      @DisplayName("Devuelve el mayor cuando está al final")
+      void mayorAlFinal() {
+          assertEquals(10, Solution.maxOfThree(1, 2, 10));
+      }
+
+      @Test
+      @DisplayName("Funciona con tres números negativos")
+      void todosNegativos() {
+          assertEquals(-1, Solution.maxOfThree(-1, -8, -3));
+      }
+
+      @Test
+      @DisplayName("Devuelve el valor correcto cuando hay empate")
+      void conEmpate() {
+          assertEquals(9, Solution.maxOfThree(9, 9, 2));
+      }
+
+      @Test
+      @DisplayName("Devuelve el mayor con valores en los límites del int")
+      void valoresLimite() {
+          assertEquals(Integer.MAX_VALUE, Solution.maxOfThree(Integer.MIN_VALUE, 0, Integer.MAX_VALUE));
+      }
+  }

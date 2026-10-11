@@ -1,0 +1,108 @@
+slug: build-pyramid
+level: 0
+topic: loops
+title: Construir una pirámide
+statement: |
+  Escribe un método que construya una pirámide de asteriscos de n filas usando ciclos anidados. La fila i (empezando en 1) tiene n - i espacios a la izquierda y 2*i - 1 asteriscos; no lleva espacios a la derecha. Las filas se unen con '\n' y NO hay salto de línea al final.
+
+  Ejemplo con n = 3 (los puntos aquí solo representan espacios):
+  ```
+  ..*
+  .***
+  *****
+  ```
+  Es decir: "  *\n ***\n*****"
+
+  Otros ejemplos:
+  - n = 1 -> "*"
+  - n = 2 -> " *\n***"
+
+  Si n es menor o igual a 0, devuelve "" (cadena vacía).
+methodSignature: public static String buildPyramid(int n)
+className: Solution
+estimatedMinutes: 20
+difficulty: medium
+hints:
+- Usa un ciclo externo for (int i = 1; i <= n; i++) para las filas y construye cada fila con un StringBuilder.
+- Dentro, un primer ciclo interno agrega n - i espacios y un segundo agrega 2 * i - 1 asteriscos.
+- 'Agrega ''\n'' entre filas, pero no después de la última: pon el salto solo cuando i < n (o al inicio de cada fila excepto la primera).'
+starterCode: |
+  public class Solution {
+      public static String buildPyramid(int n) {
+          // Tu código aquí
+          return null;
+      }
+  }
+referenceSolution: |
+  public class Solution {
+      public static String buildPyramid(int n) {
+          StringBuilder sb = new StringBuilder();
+          for (int i = 1; i <= n; i++) {
+              for (int e = 0; e < n - i; e++) {
+                  sb.append(' ');
+              }
+              for (int a = 0; a < 2 * i - 1; a++) {
+                  sb.append('*');
+              }
+              if (i < n) {
+                  sb.append('\n');
+              }
+          }
+          return sb.toString();
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import java.util.*;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Una pirámide de una fila")
+      void t45083() {
+          assertEquals("*", Solution.buildPyramid(1));
+      }
+
+      @Test
+      @DisplayName("Una pirámide de dos filas")
+      void t86050() {
+          assertEquals(" *\n***", Solution.buildPyramid(2));
+      }
+
+      @Test
+      @DisplayName("Una pirámide de tres filas")
+      void t52736() {
+          assertEquals("  *\n ***\n*****", Solution.buildPyramid(3));
+      }
+
+      @Test
+      @DisplayName("No termina con salto de línea")
+      void t99711() {
+          assertFalse(Solution.buildPyramid(4).endsWith("\n"));
+      }
+
+      @Test
+      @DisplayName("n cero o negativo devuelve cadena vacía")
+      void t23185() {
+          assertEquals("", Solution.buildPyramid(0));
+          assertEquals("", Solution.buildPyramid(-3));
+      }
+
+      @Test
+      @DisplayName("Una pirámide de cinco filas")
+      void t54086() {
+          assertEquals("    *\n   ***\n  *****\n *******\n*********", Solution.buildPyramid(5));
+      }
+
+      @Test
+      @DisplayName("La última fila tiene 2n-1 asteriscos sin espacios")
+      void t73519() {
+          String[] filas = Solution.buildPyramid(10).split("\n");
+          assertEquals(10, filas.length);
+          assertEquals("*".repeat(19), filas[9]);
+      }
+  }

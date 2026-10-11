@@ -1,0 +1,114 @@
+slug: kth-largest
+level: 2
+topic: sorting
+title: K-ésimo elemento mayor
+statement: |
+  Devuelve el k-ésimo elemento mayor de `numbers`. Con k=1 se devuelve el máximo. Los
+  duplicados cuentan como elementos distintos.
+
+  Ejemplo:
+  - Entrada: numbers=[3, 2, 1, 5, 6, 4], k=2 -> Salida: 5
+  - Entrada: numbers=[3, 2, 3, 1, 2, 4, 5, 5, 6], k=4 -> Salida: 4
+  - Entrada: numbers=[7], k=1 -> Salida: 7
+
+  Se garantiza que `numbers` no es null y que 1 <= k <= numbers.length.
+  No modifiques el arreglo de entrada.
+methodSignature: "public static int kthLargest(int[] numbers, int k)"
+className: Solution
+estimatedMinutes: 20
+difficulty: medium
+hints:
+  - "Ordenar todo el arreglo funciona, pero hay una forma mejor con una cola de prioridad."
+  - "Mantén un PriorityQueue (min-heap) con tamaño máximo k."
+  - "Al terminar, la raíz del heap (peek) es el k-ésimo mayor."
+starterCode: |
+  public class Solution {
+      public static int kthLargest(int[] numbers, int k) {
+          // Tu código aquí
+          return 0;
+      }
+  }
+referenceSolution: |
+  import java.util.PriorityQueue;
+
+  public class Solution {
+      public static int kthLargest(int[] numbers, int k) {
+          PriorityQueue<Integer> heap = new PriorityQueue<>();
+          for (int valor : numbers) {
+              heap.offer(valor);
+              if (heap.size() > k) {
+                  heap.poll();
+              }
+          }
+          return heap.peek();
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Segundo mayor")
+      void segundoMayor() {
+          assertEquals(5, Solution.kthLargest(new int[] {3, 2, 1, 5, 6, 4}, 2));
+      }
+
+      @Test
+      @DisplayName("Con k=1 devuelve el máximo")
+      void maximo() {
+          assertEquals(9, Solution.kthLargest(new int[] {4, 9, 1, 7}, 1));
+      }
+
+      @Test
+      @DisplayName("Con k=n devuelve el mínimo")
+      void minimo() {
+          assertEquals(1, Solution.kthLargest(new int[] {4, 9, 1, 7}, 4));
+      }
+
+      @Test
+      @DisplayName("Los duplicados cuentan como elementos distintos")
+      void duplicados() {
+          assertEquals(4, Solution.kthLargest(new int[] {3, 2, 3, 1, 2, 4, 5, 5, 6}, 4));
+          assertEquals(5, Solution.kthLargest(new int[] {5, 5, 5}, 3));
+      }
+
+      @Test
+      @DisplayName("Un solo elemento")
+      void unElemento() {
+          assertEquals(7, Solution.kthLargest(new int[] {7}, 1));
+      }
+
+      @Test
+      @DisplayName("Maneja negativos")
+      void negativos() {
+          assertEquals(-3, Solution.kthLargest(new int[] {-1, -5, -3, -2}, 3));
+      }
+
+      @Test
+      @DisplayName("No modifica el arreglo de entrada")
+      void noMuta() {
+          int[] datos = {3, 1, 2};
+          Solution.kthLargest(datos, 2);
+          assertArrayEquals(new int[] {3, 1, 2}, datos);
+      }
+
+      @Test
+      @DisplayName("Funciona con un arreglo grande")
+      void grande() {
+          int n = 200_000;
+          int[] datos = new int[n];
+          for (int i = 0; i < n; i++) {
+              datos[i] = (int) ((i * 7919L) % n);
+          }
+          assertEquals(n - 11, Solution.kthLargest(datos, 11));
+      }
+  }
+complexityQuestion:
+  prompt: "Usando un min-heap de tamaño k, ¿cuál es la complejidad temporal en función de n y k?"
+  options: ["O(n)", "O(n²)", "O(k)", "O(n log k)"]
+  correctIndex: 3
+  explanation: "Se recorren los n elementos y cada inserción o extracción en un heap de tamaño k cuesta O(log k)."

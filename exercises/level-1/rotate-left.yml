@@ -1,0 +1,99 @@
+slug: rotate-left
+level: 1
+topic: arrays
+title: Rotar a la izquierda
+statement: |
+  Escribe un método que devuelva un arreglo NUEVO rotado a la izquierda las posiciones indicadas.
+
+  Ejemplo:
+  - Entrada: numbers=[1, 2, 3, 4, 5], positions=2 -> Salida: [3, 4, 5, 1, 2]
+  - Entrada: numbers=[1, 2, 3], positions=0 -> Salida: [1, 2, 3]
+  - Entrada: numbers=[1, 2, 3], positions=5 -> Salida: [3, 1, 2]
+
+  Si positions es mayor que el largo del arreglo, usa el módulo (positions % length).
+  Si positions es negativo, aplícalo con módulo positivo para obtener una rotación válida.
+  Si el arreglo es null o vacío, devuelve un arreglo vacío (new int[0]).
+  El arreglo de entrada nunca debe modificarse.
+methodSignature: "public static int[] rotateLeft(int[] numbers, int positions)"
+className: Solution
+estimatedMinutes: 15
+difficulty: easy
+hints:
+  - "Calcula el desplazamiento efectivo como positions % numbers.length, ajustándolo si es negativo."
+  - "El elemento en la posición i se mueve a la posición (i - desplazamiento + largo) % largo."
+  - "Crea un arreglo resultado del mismo tamaño y llena cada posición sin tocar el arreglo original."
+starterCode: |
+  public class Solution {
+      public static int[] rotateLeft(int[] numbers, int positions) {
+          // Tu código aquí
+          return new int[0];
+      }
+  }
+referenceSolution: |
+  public class Solution {
+      public static int[] rotateLeft(int[] numbers, int positions) {
+          if (numbers == null || numbers.length == 0) {
+              return new int[0];
+          }
+          int largo = numbers.length;
+          int desplazamiento = positions % largo;
+          if (desplazamiento < 0) {
+              desplazamiento += largo;
+          }
+          int[] resultado = new int[largo];
+          for (int i = 0; i < largo; i++) {
+              resultado[(i - desplazamiento + largo) % largo] = numbers[i];
+          }
+          return resultado;
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Rota dos posiciones a la izquierda")
+      void rotaDosPosiciones() {
+          assertArrayEquals(new int[] {3, 4, 5, 1, 2},
+                  Solution.rotateLeft(new int[] {1, 2, 3, 4, 5}, 2));
+      }
+
+      @Test
+      @DisplayName("Devuelve el mismo contenido cuando positions es 0")
+      void ceroPosiciones() {
+          assertArrayEquals(new int[] {1, 2, 3}, Solution.rotateLeft(new int[] {1, 2, 3}, 0));
+      }
+
+      @Test
+      @DisplayName("Usa el módulo cuando positions es mayor que el largo")
+      void posicionesMayoresAlLargo() {
+          assertArrayEquals(new int[] {3, 1, 2}, Solution.rotateLeft(new int[] {1, 2, 3}, 5));
+      }
+
+      @Test
+      @DisplayName("Trata las posiciones negativas como una rotación válida")
+      void posicionesNegativas() {
+          assertArrayEquals(new int[] {3, 1, 2}, Solution.rotateLeft(new int[] {1, 2, 3}, -1));
+      }
+
+      @Test
+      @DisplayName("Devuelve un arreglo vacío solo cuando la entrada es null o está vacía")
+      void entradaNulaOVacia() {
+          assertArrayEquals(new int[] {2, 3, 1}, Solution.rotateLeft(new int[] {1, 2, 3}, 1));
+          assertArrayEquals(new int[0], Solution.rotateLeft(null, 2));
+          assertArrayEquals(new int[0], Solution.rotateLeft(new int[0], 2));
+      }
+
+      @Test
+      @DisplayName("No modifica el arreglo de entrada")
+      void noModificaLaEntrada() {
+          int[] original = {1, 2, 3, 4};
+          int[] copia = {1, 2, 3, 4};
+          assertArrayEquals(new int[] {2, 3, 4, 1}, Solution.rotateLeft(original, 1));
+          assertArrayEquals(copia, original);
+      }
+  }

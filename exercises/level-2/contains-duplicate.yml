@@ -1,0 +1,109 @@
+slug: contains-duplicate
+level: 2
+topic: structures
+title: Contiene duplicados
+statement: |
+  Escribe un método que indique si un arreglo de enteros contiene al menos un valor repetido.
+
+  Ejemplo:
+  - Entrada: [1, 2, 3, 1] -> Salida: true
+  - Entrada: [1, 2, 3, 4] -> Salida: false
+  - Entrada: [] -> Salida: false
+
+  Si el arreglo es null o está vacío, devuelve false. No modifiques el arreglo de entrada.
+methodSignature: "public static boolean containsDuplicate(int[] numbers)"
+className: Solution
+estimatedMinutes: 10
+difficulty: medium
+hints:
+  - "Comparar cada par de elementos funciona, pero es lento para arreglos grandes."
+  - "Un Set no admite elementos repetidos: piensa en qué devuelve add() cuando el elemento ya existe."
+  - "Recorre el arreglo una sola vez; si add() devuelve false, ya encontraste un duplicado."
+starterCode: |
+  public class Solution {
+      public static boolean containsDuplicate(int[] numbers) {
+          // Tu código aquí
+          return false;
+      }
+  }
+referenceSolution: |
+  import java.util.HashSet;
+  import java.util.Set;
+
+  public class Solution {
+      public static boolean containsDuplicate(int[] numbers) {
+          if (numbers == null) {
+              return false;
+          }
+          Set<Integer> vistos = new HashSet<>();
+          for (int n : numbers) {
+              if (!vistos.add(n)) {
+                  return true;
+              }
+          }
+          return false;
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Detecta un duplicado simple")
+      void duplicadoSimple() {
+          assertTrue(Solution.containsDuplicate(new int[] {1, 2, 3, 1}));
+      }
+
+      @Test
+      @DisplayName("Devuelve false cuando todos son distintos")
+      void todosDistintos() {
+          assertFalse(Solution.containsDuplicate(new int[] {1, 2, 3, 4}));
+      }
+
+      @Test
+      @DisplayName("Arreglo vacío o null devuelve false")
+      void vacioONulo() {
+          assertFalse(Solution.containsDuplicate(new int[0]));
+          assertFalse(Solution.containsDuplicate(null));
+      }
+
+      @Test
+      @DisplayName("Un solo elemento no tiene duplicados")
+      void unElemento() {
+          assertFalse(Solution.containsDuplicate(new int[] {7}));
+      }
+
+      @Test
+      @DisplayName("Detecta duplicados con números negativos y cero")
+      void negativosYCero() {
+          assertTrue(Solution.containsDuplicate(new int[] {-1, 0, 5, -1}));
+          assertFalse(Solution.containsDuplicate(new int[] {-1, 0, 1}));
+      }
+
+      @Test
+      @DisplayName("Todos los elementos iguales")
+      void todosIguales() {
+          assertTrue(Solution.containsDuplicate(new int[] {4, 4, 4, 4}));
+      }
+
+      @Test
+      @DisplayName("Funciona rápido con 200000 elementos")
+      void grande() {
+          int[] a = new int[200000];
+          for (int i = 0; i < a.length; i++) {
+              a[i] = i;
+          }
+          assertFalse(Solution.containsDuplicate(a));
+          a[199999] = 0;
+          assertTrue(Solution.containsDuplicate(a));
+      }
+  }
+complexityQuestion:
+  prompt: "¿Cuál es la complejidad temporal de tu solución óptima, en función de n?"
+  options: ["O(1)", "O(n log n)", "O(n²)", "O(n)"]
+  correctIndex: 3
+  explanation: "Se recorre el arreglo una vez y cada operación del HashSet es O(1) en promedio; comparar todos los pares sería O(n²)."

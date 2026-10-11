@@ -1,0 +1,153 @@
+slug: quick-sort
+level: 2
+topic: sorting
+title: Ordenamiento rápido (Quick Sort)
+statement: |
+  Implementa el algoritmo Quick Sort: devuelve un arreglo NUEVO con los elementos de
+  `numbers` en orden ascendente. El arreglo original no debe modificarse.
+
+  Ejemplo:
+  - Entrada: [5, 2, 9, 1, 5, 6] -> Salida: [1, 2, 5, 5, 6, 9]
+  - Entrada: [3] -> Salida: [3]
+  - Entrada: [] -> Salida: []
+
+  Si `numbers` es null, devuelve un arreglo vacío. Se conservan los duplicados.
+  Se espera una solución que divida el problema alrededor de un pivote (no vale Arrays.sort).
+methodSignature: "public static int[] quickSort(int[] numbers)"
+className: Solution
+estimatedMinutes: 25
+difficulty: medium
+hints:
+  - "Copia el arreglo de entrada antes de ordenar, para no modificar el original."
+  - "Elige un pivote y reubica los elementos menores a su izquierda y los mayores a su derecha (partición)."
+  - "Ordena recursivamente la parte izquierda y la derecha del pivote."
+starterCode: |
+  public class Solution {
+      public static int[] quickSort(int[] numbers) {
+          // Tu código aquí
+          return new int[0];
+      }
+  }
+referenceSolution: |
+  public class Solution {
+      public static int[] quickSort(int[] numbers) {
+          if (numbers == null) {
+              return new int[0];
+          }
+          int[] copia = numbers.clone();
+          ordenar(copia, 0, copia.length - 1);
+          return copia;
+      }
+
+      private static void ordenar(int[] a, int low, int high) {
+          if (low >= high) {
+              return;
+          }
+          int pivote = a[low + (high - low) / 2];
+          int i = low;
+          int j = high;
+          while (i <= j) {
+              while (a[i] < pivote) {
+                  i++;
+              }
+              while (a[j] > pivote) {
+                  j--;
+              }
+              if (i <= j) {
+                  int tmp = a[i];
+                  a[i] = a[j];
+                  a[j] = tmp;
+                  i++;
+                  j--;
+              }
+          }
+          ordenar(a, low, j);
+          ordenar(a, i, high);
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import java.util.Arrays;
+  import java.util.Random;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Ordena un arreglo desordenado")
+      void ordenaBasico() {
+          assertArrayEquals(new int[] {1, 2, 5, 5, 6, 9}, Solution.quickSort(new int[] {5, 2, 9, 1, 5, 6}));
+      }
+
+      @Test
+      @DisplayName("Un arreglo vacío devuelve un arreglo vacío")
+      void vacio() {
+          assertArrayEquals(new int[0], Solution.quickSort(new int[0]));
+      }
+
+      @Test
+      @DisplayName("Null devuelve un arreglo vacío")
+      void nulo() {
+          assertArrayEquals(new int[0], Solution.quickSort(null));
+      }
+
+      @Test
+      @DisplayName("Un solo elemento queda igual")
+      void unElemento() {
+          assertArrayEquals(new int[] {3}, Solution.quickSort(new int[] {3}));
+      }
+
+      @Test
+      @DisplayName("Maneja todos los elementos iguales y negativos")
+      void duplicadosYNegativos() {
+          assertArrayEquals(new int[] {7, 7, 7, 7}, Solution.quickSort(new int[] {7, 7, 7, 7}));
+          assertArrayEquals(new int[] {-5, -1, 0, 3}, Solution.quickSort(new int[] {3, -1, 0, -5}));
+      }
+
+      @Test
+      @DisplayName("No modifica el arreglo original")
+      void noMuta() {
+          int[] original = {4, 3, 2, 1};
+          int[] resultado = Solution.quickSort(original);
+          assertArrayEquals(new int[] {1, 2, 3, 4}, resultado);
+          assertArrayEquals(new int[] {4, 3, 2, 1}, original);
+          assertNotSame(original, resultado);
+      }
+
+      @Test
+      @DisplayName("Ordena arreglos ya ordenados e inversos grandes")
+      void ordenadosGrandes() {
+          int n = 20000;
+          int[] asc = new int[n];
+          int[] desc = new int[n];
+          for (int i = 0; i < n; i++) {
+              asc[i] = i;
+              desc[i] = n - i;
+          }
+          assertArrayEquals(asc, Solution.quickSort(asc));
+          int[] esperado = desc.clone();
+          Arrays.sort(esperado);
+          assertArrayEquals(esperado, Solution.quickSort(desc));
+      }
+
+      @Test
+      @DisplayName("Coincide con Arrays.sort en datos aleatorios")
+      void aleatorio() {
+          Random r = new Random(42);
+          int[] datos = new int[5000];
+          for (int i = 0; i < datos.length; i++) {
+              datos[i] = r.nextInt(2000) - 1000;
+          }
+          int[] esperado = datos.clone();
+          Arrays.sort(esperado);
+          assertArrayEquals(esperado, Solution.quickSort(datos));
+      }
+  }
+complexityQuestion:
+  prompt: "¿Cuál es la complejidad temporal promedio de Quick Sort, en función de n?"
+  options: ["O(n)", "O(n log n)", "O(n²)", "O(log n)"]
+  correctIndex: 1
+  explanation: "Cada nivel de partición recorre n elementos y, con pivotes razonables, hay log n niveles. En el peor caso (pivote siempre extremo) degenera a O(n²)."

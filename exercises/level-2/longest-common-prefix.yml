@@ -1,0 +1,98 @@
+slug: longest-common-prefix
+level: 2
+topic: strings
+title: "Prefijo común más largo"
+statement: |
+  Dado un arreglo de cadenas, devuelve el prefijo común más largo a todas ellas.
+
+  Ejemplos:
+  - ["flower", "flow", "flight"] -> "fl"
+  - ["dog", "racecar", "car"] -> ""
+  - ["alone"] -> "alone"
+
+  Devuelve "" si no hay prefijo común, si el arreglo es null o está vacío.
+methodSignature: "public static String longestCommonPrefix(String[] words)"
+className: Solution
+estimatedMinutes: 15
+difficulty: medium
+hints:
+  - "Considera el caso de arreglo vacío o null antes de empezar."
+  - "Toma la primera palabra como candidata a prefijo."
+  - "Recorre las demás palabras y acorta el prefijo hasta que cada palabra empiece con él."
+starterCode: |
+  public class Solution {
+      public static String longestCommonPrefix(String[] words) {
+          // Tu código aquí
+          return "x";
+      }
+  }
+referenceSolution: |
+  public class Solution {
+      public static String longestCommonPrefix(String[] words) {
+          if (words == null || words.length == 0) return "";
+          String prefijo = words[0];
+          for (int i = 1; i < words.length; i++) {
+              while (!words[i].startsWith(prefijo)) {
+                  prefijo = prefijo.substring(0, prefijo.length() - 1);
+                  if (prefijo.isEmpty()) return "";
+              }
+          }
+          return prefijo;
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+  import java.util.*;
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Prefijo común fl")
+      void t0() {
+          assertEquals("fl", Solution.longestCommonPrefix(new String[] {"flower", "flow", "flight"}));
+      }
+
+      @Test
+      @DisplayName("Sin prefijo común")
+      void t1() {
+          assertEquals("", Solution.longestCommonPrefix(new String[] {"dog", "racecar", "car"}));
+      }
+
+      @Test
+      @DisplayName("Un solo elemento")
+      void t2() {
+          assertEquals("alone", Solution.longestCommonPrefix(new String[] {"alone"}));
+      }
+
+      @Test
+      @DisplayName("Arreglo vacío o null")
+      void t3() {
+          assertEquals("", Solution.longestCommonPrefix(new String[0]));
+          assertEquals("", Solution.longestCommonPrefix(null));
+      }
+
+      @Test
+      @DisplayName("Contiene una cadena vacía")
+      void t4() {
+          assertEquals("", Solution.longestCommonPrefix(new String[] {"abc", "", "abd"}));
+      }
+
+      @Test
+      @DisplayName("Cadenas idénticas")
+      void t5() {
+          assertEquals("abc", Solution.longestCommonPrefix(new String[] {"abc", "abc", "abc"}));
+      }
+
+      @Test
+      @DisplayName("Una palabra es prefijo de las otras")
+      void t6() {
+          assertEquals("ab", Solution.longestCommonPrefix(new String[] {"abcd", "ab", "abxyz"}));
+      }
+  }
+complexityQuestion:
+  prompt: "¿Cuál es la complejidad temporal de tu solución, siendo S la suma de las longitudes de todas las palabras?"
+  options: ["O(1)", "O(S)", "O(S log S)", "O(S²)"]
+  correctIndex: 1
+  explanation: "En el peor caso se comparan todos los caracteres de todas las palabras una sola vez."

@@ -1,0 +1,128 @@
+slug: generate-parentheses
+level: 2
+topic: recursion
+title: "Generar paréntesis válidos"
+statement: |
+  Dado un número n de pares de paréntesis, genera todas las combinaciones bien formadas, ordenadas lexicográficamente considerando '(' menor que ')'.
+
+  Ejemplos:
+  - n=1 -> ["()"]
+  - n=2 -> ["(())", "()()"]
+  - n=3 -> ["((()))", "(()())", "(())()", "()(())", "()()()"]
+  - n=0 -> [""] (una lista con la cadena vacía)
+
+  Si n es negativo, devuelve una lista vacía.
+methodSignature: "public static java.util.List<String> generateParentheses(int pairs)"
+className: Solution
+estimatedMinutes: 30
+difficulty: medium
+hints:
+  - "Una combinación es válida si en ningún prefijo hay más ')' que '('."
+  - "Con backtracking lleva la cuenta de paréntesis abiertos y cerrados usados."
+  - "Puedes abrir si abiertos < n, y cerrar si cerrados < abiertos. Probar primero '(' produce el orden pedido."
+starterCode: |
+  import java.util.*;
+  public class Solution {
+      public static java.util.List<String> generateParentheses(int pairs) {
+          // Tu código aquí
+          return new ArrayList<>();
+      }
+  }
+referenceSolution: |
+  import java.util.*;
+  public class Solution {
+      public static List<String> generateParentheses(int pairs) {
+          List<String> resultado = new ArrayList<>();
+          if (pairs < 0) return resultado;
+          construir(pairs, 0, 0, new StringBuilder(), resultado);
+          return resultado;
+      }
+
+      private static void construir(int n, int abiertos, int cerrados, StringBuilder actual, List<String> resultado) {
+          if (actual.length() == 2 * n) {
+              resultado.add(actual.toString());
+              return;
+          }
+          if (abiertos < n) {
+              actual.append('(');
+              construir(n, abiertos + 1, cerrados, actual, resultado);
+              actual.deleteCharAt(actual.length() - 1);
+          }
+          if (cerrados < abiertos) {
+              actual.append(')');
+              construir(n, abiertos, cerrados + 1, actual, resultado);
+              actual.deleteCharAt(actual.length() - 1);
+          }
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+  import java.util.*;
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("n igual a 1")
+      void t0() {
+          assertEquals(Arrays.asList("()"), Solution.generateParentheses(1));
+      }
+
+      @Test
+      @DisplayName("n igual a 2")
+      void t1() {
+          assertEquals(Arrays.asList("(())", "()()"), Solution.generateParentheses(2));
+      }
+
+      @Test
+      @DisplayName("n igual a 3 en orden")
+      void t2() {
+          assertEquals(Arrays.asList("((()))", "(()())", "(())()", "()(())", "()()()"), Solution.generateParentheses(3));
+      }
+
+      @Test
+      @DisplayName("n igual a 0 devuelve lista con vacío")
+      void t3() {
+          assertEquals(Arrays.asList(""), Solution.generateParentheses(0));
+      }
+
+      @Test
+      @DisplayName("n negativo devuelve lista vacía")
+      void t4() {
+          assertEquals(new ArrayList<String>(), Solution.generateParentheses(-1));
+      }
+
+      @Test
+      @DisplayName("Cantidad de Catalan para n=8")
+      void t5() {
+          List<String> r = Solution.generateParentheses(8);
+          assertEquals(1430, r.size());
+          assertEquals("(((((((())))))))", r.get(0));
+          assertEquals("()()()()()()()()", r.get(1429));
+      }
+
+      @Test
+      @DisplayName("Todas válidas, distintas y ordenadas (n=6)")
+      void t6() {
+          List<String> r = Solution.generateParentheses(6);
+          assertEquals(132, r.size());
+          assertEquals(132, new HashSet<>(r).size());
+          List<String> ord = new ArrayList<>(r);
+          Collections.sort(ord);
+          assertEquals(ord, r);
+          for (String s : r) {
+          int bal = 0;
+          for (char c : s.toCharArray()) {
+          bal += c == '(' ? 1 : -1;
+          assertTrue(bal >= 0);
+          }
+          assertEquals(0, bal);
+          }
+      }
+  }
+complexityQuestion:
+  prompt: "¿Cuántas combinaciones válidas existen para n pares (y por tanto, cómo crece el trabajo)?"
+  options: ["O(n)", "O(n²)", "O(4ⁿ / √n) (números de Catalan)", "O(n!)"]
+  correctIndex: 2
+  explanation: "El número de combinaciones válidas es el n-ésimo número de Catalan, que crece aproximadamente como 4ⁿ / (n·√n)."

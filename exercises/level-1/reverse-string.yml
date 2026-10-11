@@ -1,0 +1,89 @@
+slug: reverse-string
+level: 1
+topic: strings
+title: "Invertir una cadena"
+statement: |
+  Escribe un método que reciba una cadena de texto y devuelva esa misma cadena con los caracteres en orden inverso.
+
+  Reglas del contrato:
+  - Si el texto es null, el método devuelve null.
+  - Si el texto está vacío, devuelve una cadena vacía.
+  - Se distinguen mayúsculas y minúsculas: los caracteres no se transforman.
+
+  Ejemplo:
+  - Entrada: "hola" -> Salida: "aloh"
+  - Entrada: "" -> Salida: ""
+  - Entrada: "Java" -> Salida: "avaJ"
+methodSignature: "public static String reverse(String text)"
+className: Solution
+estimatedMinutes: 8
+difficulty: easy
+hints:
+  - "Recorre la cadena desde el último índice hasta el primero."
+  - "Ve acumulando cada carácter en un StringBuilder."
+  - "Resuelve antes el caso de null para no provocar un NullPointerException."
+starterCode: |
+  public class Solution {
+      public static String reverse(String text) {
+          // Tu código aquí
+          return "";
+      }
+  }
+referenceSolution: |
+  public class Solution {
+      public static String reverse(String text) {
+          if (text == null) {
+              return null;
+          }
+          StringBuilder resultado = new StringBuilder();
+          for (int i = text.length() - 1; i >= 0; i--) {
+              resultado.append(text.charAt(i));
+          }
+          return resultado.toString();
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import static org.junit.jupiter.api.Assertions.assertEquals;
+  import static org.junit.jupiter.api.Assertions.assertNull;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Invierte una cadena normal")
+      void cadenaNormal() {
+          assertEquals("aloh", Solution.reverse("hola"));
+      }
+
+      @Test
+      @DisplayName("Invierte una cadena con mayúsculas y minúsculas")
+      void cadenaConMayusculas() {
+          assertEquals("avaJ", Solution.reverse("Java"));
+      }
+
+      @Test
+      @DisplayName("Una cadena vacía devuelve una cadena vacía")
+      void cadenaVacia() {
+          assertEquals("", Solution.reverse(""));
+      }
+
+      @Test
+      @DisplayName("Una cadena de un solo carácter se mantiene igual")
+      void unSoloCaracter() {
+          assertEquals("a", Solution.reverse("a"));
+      }
+
+      @Test
+      @DisplayName("Un texto null devuelve null")
+      void textoNull() {
+          assertNull(Solution.reverse(null));
+      }
+
+      @Test
+      @DisplayName("Invertir una cadena con espacios conserva los espacios")
+      void cadenaConEspacios() {
+          assertEquals("odnum aloh", Solution.reverse("hola mundo"));
+      }
+  }

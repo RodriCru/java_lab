@@ -1,0 +1,201 @@
+slug: abstract-vehicle-cost
+level: 0
+topic: abstraction
+title: Costo de viaje con clase abstracta
+statement: |
+  Una clase abstracta agrupa los campos y comportamientos comunes y obliga a las subclases a implementar lo que cambia. En Solution la clase abstracta Vehicle guarda el nombre y la tarifa por kilómetro, y declara el método abstracto calculateCost(km). No se puede hacer new Vehicle(...).
+
+  Completa las subclases:
+  - Car(name, ratePerKm): calculateCost(km) = km * tarifa por km.
+  - Truck(name, ratePerKm, tons): calculateCost(km) = km * tarifa por km + tons * 50 (cargo fijo de 50 por tonelada). Usa getRatePerKm() para leer la tarifa del padre.
+  - totalCost recibe una flota (lista de Vehicle) y un número de km y devuelve la suma del costo de cada vehículo para esos km. Si la flota es null o está vacía devuelve 0.0.
+
+  Ejemplo:
+  - Entrada: [Car("A", 2.5)], km=10 -> Salida: 25.0
+  - Entrada: [Truck("T", 4.0, 2.0)], km=10 -> Salida: 140.0 (10*4.0 + 2.0*50)
+  - Entrada: [Car("A", 2.5), Truck("T", 4.0, 2.0)], km=10 -> Salida: 165.0
+methodSignature: public static double totalCost(List<Vehicle> fleet, int km)
+className: Solution
+estimatedMinutes: 20
+difficulty: medium
+hints:
+- Una subclase concreta DEBE implementar todos los métodos abstract que heredó; si no, el compilador falla.
+- 'Los campos de Vehicle son private: desde la subclase usa los getters (getRatePerKm()).'
+- En totalCost recorre la flota y suma v.calculateCost(km); Java decide en tiempo de ejecución si ejecuta la versión de Car o de Truck.
+starterCode: |
+  import java.util.*;
+
+  public class Solution {
+
+      public abstract static class Vehicle {
+          private final String name;
+          private final double ratePerKm;
+
+          public Vehicle(String name, double ratePerKm) {
+              this.name = name;
+              this.ratePerKm = ratePerKm;
+          }
+
+          public String getName() {
+              return name;
+          }
+
+          public double getRatePerKm() {
+              return ratePerKm;
+          }
+
+          public abstract double calculateCost(int km);
+      }
+
+      public static class Car extends Vehicle {
+          public Car(String name, double ratePerKm) {
+              super(name, ratePerKm);
+          }
+
+          @Override
+          public double calculateCost(int km) {
+              // Tu código aquí
+              return 0;
+          }
+      }
+
+      public static class Truck extends Vehicle {
+          private final double tons;
+
+          public Truck(String name, double ratePerKm, double tons) {
+              super(name, ratePerKm);
+              this.tons = tons;
+          }
+
+          @Override
+          public double calculateCost(int km) {
+              // Tu código aquí
+              return 0;
+          }
+      }
+
+      public static double totalCost(List<Vehicle> fleet, int km) {
+          // Tu código aquí
+          return 0;
+      }
+  }
+referenceSolution: |
+  import java.util.*;
+
+  public class Solution {
+
+      public abstract static class Vehicle {
+          private final String name;
+          private final double ratePerKm;
+
+          public Vehicle(String name, double ratePerKm) {
+              this.name = name;
+              this.ratePerKm = ratePerKm;
+          }
+
+          public String getName() {
+              return name;
+          }
+
+          public double getRatePerKm() {
+              return ratePerKm;
+          }
+
+          public abstract double calculateCost(int km);
+      }
+
+      public static class Car extends Vehicle {
+          public Car(String name, double ratePerKm) {
+              super(name, ratePerKm);
+          }
+
+          @Override
+          public double calculateCost(int km) {
+              return km * getRatePerKm();
+          }
+      }
+
+      public static class Truck extends Vehicle {
+          private final double tons;
+
+          public Truck(String name, double ratePerKm, double tons) {
+              super(name, ratePerKm);
+              this.tons = tons;
+          }
+
+          @Override
+          public double calculateCost(int km) {
+              return km * getRatePerKm() + tons * 50;
+          }
+      }
+
+      public static double totalCost(List<Vehicle> fleet, int km) {
+          if (fleet == null) {
+              return 0.0;
+          }
+          double total = 0.0;
+          for (Vehicle v : fleet) {
+              total += v.calculateCost(km);
+          }
+          return total;
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+  import java.util.*;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      private static final double DELTA = 1e-9;
+
+      @Test
+      @DisplayName("El costo de un coche es km por tarifa")
+      void costoCoche() {
+          assertEquals(25.0, new Solution.Car("A", 2.5).calculateCost(10), DELTA);
+      }
+
+      @Test
+      @DisplayName("El costo de un camión suma el cargo por tonelada")
+      void costoCamion() {
+          assertEquals(140.0, new Solution.Truck("T", 4.0, 2.0).calculateCost(10), DELTA);
+      }
+
+      @Test
+      @DisplayName("Con 0 km el coche cuesta 0 y el camión solo el cargo por carga")
+      void ceroKm() {
+          assertEquals(0.0, new Solution.Car("A", 2.5).calculateCost(0), DELTA);
+          assertEquals(100.0, new Solution.Truck("T", 4.0, 2.0).calculateCost(0), DELTA);
+      }
+
+      @Test
+      @DisplayName("Los datos comunes viven en la clase padre")
+      void datosComunes() {
+          Solution.Vehicle v = new Solution.Truck("Titan", 4.0, 1.0);
+          assertEquals("Titan", v.getName());
+          assertEquals(4.0, v.getRatePerKm(), DELTA);
+      }
+
+      @Test
+      @DisplayName("totalCost con un coche y un camión")
+      void flotaMixta() {
+          List<Solution.Vehicle> flota = List.of(new Solution.Car("A", 2.5), new Solution.Truck("T", 4.0, 2.0));
+          assertEquals(165.0, Solution.totalCost(flota, 10), DELTA);
+      }
+
+      @Test
+      @DisplayName("totalCost con varios coches")
+      void variosCoches() {
+          List<Solution.Vehicle> flota = List.of(new Solution.Car("A", 1.0), new Solution.Car("B", 2.0), new Solution.Car("C", 3.0));
+          assertEquals(60.0, Solution.totalCost(flota, 10), DELTA);
+      }
+
+      @Test
+      @DisplayName("totalCost con flota vacía o null devuelve 0")
+      void vaciaONull() {
+          assertEquals(0.0, Solution.totalCost(new ArrayList<>(), 10), DELTA);
+          assertEquals(0.0, Solution.totalCost(null, 10), DELTA);
+      }
+  }

@@ -1,0 +1,208 @@
+slug: shape-total-area
+level: 0
+topic: oop-basics
+title: Área total de figuras
+statement: |
+  Polimorfismo con interfaces: Solution define la interfaz Shape con el método area() y tres figuras: Circle, Rectangle y Triangle. Cada una calcula su área de forma distinta.
+
+  Completa:
+  - Circle(radius): area() = Math.PI * radius * radius.
+  - Rectangle(width, height): area() = width * height.
+  - Triangle(base, height): area() = base * height / 2.
+  - totalArea recibe una lista de figuras y devuelve la suma de sus áreas, sin preguntar de qué tipo es cada una.
+
+  Si la lista es null o está vacía, devuelve 0.0.
+
+  Ejemplo:
+  - Entrada: [Rectangle(2, 3), Triangle(4, 5)] -> Salida: 16.0 (6.0 + 10.0)
+  - Entrada: [Circle(1)] -> Salida: 3.141592653589793
+  - Entrada: [] -> Salida: 0.0
+methodSignature: public static double totalArea(List<Shape> shapes)
+className: Solution
+estimatedMinutes: 15
+difficulty: easy
+hints:
+- Una interfaz define QUÉ hace una figura (area()) y cada clase decide CÓMO; las clases la implementan con implements.
+- 'Cuidado con la división del triángulo: usa 2.0 o trabaja con doubles para no truncar.'
+- En totalArea recorre la lista con un for-each y acumula shape.area(); no necesitas instanceof.
+starterCode: |
+  import java.util.*;
+
+  public class Solution {
+
+      public interface Shape {
+          double area();
+      }
+
+      public static class Circle implements Shape {
+          private final double radius;
+
+          public Circle(double radius) {
+              this.radius = radius;
+          }
+
+          @Override
+          public double area() {
+              // Tu código aquí
+              return 0;
+          }
+      }
+
+      public static class Rectangle implements Shape {
+          private final double width;
+          private final double height;
+
+          public Rectangle(double width, double height) {
+              this.width = width;
+              this.height = height;
+          }
+
+          @Override
+          public double area() {
+              // Tu código aquí
+              return 0;
+          }
+      }
+
+      public static class Triangle implements Shape {
+          private final double base;
+          private final double height;
+
+          public Triangle(double base, double height) {
+              this.base = base;
+              this.height = height;
+          }
+
+          @Override
+          public double area() {
+              // Tu código aquí
+              return 0;
+          }
+      }
+
+      public static double totalArea(List<Shape> shapes) {
+          // Tu código aquí
+          return 0;
+      }
+  }
+referenceSolution: |
+  import java.util.*;
+
+  public class Solution {
+
+      public interface Shape {
+          double area();
+      }
+
+      public static class Circle implements Shape {
+          private final double radius;
+
+          public Circle(double radius) {
+              this.radius = radius;
+          }
+
+          @Override
+          public double area() {
+              return Math.PI * radius * radius;
+          }
+      }
+
+      public static class Rectangle implements Shape {
+          private final double width;
+          private final double height;
+
+          public Rectangle(double width, double height) {
+              this.width = width;
+              this.height = height;
+          }
+
+          @Override
+          public double area() {
+              return width * height;
+          }
+      }
+
+      public static class Triangle implements Shape {
+          private final double base;
+          private final double height;
+
+          public Triangle(double base, double height) {
+              this.base = base;
+              this.height = height;
+          }
+
+          @Override
+          public double area() {
+              return base * height / 2;
+          }
+      }
+
+      public static double totalArea(List<Shape> shapes) {
+          if (shapes == null) {
+              return 0.0;
+          }
+          double total = 0.0;
+          for (Shape shape : shapes) {
+              total += shape.area();
+          }
+          return total;
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+  import java.util.*;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      private static final double DELTA = 1e-9;
+
+      @Test
+      @DisplayName("Área del círculo")
+      void areaCirculo() {
+          assertEquals(Math.PI, new Solution.Circle(1).area(), DELTA);
+          assertEquals(Math.PI * 4, new Solution.Circle(2).area(), DELTA);
+      }
+
+      @Test
+      @DisplayName("Área del rectángulo")
+      void areaRectangulo() {
+          assertEquals(6.0, new Solution.Rectangle(2, 3).area(), DELTA);
+      }
+
+      @Test
+      @DisplayName("Área del triángulo (sin truncar la división)")
+      void areaTriangulo() {
+          assertEquals(10.0, new Solution.Triangle(4, 5).area(), DELTA);
+          assertEquals(1.5, new Solution.Triangle(3, 1).area(), DELTA);
+      }
+
+      @Test
+      @DisplayName("totalArea suma figuras de distinto tipo")
+      void sumaMixta() {
+          List<Solution.Shape> lista = List.of(new Solution.Rectangle(2, 3), new Solution.Triangle(4, 5));
+          assertEquals(16.0, Solution.totalArea(lista), DELTA);
+      }
+
+      @Test
+      @DisplayName("totalArea con una sola figura")
+      void unaFigura() {
+          assertEquals(Math.PI, Solution.totalArea(List.of(new Solution.Circle(1))), DELTA);
+      }
+
+      @Test
+      @DisplayName("totalArea con los tres tipos")
+      void tresTipos() {
+          List<Solution.Shape> lista = List.of(new Solution.Circle(1), new Solution.Rectangle(1, 1), new Solution.Triangle(2, 2));
+          assertEquals(Math.PI + 1 + 2, Solution.totalArea(lista), DELTA);
+      }
+
+      @Test
+      @DisplayName("Lista vacía o null suma 0")
+      void vaciaONull() {
+          assertEquals(0.0, Solution.totalArea(new ArrayList<>()), DELTA);
+          assertEquals(0.0, Solution.totalArea(null), DELTA);
+      }
+  }

@@ -1,0 +1,145 @@
+slug: tasks-by-priority
+level: 0
+topic: collections
+title: Tareas por prioridad
+statement: |
+  Una PriorityQueue siempre entrega primero el "menor" elemento según su orden (o según el Comparator que le des). Es ideal para atender tareas por prioridad.
+
+  Dentro de Solution ya existe la clase anidada Task, con name (String) y priority (int), y los getters getName() y getPriority(). Escribe un método que devuelva los nombres de las tareas en el orden en que deben ejecutarse:
+  - Primero las de MENOR número de prioridad (1 es más urgente que 5).
+  - Si dos tareas tienen la misma prioridad, primero la de nombre menor alfabéticamente (String.compareTo).
+
+  Una lista null o vacía devuelve una lista vacía. No modifiques la lista recibida.
+
+  Ejemplos:
+  - [Task("lavar", 3), Task("pagar", 1), Task("cocinar", 2)] -> ["pagar", "cocinar", "lavar"]
+  - [Task("b", 1), Task("a", 1)] -> ["a", "b"]
+methodSignature: "public static List<String> executionOrder(List<Task> tasks)"
+className: Solution
+estimatedMinutes: 20
+difficulty: medium
+hints:
+  - "Crea new PriorityQueue<Task>(comparador) y agrega todas las tareas con addAll o add."
+  - "El comparador: Comparator.comparingInt(Task::getPriority).thenComparing(Task::getName)."
+  - "Mientras la cola no esté vacía, poll() devuelve la siguiente tarea; agrega su nombre a la lista de resultado. No iteres la PriorityQueue con for: no garantiza el orden."
+starterCode: |
+  import java.util.*;
+
+  public class Solution {
+
+      public static class Task {
+          private final String name;
+          private final int priority;
+
+          public Task(String name, int priority) {
+              this.name = name;
+              this.priority = priority;
+          }
+
+          public String getName() {
+              return name;
+          }
+
+          public int getPriority() {
+              return priority;
+          }
+      }
+
+      public static List<String> executionOrder(List<Task> tasks) {
+          // Tu código aquí
+          return new ArrayList<>();
+      }
+  }
+referenceSolution: |
+  import java.util.*;
+
+  public class Solution {
+
+      public static class Task {
+          private final String name;
+          private final int priority;
+
+          public Task(String name, int priority) {
+              this.name = name;
+              this.priority = priority;
+          }
+
+          public String getName() {
+              return name;
+          }
+
+          public int getPriority() {
+              return priority;
+          }
+      }
+
+      public static List<String> executionOrder(List<Task> tasks) {
+          List<String> order = new ArrayList<>();
+          if (tasks == null) {
+              return order;
+          }
+          PriorityQueue<Task> queue = new PriorityQueue<>(
+                  Comparator.comparingInt(Task::getPriority).thenComparing(Task::getName));
+          queue.addAll(tasks);
+          while (!queue.isEmpty()) {
+              order.add(queue.poll().getName());
+          }
+          return order;
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import java.util.*;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Ordena por prioridad ascendente")
+      void porPrioridad() {
+          List<Solution.Task> tasks = List.of(
+                  new Solution.Task("lavar", 3), new Solution.Task("pagar", 1), new Solution.Task("cocinar", 2));
+          assertEquals(List.of("pagar", "cocinar", "lavar"), Solution.executionOrder(tasks));
+      }
+
+      @Test
+      @DisplayName("Con igual prioridad desempata por nombre alfabético")
+      void desempate() {
+          List<Solution.Task> tasks = List.of(new Solution.Task("b", 1), new Solution.Task("a", 1));
+          assertEquals(List.of("a", "b"), Solution.executionOrder(tasks));
+      }
+
+      @Test
+      @DisplayName("Combina prioridad y desempate")
+      void mixto() {
+          List<Solution.Task> tasks = List.of(
+                  new Solution.Task("z", 2), new Solution.Task("m", 1), new Solution.Task("a", 2), new Solution.Task("c", 1));
+          assertEquals(List.of("c", "m", "a", "z"), Solution.executionOrder(tasks));
+      }
+
+      @Test
+      @DisplayName("Una sola tarea devuelve esa tarea")
+      void unaTarea() {
+          assertEquals(List.of("solo"), Solution.executionOrder(List.of(new Solution.Task("solo", 9))));
+      }
+
+      @Test
+      @DisplayName("Una lista vacía o null devuelve lista vacía")
+      void vaciaONula() {
+          assertEquals(List.of(), Solution.executionOrder(new ArrayList<>()));
+          assertEquals(List.of(), Solution.executionOrder(null));
+      }
+
+      @Test
+      @DisplayName("Admite prioridades negativas y no modifica la lista de entrada")
+      void negativasYSinMutar() {
+          List<Solution.Task> tasks = new ArrayList<>(List.of(
+                  new Solution.Task("x", 5), new Solution.Task("y", -2), new Solution.Task("w", 0)));
+          assertEquals(List.of("y", "w", "x"), Solution.executionOrder(tasks));
+          assertEquals(3, tasks.size());
+          assertEquals("x", tasks.get(0).getName());
+      }
+  }

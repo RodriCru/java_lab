@@ -1,0 +1,117 @@
+slug: max-sum-window
+level: 2
+topic: sliding-window
+title: Suma máxima de ventana de tamaño k
+statement: |
+  Dado un arreglo de enteros y un tamaño `k`, devuelve la mayor suma posible de k elementos
+  CONSECUTIVOS del arreglo.
+
+  Ejemplo:
+  - Entrada: numbers=[2, 1, 5, 1, 3, 2], k=3 -> Salida: 9 (5 + 1 + 3)
+  - Entrada: numbers=[1, 4, 2, 10, 2, 3, 1, 0, 20], k=4 -> Salida: 24 (3 + 1 + 0 + 20)
+  - Entrada: numbers=[-1, -2, -3], k=2 -> Salida: -3
+
+  Devuelve -1 si k <= 0, si k es mayor que la longitud del arreglo, o si el arreglo es null o vacío.
+  Se espera O(n): no recalcules la suma completa en cada ventana. Usa long internamente si lo necesitas.
+methodSignature: "public static int maxSumOfSizeK(int[] numbers, int k)"
+className: Solution
+estimatedMinutes: 15
+difficulty: medium
+hints:
+  - "Calcular la suma de cada ventana desde cero cuesta O(n·k)."
+  - "Calcula la suma de la primera ventana (los primeros k elementos)."
+  - "Para deslizar la ventana, suma el elemento que entra y resta el que sale; ve guardando el máximo."
+starterCode: |
+  public class Solution {
+      public static int maxSumOfSizeK(int[] numbers, int k) {
+          // Tu código aquí
+          return -1;
+      }
+  }
+referenceSolution: |
+  public class Solution {
+      public static int maxSumOfSizeK(int[] numbers, int k) {
+          if (numbers == null || k <= 0 || k > numbers.length) {
+              return -1;
+          }
+          int suma = 0;
+          for (int i = 0; i < k; i++) {
+              suma += numbers[i];
+          }
+          int mejor = suma;
+          for (int i = k; i < numbers.length; i++) {
+              suma += numbers[i] - numbers[i - k];
+              mejor = Math.max(mejor, suma);
+          }
+          return mejor;
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Ejemplo básico con k = 3")
+      void ejemploBasico() {
+          assertEquals(9, Solution.maxSumOfSizeK(new int[] {2, 1, 5, 1, 3, 2}, 3));
+      }
+
+      @Test
+      @DisplayName("La mejor ventana está al final")
+      void ventanaAlFinal() {
+          assertEquals(24, Solution.maxSumOfSizeK(new int[] {1, 4, 2, 10, 2, 3, 1, 0, 20}, 4));
+      }
+
+      @Test
+      @DisplayName("Solo negativos")
+      void negativos() {
+          assertEquals(-3, Solution.maxSumOfSizeK(new int[] {-1, -2, -3}, 2));
+      }
+
+      @Test
+      @DisplayName("k inválida devuelve -1")
+      void kInvalida() {
+          assertEquals(-1, Solution.maxSumOfSizeK(new int[] {1, 2, 3}, 0));
+          assertEquals(-1, Solution.maxSumOfSizeK(new int[] {1, 2, 3}, -2));
+          assertEquals(-1, Solution.maxSumOfSizeK(new int[] {1, 2, 3}, 4));
+      }
+
+      @Test
+      @DisplayName("Arreglo vacío o null devuelve -1")
+      void vacioONulo() {
+          assertEquals(-1, Solution.maxSumOfSizeK(new int[0], 1));
+          assertEquals(-1, Solution.maxSumOfSizeK(null, 1));
+      }
+
+      @Test
+      @DisplayName("k igual a la longitud suma todo el arreglo")
+      void kIgualALongitud() {
+          assertEquals(6, Solution.maxSumOfSizeK(new int[] {1, 2, 3}, 3));
+      }
+
+      @Test
+      @DisplayName("Un solo elemento con k = 1")
+      void unElemento() {
+          assertEquals(5, Solution.maxSumOfSizeK(new int[] {5}, 1));
+          assertEquals(-4, Solution.maxSumOfSizeK(new int[] {-4}, 1));
+      }
+
+      @Test
+      @DisplayName("Funciona rápido con 500000 elementos y k grande")
+      void grande() {
+          int[] a = new int[500000];
+          for (int i = 0; i < a.length; i++) {
+              a[i] = 1;
+          }
+          assertEquals(250000, Solution.maxSumOfSizeK(a, 250000));
+      }
+  }
+complexityQuestion:
+  prompt: "¿Cuál es la complejidad temporal de la ventana deslizante, frente a O(n·k) de recalcular cada suma?"
+  options: ["O(n·k)", "O(k)", "O(n)", "O(n log k)"]
+  correctIndex: 2
+  explanation: "Cada elemento entra y sale de la ventana una sola vez, y actualizar la suma es O(1) por paso; el tiempo total es O(n) sin importar k."

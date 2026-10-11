@@ -1,0 +1,107 @@
+slug: two-sum
+level: 2
+topic: structures
+title: Suma de dos (Two Sum)
+statement: |
+  Dado un arreglo de enteros y un objetivo `target`, devuelve los índices [i, j] de los dos
+  elementos que suman `target`, con i < j.
+
+  Ejemplo:
+  - Entrada: numbers=[2, 7, 11, 15], target=9 -> Salida: [0, 1]
+  - Entrada: numbers=[3, 2, 4], target=6 -> Salida: [1, 2]
+  - Entrada: numbers=[3, 3], target=6 -> Salida: [0, 1]
+
+  Se garantiza que existe EXACTAMENTE una solución, así que no hay que decidir entre varias.
+  No puedes usar el mismo elemento (el mismo índice) dos veces. El arreglo puede tener negativos.
+methodSignature: "public static int[] twoSum(int[] numbers, int target)"
+className: Solution
+estimatedMinutes: 20
+difficulty: medium
+hints:
+  - "La fuerza bruta compara todos los pares y cuesta O(n²)."
+  - "Para cada número x, necesitas encontrar target - x. ¿Cómo buscarlo en O(1)?"
+  - "Usa un Map<valor, índice> con lo ya visto: si target - x está en el mapa, devuelve [mapa.get(target - x), i]."
+starterCode: |
+  public class Solution {
+      public static int[] twoSum(int[] numbers, int target) {
+          // Tu código aquí
+          return new int[] {-1, -1};
+      }
+  }
+referenceSolution: |
+  import java.util.HashMap;
+  import java.util.Map;
+
+  public class Solution {
+      public static int[] twoSum(int[] numbers, int target) {
+          Map<Integer, Integer> vistos = new HashMap<>();
+          for (int i = 0; i < numbers.length; i++) {
+              Integer j = vistos.get(target - numbers[i]);
+              if (j != null) {
+                  return new int[] {j, i};
+              }
+              vistos.put(numbers[i], i);
+          }
+          return new int[] {-1, -1};
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Ejemplo básico [2, 7, 11, 15] con objetivo 9")
+      void ejemploBasico() {
+          assertArrayEquals(new int[] {0, 1}, Solution.twoSum(new int[] {2, 7, 11, 15}, 9));
+      }
+
+      @Test
+      @DisplayName("La pareja está en el medio del arreglo")
+      void parejaEnElMedio() {
+          assertArrayEquals(new int[] {1, 2}, Solution.twoSum(new int[] {3, 2, 4}, 6));
+      }
+
+      @Test
+      @DisplayName("Dos elementos iguales no reutilizan el mismo índice")
+      void elementosIguales() {
+          assertArrayEquals(new int[] {0, 1}, Solution.twoSum(new int[] {3, 3}, 6));
+      }
+
+      @Test
+      @DisplayName("Funciona con negativos")
+      void negativos() {
+          assertArrayEquals(new int[] {0, 2}, Solution.twoSum(new int[] {-3, 4, 3, 90}, 0));
+      }
+
+      @Test
+      @DisplayName("Solo dos elementos")
+      void dosElementos() {
+          assertArrayEquals(new int[] {0, 1}, Solution.twoSum(new int[] {5, -1}, 4));
+      }
+
+      @Test
+      @DisplayName("No usa el mismo elemento dos veces (mitad del objetivo)")
+      void mitadDelObjetivo() {
+          assertArrayEquals(new int[] {1, 3}, Solution.twoSum(new int[] {1, 5, 8, 5}, 10));
+      }
+
+      @Test
+      @DisplayName("La pareja está al final de un arreglo grande")
+      void grande() {
+          int[] a = new int[200000];
+          for (int i = 0; i < a.length; i++) {
+              a[i] = i * 2;
+          }
+          // 2*199998 + 2*199999 = 799994 y es la única pareja que llega a esa suma
+          assertArrayEquals(new int[] {199998, 199999}, Solution.twoSum(a, 799994));
+      }
+  }
+complexityQuestion:
+  prompt: "¿Qué complejidad temporal logra la solución con HashMap, frente a la fuerza bruta O(n²)?"
+  options: ["O(log n)", "O(n)", "O(n log n)", "O(n²)"]
+  correctIndex: 1
+  explanation: "Un solo recorrido: por cada elemento se consulta y se inserta en el HashMap en O(1) promedio, a costa de O(n) de memoria extra."

@@ -1,0 +1,112 @@
+slug: is-armstrong
+level: 1
+topic: digits
+title: "¿Es número de Armstrong?"
+statement: |
+  Escribe un método que determine si un número entero es un número de Armstrong.
+
+  Un número es de Armstrong si la suma de sus dígitos elevados al número de dígitos es igual al propio número: 153 tiene tres dígitos y 1³ + 5³ + 3³ = 153.
+
+  Reglas del contrato:
+  - Los números negativos nunca son de Armstrong.
+  - El 0 sí es de Armstrong, porque cumple la condición con un solo dígito.
+  - Los números de un solo dígito (del 0 al 9) son todos de Armstrong.
+
+  Ejemplo:
+  - Entrada: 153 -> Salida: true
+  - Entrada: 9474 -> Salida: true
+  - Entrada: 100 -> Salida: false
+methodSignature: "public static boolean isArmstrong(int number)"
+className: Solution
+estimatedMinutes: 15
+difficulty: easy
+hints:
+  - "Primero descarta los números negativos y calcula cuántos dígitos tiene el número."
+  - "Recorre los dígitos con el resto de dividir entre 10 y acumula cada dígito elevado al número de dígitos."
+  - "Al final compara la suma con el número original; ojo con las potencias, que pueden desbordar un int si usas Math.pow, así que multiplica en un bucle."
+starterCode: |
+  public class Solution {
+      public static boolean isArmstrong(int number) {
+          // Tu código aquí
+          return false;
+      }
+  }
+referenceSolution: |
+  public class Solution {
+      public static boolean isArmstrong(int number) {
+          if (number < 0) {
+              return false;
+          }
+          int digitos = contarDigitos(number);
+          int resto = number;
+          long suma = 0;
+          while (resto > 0) {
+              int digito = resto % 10;
+              long potencia = 1;
+              for (int i = 0; i < digitos; i++) {
+                  potencia *= digito;
+              }
+              suma += potencia;
+              resto /= 10;
+          }
+          return suma == number;
+      }
+
+      private static int contarDigitos(int number) {
+          int digitos = 1;
+          int resto = number;
+          while (resto >= 10) {
+              resto /= 10;
+              digitos++;
+          }
+          return digitos;
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import static org.junit.jupiter.api.Assertions.assertFalse;
+  import static org.junit.jupiter.api.Assertions.assertTrue;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("El 153 es de Armstrong porque 1³ + 5³ + 3³ = 153")
+      void casoClasicoDeTresDigitos() {
+          assertTrue(Solution.isArmstrong(153));
+      }
+
+      @Test
+      @DisplayName("El 9474 es de Armstrong porque 9⁴ + 4⁴ + 7⁴ + 4⁴ = 9474")
+      void casoDeCuatroDigitos() {
+          assertTrue(Solution.isArmstrong(9474));
+      }
+
+      @Test
+      @DisplayName("El 100 no es de Armstrong")
+      void numeroQueNoEsArmstrong() {
+          assertFalse(Solution.isArmstrong(100));
+      }
+
+      @Test
+      @DisplayName("El 0 y los números de un solo dígito son de Armstrong")
+      void cerosYUnDigito() {
+          assertTrue(Solution.isArmstrong(0));
+          assertTrue(Solution.isArmstrong(5));
+          assertTrue(Solution.isArmstrong(9));
+      }
+
+      @Test
+      @DisplayName("Los números negativos no son de Armstrong")
+      void numerosNegativos() {
+          assertFalse(Solution.isArmstrong(-153));
+      }
+
+      @Test
+      @DisplayName("El 9474 no es el único de cuatro dígitos: el 1634 también lo es")
+      void otroCasoDeCuatroDigitos() {
+          assertTrue(Solution.isArmstrong(1634));
+          assertFalse(Solution.isArmstrong(1635));
+      }
+  }

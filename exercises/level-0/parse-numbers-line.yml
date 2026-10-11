@@ -1,0 +1,104 @@
+slug: parse-numbers-line
+level: 0
+topic: input-parsing
+title: Leer números de una línea
+statement: |
+  Escribe un método que reciba una línea de texto con números enteros separados por espacios y los devuelva en un arreglo, en el mismo orden. Usa un Scanner creado sobre el String (new Scanner(line)).
+
+  Ejemplos:
+  - "3 10 -4" -> {3, 10, -4}
+  - "  7   8 " -> {7, 8} (los espacios extra se ignoran)
+  - "42" -> {42}
+
+  Si la línea es null, está vacía o solo tiene espacios, devuelve un arreglo vacío. Puedes asumir que todos los tokens son enteros válidos.
+methodSignature: public static int[] parseNumbersLine(String line)
+className: Solution
+estimatedMinutes: 15
+difficulty: easy
+hints:
+- new Scanner(String) lee tokens separados por espacios en blanco del propio texto; no necesitas System.in.
+- 'No sabes cuántos números hay: guárdalos en una List<Integer> mientras scanner.hasNextInt() sea true, usando scanner.nextInt().'
+- Al final copia la lista a un int[] con un ciclo. Si line es null, devuelve new int[0] antes de crear el Scanner.
+starterCode: |
+  public class Solution {
+      public static int[] parseNumbersLine(String line) {
+          // Tu código aquí
+          return null;
+      }
+  }
+referenceSolution: |
+  import java.util.ArrayList;
+  import java.util.List;
+  import java.util.Scanner;
+
+  public class Solution {
+      public static int[] parseNumbersLine(String line) {
+          if (line == null) {
+              return new int[0];
+          }
+          Scanner scanner = new Scanner(line);
+          List<Integer> valores = new ArrayList<>();
+          while (scanner.hasNextInt()) {
+              valores.add(scanner.nextInt());
+          }
+          scanner.close();
+          int[] resultado = new int[valores.size()];
+          for (int i = 0; i < resultado.length; i++) {
+              resultado[i] = valores.get(i);
+          }
+          return resultado;
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import java.util.*;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Lee varios números separados por espacio")
+      void t16643() {
+          assertArrayEquals(new int[] {3, 10, -4}, Solution.parseNumbersLine("3 10 -4"));
+      }
+
+      @Test
+      @DisplayName("Ignora espacios extra")
+      void t85989() {
+          assertArrayEquals(new int[] {7, 8}, Solution.parseNumbersLine("  7   8 "));
+      }
+
+      @Test
+      @DisplayName("Un solo número")
+      void t37598() {
+          assertArrayEquals(new int[] {42}, Solution.parseNumbersLine("42"));
+      }
+
+      @Test
+      @DisplayName("Una línea vacía da un arreglo vacío")
+      void t66058() {
+          assertEquals(0, Solution.parseNumbersLine("").length);
+          assertEquals(0, Solution.parseNumbersLine("   ").length);
+      }
+
+      @Test
+      @DisplayName("Una línea null da un arreglo vacío")
+      void t87300() {
+          assertEquals(0, Solution.parseNumbersLine(null).length);
+      }
+
+      @Test
+      @DisplayName("Respeta el orden y los repetidos")
+      void t96179() {
+          assertArrayEquals(new int[] {5, 5, 1, 5}, Solution.parseNumbersLine("5 5 1 5"));
+      }
+
+      @Test
+      @DisplayName("Acepta números grandes y ceros")
+      void t52991() {
+          assertArrayEquals(new int[] {0, 2000000000, -2000000000}, Solution.parseNumbersLine("0 2000000000 -2000000000"));
+      }
+  }

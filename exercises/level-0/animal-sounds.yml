@@ -1,0 +1,153 @@
+slug: animal-sounds
+level: 0
+topic: oop-basics
+title: Sonidos de animales
+statement: |
+  Dentro de Solution hay una clase base Animal y tres subclases: Dog, Cat y Cow. Cada animal hace un sonido distinto: eso es polimorfismo, el mismo método sound() se comporta distinto según el objeto real.
+
+  Completa:
+  - Dog.sound() devuelve "Guau".
+  - Cat.sound() devuelve "Miau".
+  - Cow.sound() devuelve "Muu".
+  - El método estático sounds recibe una lista de animales y devuelve una lista con el sonido de cada uno, en el mismo orden.
+
+  Si la lista es null o está vacía, devuelve una lista vacía.
+
+  Ejemplo:
+  - Entrada: [Dog, Cat, Dog] -> Salida: ["Guau", "Miau", "Guau"]
+  - Entrada: [Cow] -> Salida: ["Muu"]
+  - Entrada: [] -> Salida: []
+methodSignature: public static List<String> sounds(List<Animal> animals)
+className: Solution
+estimatedMinutes: 12
+difficulty: easy
+hints:
+- Una subclase se declara con extends y redefine un método heredado usando @Override.
+- 'Dentro de sounds recorre la lista y llama a animal.sound(): Java elige la versión de Dog, Cat o Cow según el objeto real, no según el tipo de la lista.'
+- Crea una ArrayList<String> vacía, agrega cada sonido y devuélvela; si animals es null devuelve esa lista vacía.
+starterCode: |
+  import java.util.*;
+
+  public class Solution {
+
+      public static class Animal {
+          public String sound() {
+              return "...";
+          }
+      }
+
+      public static class Dog extends Animal {
+          // Tu código aquí: sobrescribe sound()
+      }
+
+      public static class Cat extends Animal {
+          // Tu código aquí: sobrescribe sound()
+      }
+
+      public static class Cow extends Animal {
+          // Tu código aquí: sobrescribe sound()
+      }
+
+      public static List<String> sounds(List<Animal> animals) {
+          // Tu código aquí
+          return new ArrayList<>();
+      }
+  }
+referenceSolution: |
+  import java.util.*;
+
+  public class Solution {
+
+      public static class Animal {
+          public String sound() {
+              return "...";
+          }
+      }
+
+      public static class Dog extends Animal {
+          @Override
+          public String sound() {
+              return "Guau";
+          }
+      }
+
+      public static class Cat extends Animal {
+          @Override
+          public String sound() {
+              return "Miau";
+          }
+      }
+
+      public static class Cow extends Animal {
+          @Override
+          public String sound() {
+              return "Muu";
+          }
+      }
+
+      public static List<String> sounds(List<Animal> animals) {
+          List<String> result = new ArrayList<>();
+          if (animals == null) {
+              return result;
+          }
+          for (Animal animal : animals) {
+              result.add(animal.sound());
+          }
+          return result;
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+  import java.util.*;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("El perro hace Guau")
+      void perro() {
+          assertEquals("Guau", new Solution.Dog().sound());
+      }
+
+      @Test
+      @DisplayName("El gato hace Miau")
+      void gato() {
+          assertEquals("Miau", new Solution.Cat().sound());
+      }
+
+      @Test
+      @DisplayName("La vaca hace Muu")
+      void vaca() {
+          assertEquals("Muu", new Solution.Cow().sound());
+      }
+
+      @Test
+      @DisplayName("Un Dog guardado como Animal sigue haciendo Guau (polimorfismo)")
+      void polimorfismo() {
+          Solution.Animal animal = new Solution.Dog();
+          assertEquals("Guau", animal.sound());
+      }
+
+      @Test
+      @DisplayName("sounds respeta el orden de la lista")
+      void ordenDeLaLista() {
+          List<Solution.Animal> lista = List.of(new Solution.Dog(), new Solution.Cat(), new Solution.Dog());
+          assertEquals(List.of("Guau", "Miau", "Guau"), Solution.sounds(lista));
+      }
+
+      @Test
+      @DisplayName("sounds con un solo animal")
+      void unSoloAnimal() {
+          assertEquals(List.of("Muu"), Solution.sounds(List.of(new Solution.Cow())));
+      }
+
+      @Test
+      @DisplayName("Lista vacía o null devuelve lista vacía")
+      void vaciaONull() {
+          assertTrue(Solution.sounds(new ArrayList<>()).isEmpty());
+          assertNotNull(Solution.sounds(null));
+          assertTrue(Solution.sounds(null).isEmpty());
+      }
+  }

@@ -1,0 +1,74 @@
+slug: is-adult
+level: 0
+topic: basics
+title: ¿Es mayor de edad?
+statement: |
+  Un método puede devolver un boolean (true o false). Escribe un método que indique si una persona es mayor de edad: 18 años o más.
+
+  Ejemplos:
+  - isAdult(30) -> true
+  - isAdult(18) -> true
+  - isAdult(17) -> false
+methodSignature: public static boolean isAdult(int age)
+className: Solution
+estimatedMinutes: 4
+difficulty: easy
+hints:
+- La comparación age >= 18 ya es un boolean.
+- 'Puedes devolverla directamente: return age >= 18;'
+starterCode: |
+  public class Solution {
+
+      public static boolean isAdult(int age) {
+          // Tu código aquí
+          return false;
+      }
+  }
+referenceSolution: |
+  public class Solution {
+
+      public static boolean isAdult(int age) {
+          return age >= 18;
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  import java.io.ByteArrayOutputStream;
+  import java.io.PrintStream;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Adulto")
+      void t1() {
+          assertTrue(Solution.isAdult(30));
+      }
+
+      @Test
+      @DisplayName("Justo 18")
+      void t2() {
+          assertTrue(Solution.isAdult(18));
+      }
+
+      @Test
+      @DisplayName("Justo 17")
+      void t3() {
+          assertFalse(Solution.isAdult(17));
+      }
+
+      @Test
+      @DisplayName("Niño")
+      void t4() {
+          assertFalse(Solution.isAdult(5));
+      }
+
+      @Test
+      @DisplayName("Cero")
+      void t5() {
+          assertFalse(Solution.isAdult(0));
+      }
+  }

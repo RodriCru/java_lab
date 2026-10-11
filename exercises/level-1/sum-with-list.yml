@@ -1,0 +1,87 @@
+slug: sum-with-list
+level: 1
+topic: structures
+title: Sumar una lista
+statement: |
+  Escribe un método que sume todos los números de una lista.
+
+  Ejemplo:
+  - Entrada: [1, 2, 3] -> Salida: 6
+  - Entrada: [10] -> Salida: 10
+  - Entrada: [-5, 5] -> Salida: 0
+
+  Si la lista es null o está vacía, devuelve 0.
+methodSignature: "public static int sumList(java.util.List<Integer> numbers)"
+className: Solution
+estimatedMinutes: 10
+difficulty: easy
+hints:
+  - "Recorre la lista con un for-each."
+  - "Si la lista es null, no puedes recorrerla: valida eso antes de empezar."
+  - "La lista puede contener null; decide cómo tratarlo, pero una lista vacía debe dar 0."
+starterCode: |
+  public class Solution {
+      public static int sumList(java.util.List<Integer> numbers) {
+          // Tu código aquí
+          return 0;
+      }
+  }
+referenceSolution: |
+  public class Solution {
+      public static int sumList(java.util.List<Integer> numbers) {
+          if (numbers == null) {
+              return 0;
+          }
+          int total = 0;
+          for (int numero : numbers) {
+              total += numero;
+          }
+          return total;
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import java.util.List;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Suma una lista de enteros")
+      void sumaLista() {
+          assertEquals(6, Solution.sumList(List.of(1, 2, 3)));
+      }
+
+      @Test
+      @DisplayName("Suma una lista con números negativos")
+      void sumaConNegativos() {
+          assertEquals(0, Solution.sumList(List.of(-5, 5)));
+      }
+
+      @Test
+      @DisplayName("Suma una lista de un solo elemento")
+      void unSoloElemento() {
+          assertEquals(10, Solution.sumList(List.of(10)));
+      }
+
+      @Test
+      @DisplayName("Una lista vacía devuelve 0")
+      void listaVacia() {
+          assertEquals(0, Solution.sumList(List.of()));
+      }
+
+      @Test
+      @DisplayName("Una lista null devuelve 0")
+      void listaNull() {
+          assertEquals(0, Solution.sumList(null));
+      }
+
+      @Test
+      @DisplayName("Suma correctamente aunque la suma intermedia use valores grandes")
+      void valoresLimite() {
+          assertEquals(-2, Solution.sumList(List.of(Integer.MAX_VALUE, Integer.MIN_VALUE, -1)));
+      }
+  }

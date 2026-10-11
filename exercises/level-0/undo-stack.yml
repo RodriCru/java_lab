@@ -1,0 +1,113 @@
+slug: undo-stack
+level: 0
+topic: collections
+title: Pila para deshacer
+statement: |
+  Una pila (stack) es LIFO: lo último que entra es lo primero que sale. En Java se usa Deque con ArrayDeque y los métodos push (apilar) y pop (desapilar). Es la estructura ideal para "deshacer".
+
+  Simula un editor de texto que parte con el texto vacío "". Recibes una lista de comandos:
+  - "WRITE <texto>" agrega <texto> al final del texto actual (lo que sigue a "WRITE ", puede contener espacios).
+  - "UNDO" deshace el último WRITE que aún no se haya deshecho, devolviendo el texto al estado anterior. Si no hay nada que deshacer, no hace nada.
+
+  Devuelve el texto final. Una lista null o vacía devuelve "".
+
+  Ejemplos:
+  - ["WRITE Hola", "WRITE  mundo"] -> "Hola mundo"   (el segundo comando agrega " mundo" con espacio inicial)
+  - ["WRITE a", "WRITE b", "UNDO"] -> "a"
+  - ["UNDO", "WRITE x"] -> "x"
+  - ["WRITE a", "UNDO", "UNDO"] -> ""
+methodSignature: "public static String applyCommands(List<String> commands)"
+className: Solution
+estimatedMinutes: 15
+difficulty: easy
+hints:
+  - "Mantén el texto actual en un String y una pila Deque<String> donde guardas el texto ANTERIOR antes de cada WRITE."
+  - "Con WRITE: history.push(text) y luego text = text + lo que sigue a \"WRITE \" (command.substring(6))."
+  - "Con UNDO: si !history.isEmpty(), text = history.pop(). Si la pila está vacía no hagas nada."
+starterCode: |
+  import java.util.*;
+
+  public class Solution {
+
+      public static String applyCommands(List<String> commands) {
+          // Tu código aquí
+          return null;
+      }
+  }
+referenceSolution: |
+  import java.util.*;
+
+  public class Solution {
+
+      public static String applyCommands(List<String> commands) {
+          String text = "";
+          if (commands == null) {
+              return text;
+          }
+          Deque<String> history = new ArrayDeque<>();
+          for (String command : commands) {
+              if (command.equals("UNDO")) {
+                  if (!history.isEmpty()) {
+                      text = history.pop();
+                  }
+              } else if (command.startsWith("WRITE ")) {
+                  history.push(text);
+                  text = text + command.substring(6);
+              }
+          }
+          return text;
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import java.util.*;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Varios WRITE se acumulan")
+      void escribirVarios() {
+          assertEquals("Hola mundo", Solution.applyCommands(List.of("WRITE Hola", "WRITE  mundo")));
+      }
+
+      @Test
+      @DisplayName("UNDO deshace el último WRITE")
+      void deshacerUno() {
+          assertEquals("a", Solution.applyCommands(List.of("WRITE a", "WRITE b", "UNDO")));
+      }
+
+      @Test
+      @DisplayName("UNDO sin historial no hace nada")
+      void deshacerSinHistorial() {
+          assertEquals("x", Solution.applyCommands(List.of("UNDO", "WRITE x")));
+      }
+
+      @Test
+      @DisplayName("Más UNDO que WRITE deja el texto vacío")
+      void deshacerDeMas() {
+          assertEquals("", Solution.applyCommands(List.of("WRITE a", "UNDO", "UNDO")));
+      }
+
+      @Test
+      @DisplayName("Los UNDO se aplican en orden inverso (LIFO)")
+      void ordenLifo() {
+          assertEquals("ab", Solution.applyCommands(List.of("WRITE a", "WRITE b", "WRITE c", "WRITE d", "UNDO", "UNDO")));
+      }
+
+      @Test
+      @DisplayName("Se puede escribir de nuevo después de deshacer")
+      void escribirTrasDeshacer() {
+          assertEquals("az", Solution.applyCommands(List.of("WRITE a", "WRITE b", "UNDO", "WRITE z")));
+      }
+
+      @Test
+      @DisplayName("Una lista null o vacía devuelve cadena vacía")
+      void listaVaciaONula() {
+          assertEquals("", Solution.applyCommands(null));
+          assertEquals("", Solution.applyCommands(new ArrayList<>()));
+      }
+  }

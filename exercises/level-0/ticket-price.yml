@@ -1,0 +1,119 @@
+slug: ticket-price
+level: 0
+topic: operators-decisions
+title: "Precio del boleto"
+statement: |
+  Escribe un método que calcule el precio de un boleto de cine según la edad y si la persona es estudiante. Practica condiciones combinadas y el operador ternario (condición ? valorSiVerdadero : valorSiFalso).
+
+  Reglas, evaluadas en este orden:
+  1. Si age es menor que 0, devuelve -1.0 (edad inválida).
+  2. Menores de 5 años: 0.0 (gratis).
+  3. De 5 a 12 años: 8.0.
+  4. Mayores de 64 años (65 o más): 10.0.
+  5. Los demás (13 a 64): 12.0 si es estudiante, 20.0 si no lo es.
+
+  El descuento de estudiante solo aplica en el último caso.
+
+  Ejemplos:
+  - Entrada: age=3, isStudent=false -> Salida: 0.0
+  - Entrada: age=10, isStudent=true -> Salida: 8.0
+  - Entrada: age=70, isStudent=true -> Salida: 10.0
+  - Entrada: age=20, isStudent=true -> Salida: 12.0
+  - Entrada: age=20, isStudent=false -> Salida: 20.0
+  - Entrada: age=-1, isStudent=false -> Salida: -1.0
+methodSignature: "public static double ticketPrice(int age, boolean isStudent)"
+className: Solution
+estimatedMinutes: 12
+difficulty: easy
+hints:
+  - "Resuelve primero los casos por edad con if / else if: age < 0, age < 5, age <= 12, age >= 65."
+  - "Si llegas al último caso, solo importa isStudent. Un booleano ya es una condición: no necesitas escribir isStudent == true."
+  - "El ternario encaja perfecto: return isStudent ? 12.0 : 20.0;"
+starterCode: |
+  public class Solution {
+
+      public static double ticketPrice(int age, boolean isStudent) {
+          // Tu código aquí
+          return 0.0;
+      }
+  }
+referenceSolution: |
+  public class Solution {
+
+      public static double ticketPrice(int age, boolean isStudent) {
+          if (age < 0) {
+              return -1.0;
+          } else if (age < 5) {
+              return 0.0;
+          } else if (age <= 12) {
+              return 8.0;
+          } else if (age >= 65) {
+              return 10.0;
+          }
+          return isStudent ? 12.0 : 20.0;
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+      @Test
+      @DisplayName("Menores de 5 entran gratis")
+      void caso1() {
+          assertEquals(0.0, Solution.ticketPrice(3, false), 0.001);
+          assertEquals(0.0, Solution.ticketPrice(0, true), 0.001);
+          assertEquals(0.0, Solution.ticketPrice(4, false), 0.001);
+      }
+
+      @Test
+      @DisplayName("De 5 a 12 años paga 8")
+      void caso2() {
+          assertEquals(8.0, Solution.ticketPrice(5, false), 0.001);
+          assertEquals(8.0, Solution.ticketPrice(12, false), 0.001);
+      }
+
+      @Test
+      @DisplayName("Ser estudiante no cambia el precio infantil")
+      void caso3() {
+          assertEquals(8.0, Solution.ticketPrice(10, true), 0.001);
+      }
+
+      @Test
+      @DisplayName("Mayores de 64 pagan 10")
+      void caso4() {
+          assertEquals(10.0, Solution.ticketPrice(65, false), 0.001);
+          assertEquals(10.0, Solution.ticketPrice(90, false), 0.001);
+      }
+
+      @Test
+      @DisplayName("Ser estudiante no cambia el precio de adulto mayor")
+      void caso5() {
+          assertEquals(10.0, Solution.ticketPrice(70, true), 0.001);
+      }
+
+      @Test
+      @DisplayName("Adulto estudiante paga 12")
+      void caso6() {
+          assertEquals(12.0, Solution.ticketPrice(20, true), 0.001);
+          assertEquals(12.0, Solution.ticketPrice(13, true), 0.001);
+          assertEquals(12.0, Solution.ticketPrice(64, true), 0.001);
+      }
+
+      @Test
+      @DisplayName("Adulto no estudiante paga 20")
+      void caso7() {
+          assertEquals(20.0, Solution.ticketPrice(20, false), 0.001);
+          assertEquals(20.0, Solution.ticketPrice(13, false), 0.001);
+          assertEquals(20.0, Solution.ticketPrice(64, false), 0.001);
+      }
+
+      @Test
+      @DisplayName("Edad negativa devuelve -1")
+      void caso8() {
+          assertEquals(-1.0, Solution.ticketPrice(-1, false), 0.001);
+          assertEquals(-1.0, Solution.ticketPrice(-20, true), 0.001);
+      }
+  }

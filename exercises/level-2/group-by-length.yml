@@ -1,0 +1,129 @@
+slug: group-by-length
+level: 2
+topic: structures
+title: Agrupar palabras por longitud
+statement: |
+  Escribe un método que agrupe una lista de palabras según su longitud. La clave del mapa es
+  la longitud y el valor es la lista de palabras de esa longitud, en el MISMO orden en que
+  aparecen en la entrada. Las palabras repetidas se conservan.
+
+  Ejemplo:
+  - Entrada: ["hola", "a", "casa", "yo", "sol"] -> Salida: {1=[a], 2=[yo], 3=[sol], 4=[hola, casa]}
+  - Entrada: [] -> Salida: {}
+
+  Si la lista es null o vacía, devuelve un mapa vacío. Solo aparecen las longitudes presentes.
+  Se espera que las claves queden ordenadas de menor a mayor al recorrer el mapa (usa un TreeMap).
+methodSignature: "public static java.util.Map<Integer, java.util.List<String>> groupByLength(java.util.List<String> words)"
+className: Solution
+estimatedMinutes: 15
+difficulty: medium
+hints:
+  - "Necesitas un Map<Integer, List<String>> donde la clave es word.length()."
+  - "Si la clave aún no existe, crea una lista nueva; computeIfAbsent lo resuelve en una línea."
+  - "Usa un TreeMap para que las claves salgan ordenadas y recorre la entrada en orden para conservar el orden de cada lista."
+starterCode: |
+  public class Solution {
+      public static java.util.Map<Integer, java.util.List<String>> groupByLength(java.util.List<String> words) {
+          // Tu código aquí
+          return new java.util.TreeMap<>();
+      }
+  }
+referenceSolution: |
+  import java.util.*;
+
+  public class Solution {
+      public static java.util.Map<Integer, java.util.List<String>> groupByLength(java.util.List<String> words) {
+          Map<Integer, List<String>> grupos = new TreeMap<>();
+          if (words == null) {
+              return grupos;
+          }
+          for (String w : words) {
+              grupos.computeIfAbsent(w.length(), k -> new ArrayList<>()).add(w);
+          }
+          return grupos;
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import java.util.*;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Agrupa palabras de distinta longitud")
+      void agrupaBasico() {
+          Map<Integer, List<String>> r = Solution.groupByLength(List.of("hola", "a", "casa", "yo", "sol"));
+          assertEquals(4, r.size());
+          assertEquals(List.of("a"), r.get(1));
+          assertEquals(List.of("yo"), r.get(2));
+          assertEquals(List.of("sol"), r.get(3));
+          assertEquals(List.of("hola", "casa"), r.get(4));
+      }
+
+      @Test
+      @DisplayName("Lista vacía o null devuelve mapa vacío")
+      void vaciaONula() {
+          assertTrue(Solution.groupByLength(new ArrayList<>()).isEmpty());
+          assertNotNull(Solution.groupByLength(null));
+          assertTrue(Solution.groupByLength(null).isEmpty());
+      }
+
+      @Test
+      @DisplayName("Un solo elemento")
+      void unElemento() {
+          Map<Integer, List<String>> r = Solution.groupByLength(List.of("java"));
+          assertEquals(1, r.size());
+          assertEquals(List.of("java"), r.get(4));
+      }
+
+      @Test
+      @DisplayName("Conserva el orden de entrada dentro de cada grupo")
+      void conservaOrden() {
+          Map<Integer, List<String>> r = Solution.groupByLength(List.of("zeta", "beta", "alfa", "omega", "pi"));
+          assertEquals(List.of("zeta", "beta", "alfa"), r.get(4));
+          assertEquals(List.of("omega"), r.get(5));
+      }
+
+      @Test
+      @DisplayName("Conserva las palabras duplicadas")
+      void conservaDuplicadas() {
+          Map<Integer, List<String>> r = Solution.groupByLength(List.of("ok", "ok", "no"));
+          assertEquals(List.of("ok", "ok", "no"), r.get(2));
+      }
+
+      @Test
+      @DisplayName("La cadena vacía tiene longitud 0")
+      void cadenaVacia() {
+          Map<Integer, List<String>> r = Solution.groupByLength(List.of("", "a", ""));
+          assertEquals(List.of("", ""), r.get(0));
+          assertEquals(List.of("a"), r.get(1));
+      }
+
+      @Test
+      @DisplayName("Las claves salen ordenadas de menor a mayor")
+      void clavesOrdenadas() {
+          Map<Integer, List<String>> r = Solution.groupByLength(List.of("tres", "uno", "cinco", "a"));
+          assertEquals(List.of(1, 3, 4, 5), new ArrayList<>(r.keySet()));
+      }
+
+      @Test
+      @DisplayName("Funciona con 100000 palabras")
+      void grande() {
+          List<String> words = new ArrayList<>();
+          for (int i = 0; i < 100000; i++) {
+              words.add("x".repeat(i % 10 + 1));
+          }
+          Map<Integer, List<String>> r = Solution.groupByLength(words);
+          assertEquals(10, r.size());
+          assertEquals(10000, r.get(3).size());
+      }
+  }
+complexityQuestion:
+  prompt: "Si hay n palabras con longitud promedio m, ¿cuál es la complejidad temporal de la solución óptima?"
+  options: ["O(n²)", "O(n log n)", "O(1)", "O(n)"]
+  correctIndex: 3
+  explanation: "Cada palabra se procesa una vez con operaciones O(1) del mapa (length() es O(1)), por lo que el total es lineal en n."

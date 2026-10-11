@@ -1,0 +1,224 @@
+slug: comparator-chain
+level: 2
+topic: oop
+title: Cadena de comparadores
+statement: |
+  Dentro de Solution existe la clase anidada Person (apellido, nombre y edad). Escribe sortPeople, que devuelve las personas ordenadas con un Comparator encadenado.
+
+  Criterios, en este orden:
+  1. Apellido (lastName) en orden alfabético ascendente.
+  2. Si coinciden, nombre (firstName) en orden alfabético ascendente.
+  3. Si también coinciden, edad (age) de MAYOR a MENOR.
+
+  Reglas:
+  - Devuelve una lista NUEVA; la lista original no debe modificarse.
+  - Si la lista es null, devuelve una lista vacía.
+  - La comparación de textos es la natural de String (distingue mayúsculas).
+
+  Ejemplo:
+  - Entrada: [("Ruiz","Ana",30), ("Gómez","Luis",40), ("Ruiz","Ana",35), ("Ruiz","Aba",20)]
+    -> Salida: [("Gómez","Luis",40), ("Ruiz","Aba",20), ("Ruiz","Ana",35), ("Ruiz","Ana",30)]
+methodSignature: "public static java.util.List<Person> sortPeople(java.util.List<Person> people)"
+className: Solution
+estimatedMinutes: 20
+difficulty: medium
+hints:
+  - "Comparator.comparing(Person::getLastName) crea el primer criterio."
+  - "Encadena con thenComparing; para la edad descendente usa thenComparing(Person::getAge, Comparator.reverseOrder()) o Comparator.comparingInt con reversed."
+  - "Copia primero la lista (new ArrayList<>(people)) y ordena la copia con sort(comparator)."
+starterCode: |
+  public class Solution {
+
+      public static class Person {
+          private final String lastName;
+          private final String firstName;
+          private final int age;
+
+          public Person(String lastName, String firstName, int age) {
+              this.lastName = lastName;
+              this.firstName = firstName;
+              this.age = age;
+          }
+
+          public String getLastName() {
+              return lastName;
+          }
+
+          public String getFirstName() {
+              return firstName;
+          }
+
+          public int getAge() {
+              return age;
+          }
+      }
+
+      public static java.util.List<Person> sortPeople(java.util.List<Person> people) {
+          // Tu código aquí
+          if (people == null) {
+              return new java.util.ArrayList<>();
+          }
+          return new java.util.ArrayList<>(people);
+      }
+  }
+referenceSolution: |
+  public class Solution {
+
+      public static class Person {
+          private final String lastName;
+          private final String firstName;
+          private final int age;
+
+          public Person(String lastName, String firstName, int age) {
+              this.lastName = lastName;
+              this.firstName = firstName;
+              this.age = age;
+          }
+
+          public String getLastName() {
+              return lastName;
+          }
+
+          public String getFirstName() {
+              return firstName;
+          }
+
+          public int getAge() {
+              return age;
+          }
+      }
+
+      public static java.util.List<Person> sortPeople(java.util.List<Person> people) {
+          if (people == null) {
+              return new java.util.ArrayList<>();
+          }
+          java.util.List<Person> copia = new java.util.ArrayList<>(people);
+          copia.sort(java.util.Comparator.comparing(Person::getLastName)
+                  .thenComparing(Person::getFirstName)
+                  .thenComparing(java.util.Comparator.comparingInt(Person::getAge).reversed()));
+          return copia;
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import java.util.ArrayList;
+  import java.util.Arrays;
+  import java.util.List;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      private static List<String> claves(List<Solution.Person> lista) {
+          List<String> r = new ArrayList<>();
+          for (Solution.Person p : lista) {
+              r.add(p.getLastName() + "-" + p.getFirstName() + "-" + p.getAge());
+          }
+          return r;
+      }
+
+      @Test
+      @DisplayName("Ordena por apellido")
+      void porApellido() {
+          List<Solution.Person> in = Arrays.asList(
+                  new Solution.Person("Ruiz", "Ana", 30),
+                  new Solution.Person("Gómez", "Luis", 40));
+          assertEquals(Arrays.asList("Gómez-Luis-40", "Ruiz-Ana-30"), claves(Solution.sortPeople(in)));
+      }
+
+      @Test
+      @DisplayName("Con el mismo apellido ordena por nombre")
+      void porNombre() {
+          List<Solution.Person> in = Arrays.asList(
+                  new Solution.Person("Ruiz", "Ana", 30),
+                  new Solution.Person("Ruiz", "Aba", 20));
+          assertEquals(Arrays.asList("Ruiz-Aba-20", "Ruiz-Ana-30"), claves(Solution.sortPeople(in)));
+      }
+
+      @Test
+      @DisplayName("Con apellido y nombre iguales ordena por edad descendente")
+      void porEdadDescendente() {
+          List<Solution.Person> in = Arrays.asList(
+                  new Solution.Person("Ruiz", "Ana", 30),
+                  new Solution.Person("Ruiz", "Ana", 35),
+                  new Solution.Person("Ruiz", "Ana", 20));
+          assertEquals(Arrays.asList("Ruiz-Ana-35", "Ruiz-Ana-30", "Ruiz-Ana-20"), claves(Solution.sortPeople(in)));
+      }
+
+      @Test
+      @DisplayName("Ejemplo completo del enunciado")
+      void ejemploCompleto() {
+          List<Solution.Person> in = Arrays.asList(
+                  new Solution.Person("Ruiz", "Ana", 30),
+                  new Solution.Person("Gómez", "Luis", 40),
+                  new Solution.Person("Ruiz", "Ana", 35),
+                  new Solution.Person("Ruiz", "Aba", 20));
+          assertEquals(Arrays.asList("Gómez-Luis-40", "Ruiz-Aba-20", "Ruiz-Ana-35", "Ruiz-Ana-30"),
+                  claves(Solution.sortPeople(in)));
+      }
+
+      @Test
+      @DisplayName("No modifica la lista original y devuelve otra instancia")
+      void noMuta() {
+          List<Solution.Person> in = new ArrayList<>(Arrays.asList(
+                  new Solution.Person("Z", "A", 1),
+                  new Solution.Person("A", "A", 1)));
+          List<Solution.Person> r = Solution.sortPeople(in);
+          assertNotSame(in, r);
+          assertEquals(Arrays.asList("Z-A-1", "A-A-1"), claves(in));
+          assertEquals(Arrays.asList("A-A-1", "Z-A-1"), claves(r));
+      }
+
+      @Test
+      @DisplayName("Lista vacía o null devuelve lista vacía")
+      void vacia() {
+          assertTrue(Solution.sortPeople(new ArrayList<>()).isEmpty());
+          assertTrue(Solution.sortPeople(null).isEmpty());
+      }
+
+      @Test
+      @DisplayName("Un solo elemento")
+      void unoSolo() {
+          assertEquals(Arrays.asList("A-B-1"),
+                  claves(Solution.sortPeople(Arrays.asList(new Solution.Person("A", "B", 1)))));
+      }
+
+      @Test
+      @DisplayName("La comparación distingue mayúsculas (natural de String)")
+      void mayusculas() {
+          List<Solution.Person> in = Arrays.asList(
+                  new Solution.Person("alba", "X", 1),
+                  new Solution.Person("Zea", "X", 1));
+          assertEquals(Arrays.asList("Zea-X-1", "alba-X-1"), claves(Solution.sortPeople(in)));
+      }
+
+      @Test
+      @DisplayName("Lista grande")
+      void grande() {
+          List<Solution.Person> in = new ArrayList<>();
+          for (int i = 0; i < 20000; i++) {
+              in.add(new Solution.Person("L" + (i % 50), "N" + (i % 7), i % 90));
+          }
+          List<Solution.Person> r = Solution.sortPeople(in);
+          assertEquals(20000, r.size());
+          for (int i = 1; i < r.size(); i++) {
+              Solution.Person a = r.get(i - 1);
+              Solution.Person b = r.get(i);
+              int c = a.getLastName().compareTo(b.getLastName());
+              if (c == 0) {
+                  c = a.getFirstName().compareTo(b.getFirstName());
+              }
+              if (c == 0) {
+                  c = Integer.compare(b.getAge(), a.getAge());
+              }
+              assertTrue(c <= 0);
+          }
+      }
+  }
+complexityQuestion:
+  prompt: "Ordenar n personas con un comparador encadenado (cada comparación es O(1)), ¿qué complejidad temporal tiene?"
+  options: ["O(n log n)", "O(n)", "O(n²)", "O(log n)"]
+  correctIndex: 0
+  explanation: "Encadenar criterios solo multiplica por una constante el costo de cada comparación; el algoritmo de ordenación sigue siendo O(n log n)."

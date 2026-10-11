@@ -1,0 +1,118 @@
+slug: rotate-matrix
+level: 2
+topic: matrices-patterns
+title: Rotar una matriz 90 grados
+statement: |
+  Rota una matriz cuadrada n x n 90 grados en sentido horario y devuelve el resultado como
+  una matriz NUEVA. La matriz de entrada no debe modificarse.
+
+  Ejemplo:
+  - Entrada: [[1,2,3],[4,5,6],[7,8,9]] -> Salida: [[7,4,1],[8,5,2],[9,6,3]]
+  - Entrada: [[1,2],[3,4]] -> Salida: [[3,1],[4,2]]
+  - Entrada: [[5]] -> Salida: [[5]]
+
+  Si `matrix` es null o vacía, devuelve una matriz vacía (new int[0][0]).
+methodSignature: "public static int[][] rotateMatrix(int[][] matrix)"
+className: Solution
+estimatedMinutes: 15
+difficulty: medium
+hints:
+  - "Crea una matriz resultado del mismo tamaño n x n."
+  - "El elemento en la posición [i][j] termina en la posición [j][n - 1 - i]."
+  - "Comprueba con el ejemplo 2x2: el 1 está en [0][0] y debe terminar en [0][1]."
+starterCode: |
+  public class Solution {
+      public static int[][] rotateMatrix(int[][] matrix) {
+          // Tu código aquí
+          return new int[0][0];
+      }
+  }
+referenceSolution: |
+  public class Solution {
+      public static int[][] rotateMatrix(int[][] matrix) {
+          if (matrix == null || matrix.length == 0) {
+              return new int[0][0];
+          }
+          int n = matrix.length;
+          int[][] resultado = new int[n][n];
+          for (int i = 0; i < n; i++) {
+              for (int j = 0; j < n; j++) {
+                  resultado[j][n - 1 - i] = matrix[i][j];
+              }
+          }
+          return resultado;
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Rota una matriz 3x3")
+      void tresPorTres() {
+          int[][] esperado = {{7, 4, 1}, {8, 5, 2}, {9, 6, 3}};
+          assertArrayEquals(esperado, Solution.rotateMatrix(new int[][] {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}}));
+      }
+
+      @Test
+      @DisplayName("Rota una matriz 2x2")
+      void dosPorDos() {
+          assertArrayEquals(new int[][] {{3, 1}, {4, 2}}, Solution.rotateMatrix(new int[][] {{1, 2}, {3, 4}}));
+      }
+
+      @Test
+      @DisplayName("Matriz de un solo elemento")
+      void unElemento() {
+          assertArrayEquals(new int[][] {{5}}, Solution.rotateMatrix(new int[][] {{5}}));
+      }
+
+      @Test
+      @DisplayName("Null y vacía devuelven una matriz vacía")
+      void nuloYVacio() {
+          assertEquals(0, Solution.rotateMatrix(null).length);
+          assertEquals(0, Solution.rotateMatrix(new int[0][0]).length);
+      }
+
+      @Test
+      @DisplayName("Rota una matriz 4x4")
+      void cuatroPorCuatro() {
+          int[][] m = {{1, 2, 3, 4}, {5, 6, 7, 8}, {9, 10, 11, 12}, {13, 14, 15, 16}};
+          int[][] esperado = {{13, 9, 5, 1}, {14, 10, 6, 2}, {15, 11, 7, 3}, {16, 12, 8, 4}};
+          assertArrayEquals(esperado, Solution.rotateMatrix(m));
+      }
+
+      @Test
+      @DisplayName("No modifica la matriz original y devuelve una nueva")
+      void noMuta() {
+          int[][] original = {{1, 2}, {3, 4}};
+          int[][] resultado = Solution.rotateMatrix(original);
+          assertNotSame(original, resultado);
+          assertArrayEquals(new int[][] {{1, 2}, {3, 4}}, original);
+      }
+
+      @Test
+      @DisplayName("Cuatro rotaciones devuelven la matriz original")
+      void cuatroRotaciones() {
+          int n = 50;
+          int[][] m = new int[n][n];
+          for (int i = 0; i < n; i++) {
+              for (int j = 0; j < n; j++) {
+                  m[i][j] = i * n + j;
+              }
+          }
+          int[][] r = m;
+          for (int k = 0; k < 4; k++) {
+              r = Solution.rotateMatrix(r);
+          }
+          assertArrayEquals(m, r);
+      }
+  }
+complexityQuestion:
+  prompt: "Para una matriz de n x n, ¿cuál es la complejidad temporal de tu solución en función de n?"
+  options: ["O(n²)", "O(n)", "O(n³)", "O(n log n)"]
+  correctIndex: 0
+  explanation: "Hay n² elementos y cada uno se coloca en su nueva posición exactamente una vez."

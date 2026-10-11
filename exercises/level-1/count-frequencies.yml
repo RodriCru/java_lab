@@ -1,0 +1,104 @@
+slug: count-frequencies
+level: 1
+topic: structures
+title: Contar frecuencias
+statement: |
+  Escribe un método que reciba un arreglo de números enteros y devuelva un mapa con la cantidad de veces que aparece cada número.
+
+  La clave del mapa es el número y el valor es la cantidad de apariciones.
+
+  Ejemplo:
+  - Entrada: [1, 2, 2, 3, 3, 3] -> Salida: {1=1, 2=2, 3=3}
+  - Entrada: [5, 5, 5] -> Salida: {5=3}
+  - Entrada: [7] -> Salida: {7=1}
+
+  Si el arreglo es null o está vacío, devuelve un mapa vacío (no null).
+methodSignature: "public static java.util.Map<Integer, Integer> countFrequencies(int[] numbers)"
+className: Solution
+estimatedMinutes: 15
+difficulty: easy
+hints:
+  - "Crea un java.util.HashMap vacío y recórrelo con el arreglo."
+  - "Usa getOrDefault(clave, 0) para obtener la cuenta actual sin preocuparte por las claves que aún no existen."
+  - "Antes de recorrer, revisa si numbers es null para devolver el mapa vacío."
+starterCode: |
+  public class Solution {
+      public static java.util.Map<Integer, Integer> countFrequencies(int[] numbers) {
+          // Tu código aquí
+          return new java.util.HashMap<>();
+      }
+  }
+referenceSolution: |
+  public class Solution {
+      public static java.util.Map<Integer, Integer> countFrequencies(int[] numbers) {
+          java.util.Map<Integer, Integer> frecuencias = new java.util.HashMap<>();
+          if (numbers == null) {
+              return frecuencias;
+          }
+          for (int i = 0; i < numbers.length; i++) {
+              int numero = numbers[i];
+              frecuencias.put(numero, frecuencias.getOrDefault(numero, 0) + 1);
+          }
+          return frecuencias;
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import java.util.Map;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Cuenta las apariciones de cada número")
+      void cuentaApariciones() {
+          Map<Integer, Integer> resultado = Solution.countFrequencies(new int[] {1, 2, 2, 3, 3, 3});
+          assertEquals(1, resultado.get(1));
+          assertEquals(2, resultado.get(2));
+          assertEquals(3, resultado.get(3));
+          assertEquals(3, resultado.size());
+      }
+
+      @Test
+      @DisplayName("Cuenta un número que se repite en todas las posiciones")
+      void todasRepetidas() {
+          Map<Integer, Integer> resultado = Solution.countFrequencies(new int[] {5, 5, 5});
+          assertEquals(1, resultado.size());
+          assertEquals(3, resultado.get(5));
+      }
+
+      @Test
+      @DisplayName("Un arreglo de un solo elemento tiene una sola entrada")
+      void unSoloElemento() {
+          Map<Integer, Integer> resultado = Solution.countFrequencies(new int[] {7});
+          assertEquals(1, resultado.size());
+          assertEquals(1, resultado.get(7));
+      }
+
+      @Test
+      @DisplayName("Un arreglo null devuelve un mapa vacío")
+      void arregloNull() {
+          Map<Integer, Integer> resultado = Solution.countFrequencies(null);
+          assertNotNull(resultado);
+          assertTrue(resultado.isEmpty());
+      }
+
+      @Test
+      @DisplayName("Un arreglo vacío devuelve un mapa vacío")
+      void arregloVacio() {
+          Map<Integer, Integer> resultado = Solution.countFrequencies(new int[0]);
+          assertNotNull(resultado);
+          assertTrue(resultado.isEmpty());
+      }
+
+      @Test
+      @DisplayName("Distingue números negativos y el cero")
+      void valoresLimite() {
+          Map<Integer, Integer> resultado = Solution.countFrequencies(new int[] {Integer.MIN_VALUE, 0, Integer.MIN_VALUE, 0, 0});
+          assertEquals(2, resultado.get(Integer.MIN_VALUE));
+          assertEquals(3, resultado.get(0));
+      }
+  }

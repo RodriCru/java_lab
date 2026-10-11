@@ -1,0 +1,74 @@
+slug: add-two-numbers
+level: 0
+topic: basics
+title: Sumar dos números
+statement: |
+  Un método recibe datos (parámetros) y devuelve un resultado con return. Escribe un método que devuelva la suma de dos enteros.
+
+  Ejemplos:
+  - addTwoNumbers(2, 3) -> 5
+  - addTwoNumbers(-4, 4) -> 0
+  - addTwoNumbers(10, -3) -> 7
+methodSignature: public static int addTwoNumbers(int a, int b)
+className: Solution
+estimatedMinutes: 3
+difficulty: easy
+hints:
+- Usa el operador + entre los dos parámetros.
+- Devuelve el resultado con return.
+starterCode: |
+  public class Solution {
+
+      public static int addTwoNumbers(int a, int b) {
+          // Tu código aquí
+          return 0;
+      }
+  }
+referenceSolution: |
+  public class Solution {
+
+      public static int addTwoNumbers(int a, int b) {
+          return a + b;
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  import java.io.ByteArrayOutputStream;
+  import java.io.PrintStream;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Positivos")
+      void t1() {
+          assertEquals(5, Solution.addTwoNumbers(2, 3));
+      }
+
+      @Test
+      @DisplayName("Opuestos")
+      void t2() {
+          assertEquals(0, Solution.addTwoNumbers(-4, 4));
+      }
+
+      @Test
+      @DisplayName("Mezcla de signos")
+      void t3() {
+          assertEquals(7, Solution.addTwoNumbers(10, -3));
+      }
+
+      @Test
+      @DisplayName("Ceros")
+      void t4() {
+          assertEquals(0, Solution.addTwoNumbers(0, 0));
+      }
+
+      @Test
+      @DisplayName("Negativos")
+      void t5() {
+          assertEquals(-9, Solution.addTwoNumbers(-4, -5));
+      }
+  }

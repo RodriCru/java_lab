@@ -1,0 +1,100 @@
+slug: safe-array-get
+level: 0
+topic: exceptions
+title: Lectura segura de un arreglo
+statement: |
+  Leer arr[index] puede fallar de dos formas: ArrayIndexOutOfBoundsException (índice fuera de rango) o NullPointerException (arreglo null). Con multi-catch puedes tratar ambas en un solo bloque: catch (A | B e).
+
+  Escribe un método que devuelva el elemento de arr en la posición index como texto. Si el índice no existe o el arreglo es null, devuelve "invalid". Debes acceder al arreglo directamente dentro de un try y capturar ambas excepciones con un único catch multi-catch.
+
+  Ejemplos:
+  - safeGet(new int[]{10, 20, 30}, 1) -> "20"
+  - safeGet(new int[]{10, 20, 30}, 3) -> "invalid"
+  - safeGet(new int[]{10, 20, 30}, -1) -> "invalid"
+  - safeGet(null, 0) -> "invalid"
+  - safeGet(new int[]{-5}, 0) -> "-5"
+methodSignature: public static String safeGet(int[] arr, int index)
+className: Solution
+estimatedMinutes: 10
+difficulty: easy
+hints:
+- Dentro del try accede a arr[index] y conviértelo con String.valueOf.
+- 'El multi-catch usa una barra vertical entre los tipos: catch (ArrayIndexOutOfBoundsException | NullPointerException e).'
+- En el catch devuelve el texto 'invalid'. Los índices negativos también lanzan ArrayIndexOutOfBoundsException.
+starterCode: |
+  public class Solution {
+
+      public static String safeGet(int[] arr, int index) {
+          // Tu código aquí
+          return "";
+      }
+  }
+referenceSolution: |
+  public class Solution {
+
+      public static String safeGet(int[] arr, int index) {
+          try {
+              return String.valueOf(arr[index]);
+          } catch (ArrayIndexOutOfBoundsException | NullPointerException e) {
+              return "invalid";
+          }
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  import java.util.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Índice válido")
+      void t1() throws Exception {
+          assertEquals("20", Solution.safeGet(new int[]{10, 20, 30}, 1));
+      }
+
+      @Test
+      @DisplayName("Primer elemento")
+      void t2() throws Exception {
+          assertEquals("10", Solution.safeGet(new int[]{10, 20, 30}, 0));
+      }
+
+      @Test
+      @DisplayName("Último elemento")
+      void t3() throws Exception {
+          assertEquals("30", Solution.safeGet(new int[]{10, 20, 30}, 2));
+      }
+
+      @Test
+      @DisplayName("Índice igual a la longitud")
+      void t4() throws Exception {
+          assertEquals("invalid", Solution.safeGet(new int[]{10, 20, 30}, 3));
+      }
+
+      @Test
+      @DisplayName("Índice negativo")
+      void t5() throws Exception {
+          assertEquals("invalid", Solution.safeGet(new int[]{10, 20, 30}, -1));
+      }
+
+      @Test
+      @DisplayName("Arreglo null")
+      void t6() throws Exception {
+          assertEquals("invalid", Solution.safeGet(null, 0));
+      }
+
+      @Test
+      @DisplayName("Arreglo vacío")
+      void t7() throws Exception {
+          assertEquals("invalid", Solution.safeGet(new int[]{}, 0));
+      }
+
+      @Test
+      @DisplayName("Elemento negativo")
+      void t8() throws Exception {
+          assertEquals("-5", Solution.safeGet(new int[]{-5}, 0));
+      }
+  }

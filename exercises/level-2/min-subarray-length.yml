@@ -1,0 +1,126 @@
+slug: min-subarray-length
+level: 2
+topic: sliding-window
+title: Longitud mínima de subarreglo con suma mayor o igual
+statement: |
+  Dado un arreglo de enteros POSITIVOS y un número `target`, devuelve la longitud mínima de un
+  subarreglo contiguo cuya suma sea mayor o igual que `target`. Si no existe, devuelve 0.
+
+  Ejemplo:
+  - Entrada: target=7, numbers=[2, 3, 1, 2, 4, 3] -> Salida: 2 (el subarreglo [4, 3])
+  - Entrada: target=4, numbers=[1, 4, 4] -> Salida: 1
+  - Entrada: target=11, numbers=[1, 1, 1, 1] -> Salida: 0
+
+  Si el arreglo es null o vacío, devuelve 0. Todos los números del arreglo son positivos (> 0).
+  Se espera una solución O(n) con ventana deslizante.
+methodSignature: "public static int minSubarrayLength(int target, int[] numbers)"
+className: Solution
+estimatedMinutes: 25
+difficulty: medium
+hints:
+  - "Como todos los números son positivos, ampliar la ventana siempre aumenta la suma y reducirla la disminuye."
+  - "Avanza el extremo derecho sumando elementos; cuando la suma sea >= target, intenta encoger la ventana por la izquierda."
+  - "Mientras la suma siga siendo >= target, actualiza la longitud mínima (right - left + 1) y resta numbers[left] avanzando left."
+starterCode: |
+  public class Solution {
+      public static int minSubarrayLength(int target, int[] numbers) {
+          // Tu código aquí
+          return 0;
+      }
+  }
+referenceSolution: |
+  public class Solution {
+      public static int minSubarrayLength(int target, int[] numbers) {
+          if (numbers == null || numbers.length == 0) {
+              return 0;
+          }
+          long suma = 0;
+          int left = 0;
+          int mejor = Integer.MAX_VALUE;
+          for (int right = 0; right < numbers.length; right++) {
+              suma += numbers[right];
+              while (suma >= target) {
+                  mejor = Math.min(mejor, right - left + 1);
+                  suma -= numbers[left];
+                  left++;
+              }
+          }
+          return mejor == Integer.MAX_VALUE ? 0 : mejor;
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Ejemplo básico con target 7")
+      void ejemploBasico() {
+          assertEquals(2, Solution.minSubarrayLength(7, new int[] {2, 3, 1, 2, 4, 3}));
+      }
+
+      @Test
+      @DisplayName("Un solo elemento ya alcanza el objetivo")
+      void unElementoAlcanza() {
+          assertEquals(1, Solution.minSubarrayLength(4, new int[] {1, 4, 4}));
+      }
+
+      @Test
+      @DisplayName("Nunca se alcanza el objetivo devuelve 0")
+      void imposible() {
+          assertEquals(0, Solution.minSubarrayLength(11, new int[] {1, 1, 1, 1}));
+      }
+
+      @Test
+      @DisplayName("Arreglo vacío o null devuelve 0")
+      void vacioONulo() {
+          assertEquals(0, Solution.minSubarrayLength(5, new int[0]));
+          assertEquals(0, Solution.minSubarrayLength(5, null));
+      }
+
+      @Test
+      @DisplayName("Se necesita todo el arreglo")
+      void todoElArreglo() {
+          assertEquals(4, Solution.minSubarrayLength(15, new int[] {1, 2, 4, 8}));
+      }
+
+      @Test
+      @DisplayName("Suma exactamente igual al objetivo")
+      void sumaExacta() {
+          assertEquals(3, Solution.minSubarrayLength(6, new int[] {1, 2, 3, 1, 1}));
+      }
+
+      @Test
+      @DisplayName("Un solo elemento en el arreglo")
+      void unElemento() {
+          assertEquals(1, Solution.minSubarrayLength(5, new int[] {5}));
+          assertEquals(0, Solution.minSubarrayLength(6, new int[] {5}));
+      }
+
+      @Test
+      @DisplayName("No desborda con valores grandes")
+      void sinDesbordamiento() {
+          int m = Integer.MAX_VALUE;
+          assertEquals(2, Solution.minSubarrayLength(m, new int[] {m - 1, m - 1}));
+          assertEquals(1, Solution.minSubarrayLength(m, new int[] {1, m}));
+      }
+
+      @Test
+      @DisplayName("Funciona rápido con 500000 elementos")
+      void grande() {
+          int[] a = new int[500000];
+          for (int i = 0; i < a.length; i++) {
+              a[i] = 1;
+          }
+          assertEquals(500000, Solution.minSubarrayLength(500000, a));
+          assertEquals(0, Solution.minSubarrayLength(500001, a));
+      }
+  }
+complexityQuestion:
+  prompt: "¿Cuál es la complejidad temporal de la ventana deslizante con dos punteros?"
+  options: ["O(n²)", "O(n log n)", "O(1)", "O(n)"]
+  correctIndex: 3
+  explanation: "Cada puntero (left y right) recorre el arreglo como máximo una vez, así que aunque haya un while dentro del for, el total es O(n)."

@@ -1,0 +1,96 @@
+slug: first-non-repeated
+level: 1
+topic: strings
+title: Primera letra no repetida
+statement: |
+  Escribe un método que devuelva el primer carácter que aparece una sola vez en el texto.
+
+  Ejemplo:
+  - Entrada: "aabbc" -> Salida: 'c'
+  - Entrada: "Java" -> Salida: 'J'
+  - Entrada: "aabb" -> Salida: '\0'
+
+  La comparación ignora mayúsculas y minúsculas: por ejemplo, 'a' y 'A' cuentan como
+  el mismo carácter. Si ningún carácter es único, o si el texto es null o vacío,
+  devuelve el carácter '\0'.
+methodSignature: "public static char firstNonRepeated(String text)"
+className: Solution
+estimatedMinutes: 15
+difficulty: easy
+hints:
+  - "Convierte el texto a minúsculas para comparar sin distinguir mayúsculas."
+  - "Cuenta cuántas veces aparece cada carácter antes de buscar el primero único."
+  - "Recorre otra vez el texto en minúsculas y devuelve el primer carácter cuyo conteo sea 1; si no hay, devuelve '\\0'."
+starterCode: |
+  public class Solution {
+      public static char firstNonRepeated(String text) {
+          // Tu código aquí
+          return '\0';
+      }
+  }
+referenceSolution: |
+  public class Solution {
+      public static char firstNonRepeated(String text) {
+          if (text == null || text.isEmpty()) {
+              return '\0';
+          }
+          String minusculas = text.toLowerCase();
+          int[] conteo = new int[256];
+          for (int i = 0; i < minusculas.length(); i++) {
+              conteo[minusculas.charAt(i)]++;
+          }
+          for (int i = 0; i < minusculas.length(); i++) {
+              if (conteo[minusculas.charAt(i)] == 1) {
+                  return minusculas.charAt(i);
+              }
+          }
+          return '\0';
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Devuelve el primer carácter que no se repite")
+      void primerCaracterUnico() {
+          assertEquals('c', Solution.firstNonRepeated("aabbc"));
+      }
+
+      @Test
+      @DisplayName("Ignora mayúsculas y minúsculas al buscar el carácter único")
+      void ignoraMayusculas() {
+          assertEquals('j', Solution.firstNonRepeated("Java"));
+      }
+
+      @Test
+      @DisplayName("Devuelve el primer carácter único cuando el resto se repite")
+      void primerUnicoEntreRepetidos() {
+          assertEquals('d', Solution.firstNonRepeated("aabbd"));
+          assertEquals('\0', Solution.firstNonRepeated("aabb"));
+      }
+
+      @Test
+      @DisplayName("Devuelve el primer carácter cuando solo hay uno")
+      void unSoloCaracter() {
+          assertEquals('z', Solution.firstNonRepeated("z"));
+      }
+
+      @Test
+      @DisplayName("Devuelve el carácter nulo solo cuando el texto es null o está vacío")
+      void textoNuloOVacio() {
+          assertEquals('a', Solution.firstNonRepeated("abc"));
+          assertEquals('\0', Solution.firstNonRepeated(null));
+          assertEquals('\0', Solution.firstNonRepeated(""));
+      }
+
+      @Test
+      @DisplayName("Ignora los caracteres repetidos consecutivos para encontrar el primero único")
+      void primerUnicoTrasParejas() {
+          assertEquals('c', Solution.firstNonRepeated("aabbcdd"));
+      }
+  }

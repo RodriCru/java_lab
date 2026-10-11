@@ -1,0 +1,106 @@
+slug: second-largest
+level: 1
+topic: arrays
+title: Segundo mayor
+statement: |
+  Escribe un método que devuelva el SEGUNDO mayor valor distinto dentro del arreglo.
+
+  Ejemplo:
+  - Entrada: numbers=[3, 1, 4, 1, 5] -> Salida: 4
+  - Entrada: numbers=[7, 2] -> Salida: 2
+  - Entrada: numbers=[10, 10, 10] -> Salida: -1
+
+  Reglas:
+  - Se comparan valores distintos: los repetidos no cuentan como segundo mayor.
+  - Si no existe un segundo mayor distinto (arreglo null, con menos de 2 elementos o con todos los valores iguales), devuelve -1.
+  - El arreglo de entrada nunca debe modificarse.
+methodSignature: "public static int secondLargest(int[] numbers)"
+className: Solution
+estimatedMinutes: 15
+difficulty: easy
+hints:
+  - "Puedes recorrer el arreglo una sola vez y llevar dos variables: el mayor y el segundo mayor."
+  - "Cuando encuentras un valor mayor que el actual mayor, el mayor anterior pasa a ser el segundo mayor."
+  - "Recuerda que si todos los valores son iguales no existe un segundo mayor distinto y debes devolver -1."
+starterCode: |
+  public class Solution {
+      public static int secondLargest(int[] numbers) {
+          // Tu código aquí
+          return -1;
+      }
+  }
+referenceSolution: |
+  public class Solution {
+      public static int secondLargest(int[] numbers) {
+          if (numbers == null || numbers.length < 2) {
+              return -1;
+          }
+          int mayor = numbers[0];
+          int segundo = 0;
+          boolean haySegundo = false;
+          for (int i = 1; i < numbers.length; i++) {
+              int numero = numbers[i];
+              if (numero > mayor) {
+                  segundo = mayor;
+                  haySegundo = true;
+                  mayor = numero;
+              } else if (numero < mayor) {
+                  if (!haySegundo || numero > segundo) {
+                      segundo = numero;
+                      haySegundo = true;
+                  }
+              }
+          }
+          if (!haySegundo) {
+              return -1;
+          }
+          return segundo;
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Encuentra el segundo mayor en un arreglo con repetidos")
+      void arregloNormal() {
+          assertEquals(4, Solution.secondLargest(new int[] {3, 1, 4, 1, 5}));
+      }
+
+      @Test
+      @DisplayName("Devuelve el menor de los dos valores cuando hay dos elementos")
+      void dosElementos() {
+          assertEquals(2, Solution.secondLargest(new int[] {7, 2}));
+      }
+
+      @Test
+      @DisplayName("Devuelve -1 cuando todos los valores son iguales")
+      void todosIguales() {
+          assertEquals(-1, Solution.secondLargest(new int[] {10, 10, 10}));
+      }
+
+      @Test
+      @DisplayName("Devuelve -1 cuando el arreglo tiene un solo elemento")
+      void unSoloElemento() {
+          assertEquals(-1, Solution.secondLargest(new int[] {5}));
+      }
+
+      @Test
+      @DisplayName("Devuelve -1 cuando el arreglo es null")
+      void entradaNula() {
+          assertEquals(-1, Solution.secondLargest(null));
+      }
+
+      @Test
+      @DisplayName("Funciona con números negativos y no modifica la entrada")
+      void numerosNegativosYEntradaIntacta() {
+          int[] original = {-5, -1, -10};
+          int[] copia = {-5, -1, -10};
+          assertEquals(-5, Solution.secondLargest(original));
+          assertArrayEquals(copia, original);
+      }
+  }

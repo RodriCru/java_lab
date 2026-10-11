@@ -1,0 +1,139 @@
+slug: string-to-int
+level: 2
+topic: strings
+title: "Cadena a entero (atoi)"
+statement: |
+  Implementa myAtoi: convierte una cadena a un entero de 32 bits.
+
+  Reglas, en orden:
+  1. Ignora los espacios iniciales.
+  2. Si el siguiente carácter es '+' o '-', es el signo (por defecto positivo).
+  3. Lee dígitos hasta el primer carácter que no sea dígito o el fin de la cadena.
+  4. Si no se leyó ningún dígito, devuelve 0.
+  5. Si el valor sale del rango de int, satura: Integer.MAX_VALUE o Integer.MIN_VALUE.
+
+  Ejemplos:
+  - "42" -> 42
+  - "   -42" -> -42
+  - "4193 with words" -> 4193
+  - "words 987" -> 0
+  - "-91283472332" -> -2147483648
+
+  Si el texto es null, devuelve 0.
+methodSignature: "public static int myAtoi(String text)"
+className: Solution
+estimatedMinutes: 30
+difficulty: hard
+hints:
+  - "Avanza el índice saltando espacios, luego detecta el signo."
+  - "Acumula el resultado en un long (o comprueba el desbordamiento antes de multiplicar por 10)."
+  - "Si el acumulado supera Integer.MAX_VALUE, devuelve el límite correspondiente al signo sin seguir leyendo."
+starterCode: |
+  public class Solution {
+      public static int myAtoi(String text) {
+          // Tu código aquí
+          return -1;
+      }
+  }
+referenceSolution: |
+  public class Solution {
+      public static int myAtoi(String text) {
+          if (text == null) return 0;
+          int i = 0;
+          int n = text.length();
+          while (i < n && text.charAt(i) == ' ') i++;
+          int signo = 1;
+          if (i < n && (text.charAt(i) == '+' || text.charAt(i) == '-')) {
+              if (text.charAt(i) == '-') signo = -1;
+              i++;
+          }
+          long valor = 0;
+          while (i < n && Character.isDigit(text.charAt(i)) && text.charAt(i) <= '9') {
+              valor = valor * 10 + (text.charAt(i) - '0');
+              if (signo * valor >= Integer.MAX_VALUE) return Integer.MAX_VALUE;
+              if (signo * valor <= Integer.MIN_VALUE) return Integer.MIN_VALUE;
+              i++;
+          }
+          return (int) (signo * valor);
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+  import java.util.*;
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Número simple")
+      void t0() {
+          assertEquals(42, Solution.myAtoi("42"));
+      }
+
+      @Test
+      @DisplayName("Espacios iniciales y signo negativo")
+      void t1() {
+          assertEquals(-42, Solution.myAtoi("   -42"));
+      }
+
+      @Test
+      @DisplayName("Se detiene en el primer no dígito")
+      void t2() {
+          assertEquals(4193, Solution.myAtoi("4193 with words"));
+      }
+
+      @Test
+      @DisplayName("Texto sin dígitos al inicio devuelve 0")
+      void t3() {
+          assertEquals(0, Solution.myAtoi("words 987"));
+      }
+
+      @Test
+      @DisplayName("Satura en el mínimo")
+      void t4() {
+          assertEquals(Integer.MIN_VALUE, Solution.myAtoi("-91283472332"));
+      }
+
+      @Test
+      @DisplayName("Satura en el máximo")
+      void t5() {
+          assertEquals(Integer.MAX_VALUE, Solution.myAtoi("91283472332"));
+          assertEquals(Integer.MAX_VALUE, Solution.myAtoi("2147483647"));
+          assertEquals(Integer.MIN_VALUE, Solution.myAtoi("-2147483648"));
+      }
+
+      @Test
+      @DisplayName("Signo positivo explícito y ceros iniciales")
+      void t6() {
+          assertEquals(7, Solution.myAtoi("+007"));
+      }
+
+      @Test
+      @DisplayName("Vacío, null, solo signo")
+      void t7() {
+          assertEquals(0, Solution.myAtoi(""));
+          assertEquals(0, Solution.myAtoi(null));
+          assertEquals(0, Solution.myAtoi("-"));
+          assertEquals(0, Solution.myAtoi("   "));
+      }
+
+      @Test
+      @DisplayName("Doble signo no es válido")
+      void t8() {
+          assertEquals(0, Solution.myAtoi("+-12"));
+      }
+
+      @Test
+      @DisplayName("Cadena de dígitos muy larga satura sin fallar")
+      void t9() {
+          StringBuilder sb = new StringBuilder("1");
+          for (int i = 0; i < 5000; i++) sb.append('0');
+          assertEquals(Integer.MAX_VALUE, Solution.myAtoi(sb.toString()));
+      }
+  }
+complexityQuestion:
+  prompt: "¿Cuál es la complejidad temporal de tu solución óptima, en función de n?"
+  options: ["O(1)", "O(n)", "O(n log n)", "O(n²)"]
+  correctIndex: 1
+  explanation: "Se recorre la cadena una vez; con saturación temprana el número de dígitos procesados está acotado, y en todo caso es lineal."

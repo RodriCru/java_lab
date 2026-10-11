@@ -1,0 +1,109 @@
+slug: validate-age
+level: 0
+topic: exceptions
+title: Validar edad con excepción propia
+statement: |
+  Las excepciones propias hacen el código más expresivo. Dentro de Solution debes completar la clase InvalidAgeException, que es una excepción CHECKED (hereda de Exception, no de RuntimeException) y tiene un constructor que recibe el mensaje y lo pasa a super.
+
+  Escribe validateAge(age), que devuelve la edad si es válida y, si no, lanza InvalidAgeException. Una edad es válida si está entre 0 y 150, ambos incluidos. El mensaje debe ser exactamente "Edad inválida: " seguido del número.
+
+  Ejemplos:
+  - validateAge(30) -> 30
+  - validateAge(0) -> 0
+  - validateAge(150) -> 150
+  - validateAge(-1) -> lanza InvalidAgeException("Edad inválida: -1")
+  - validateAge(151) -> lanza InvalidAgeException("Edad inválida: 151")
+
+  Como la excepción es checked, el método debe declararla con throws InvalidAgeException (ya está en la firma).
+methodSignature: public static int validateAge(int age) throws InvalidAgeException
+className: Solution
+estimatedMinutes: 15
+difficulty: medium
+hints:
+- 'Una excepción propia es una clase que extiende Exception: public static class InvalidAgeException extends Exception.'
+- Añade el constructor public InvalidAgeException(String message) { super(message); } para guardar el mensaje.
+- 'En validateAge: if (age < 0 || age > 150) { throw new InvalidAgeException(''Edad inválida: '' + age); } y después return age.'
+starterCode: |
+  public class Solution {
+
+      public static class InvalidAgeException extends Exception {
+          // Tu código aquí: añade el constructor que recibe el mensaje
+      }
+
+      public static int validateAge(int age) throws InvalidAgeException {
+          // Tu código aquí
+          return age;
+      }
+  }
+referenceSolution: |
+  public class Solution {
+
+      public static class InvalidAgeException extends Exception {
+          public InvalidAgeException(String message) {
+              super(message);
+          }
+      }
+
+      public static int validateAge(int age) throws InvalidAgeException {
+          if (age < 0 || age > 150) {
+              throw new InvalidAgeException("Edad inválida: " + age);
+          }
+          return age;
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  import java.util.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Edad válida")
+      void t1() throws Exception {
+          assertEquals(30, Solution.validateAge(30));
+      }
+
+      @Test
+      @DisplayName("El límite inferior 0 es válido")
+      void t2() throws Exception {
+          assertEquals(0, Solution.validateAge(0));
+      }
+
+      @Test
+      @DisplayName("El límite superior 150 es válido")
+      void t3() throws Exception {
+          assertEquals(150, Solution.validateAge(150));
+      }
+
+      @Test
+      @DisplayName("Edad negativa lanza la excepción con su mensaje")
+      void t4() throws Exception {
+          Solution.InvalidAgeException e = assertThrows(Solution.InvalidAgeException.class, () -> Solution.validateAge(-1));
+          assertEquals("Edad inválida: -1", e.getMessage());
+      }
+
+      @Test
+      @DisplayName("Edad mayor a 150 lanza la excepción con su mensaje")
+      void t5() throws Exception {
+          Solution.InvalidAgeException e = assertThrows(Solution.InvalidAgeException.class, () -> Solution.validateAge(151));
+          assertEquals("Edad inválida: 151", e.getMessage());
+      }
+
+      @Test
+      @DisplayName("El mensaje incluye el número recibido")
+      void t6() throws Exception {
+          Solution.InvalidAgeException e = assertThrows(Solution.InvalidAgeException.class, () -> Solution.validateAge(-200));
+          assertEquals("Edad inválida: -200", e.getMessage());
+      }
+
+      @Test
+      @DisplayName("InvalidAgeException es checked (hereda de Exception, no de RuntimeException)")
+      void t7() throws Exception {
+          assertTrue(Exception.class.isAssignableFrom(Solution.InvalidAgeException.class));
+          assertFalse(RuntimeException.class.isAssignableFrom(Solution.InvalidAgeException.class));
+      }
+  }

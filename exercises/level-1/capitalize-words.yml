@@ -1,0 +1,100 @@
+slug: capitalize-words
+level: 1
+topic: strings
+title: "Capitalizar palabras"
+statement: |
+  Escribe un método que reciba una cadena de texto y devuelva la misma cadena con la primera letra de cada palabra en mayúscula y el resto de las letras en minúscula.
+
+  Reglas del contrato:
+  - Las palabras se separan únicamente por espacios en blanco.
+  - Los espacios se conservan tal como vienen, incluidos los espacios repetidos al inicio, al final o entre palabras.
+  - Si el texto es null, el método devuelve null.
+  - Si el texto está vacío, devuelve una cadena vacía.
+
+  Ejemplo:
+  - Entrada: "hola mundo" -> Salida: "Hola Mundo"
+  - Entrada: "hOLA mUNDO" -> Salida: "Hola Mundo"
+  - Entrada: "  java   es genial  " -> Salida: "  Java   Es Genial  "
+methodSignature: "public static String capitalizeWords(String text)"
+className: Solution
+estimatedMinutes: 12
+difficulty: easy
+hints:
+  - "Necesitas saber si el carácter actual es el primero de una palabra."
+  - "Usa una variable booleana que se ponga en true al inicio del texto y cada vez que encuentres un espacio."
+  - "Cuando estés al inicio de palabra aplica Character.toUpperCase; en caso contrario aplica Character.toLowerCase."
+starterCode: |
+  public class Solution {
+      public static String capitalizeWords(String text) {
+          // Tu código aquí
+          return "";
+      }
+  }
+referenceSolution: |
+  public class Solution {
+      public static String capitalizeWords(String text) {
+          if (text == null) {
+              return null;
+          }
+          StringBuilder resultado = new StringBuilder();
+          boolean inicioDePalabra = true;
+          for (int i = 0; i < text.length(); i++) {
+              char caracter = text.charAt(i);
+              if (caracter == ' ') {
+                  resultado.append(caracter);
+                  inicioDePalabra = true;
+              } else if (inicioDePalabra) {
+                  resultado.append(Character.toUpperCase(caracter));
+                  inicioDePalabra = false;
+              } else {
+                  resultado.append(Character.toLowerCase(caracter));
+              }
+          }
+          return resultado.toString();
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import static org.junit.jupiter.api.Assertions.assertEquals;
+  import static org.junit.jupiter.api.Assertions.assertNull;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Capitaliza cada palabra de un texto en minúsculas")
+      void textoEnMinusculas() {
+          assertEquals("Hola Mundo", Solution.capitalizeWords("hola mundo"));
+      }
+
+      @Test
+      @DisplayName("Corrige un texto con mayúsculas mezcladas")
+      void textoConMayusculasMezcladas() {
+          assertEquals("Hola Mundo", Solution.capitalizeWords("hOLA mUNDO"));
+      }
+
+      @Test
+      @DisplayName("Una sola palabra se capitaliza")
+      void unaPalabra() {
+          assertEquals("Java", Solution.capitalizeWords("java"));
+      }
+
+      @Test
+      @DisplayName("Una cadena vacía devuelve una cadena vacía")
+      void cadenaVacia() {
+          assertEquals("", Solution.capitalizeWords(""));
+      }
+
+      @Test
+      @DisplayName("Un texto null devuelve null")
+      void textoNull() {
+          assertNull(Solution.capitalizeWords(null));
+      }
+
+      @Test
+      @DisplayName("Conserva los espacios repetidos y los de los extremos")
+      void espaciosRepetidos() {
+          assertEquals("  Java   Es Genial  ", Solution.capitalizeWords("  java   es genial  "));
+      }
+  }

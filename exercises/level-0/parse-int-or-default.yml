@@ -1,0 +1,110 @@
+slug: parse-int-or-default
+level: 0
+topic: exceptions
+title: Convertir a entero o valor por defecto
+statement: |
+  Integer.parseInt lanza NumberFormatException cuando el texto no es un entero válido. Escribe un método que convierta s a int y, si no se puede, devuelva el valor por defecto def. Debes capturar la excepción con try/catch.
+
+  Reglas:
+  - No se hace trim: " 42" NO es válido (devuelve def).
+  - null, "", "abc", "12.5" y números fuera del rango de int (como "2147483648") devuelven def.
+  - Se aceptan los formatos que acepta Integer.parseInt, como "-7" o "+5".
+
+  Ejemplos:
+  - parseIntOrDefault("42", 0) -> 42
+  - parseIntOrDefault("abc", -1) -> -1
+  - parseIntOrDefault(null, 9) -> 9
+  - parseIntOrDefault("-7", 0) -> -7
+methodSignature: public static int parseIntOrDefault(String s, int def)
+className: Solution
+estimatedMinutes: 10
+difficulty: easy
+hints:
+- Pon la conversión dentro de un bloque try { ... } y el valor por defecto en el catch.
+- 'La excepción que debes capturar es NumberFormatException: catch (NumberFormatException e) { return def; }.'
+- Integer.parseInt(null) también lanza NumberFormatException, así que el mismo catch cubre el caso null.
+starterCode: |
+  public class Solution {
+
+      public static int parseIntOrDefault(String s, int def) {
+          // Tu código aquí
+          return def;
+      }
+  }
+referenceSolution: |
+  public class Solution {
+
+      public static int parseIntOrDefault(String s, int def) {
+          try {
+              return Integer.parseInt(s);
+          } catch (NumberFormatException e) {
+              return def;
+          }
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  import java.util.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Texto válido")
+      void t1() throws Exception {
+          assertEquals(42, Solution.parseIntOrDefault("42", 0));
+      }
+
+      @Test
+      @DisplayName("Texto no numérico devuelve el valor por defecto")
+      void t2() throws Exception {
+          assertEquals(-1, Solution.parseIntOrDefault("abc", -1));
+      }
+
+      @Test
+      @DisplayName("null devuelve el valor por defecto")
+      void t3() throws Exception {
+          assertEquals(9, Solution.parseIntOrDefault(null, 9));
+      }
+
+      @Test
+      @DisplayName("Cadena vacía devuelve el valor por defecto")
+      void t4() throws Exception {
+          assertEquals(5, Solution.parseIntOrDefault("", 5));
+      }
+
+      @Test
+      @DisplayName("Números negativos y con signo más")
+      void t5() throws Exception {
+          assertEquals(-7, Solution.parseIntOrDefault("-7", 0));
+          assertEquals(5, Solution.parseIntOrDefault("+5", 0));
+      }
+
+      @Test
+      @DisplayName("Decimales no son enteros válidos")
+      void t6() throws Exception {
+          assertEquals(3, Solution.parseIntOrDefault("12.5", 3));
+      }
+
+      @Test
+      @DisplayName("Espacios alrededor no se aceptan")
+      void t7() throws Exception {
+          assertEquals(0, Solution.parseIntOrDefault(" 42", 0));
+      }
+
+      @Test
+      @DisplayName("Fuera del rango de int")
+      void t8() throws Exception {
+          assertEquals(-2, Solution.parseIntOrDefault("2147483648", -2));
+          assertEquals(Integer.MAX_VALUE, Solution.parseIntOrDefault("2147483647", 0));
+      }
+
+      @Test
+      @DisplayName("Cero con el valor por defecto distinto")
+      void t9() throws Exception {
+          assertEquals(0, Solution.parseIntOrDefault("0", 99));
+      }
+  }

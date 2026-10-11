@@ -1,0 +1,135 @@
+slug: default-method-greeter
+level: 0
+topic: abstraction
+title: Métodos default y static en interfaces
+statement: |
+  Desde Java 8 una interfaz puede tener métodos con cuerpo:
+  - default: lo heredan todas las clases que la implementan (y pueden sobrescribirlo).
+  - static: pertenece a la interfaz y se llama como Greeter.shout(...).
+
+  Dentro de Solution existe la interfaz Greeter con el método abstracto String name(). Completa:
+  - default String greet(): devuelve "Hola, " + name() + "!".
+  - static String shout(String text): devuelve el texto en MAYÚSCULAS (si es null, devuelve "").
+  - El método greetAndShout(greeter): devuelve Greeter.shout(greeter.greet()).
+
+  Ejemplos (con un Greeter cuyo name() es "Ana"):
+  - greet() -> "Hola, Ana!"
+  - Greeter.shout("hola") -> "HOLA"
+  - greetAndShout(greeter) -> "HOLA, ANA!"
+
+  Si una clase sobrescribe greet(), greetAndShout usa esa versión.
+methodSignature: public static String greetAndShout(Greeter greeter)
+className: Solution
+estimatedMinutes: 15
+difficulty: easy
+hints:
+- 'Un método default se escribe dentro de la interfaz así: default String greet() { ... }.'
+- 'Un método static de interfaz se escribe: static String shout(String text) { ... }. Usa text.toUpperCase() y cuida el null.'
+- En greetAndShout llama primero greeter.greet() y pasa el resultado a Greeter.shout(...).
+starterCode: |
+  public class Solution {
+
+      public interface Greeter {
+          String name();
+
+          default String greet() {
+              // Tu código aquí
+              return "";
+          }
+
+          static String shout(String text) {
+              // Tu código aquí
+              return "";
+          }
+      }
+
+      public static String greetAndShout(Greeter greeter) {
+          // Tu código aquí
+          return "";
+      }
+  }
+referenceSolution: |
+  public class Solution {
+
+      public interface Greeter {
+          String name();
+
+          default String greet() {
+              return "Hola, " + name() + "!";
+          }
+
+          static String shout(String text) {
+              if (text == null) {
+                  return "";
+              }
+              return text.toUpperCase();
+          }
+      }
+
+      public static String greetAndShout(Greeter greeter) {
+          return Greeter.shout(greeter.greet());
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  import java.util.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("El método default construye el saludo")
+      void t1() throws Exception {
+          Solution.Greeter g = () -> "Ana";
+          assertEquals("Hola, Ana!", g.greet());
+      }
+
+      @Test
+      @DisplayName("El método static pasa a mayúsculas")
+      void t2() throws Exception {
+          assertEquals("HOLA", Solution.Greeter.shout("hola"));
+      }
+
+      @Test
+      @DisplayName("shout con null devuelve cadena vacía")
+      void t3() throws Exception {
+          assertEquals("", Solution.Greeter.shout(null));
+      }
+
+      @Test
+      @DisplayName("greetAndShout combina ambos métodos")
+      void t4() throws Exception {
+          Solution.Greeter g = () -> "Ana";
+          assertEquals("HOLA, ANA!", Solution.greetAndShout(g));
+      }
+
+      @Test
+      @DisplayName("Una clase puede sobrescribir el método default")
+      void t5() throws Exception {
+          class Formal implements Solution.Greeter {
+              public String name() { return "Luis"; }
+              @Override
+              public String greet() { return "Buenos días, " + name(); }
+          }
+          assertEquals("Buenos días, Luis", new Formal().greet());
+          assertEquals("BUENOS DÍAS, LUIS", Solution.greetAndShout(new Formal()));
+      }
+
+      @Test
+      @DisplayName("Con nombre vacío")
+      void t6() throws Exception {
+          Solution.Greeter g = () -> "";
+          assertEquals("Hola, !", g.greet());
+          assertEquals("HOLA, !", Solution.greetAndShout(g));
+      }
+
+      @Test
+      @DisplayName("Los nombres con minúsculas y acentos se convierten")
+      void t7() throws Exception {
+          Solution.Greeter g = () -> "José";
+          assertEquals("HOLA, JOSÉ!", Solution.greetAndShout(g));
+      }
+  }

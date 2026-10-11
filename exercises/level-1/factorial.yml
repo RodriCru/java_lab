@@ -1,0 +1,89 @@
+slug: factorial
+level: 1
+topic: logic-math
+title: "Factorial"
+statement: |
+  Escribe un método que calcule el factorial de un número entero.
+
+  Reglas del contrato:
+  - El factorial de 0 es 1, y el factorial de 1 también es 1.
+  - Si el número es negativo, el método lanza IllegalArgumentException.
+  - El resultado se declara como long porque el factorial crece muy rápido: factorial(20) es el mayor valor que cabe en un long.
+
+  Ejemplo:
+  - Entrada: 0 -> Salida: 1
+  - Entrada: 5 -> Salida: 120
+  - Entrada: 20 -> Salida: 2432902008176640000
+methodSignature: "public static long factorial(int number)"
+className: Solution
+estimatedMinutes: 8
+difficulty: easy
+hints:
+  - "El factorial de n es el producto de todos los enteros desde 1 hasta n."
+  - "Empieza con un acumulador en 1 y multiplica dentro de un bucle."
+  - "Valida primero si el número es negativo y lanza la excepción antes de calcular."
+starterCode: |
+  public class Solution {
+      public static long factorial(int number) {
+          // Tu código aquí
+          return 0;
+      }
+  }
+referenceSolution: |
+  public class Solution {
+      public static long factorial(int number) {
+          if (number < 0) {
+              throw new IllegalArgumentException("El factorial no está definido para números negativos");
+          }
+          long resultado = 1;
+          for (int i = 2; i <= number; i++) {
+              resultado *= i;
+          }
+          return resultado;
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import static org.junit.jupiter.api.Assertions.assertEquals;
+  import static org.junit.jupiter.api.Assertions.assertThrows;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("El factorial de cero es uno")
+      void factorialDeCero() {
+          assertEquals(1L, Solution.factorial(0));
+      }
+
+      @Test
+      @DisplayName("El factorial de uno es uno")
+      void factorialDeUno() {
+          assertEquals(1L, Solution.factorial(1));
+      }
+
+      @Test
+      @DisplayName("El factorial de cinco es 120")
+      void factorialDeCinco() {
+          assertEquals(120L, Solution.factorial(5));
+      }
+
+      @Test
+      @DisplayName("El factorial de diez es 3628800")
+      void factorialDeDiez() {
+          assertEquals(3628800L, Solution.factorial(10));
+      }
+
+      @Test
+      @DisplayName("El factorial de veinte es el mayor valor que cabe en un long")
+      void factorialLimite() {
+          assertEquals(2432902008176640000L, Solution.factorial(20));
+      }
+
+      @Test
+      @DisplayName("Un número negativo lanza IllegalArgumentException")
+      void factorialNegativo() {
+          assertThrows(IllegalArgumentException.class, () -> Solution.factorial(-1));
+      }
+  }

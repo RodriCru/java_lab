@@ -1,0 +1,196 @@
+slug: bounded-counter
+level: 0
+topic: oop-basics
+title: Contador acotado (encapsulamiento)
+statement: |
+  Encapsulamiento: el estado de un objeto se oculta (campos private) y solo se modifica con métodos que protegen las reglas. En Solution existe la clase Counter, un contador con límites mínimo y máximo.
+
+  Completa Counter:
+  - El constructor Counter(min, max) deja el valor inicial en min. Si min > max lanza IllegalArgumentException.
+  - getValue() devuelve el valor actual.
+  - increment(): si el valor es menor que max lo aumenta en 1 y devuelve true; si ya está en max no cambia nada y devuelve false.
+  - decrement(): si el valor es mayor que min lo disminuye en 1 y devuelve true; si ya está en min no cambia nada y devuelve false.
+
+  Además, completa applyOperations: crea un Counter(min, max), recorre el texto ops y, por cada carácter '+' llama a increment() y por cada '-' llama a decrement() (cualquier otro carácter se ignora). Devuelve el valor final. Si ops es null, devuelve el valor inicial.
+
+  Ejemplo:
+  - Entrada: min=0, max=3, ops="++-" -> Salida: 1
+  - Entrada: min=0, max=2, ops="+++++" -> Salida: 2 (no pasa del máximo)
+  - Entrada: min=0, max=2, ops="---" -> Salida: 0 (no baja del mínimo)
+methodSignature: public static int applyOperations(int min, int max, String ops)
+className: Solution
+estimatedMinutes: 15
+difficulty: easy
+hints:
+- Los campos private solo se tocan desde dentro de la clase; por eso el valor no puede salirse de los límites desde fuera.
+- Guarda min, max y value en campos; en el constructor valida min > max antes de asignar y lanza new IllegalArgumentException(...).
+- increment() y decrement() deben comprobar el límite ANTES de modificar el valor y devolver si el cambio ocurrió.
+starterCode: |
+  public class Solution {
+
+      public static class Counter {
+          private final int min;
+          private final int max;
+          private int value;
+
+          public Counter(int min, int max) {
+              // Tu código aquí
+              this.min = min;
+              this.max = max;
+              this.value = 0;
+          }
+
+          public int getValue() {
+              // Tu código aquí
+              return 0;
+          }
+
+          public boolean increment() {
+              // Tu código aquí
+              return false;
+          }
+
+          public boolean decrement() {
+              // Tu código aquí
+              return false;
+          }
+      }
+
+      public static int applyOperations(int min, int max, String ops) {
+          // Tu código aquí
+          return 0;
+      }
+  }
+referenceSolution: |
+  public class Solution {
+
+      public static class Counter {
+          private final int min;
+          private final int max;
+          private int value;
+
+          public Counter(int min, int max) {
+              if (min > max) {
+                  throw new IllegalArgumentException("min no puede ser mayor que max");
+              }
+              this.min = min;
+              this.max = max;
+              this.value = min;
+          }
+
+          public int getValue() {
+              return value;
+          }
+
+          public boolean increment() {
+              if (value >= max) {
+                  return false;
+              }
+              value++;
+              return true;
+          }
+
+          public boolean decrement() {
+              if (value <= min) {
+                  return false;
+              }
+              value--;
+              return true;
+          }
+      }
+
+      public static int applyOperations(int min, int max, String ops) {
+          Counter counter = new Counter(min, max);
+          if (ops == null) {
+              return counter.getValue();
+          }
+          for (char c : ops.toCharArray()) {
+              if (c == '+') {
+                  counter.increment();
+              } else if (c == '-') {
+                  counter.decrement();
+              }
+          }
+          return counter.getValue();
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+  import java.util.*;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("El valor inicial es el mínimo")
+      void valorInicial() {
+          assertEquals(5, new Solution.Counter(5, 9).getValue());
+      }
+
+      @Test
+      @DisplayName("increment sube de uno en uno y devuelve true")
+      void incrementa() {
+          Solution.Counter c = new Solution.Counter(0, 3);
+          assertTrue(c.increment());
+          assertTrue(c.increment());
+          assertEquals(2, c.getValue());
+      }
+
+      @Test
+      @DisplayName("increment no pasa del máximo y devuelve false")
+      void noPasaDelMaximo() {
+          Solution.Counter c = new Solution.Counter(0, 1);
+          assertTrue(c.increment());
+          assertFalse(c.increment());
+          assertEquals(1, c.getValue());
+      }
+
+      @Test
+      @DisplayName("decrement no baja del mínimo y devuelve false")
+      void noBajaDelMinimo() {
+          Solution.Counter c = new Solution.Counter(0, 3);
+          assertFalse(c.decrement());
+          assertEquals(0, c.getValue());
+          c.increment();
+          assertTrue(c.decrement());
+          assertEquals(0, c.getValue());
+      }
+
+      @Test
+      @DisplayName("Límites inválidos lanzan IllegalArgumentException")
+      void limitesInvalidos() {
+          assertThrows(IllegalArgumentException.class, () -> new Solution.Counter(5, 1));
+      }
+
+      @Test
+      @DisplayName("Con min igual a max el contador no se mueve")
+      void minIgualMax() {
+          Solution.Counter c = new Solution.Counter(4, 4);
+          assertFalse(c.increment());
+          assertFalse(c.decrement());
+          assertEquals(4, c.getValue());
+      }
+
+      @Test
+      @DisplayName("applyOperations combina sumas y restas")
+      void operacionesMixtas() {
+          assertEquals(1, Solution.applyOperations(0, 3, "++-"));
+      }
+
+      @Test
+      @DisplayName("applyOperations respeta los límites")
+      void operacionesConLimites() {
+          assertEquals(2, Solution.applyOperations(0, 2, "+++++"));
+          assertEquals(0, Solution.applyOperations(0, 2, "---"));
+      }
+
+      @Test
+      @DisplayName("applyOperations ignora otros caracteres y acepta null o vacío")
+      void casosBorde() {
+          assertEquals(2, Solution.applyOperations(0, 5, "+a+ x"));
+          assertEquals(3, Solution.applyOperations(3, 5, null));
+          assertEquals(3, Solution.applyOperations(3, 5, ""));
+      }
+  }

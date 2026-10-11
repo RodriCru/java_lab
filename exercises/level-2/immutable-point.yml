@@ -1,0 +1,204 @@
+slug: immutable-point
+level: 2
+topic: oop
+title: Punto inmutable
+statement: |
+  Dentro de Solution existe la clase anidada Point (coordenadas enteras x e y). Debe ser INMUTABLE: una vez creado, un punto nunca cambia; cualquier "modificación" devuelve un punto nuevo.
+
+  Completa la clase Point:
+  - withX(newX): devuelve un NUEVO Point con x = newX y la misma y. El objeto original no cambia.
+  - withY(newY): devuelve un NUEVO Point con la misma x e y = newY.
+  - equals y hashCode: dos puntos son iguales si tienen las mismas x e y (y el mismo hashCode).
+  - toString: devuelve "(x, y)", por ejemplo "(3, 4)".
+  Los campos deben ser privados y final.
+
+  Después implementa translate(point, dx, dy), que devuelve un nuevo Point desplazado dx en x y dy en y, sin modificar el original.
+
+  Ejemplo:
+  - Entrada: point=(1, 2), dx=3, dy=-1 -> Salida: (4, 1) (y el punto original sigue siendo (1, 2))
+  - Entrada: point=(0, 0).withX(5) -> Salida: (5, 0)
+methodSignature: "public static Point translate(Point point, int dx, int dy)"
+className: Solution
+estimatedMinutes: 20
+difficulty: medium
+hints:
+  - "Una clase inmutable no tiene setters y todos sus campos son final: para 'cambiar' algo se crea otro objeto."
+  - "withX devuelve new Point(newX, y); withY devuelve new Point(x, newY)."
+  - "Para equals y hashCode puedes apoyarte en Objects.equals / Objects.hash, o comparar x e y directamente. translate es new Point(point.getX() + dx, point.getY() + dy)."
+starterCode: |
+  public class Solution {
+
+      public static final class Point {
+          private final int x;
+          private final int y;
+
+          public Point(int x, int y) {
+              this.x = x;
+              this.y = y;
+          }
+
+          public int getX() {
+              return x;
+          }
+
+          public int getY() {
+              return y;
+          }
+
+          public Point withX(int newX) {
+              // Tu código aquí
+              return this;
+          }
+
+          public Point withY(int newY) {
+              // Tu código aquí
+              return this;
+          }
+
+          // Tu código aquí: equals, hashCode y toString
+      }
+
+      public static Point translate(Point point, int dx, int dy) {
+          // Tu código aquí
+          return point;
+      }
+  }
+referenceSolution: |
+  public class Solution {
+
+      public static final class Point {
+          private final int x;
+          private final int y;
+
+          public Point(int x, int y) {
+              this.x = x;
+              this.y = y;
+          }
+
+          public int getX() {
+              return x;
+          }
+
+          public int getY() {
+              return y;
+          }
+
+          public Point withX(int newX) {
+              return new Point(newX, y);
+          }
+
+          public Point withY(int newY) {
+              return new Point(x, newY);
+          }
+
+          @Override
+          public boolean equals(Object other) {
+              if (this == other) {
+                  return true;
+              }
+              if (!(other instanceof Point)) {
+                  return false;
+              }
+              Point p = (Point) other;
+              return x == p.x && y == p.y;
+          }
+
+          @Override
+          public int hashCode() {
+              return java.util.Objects.hash(x, y);
+          }
+
+          @Override
+          public String toString() {
+              return "(" + x + ", " + y + ")";
+          }
+      }
+
+      public static Point translate(Point point, int dx, int dy) {
+          return new Point(point.getX() + dx, point.getY() + dy);
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("translate devuelve el punto desplazado")
+      void desplaza() {
+          Solution.Point r = Solution.translate(new Solution.Point(1, 2), 3, -1);
+          assertEquals(4, r.getX());
+          assertEquals(1, r.getY());
+      }
+
+      @Test
+      @DisplayName("translate no modifica el punto original y devuelve otro objeto")
+      void noMutaOriginal() {
+          Solution.Point original = new Solution.Point(1, 2);
+          Solution.Point r = Solution.translate(original, 10, 10);
+          assertNotSame(original, r);
+          assertEquals(1, original.getX());
+          assertEquals(2, original.getY());
+      }
+
+      @Test
+      @DisplayName("withX devuelve un punto nuevo sin cambiar el original")
+      void withX() {
+          Solution.Point p = new Solution.Point(0, 0);
+          Solution.Point q = p.withX(5);
+          assertNotSame(p, q);
+          assertEquals(5, q.getX());
+          assertEquals(0, q.getY());
+          assertEquals(0, p.getX());
+      }
+
+      @Test
+      @DisplayName("withY devuelve un punto nuevo sin cambiar el original")
+      void withY() {
+          Solution.Point p = new Solution.Point(3, 4);
+          Solution.Point q = p.withY(9);
+          assertNotSame(p, q);
+          assertEquals(3, q.getX());
+          assertEquals(9, q.getY());
+          assertEquals(4, p.getY());
+      }
+
+      @Test
+      @DisplayName("Dos puntos con las mismas coordenadas son iguales")
+      void equalsFunciona() {
+          assertEquals(new Solution.Point(1, 2), new Solution.Point(1, 2));
+          assertNotEquals(new Solution.Point(1, 2), new Solution.Point(2, 1));
+          assertNotEquals(new Solution.Point(1, 2), null);
+          assertNotEquals(new Solution.Point(1, 2), "(1, 2)");
+      }
+
+      @Test
+      @DisplayName("Puntos iguales tienen el mismo hashCode")
+      void hashCodeFunciona() {
+          assertEquals(new Solution.Point(7, -3).hashCode(), new Solution.Point(7, -3).hashCode());
+      }
+
+      @Test
+      @DisplayName("toString tiene el formato (x, y)")
+      void formato() {
+          assertEquals("(3, 4)", new Solution.Point(3, 4).toString());
+          assertEquals("(-1, 0)", new Solution.Point(-1, 0).toString());
+      }
+
+      @Test
+      @DisplayName("Desplazamiento cero devuelve un punto igual pero distinto objeto")
+      void desplazamientoCero() {
+          Solution.Point p = new Solution.Point(5, 5);
+          Solution.Point r = Solution.translate(p, 0, 0);
+          assertEquals(p, r);
+          assertNotSame(p, r);
+      }
+  }
+complexityQuestion:
+  prompt: "¿Qué complejidad temporal y de espacio extra tiene translate al crear un punto nuevo?"
+  options: ["O(n) tiempo y O(n) espacio", "O(1) tiempo y O(1) espacio", "O(1) tiempo y O(n) espacio", "O(log n) tiempo y O(1) espacio"]
+  correctIndex: 1
+  explanation: "Solo se suman dos enteros y se crea un objeto de tamaño fijo, sin importar los valores de las coordenadas."

@@ -1,0 +1,114 @@
+slug: count-n-queens
+level: 2
+topic: recursion
+title: Problema de las N reinas
+statement: |
+  Cuenta de cuántas maneras se pueden colocar `n` reinas en un tablero de n x n de modo que
+  ninguna se ataque entre sí (dos reinas se atacan si comparten fila, columna o diagonal).
+
+  Ejemplo:
+  - Entrada: n=1 -> Salida: 1
+  - Entrada: n=4 -> Salida: 2
+  - Entrada: n=8 -> Salida: 92
+
+  Restricción: 1 <= n <= 8. Las soluciones que son rotaciones o reflejos de otras se cuentan
+  por separado. Usa backtracking: coloca una reina por fila y retrocede si no hay jugada válida.
+methodSignature: "public static int countQueens(int n)"
+className: Solution
+estimatedMinutes: 30
+difficulty: hard
+hints:
+  - "Coloca exactamente una reina por fila: así nunca chocan por fila."
+  - "Para cada fila prueba cada columna y comprueba que la columna y las dos diagonales estén libres."
+  - "Lleva tres conjuntos de ocupación: columnas, diagonales (fila - col) y antidiagonales (fila + col). Al retroceder, libera la casilla."
+starterCode: |
+  public class Solution {
+      public static int countQueens(int n) {
+          // Tu código aquí
+          return 0;
+      }
+  }
+referenceSolution: |
+  public class Solution {
+      public static int countQueens(int n) {
+          return colocar(0, n, new boolean[n], new boolean[2 * n], new boolean[2 * n]);
+      }
+
+      private static int colocar(int fila, int n, boolean[] columnas, boolean[] diag, boolean[] anti) {
+          if (fila == n) {
+              return 1;
+          }
+          int total = 0;
+          for (int c = 0; c < n; c++) {
+              int d = fila - c + n;
+              int a = fila + c;
+              if (columnas[c] || diag[d] || anti[a]) {
+                  continue;
+              }
+              columnas[c] = true;
+              diag[d] = true;
+              anti[a] = true;
+              total += colocar(fila + 1, n, columnas, diag, anti);
+              columnas[c] = false;
+              diag[d] = false;
+              anti[a] = false;
+          }
+          return total;
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("n=1 tiene 1 solución")
+      void unaReina() {
+          assertEquals(1, Solution.countQueens(1));
+      }
+
+      @Test
+      @DisplayName("n=2 y n=3 no tienen solución")
+      void sinSolucion() {
+          assertEquals(0, Solution.countQueens(2));
+          assertEquals(0, Solution.countQueens(3));
+      }
+
+      @Test
+      @DisplayName("n=4 tiene 2 soluciones")
+      void cuatro() {
+          assertEquals(2, Solution.countQueens(4));
+      }
+
+      @Test
+      @DisplayName("n=5 tiene 10 soluciones")
+      void cinco() {
+          assertEquals(10, Solution.countQueens(5));
+      }
+
+      @Test
+      @DisplayName("n=6 tiene 4 soluciones")
+      void seis() {
+          assertEquals(4, Solution.countQueens(6));
+      }
+
+      @Test
+      @DisplayName("n=7 tiene 40 soluciones")
+      void siete() {
+          assertEquals(40, Solution.countQueens(7));
+      }
+
+      @Test
+      @DisplayName("n=8 tiene 92 soluciones")
+      void ocho() {
+          assertEquals(92, Solution.countQueens(8));
+      }
+  }
+complexityQuestion:
+  prompt: "¿Qué describe mejor la complejidad temporal del backtracking para N reinas?"
+  options: ["O(n)", "O(n²)", "O(n · n!) en el peor caso, muy podado en la práctica", "O(log n)"]
+  correctIndex: 2
+  explanation: "Hay a lo sumo n opciones en la primera fila, n-1 en la siguiente, etc., lo que da del orden de n! ramas; la poda por columnas y diagonales reduce mucho el trabajo real, pero sigue siendo factorial."

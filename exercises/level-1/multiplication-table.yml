@@ -1,0 +1,76 @@
+slug: multiplication-table
+level: 1
+topic: first-steps
+title: Tabla de multiplicar
+statement: |
+  Escribe un método que devuelva un arreglo de 10 posiciones con la tabla de multiplicar del número recibido.
+
+  La posición i (base 0) contiene number * (i + 1), es decir: [number * 1, number * 2, ..., number * 10].
+
+  Ejemplo:
+  - Entrada: number=3 -> Salida: [3, 6, 9, 12, 15, 18, 21, 24, 27, 30]
+  - Entrada: number=0 -> Salida: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+  - Entrada: number=-1 -> Salida: [-1, -2, -3, -4, -5, -6, -7, -8, -9, -10]
+
+  El arreglo devuelto siempre tiene 10 posiciones, incluso si number es 0 o negativo.
+methodSignature: "public static int[] multiplicationTable(int number)"
+className: Solution
+estimatedMinutes: 10
+difficulty: easy
+hints:
+  - "Crea un arreglo con new int[10]."
+  - "Recorre las posiciones del arreglo y en cada una guarda number * (i + 1)."
+  - "Ojo con el índice: la posición 0 corresponde a number * 1, no a number * 0."
+starterCode: |
+  public class Solution {
+      public static int[] multiplicationTable(int number) {
+          // Tu código aquí
+          return new int[0];
+      }
+  }
+referenceSolution: |
+  public class Solution {
+      public static int[] multiplicationTable(int number) {
+          int[] tabla = new int[10];
+          for (int i = 0; i < tabla.length; i++) {
+              tabla[i] = number * (i + 1);
+          }
+          return tabla;
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Genera la tabla de multiplicar del 3")
+      void tablaDelTres() {
+          assertArrayEquals(
+              new int[] {3, 6, 9, 12, 15, 18, 21, 24, 27, 30},
+              Solution.multiplicationTable(3));
+      }
+
+      @Test
+      @DisplayName("Genera una tabla de diez ceros cuando el número es 0")
+      void tablaDelCero() {
+          assertArrayEquals(new int[10], Solution.multiplicationTable(0));
+      }
+
+      @Test
+      @DisplayName("Genera la tabla con valores negativos")
+      void tablaNegativa() {
+          assertArrayEquals(
+              new int[] {-1, -2, -3, -4, -5, -6, -7, -8, -9, -10},
+              Solution.multiplicationTable(-1));
+      }
+
+      @Test
+      @DisplayName("Devuelve siempre un arreglo de diez posiciones")
+      void diezPosiciones() {
+          assertEquals(10, Solution.multiplicationTable(7).length);
+      }
+  }

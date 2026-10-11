@@ -1,0 +1,117 @@
+slug: join-uppercase
+level: 2
+topic: modern-java
+title: Unir en mayúsculas
+statement: |
+  Dada una lista de palabras, devuelve un único String con las palabras NO vacías convertidas a mayúsculas y separadas por ", " (coma y espacio). Resuélvelo con Streams.
+
+  Reglas:
+  - Se descartan los elementos null y los Strings vacíos (""). Un String con solo espacios NO se considera vacío y se conserva tal cual (en mayúsculas).
+  - Se conserva el orden original.
+  - Si no queda ninguna palabra, la lista es null o está vacía, devuelve "" (cadena vacía).
+
+  Ejemplo:
+  - Entrada: ["java", "", "stream", "api"] -> Salida: "JAVA, STREAM, API"
+  - Entrada: ["hola"] -> Salida: "HOLA"
+  - Entrada: ["", ""] -> Salida: ""
+methodSignature: "public static String joinUppercase(java.util.List<String> words)"
+className: Solution
+estimatedMinutes: 10
+difficulty: medium
+hints:
+  - "Filtra con w != null && !w.isEmpty() antes de transformar."
+  - "map(String::toUpperCase) convierte cada palabra."
+  - "Collectors.joining(\", \") une los elementos con el separador y devuelve \"\" si el stream está vacío."
+starterCode: |
+  public class Solution {
+
+      public static String joinUppercase(java.util.List<String> words) {
+          // Tu código aquí
+          return null;
+      }
+  }
+referenceSolution: |
+  public class Solution {
+
+      public static String joinUppercase(java.util.List<String> words) {
+          if (words == null) {
+              return "";
+          }
+          return words.stream()
+                  .filter(w -> w != null && !w.isEmpty())
+                  .map(String::toUpperCase)
+                  .collect(java.util.stream.Collectors.joining(", "));
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import java.util.ArrayList;
+  import java.util.Arrays;
+  import java.util.List;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Descarta vacíos, pasa a mayúsculas y une con coma y espacio")
+      void basico() {
+          assertEquals("JAVA, STREAM, API", Solution.joinUppercase(Arrays.asList("java", "", "stream", "api")));
+      }
+
+      @Test
+      @DisplayName("Una sola palabra no lleva separador")
+      void unaPalabra() {
+          assertEquals("HOLA", Solution.joinUppercase(Arrays.asList("hola")));
+      }
+
+      @Test
+      @DisplayName("Solo vacíos devuelve cadena vacía")
+      void soloVacios() {
+          assertEquals("", Solution.joinUppercase(Arrays.asList("", "")));
+      }
+
+      @Test
+      @DisplayName("Lista vacía o null devuelve cadena vacía")
+      void vacia() {
+          assertEquals("", Solution.joinUppercase(new ArrayList<>()));
+          assertEquals("", Solution.joinUppercase(null));
+      }
+
+      @Test
+      @DisplayName("Los elementos null se descartan")
+      void conNulls() {
+          assertEquals("A, B", Solution.joinUppercase(Arrays.asList(null, "a", null, "b")));
+      }
+
+      @Test
+      @DisplayName("Un String con espacios no se considera vacío")
+      void espacios() {
+          assertEquals("A,  , B", Solution.joinUppercase(Arrays.asList("a", " ", "b")));
+      }
+
+      @Test
+      @DisplayName("Mantiene el orden y maneja acentos")
+      void ordenYAcentos() {
+          assertEquals("ÁRBOL, CASA, ÑANDÚ", Solution.joinUppercase(Arrays.asList("árbol", "casa", "ñandú")));
+      }
+
+      @Test
+      @DisplayName("Lista grande")
+      void grande() {
+          List<String> in = new ArrayList<>();
+          for (int i = 0; i < 20000; i++) {
+              in.add(i % 2 == 0 ? "ab" : "");
+          }
+          String r = Solution.joinUppercase(in);
+          assertEquals(10000 * 2 + 9999 * 2, r.length());
+          assertTrue(r.startsWith("AB, AB"));
+      }
+  }
+complexityQuestion:
+  prompt: "Si hay n palabras de longitud acotada, ¿qué complejidad temporal tiene filtrar, pasar a mayúsculas y unir con joining?"
+  options: ["O(1)", "O(log n)", "O(n²)", "O(n)"]
+  correctIndex: 3
+  explanation: "Cada palabra se procesa una vez en una sola pasada y joining usa un StringBuilder, evitando el costo cuadrático de concatenar con +."

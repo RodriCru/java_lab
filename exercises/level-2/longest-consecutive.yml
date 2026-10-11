@@ -1,0 +1,125 @@
+slug: longest-consecutive
+level: 2
+topic: structures
+title: Secuencia consecutiva más larga
+statement: |
+  Dado un arreglo de enteros SIN ordenar, devuelve la longitud de la secuencia más larga de
+  números consecutivos (x, x+1, x+2, ...) que puede formarse con sus elementos, sin importar
+  el orden en que aparecen. Los duplicados no suman a la secuencia.
+
+  Ejemplo:
+  - Entrada: [100, 4, 200, 1, 3, 2] -> Salida: 4 (1, 2, 3, 4)
+  - Entrada: [0, 3, 7, 2, 5, 8, 4, 6, 0, 1] -> Salida: 9 (0 a 8)
+  - Entrada: [] -> Salida: 0
+
+  Si el arreglo es null o vacío, devuelve 0. Se espera una solución O(n), sin ordenar el arreglo.
+methodSignature: "public static int longestConsecutive(int[] numbers)"
+className: Solution
+estimatedMinutes: 25
+difficulty: hard
+hints:
+  - "Ordenar y recorrer funciona, pero cuesta O(n log n). El reto es lograr O(n)."
+  - "Mete todos los números en un Set. Un número x es el INICIO de una secuencia si x - 1 no está en el Set."
+  - "Solo desde cada inicio, cuenta hacia arriba (x+1, x+2...) mientras estén en el Set; cada elemento se visita una vez en total."
+starterCode: |
+  public class Solution {
+      public static int longestConsecutive(int[] numbers) {
+          // Tu código aquí
+          return 0;
+      }
+  }
+referenceSolution: |
+  import java.util.HashSet;
+  import java.util.Set;
+
+  public class Solution {
+      public static int longestConsecutive(int[] numbers) {
+          if (numbers == null || numbers.length == 0) {
+              return 0;
+          }
+          Set<Integer> conjunto = new HashSet<>();
+          for (int n : numbers) {
+              conjunto.add(n);
+          }
+          int mejor = 0;
+          for (int n : conjunto) {
+              if (!conjunto.contains(n - 1)) {
+                  int actual = n;
+                  int largo = 1;
+                  while (conjunto.contains(actual + 1)) {
+                      actual++;
+                      largo++;
+                  }
+                  mejor = Math.max(mejor, largo);
+              }
+          }
+          return mejor;
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Ejemplo básico [100, 4, 200, 1, 3, 2]")
+      void ejemploBasico() {
+          assertEquals(4, Solution.longestConsecutive(new int[] {100, 4, 200, 1, 3, 2}));
+      }
+
+      @Test
+      @DisplayName("Secuencia larga con duplicados")
+      void conDuplicados() {
+          assertEquals(9, Solution.longestConsecutive(new int[] {0, 3, 7, 2, 5, 8, 4, 6, 0, 1}));
+      }
+
+      @Test
+      @DisplayName("Arreglo vacío o null devuelve 0")
+      void vacioONulo() {
+          assertEquals(0, Solution.longestConsecutive(new int[0]));
+          assertEquals(0, Solution.longestConsecutive(null));
+      }
+
+      @Test
+      @DisplayName("Un solo elemento devuelve 1")
+      void unElemento() {
+          assertEquals(1, Solution.longestConsecutive(new int[] {42}));
+      }
+
+      @Test
+      @DisplayName("Sin consecutivos devuelve 1")
+      void sinConsecutivos() {
+          assertEquals(1, Solution.longestConsecutive(new int[] {10, 20, 30}));
+      }
+
+      @Test
+      @DisplayName("Funciona con negativos que cruzan el cero")
+      void negativos() {
+          assertEquals(5, Solution.longestConsecutive(new int[] {1, -2, 0, -1, 2, 50}));
+      }
+
+      @Test
+      @DisplayName("Todos los elementos iguales")
+      void todosIguales() {
+          assertEquals(1, Solution.longestConsecutive(new int[] {7, 7, 7, 7}));
+      }
+
+      @Test
+      @DisplayName("Funciona rápido con 200000 elementos desordenados")
+      void grande() {
+          int n = 200000;
+          int[] a = new int[n];
+          for (int i = 0; i < n; i++) {
+              a[i] = (int) (((long) i * 7919) % n);
+          }
+          assertEquals(n, Solution.longestConsecutive(a));
+      }
+  }
+complexityQuestion:
+  prompt: "¿Cuál es la complejidad temporal de la solución óptima con HashSet?"
+  options: ["O(n²)", "O(n log n)", "O(log n)", "O(n)"]
+  correctIndex: 3
+  explanation: "Solo se empieza a contar desde el inicio de cada secuencia (x - 1 ausente), así que cada elemento se recorre como máximo dos veces: O(n) total."

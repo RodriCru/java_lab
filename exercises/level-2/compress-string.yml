@@ -1,0 +1,108 @@
+slug: compress-string
+level: 2
+topic: strings
+title: "Comprimir cadena"
+statement: |
+  Comprime una cadena reemplazando cada racha de caracteres iguales consecutivos por el carácter seguido de la cantidad de repeticiones. Siempre se escribe la cantidad, incluso si es 1.
+
+  Ejemplos:
+  - "aaabcc" -> "a3b1c2"
+  - "abc" -> "a1b1c1"
+  - "zzzzzzzzzzzz" (12 z) -> "z12"
+  - "" -> ""
+
+  Si el texto es null o vacío, devuelve "".
+methodSignature: "public static String compress(String text)"
+className: Solution
+estimatedMinutes: 20
+difficulty: medium
+hints:
+  - "Recorre la cadena llevando el carácter actual y su contador."
+  - "Cuando el carácter cambia, agrega el anterior y su contador al resultado y reinicia."
+  - "Usa StringBuilder y no olvides agregar la última racha al terminar el bucle."
+starterCode: |
+  public class Solution {
+      public static String compress(String text) {
+          // Tu código aquí
+          return "";
+      }
+  }
+referenceSolution: |
+  public class Solution {
+      public static String compress(String text) {
+          if (text == null || text.isEmpty()) return "";
+          StringBuilder sb = new StringBuilder();
+          char actual = text.charAt(0);
+          int cuenta = 1;
+          for (int i = 1; i < text.length(); i++) {
+              char c = text.charAt(i);
+              if (c == actual) {
+                  cuenta++;
+              } else {
+                  sb.append(actual).append(cuenta);
+                  actual = c;
+                  cuenta = 1;
+              }
+          }
+          sb.append(actual).append(cuenta);
+          return sb.toString();
+      }
+  }
+tests: |
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+  import java.util.*;
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      @Test
+      @DisplayName("Ejemplo aaabcc")
+      void t0() {
+          assertEquals("a3b1c2", Solution.compress("aaabcc"));
+      }
+
+      @Test
+      @DisplayName("Sin repeticiones")
+      void t1() {
+          assertEquals("a1b1c1", Solution.compress("abc"));
+      }
+
+      @Test
+      @DisplayName("Contador de dos dígitos")
+      void t2() {
+          assertEquals("z12", Solution.compress("zzzzzzzzzzzz"));
+      }
+
+      @Test
+      @DisplayName("Cadena vacía y null")
+      void t3() {
+          assertEquals("", Solution.compress(""));
+          assertEquals("", Solution.compress(null));
+      }
+
+      @Test
+      @DisplayName("Un solo carácter")
+      void t4() {
+          assertEquals("x1", Solution.compress("x"));
+      }
+
+      @Test
+      @DisplayName("Rachas separadas del mismo carácter")
+      void t5() {
+          assertEquals("a2b1a2", Solution.compress("aabaa"));
+      }
+
+      @Test
+      @DisplayName("Entrada grande")
+      void t6() {
+          StringBuilder sb = new StringBuilder();
+          for (int i = 0; i < 100000; i++) sb.append('k');
+          assertEquals("k100000", Solution.compress(sb.toString()));
+      }
+  }
+complexityQuestion:
+  prompt: "¿Cuál es la complejidad temporal de tu solución óptima, en función de n?"
+  options: ["O(1)", "O(n)", "O(n log n)", "O(n²)"]
+  correctIndex: 1
+  explanation: "Se recorre la cadena una sola vez y StringBuilder agrega en tiempo amortizado constante."

@@ -1,0 +1,120 @@
+slug: towers-of-hanoi
+level: 1
+topic: recursion
+title: Torres de Hanoi
+statement: |
+  Escribe un método RECURSIVO que resuelva el rompecabezas de las Torres de Hanoi e
+  imprima cada movimiento con System.out.println.
+
+  Formato de salida:
+  - Cada movimiento se imprime en su propia línea con el formato origen -> destino;
+  - Para 2 discos desde A hacia C usando B como auxiliar la salida es exactamente:
+    A -> B;
+    A -> C;
+    B -> C;
+
+  Reglas del contrato:
+  - Si disks <= 0 no se imprime nada (salida vacía).
+  - Con n discos se imprimen exactamente 2^n - 1 líneas.
+  - Debes resolverlo con recursión: mueve n-1 discos al auxiliar, mueve el disco
+    grande al destino y vuelve a mover los n-1 discos del auxiliar al destino.
+
+  Ejemplo:
+  - Entrada: disks=2, from="A", to="C", auxiliary="B" -> Salida: "A -> B;" / "A -> C;" / "B -> C;"
+methodSignature: "public static void hanoi(int disks, String from, String to, String auxiliary)"
+className: Solution
+estimatedMinutes: 20
+difficulty: easy
+hints:
+  - "El caso base es cero discos: no hay nada que mover y no se imprime nada."
+  - "Mueve los n-1 discos superiores al auxiliar antes de mover el disco grande."
+  - "Después de mover el disco grande, mueve los n-1 discos del auxiliar al destino."
+starterCode: |
+  public class Solution {
+      public static void hanoi(int disks, String from, String to, String auxiliary) {
+          // Tu código aquí
+      }
+  }
+referenceSolution: |
+  public class Solution {
+      public static void hanoi(int disks, String from, String to, String auxiliary) {
+          if (disks <= 0) {
+              return;
+          }
+          hanoi(disks - 1, from, auxiliary, to);
+          System.out.println(from + " -> " + to + ";");
+          hanoi(disks - 1, auxiliary, to, from);
+      }
+  }
+tests: |
+  import java.io.ByteArrayOutputStream;
+  import java.io.PrintStream;
+
+  import org.junit.jupiter.api.AfterEach;
+  import org.junit.jupiter.api.DisplayName;
+  import org.junit.jupiter.api.Test;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  class SolutionTest {
+
+      private final PrintStream originalOut = System.out;
+
+      @AfterEach
+      void restaurarSalida() {
+          System.setOut(originalOut);
+      }
+
+      private String capturarSalida(int disks, String from, String to, String auxiliary) {
+          ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+          System.setOut(new PrintStream(buffer));
+          try {
+              Solution.hanoi(disks, from, to, auxiliary);
+          } finally {
+              System.setOut(originalOut);
+          }
+          return buffer.toString();
+      }
+
+      @Test
+      @DisplayName("Resuelve dos discos con la secuencia exacta esperada")
+      void dosDiscos() {
+          String esperado = "A -> B;" + "\n" + "A -> C;" + "\n" + "B -> C;" + "\n";
+          assertEquals(esperado, capturarSalida(2, "A", "C", "B"));
+      }
+
+      @Test
+      @DisplayName("Resuelve un solo disco moviéndolo directo al destino")
+      void unDisco() {
+          String esperado = "A -> C;" + "\n";
+          assertEquals(esperado, capturarSalida(1, "A", "C", "B"));
+      }
+
+      @Test
+      @DisplayName("Con tres discos imprime siete movimientos")
+      void tresDiscosSieteLineas() {
+          String salida = capturarSalida(3, "A", "C", "B");
+          String[] lineas = salida.split("\n");
+          assertEquals(7, lineas.length);
+      }
+
+      @Test
+      @DisplayName("Con n discos imprime 2^n menos 1 movimientos")
+      void cantidadDeMovimientos() {
+          String salida = capturarSalida(4, "A", "C", "B");
+          String[] lineas = salida.split("\n");
+          assertEquals((1 << 4) - 1, lineas.length);
+      }
+
+      @Test
+      @DisplayName("No imprime nada cuando los discos son cero")
+      void ceroDiscos() {
+          assertEquals("", capturarSalida(0, "A", "C", "B"));
+      }
+
+      @Test
+      @DisplayName("No imprime nada cuando los discos son negativos")
+      void discosNegativos() {
+          assertEquals("", capturarSalida(-2, "A", "C", "B"));
+      }
+  }
