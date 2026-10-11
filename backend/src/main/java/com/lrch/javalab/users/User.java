@@ -2,6 +2,8 @@ package com.lrch.javalab.users;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -41,6 +43,11 @@ public class User {
 
     @Column(name = "is_active", nullable = false)
     private boolean active = true;
+
+    /** El default en la columna permite que `ddl-auto: update` agregue el campo a una base con usuarios. */
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, columnDefinition = "varchar(20) default 'USER'")
+    private UserRole role = UserRole.USER;
 
     protected User() {
     }
@@ -95,6 +102,22 @@ public class User {
 
     public boolean isActive() {
         return active;
+    }
+
+    public UserRole getRole() {
+        return role;
+    }
+
+    public void setRole(UserRole role) {
+        this.role = role;
+    }
+
+    public boolean isSuperAdmin() {
+        return role == UserRole.SUPER_ADMIN;
+    }
+
+    public void activate() {
+        this.active = true;
     }
 
     /** Borrado logico. */

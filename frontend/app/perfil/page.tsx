@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { CambiarContrasena } from "@/components/CambiarContrasena";
 import { CambiarCorreo } from "@/components/CambiarCorreo";
 import { Estado, EstadoCargando } from "@/components/Estado";
 import { api, ApiError } from "@/lib/api";
@@ -78,8 +79,9 @@ export default function PaginaPerfil() {
             <dd className="mt-1 text-sm text-zinc-900">{formatearFecha(usuario.createdAt)}</dd>
           </div>
         </dl>
-        <div className="mt-4">
+        <div className="mt-4 space-y-3">
           <CambiarCorreo correoActual={usuario.email} onCambiado={setUsuario} />
+          <CambiarContrasena />
         </div>
       </section>
 

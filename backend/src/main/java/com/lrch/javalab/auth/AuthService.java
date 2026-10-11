@@ -16,8 +16,11 @@ public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final MailService mailService;
+    private final AuthProperties properties;
 
-    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder, MailService mailService) {
+    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder, MailService mailService,
+                       AuthProperties properties) {
+        this.properties = properties;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.mailService = mailService;
@@ -25,6 +28,9 @@ public class AuthService {
 
     @Transactional
     public User registrar(RegisterRequest request) {
+        if (!properties.isRegistrationEnabled()) {
+            throw ApiException.forbidden("REGISTRO_CERRADO", "El registro de cuentas nuevas está cerrado.");
+        }
         String email = normalizar(request.email());
         if (userRepository.existsByEmailIgnoreCase(email)) {
             throw ApiException.conflict("EMAIL_YA_REGISTRADO", "Ese correo ya tiene una cuenta.");
@@ -54,6 +60,20 @@ public class AuthService {
 
         user.setLastLoginAt(System.currentTimeMillis());
         return userRepository.save(user);
+    }
+
+    @Transactional
+    public void cambiarContrasena(Long userId, ChangePasswordRequest request) {
+        User user = actual(userId);
+        if (!passwordEncoder.matches(request.currentPassword(), user.getPasswordHash())) {
+            throw ApiException.badRequest("CONTRASENA_INCORRECTA", "La contraseña actual no es correcta.");
+        }
+        user.setPasswordHash(passwordEncoder.encode(request.newPassword()));
+        userRepository.save(user);
+    }
+
+    public boolean registroAbierto() {
+        return properties.isRegistrationEnabled();
     }
 
     @Transactional(readOnly = true)

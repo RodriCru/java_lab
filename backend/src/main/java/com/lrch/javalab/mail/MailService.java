@@ -37,6 +37,10 @@ public class MailService {
         enviar(EmailTemplates.bienvenida(user.getEmail(), user.getDisplayName(), user.getEmail()));
     }
 
+    public void enviarInvitacion(User user, String passwordTemporal) {
+        enviar(EmailTemplates.invitacion(user.getEmail(), user.getDisplayName(), user.getEmail(), passwordTemporal));
+    }
+
     public void enviarCodigo(String destino, String nombre, CodePurpose proposito, String codigo) {
         enviar(proposito == CodePurpose.PASSWORD_RESET
                 ? EmailTemplates.codigoRecuperacion(destino, nombre, codigo)

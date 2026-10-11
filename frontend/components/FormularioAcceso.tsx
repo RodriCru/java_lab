@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { api, ApiError } from "@/lib/api";
 
 type Props = {
@@ -19,6 +19,28 @@ export function FormularioAcceso({ modo, destino }: Props) {
   const [displayName, setDisplayName] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [enviando, setEnviando] = useState(false);
+  // null mientras se consulta; false = las cuentas se crean solo por invitacion.
+  const [registroAbierto, setRegistroAbierto] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    let activo = true;
+    api
+      .estadoDelRegistro()
+      .then((respuesta) => {
+        if (activo) {
+          setRegistroAbierto(respuesta.data.enabled);
+        }
+      })
+      .catch(() => {
+        // Si no se puede consultar se deja abierto: el backend decide al enviar.
+        if (activo) {
+          setRegistroAbierto(true);
+        }
+      });
+    return () => {
+      activo = false;
+    };
+  }, []);
 
   async function manejarEnvio(evento: React.FormEvent<HTMLFormElement>) {
     evento.preventDefault();
@@ -42,6 +64,23 @@ export function FormularioAcceso({ modo, destino }: Props) {
     } finally {
       setEnviando(false);
     }
+  }
+
+  if (esRegistro && registroAbierto === false) {
+    return (
+      <div className="mx-auto w-full max-w-md">
+        <div className="rounded-xl border border-zinc-200 bg-white p-8 text-center">
+          <h1 className="text-2xl font-bold text-zinc-900">Registro por invitación</h1>
+          <p className="mt-2 text-sm text-zinc-500">
+            Las cuentas nuevas se crean por invitación. Pide a quien administra el laboratorio que te invite y
+            recibirás un correo con tus datos de acceso.
+          </p>
+          <Link href="/login" className="mt-6 inline-block text-sm font-medium text-indigo-600 hover:underline">
+            Ir a iniciar sesión
+          </Link>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -128,12 +167,18 @@ export function FormularioAcceso({ modo, destino }: Props) {
           </button>
         </form>
 
-        <p className="mt-6 text-center text-sm text-zinc-600">
-          {esRegistro ? "¿Ya tienes cuenta? " : "¿Aún no tienes cuenta? "}
-          <Link href={esRegistro ? "/login" : "/registro"} className="font-medium text-indigo-600 hover:underline">
-            {esRegistro ? "Inicia sesión" : "Regístrate"}
-          </Link>
-        </p>
+        {!esRegistro && registroAbierto === false ? (
+          <p className="mt-6 text-center text-sm text-zinc-500">
+            Las cuentas se crean por invitación. Si te invitaron, entra con la contraseña que llegó a tu correo.
+          </p>
+        ) : (
+          <p className="mt-6 text-center text-sm text-zinc-600">
+            {esRegistro ? "¿Ya tienes cuenta? " : "¿Aún no tienes cuenta? "}
+            <Link href={esRegistro ? "/login" : "/registro"} className="font-medium text-indigo-600 hover:underline">
+              {esRegistro ? "Inicia sesión" : "Regístrate"}
+            </Link>
+          </p>
+        )}
       </div>
     </div>
   );

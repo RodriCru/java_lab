@@ -1,4 +1,5 @@
 import type {
+  AdminUser,
   Attempt,
   Envelope,
   ExerciseDetail,
@@ -113,6 +114,22 @@ export const api = {
     enviar<User>("/auth/login", datos),
 
   cerrarSesion: () => enviar<null>("/auth/logout", {}),
+
+  estadoDelRegistro: () => obtener<{ enabled: boolean }>("/auth/registration-status"),
+
+  cambiarContrasena: (datos: { currentPassword: string; newPassword: string }) =>
+    enviar<null>("/auth/me/password", datos),
+
+  // --- Administracion (solo SUPER_ADMIN) ---
+  adminUsuarios: () => obtener<AdminUser[]>("/admin/users"),
+
+  adminInvitar: (datos: { email: string; displayName?: string }) =>
+    enviar<AdminUser>("/admin/invitations", datos),
+
+  adminReenviar: (id: number) => enviar<AdminUser>(`/admin/users/${id}/resend-invitation`, {}),
+
+  adminCambiarEstado: (id: number, active: boolean) =>
+    enviar<AdminUser>(`/admin/users/${id}/active`, { active }),
 
   usuarioActual: () => obtener<User>("/auth/me"),
 

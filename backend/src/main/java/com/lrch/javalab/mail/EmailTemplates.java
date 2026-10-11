@@ -26,6 +26,22 @@ public final class EmailTemplates {
         return new EmailMessage(to, "¡Bienvenido a Java Lab!", pagina("¡Bienvenido a Java Lab!", cuerpo), texto);
     }
 
+    public static EmailMessage invitacion(String to, String nombre, String correo, String passwordTemporal) {
+        String cuerpo = parrafo("Hola <strong>" + escapar(nombre) + "</strong>, te invitaron a practicar Java en "
+                + "<strong>Java Lab</strong>. Entra con estos datos:")
+                + caja("Tu correo", escapar(correo), "font-size:18px;font-weight:600;")
+                + caja("Contraseña temporal", escapar(passwordTemporal), "font-family:'SFMono-Regular',Menlo,Consolas,"
+                + "monospace;font-size:26px;font-weight:700;letter-spacing:2px;")
+                + parrafo("Es una contraseña temporal: <strong>puedes cambiarla</strong> cuando quieras desde "
+                + "<em>Perfil → Cambiar contraseña</em>. Si algún día la olvidas, usa «¿Olvidaste tu contraseña?» "
+                + "y te enviamos un código de 6 dígitos a este correo.");
+        String texto = "Hola " + nombre + ", te invitaron a Java Lab.\n\nTu correo: " + correo
+                + "\nContraseña temporal: " + passwordTemporal
+                + "\n\nPuedes cambiarla cuando quieras desde Perfil → Cambiar contraseña. "
+                + "Si la olvidas, usa «¿Olvidaste tu contraseña?» y te enviamos un código a este correo.";
+        return new EmailMessage(to, "Te invitaron a Java Lab", pagina("Te invitaron a Java Lab", cuerpo), texto);
+    }
+
     public static EmailMessage codigoRecuperacion(String to, String nombre, String codigo) {
         return codigo(to, nombre, codigo, "Tu código para recuperar la contraseña",
                 "Recibimos una solicitud para restablecer tu contraseña. Escribe este código en Java Lab:",

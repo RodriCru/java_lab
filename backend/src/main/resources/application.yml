@@ -1,5 +1,6 @@
 server:
-  port: 8080
+  # Render asigna el puerto en PORT.
+  port: ${PORT:8080}
   # Las cookies de otras apps en localhost viajan en cada petición y pueden pasar de 8 KB
   max-http-request-header-size: 32KB
 
@@ -32,6 +33,10 @@ javalab:
     cookie-name: javalab_token
     # En produccion debe ser true: la cookie de sesion solo viaja por HTTPS.
     cookie-secure: ${JAVALAB_COOKIE_SECURE:false}
+    # false cierra el registro de cuentas nuevas (el login de las existentes sigue funcionando).
+    registration-enabled: ${JAVALAB_REGISTRATION_ENABLED:true}
+    # Correo que se promueve a SUPER_ADMIN al arrancar (si la cuenta ya existe). Opcional.
+    super-admin-email: ${JAVALAB_SUPER_ADMIN_EMAIL:}
     # Origenes permitidos para el frontend (separados por coma).
     allowed-origins: ${JAVALAB_ALLOWED_ORIGINS:http://localhost:3000}
   mail:

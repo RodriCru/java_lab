@@ -23,6 +23,8 @@ export function BarraNavegacion() {
   const [saliendo, setSaliendo] = useState(false);
 
   const esPublica = RUTAS_PUBLICAS.some((ruta) => pathname.startsWith(ruta));
+  const enlaces =
+    usuario?.role === "SUPER_ADMIN" ? [...ENLACES, { href: "/admin", etiqueta: "Admin" }] : ENLACES;
 
   useEffect(() => {
     if (esPublica) {
@@ -76,7 +78,7 @@ export function BarraNavegacion() {
             Java Practice Lab
           </Link>
           <ul className="hidden items-center gap-1 sm:flex">
-            {ENLACES.map((enlace) => {
+            {enlaces.map((enlace) => {
               const activo =
                 enlace.href === "/" ? pathname === "/" : pathname.startsWith(enlace.href);
               return (

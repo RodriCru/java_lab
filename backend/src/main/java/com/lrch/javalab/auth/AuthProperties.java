@@ -10,7 +10,9 @@ public record AuthProperties(
         long jwtExpirationMinutes,
         String cookieName,
         String allowedOrigins,
-        Boolean cookieSecure) {
+        Boolean cookieSecure,
+        Boolean registrationEnabled,
+        String superAdminEmail) {
 
     public AuthProperties {
         if (cookieName == null || cookieName.isBlank()) {
@@ -27,6 +29,11 @@ public record AuthProperties(
     /** En produccion debe ser true (la cookie solo viaja por HTTPS). */
     public boolean isCookieSecure() {
         return Boolean.TRUE.equals(cookieSecure);
+    }
+
+    /** Si es false, nadie puede crear cuentas nuevas (el login de las existentes sigue funcionando). */
+    public boolean isRegistrationEnabled() {
+        return registrationEnabled == null || registrationEnabled;
     }
 
     public List<String> originList() {

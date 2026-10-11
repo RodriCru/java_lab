@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.Duration;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/auth")
@@ -63,6 +64,18 @@ public class AuthController {
     public ApiResponse<UserResponse> actual(@AuthenticationPrincipal AuthenticatedUser principal) {
         User user = authService.actual(principal.id());
         return ApiResponse.ok(UserResponse.from(user));
+    }
+
+    @GetMapping("/registration-status")
+    public ApiResponse<Map<String, Boolean>> estadoDelRegistro() {
+        return ApiResponse.ok(Map.of("enabled", authService.registroAbierto()));
+    }
+
+    @PostMapping("/me/password")
+    public ApiResponse<Void> cambiarContrasena(@AuthenticationPrincipal AuthenticatedUser principal,
+                                               @Valid @RequestBody ChangePasswordRequest request) {
+        authService.cambiarContrasena(principal.id(), request);
+        return ApiResponse.ok(null, "Contraseña actualizada.");
     }
 
     @PostMapping("/forgot-password")

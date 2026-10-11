@@ -18,11 +18,25 @@ export type Envelope<T> = {
   pagination?: Pagination;
 };
 
+export type Rol = "USER" | "SUPER_ADMIN";
+
 export type User = {
   id: number;
   email: string;
   displayName: string;
   createdAt: string;
+  role: Rol;
+};
+
+/** Fila del panel de administracion. */
+export type AdminUser = {
+  id: number;
+  email: string;
+  displayName: string;
+  role: Rol;
+  active: boolean;
+  createdAt: string;
+  lastLoginAt?: number;
 };
 
 export type LevelProgress = {
