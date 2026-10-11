@@ -12,7 +12,9 @@ public record RunnerProperties(
         long timeoutSeconds,
         String memory,
         String cpus,
-        String junitJar) {
+        String junitJar,
+        int maxConcurrent,
+        long queueWaitSeconds) {
 
     public RunnerProperties {
         if (image == null || image.isBlank()) {
@@ -26,6 +28,12 @@ public record RunnerProperties(
         }
         if (cpus == null || cpus.isBlank()) {
             cpus = "0.5";
+        }
+        if (maxConcurrent <= 0) {
+            maxConcurrent = 1;
+        }
+        if (queueWaitSeconds <= 0) {
+            queueWaitSeconds = 60;
         }
         if (junitJar == null || junitJar.isBlank()) {
             junitJar = "../runner/junit-platform-console-standalone.jar";

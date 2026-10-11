@@ -222,6 +222,10 @@ Root Directory vacío, Health Check Path = `/api/v1/health`. Variables:
 | `JAVALAB_RESEND_API_KEY` / `JAVALAB_MAIL_FROM` | los de Resend |
 | `JAVALAB_SUPER_ADMIN_EMAIL` | tu correo: esa cuenta se promueve a SUPER_ADMIN al arrancar |
 
+Los envíos se ejecutan **de uno en uno** (`JAVALAB_RUNNER_MAX_CONCURRENT=1`): cada compilación y ejecución de Java usa
+~150–200 MB y el plan gratis de Render tiene 512 MB. Si hay otros en curso, el siguiente espera su turno hasta
+60 s; pasado ese tiempo responde 429 `SERVIDOR_OCUPADO`.
+
 El `Dockerfile` ya fija `SPRING_PROFILES_ACTIVE=prod` y `JAVALAB_RUNNER_USE_DOCKER=false`. En producción el
 **registro está cerrado por defecto** (`JAVALAB_REGISTRATION_ENABLED=false`): las cuentas se crean por invitación. El plan gratis de
 Render se duerme tras ~15 minutos sin tráfico: el primer acceso tarda cerca de un minuto.
