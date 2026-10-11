@@ -1,0 +1,300 @@
+questions:
+  - id: spring-boot-01
+    topic: spring-boot
+    difficulty: easy
+    question: "¿Qué anotaciones combina @SpringBootApplication?"
+    options:
+      - "@SpringBootConfiguration, @EnableAutoConfiguration y @ComponentScan"
+      - "@Configuration, @RestController y @EnableWebMvc"
+      - "@Component, @Service y @Repository"
+      - "@EnableJpaRepositories, @EntityScan y @Transactional"
+    correctIndex: 0
+    explanation: "@SpringBootApplication agrupa la configuración (@SpringBootConfiguration, que incluye @Configuration), la autoconfiguración y el escaneo de componentes del paquete de la clase."
+
+  - id: spring-boot-02
+    topic: spring-boot
+    difficulty: easy
+    question: "¿Qué es un starter de Spring Boot, como spring-boot-starter-web?"
+    options:
+      - "Una clase que arranca el servidor en un puerto aleatorio"
+      - "Un conjunto de dependencias ya compatibles entre sí, agrupadas en una sola, para una funcionalidad concreta"
+      - "Un plugin de Maven que genera el proyecto desde cero"
+      - "Una anotación que activa el modo de desarrollo"
+    correctIndex: 1
+    explanation: "Un starter es un descriptor de dependencias con versiones coherentes. Junto con la autoconfiguración evita tener que declarar y configurar cada librería a mano."
+
+  - id: spring-boot-03
+    topic: spring-boot
+    difficulty: easy
+    question: "¿Qué equivale a @RestController?"
+    options:
+      - "@Service más @ResponseStatus"
+      - "@Component más @RequestMapping"
+      - "@Controller más @ResponseBody"
+      - "@Configuration más @Bean"
+    correctIndex: 2
+    explanation: "@RestController es @Controller con @ResponseBody en todos los métodos, por lo que el valor devuelto se serializa (normalmente a JSON) en lugar de resolverse como una vista."
+
+  - id: spring-boot-04
+    topic: spring-boot
+    difficulty: easy
+    question: "Un POST crea correctamente un recurso nuevo. ¿Qué código HTTP es el más adecuado?"
+    options:
+      - "200 OK"
+      - "204 No Content"
+      - "202 Accepted"
+      - "201 Created, idealmente con la cabecera Location"
+    correctIndex: 3
+    explanation: "201 indica que el recurso fue creado y suele acompañarse de Location con su URI. 202 se usa cuando el procesamiento será asíncrono."
+
+  - id: spring-boot-05
+    topic: spring-boot
+    difficulty: easy
+    question: "En GET /usuarios/15?activo=true, ¿cómo se leen el 15 y el true en un controlador?"
+    options:
+      - "15 con @PathVariable y true con @RequestParam"
+      - "15 con @RequestParam y true con @PathVariable"
+      - "Ambos con @RequestBody"
+      - "Ambos con @PathVariable"
+    correctIndex: 0
+    explanation: "@PathVariable extrae segmentos de la ruta (/usuarios/{id}) y @RequestParam los parámetros de la query string (?activo=true)."
+
+  - id: spring-boot-06
+    topic: spring-boot
+    difficulty: easy
+    question: "¿Qué servidor web embebido usa spring-boot-starter-web por defecto?"
+    options:
+      - "Jetty"
+      - "Tomcat"
+      - "Undertow"
+      - "Netty"
+    correctIndex: 1
+    explanation: "Tomcat es el servidor por defecto de spring-boot-starter-web. Se puede cambiar excluyéndolo y añadiendo el starter de Jetty o Undertow."
+
+  - id: spring-boot-07
+    topic: spring-boot
+    difficulty: easy
+    question: "¿Para qué sirve @RequestBody en un parámetro de un método de controlador?"
+    options:
+      - "Para leer una cabecera HTTP"
+      - "Para leer un parámetro de la URL"
+      - "Para deserializar el cuerpo de la petición (por ejemplo, JSON) a un objeto Java"
+      - "Para devolver el objeto como respuesta"
+    correctIndex: 2
+    explanation: "@RequestBody usa un HttpMessageConverter (Jackson para JSON) para convertir el cuerpo de la petición en el objeto del parámetro."
+
+  - id: spring-boot-08
+    topic: spring-boot
+    difficulty: easy
+    question: "¿Cuál es la diferencia entre autenticación y autorización?"
+    options:
+      - "La autenticación decide qué puede hacer un usuario y la autorización verifica quién es"
+      - "Son sinónimos en Spring Security"
+      - "La autenticación cifra los datos y la autorización los firma"
+      - "La autenticación verifica quién eres; la autorización decide qué puedes hacer"
+    correctIndex: 3
+    explanation: "Primero se autentica (identidad: usuario y contraseña, token) y después se autoriza (permisos o roles sobre un recurso)."
+
+  - id: spring-boot-09
+    topic: spring-boot
+    difficulty: medium
+    question: "¿Qué métodos HTTP son idempotentes según la especificación?"
+    options:
+      - "GET, PUT y DELETE (entre otros), pero no POST"
+      - "Solo GET"
+      - "POST y PATCH siempre lo son"
+      - "Ninguno, la idempotencia depende del servidor"
+    correctIndex: 0
+    explanation: "Idempotente significa que repetir la petición deja el mismo estado en el servidor. GET, PUT y DELETE lo son por definición; POST no, y PATCH no está garantizado."
+
+  - id: spring-boot-10
+    topic: spring-boot
+    difficulty: medium
+    question: "Un DTO recibido con @Valid @RequestBody tiene un campo @NotBlank que llega vacío. ¿Qué ocurre por defecto?"
+    options:
+      - "Se ejecuta el método con el campo vacío"
+      - "Se lanza MethodArgumentNotValidException y la respuesta por defecto es 400 Bad Request"
+      - "Se lanza NullPointerException y devuelve 500"
+      - "Devuelve 404 Not Found"
+    correctIndex: 1
+    explanation: "La validación ocurre antes de ejecutar el método; si falla se lanza MethodArgumentNotValidException, resuelta como 400. Se suele personalizar con @ControllerAdvice."
+
+  - id: spring-boot-11
+    topic: spring-boot
+    difficulty: medium
+    question: "Una propiedad está en application.properties y también se pasa como --server.port=9090 al arrancar. ¿Cuál gana?"
+    options:
+      - "La de application.properties, porque se carga primero"
+      - "La que tenga el valor numérico más alto"
+      - "El argumento de línea de comandos, que tiene mayor precedencia que los archivos de configuración"
+      - "Spring lanza un error por propiedad duplicada"
+    correctIndex: 2
+    explanation: "Spring Boot tiene un orden de precedencia donde los argumentos de línea de comandos y las variables de entorno superan a application.properties."
+
+  - id: spring-boot-12
+    topic: spring-boot
+    difficulty: medium
+    question: "¿Qué ventaja principal tiene @ConfigurationProperties frente a varios @Value?"
+    options:
+      - "Es más rápido en ejecución"
+      - "Permite cambiar propiedades sin reiniciar la aplicación"
+      - "Solo funciona con archivos YAML"
+      - "Enlaza un grupo de propiedades con prefijo a un objeto tipado, con validación y relaxed binding"
+    correctIndex: 3
+    explanation: "@ConfigurationProperties agrupa propiedades relacionadas en una clase y soporta conversión de tipos, validación y relaxed binding. No hace recarga en caliente por sí sola."
+
+  - id: spring-boot-13
+    topic: spring-boot
+    difficulty: medium
+    question: "¿Qué diferencia hay entre un Filter de servlet y un HandlerInterceptor de Spring MVC?"
+    options:
+      - "El Filter actúa a nivel del contenedor de servlets, antes del DispatcherServlet; el Interceptor actúa dentro de Spring MVC y conoce el handler que atenderá la petición"
+      - "El Interceptor se ejecuta antes que cualquier Filter"
+      - "El Filter solo funciona con respuestas y el Interceptor solo con peticiones"
+      - "No hay diferencia, son nombres alternativos"
+    correctIndex: 0
+    explanation: "Los filtros envuelven toda la petición, incluida Spring Security. Los interceptors (preHandle, postHandle, afterCompletion) corren tras el DispatcherServlet y pueden inspeccionar el controlador."
+
+  - id: spring-boot-14
+    topic: spring-boot
+    difficulty: medium
+    question: "¿Para qué se usa @RestControllerAdvice junto con @ExceptionHandler?"
+    options:
+      - "Para registrar filtros globales de seguridad"
+      - "Para centralizar el manejo de excepciones de todos los controladores y devolver respuestas de error coherentes"
+      - "Para validar los DTO antes de llegar al controlador"
+      - "Para capturar solo excepciones de la capa de base de datos"
+    correctIndex: 1
+    explanation: "Permite definir en un solo lugar cómo se traducen excepciones a respuestas HTTP (código y cuerpo), evitando bloques try/catch repetidos en cada controlador."
+
+  - id: spring-boot-15
+    topic: spring-boot
+    difficulty: medium
+    question: "Arrancas con --spring.profiles.active=prod. ¿Qué archivos se cargan?"
+    options:
+      - "Solo application-prod.yml"
+      - "Solo application.yml"
+      - "application.yml y también application-prod.yml, cuyos valores sobrescriben a los comunes"
+      - "Todos los application-*.yml existentes"
+    correctIndex: 2
+    explanation: "El archivo base siempre se carga y el específico del perfil activo se superpone, sobrescribiendo las claves repetidas."
+
+  - id: spring-boot-16
+    topic: spring-boot
+    difficulty: medium
+    question: "En Spring Boot 3, ¿qué endpoints de Actuator se exponen por HTTP sin configuración adicional?"
+    options:
+      - "Todos, incluidos env y beans"
+      - "Ninguno hasta activar management.endpoints.enabled"
+      - "Solo metrics y info"
+      - "Solo health"
+    correctIndex: 3
+    explanation: "Por seguridad, por HTTP solo se expone /actuator/health. Los demás se habilitan con management.endpoints.web.exposure.include."
+
+  - id: spring-boot-17
+    topic: spring-boot
+    difficulty: medium
+    question: "Defines tu propio bean DataSource en la aplicación. ¿Qué pasa con el DataSource que autoconfigura Spring Boot?"
+    options:
+      - "No se crea, porque las autoconfiguraciones se retiran cuando existe un bean propio (@ConditionalOnMissingBean)"
+      - "Se crean ambos y falla con NoUniqueBeanDefinitionException"
+      - "Se crea el de Spring Boot y se ignora el tuyo"
+      - "Hay que excluir la autoconfiguración con una anotación obligatoriamente"
+    correctIndex: 0
+    explanation: "Las autoconfiguraciones suelen llevar @ConditionalOnMissingBean, por lo que ceden ante un bean definido por el usuario."
+
+  - id: spring-boot-18
+    topic: spring-boot
+    difficulty: medium
+    question: "¿Cuál es la diferencia entre PUT y PATCH en una API REST?"
+    options:
+      - "PUT es para consultas y PATCH para crear"
+      - "PUT reemplaza el recurso completo; PATCH aplica una modificación parcial"
+      - "PUT no es idempotente y PATCH sí"
+      - "No hay diferencia semántica"
+    correctIndex: 1
+    explanation: "PUT envía la representación completa del recurso y es idempotente; PATCH envía solo los cambios."
+
+  - id: spring-boot-19
+    topic: spring-boot
+    difficulty: medium
+    question: "¿Cuál afirmación sobre un JWT firmado (JWS) es correcta?"
+    options:
+      - "El payload está cifrado, así que es seguro guardar contraseñas en él"
+      - "El servidor debe guardar cada token emitido para poder validarlo"
+      - "El payload solo está codificado en Base64URL: cualquiera puede leerlo, pero no modificarlo sin invalidar la firma"
+      - "Una vez emitido, un JWT se puede revocar siempre al instante sin ninguna infraestructura"
+    correctIndex: 2
+    explanation: "Un JWS garantiza integridad, no confidencialidad. Por eso no debe contener datos sensibles. La revocación inmediata requiere mecanismos extra, como una lista de bloqueo."
+
+  - id: spring-boot-20
+    topic: spring-boot
+    difficulty: hard
+    question: "Una API stateless envía el JWT en la cabecera Authorization: Bearer. ¿Por qué suele poder desactivarse la protección CSRF?"
+    options:
+      - "Porque los JWT cifran la petición completa"
+      - "Porque CSRF solo afecta a las peticiones GET"
+      - "Porque Spring Security no soporta CSRF en APIs REST"
+      - "Porque el navegador no adjunta esa cabecera automáticamente en peticiones cross-site, a diferencia de las cookies"
+    correctIndex: 3
+    explanation: "CSRF explota que el navegador envía cookies de forma automática. Una cabecera Authorization puesta por el código no viaja sola. Si el JWT va en cookie, la protección vuelve a ser relevante."
+
+  - id: spring-boot-21
+    topic: spring-boot
+    difficulty: hard
+    question: "En Spring Boot 3 (Spring Security 6), ¿cómo se configura la seguridad HTTP?"
+    options:
+      - "Declarando un bean SecurityFilterChain que recibe un HttpSecurity"
+      - "Extendiendo WebSecurityConfigurerAdapter"
+      - "Con el archivo security.xml en el classpath"
+      - "Con la anotación @EnableSecurity en la clase principal"
+    correctIndex: 0
+    explanation: "WebSecurityConfigurerAdapter fue deprecado en Spring Security 5.7 y eliminado en la versión 6. Ahora se declara un bean SecurityFilterChain."
+
+  - id: spring-boot-22
+    topic: spring-boot
+    difficulty: hard
+    question: "¿Qué cambio de plataforma introdujo Spring Boot 3 que rompe código de versiones anteriores?"
+    options:
+      - "Requiere Java 8 como máximo"
+      - "Requiere Java 17 como mínimo y migra de javax.* a jakarta.* (por ejemplo, jakarta.persistence)"
+      - "Elimina el soporte de Maven y exige Gradle"
+      - "Sustituye Jackson por Gson como biblioteca JSON"
+    correctIndex: 1
+    explanation: "Spring Boot 3 se basa en Spring Framework 6 y Jakarta EE 9+, por lo que los imports javax.persistence, javax.servlet y javax.validation pasan a jakarta.*. Java 17 es el mínimo."
+
+  - id: spring-boot-23
+    topic: spring-boot
+    difficulty: hard
+    question: "Un DTO tiene un campo direccion de otro tipo con restricciones @NotBlank. Recibes el DTO con @Valid @RequestBody, pero esas restricciones internas no se comprueban. ¿Por qué?"
+    options:
+      - "Porque las anotaciones de validación solo funcionan en campos String"
+      - "Porque @Valid no admite objetos anidados en Spring Boot 3"
+      - "Porque la validación no se propaga a objetos anidados salvo que el campo también lleve @Valid"
+      - "Porque hay que usar @Validated en lugar de @Valid, siempre"
+    correctIndex: 2
+    explanation: "Bean Validation solo cascada a propiedades marcadas con @Valid. Sin esa anotación en el campo, el objeto anidado no se valida."
+
+  - id: spring-boot-24
+    topic: spring-boot
+    difficulty: hard
+    question: "En Spring Boot 3, ¿dónde se registran las clases de autoconfiguración de una librería propia?"
+    options:
+      - "En META-INF/spring.factories bajo la clave EnableAutoConfiguration, igual que en Boot 2.7"
+      - "En un archivo application.properties de la librería"
+      - "En un método main con SpringApplication.addAutoConfiguration"
+      - "En META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports"
+    correctIndex: 3
+    explanation: "Desde Spring Boot 2.7 se introdujo el archivo AutoConfiguration.imports y en Boot 3 es el mecanismo para registrar autoconfiguraciones; el uso de spring.factories para esto se eliminó."
+
+  - id: spring-boot-25
+    topic: spring-boot
+    difficulty: hard
+    question: "Guardas contraseñas con BCryptPasswordEncoder. Dos usuarios eligen la misma contraseña y obtienes hashes distintos. ¿Cómo se verifica un login?"
+    options:
+      - "Con encoder.matches(contraseñaPlana, hashGuardado), pues el salt va incluido dentro del hash"
+      - "Volviendo a codificar la contraseña y comparando con equals"
+      - "Descifrando el hash con la clave del servidor"
+      - "Comparando solo los primeros caracteres del hash"
+    correctIndex: 0
+    explanation: "BCrypt genera un salt aleatorio e incrustado en el hash, por lo que codificar dos veces da resultados diferentes. matches extrae el salt y recalcula. El hash no es reversible."

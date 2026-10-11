@@ -1,0 +1,306 @@
+questions:
+  - id: spring-data-jpa-01
+    topic: spring-data-jpa
+    difficulty: easy
+    question: "¿Qué requiere JPA de una clase anotada con @Entity respecto a sus constructores?"
+    options:
+      - "Un constructor con todos los campos como parámetros"
+      - "Un constructor sin argumentos (público o protected)"
+      - "Que todos sus constructores sean privados"
+      - "Ninguno; JPA siempre usa los setters sin instanciar la clase"
+    correctIndex: 1
+    explanation: "JPA necesita instanciar la entidad por reflexión, por eso exige un constructor sin argumentos con visibilidad public o protected. La clase tampoco puede ser final."
+
+  - id: spring-data-jpa-02
+    topic: spring-data-jpa
+    difficulty: easy
+    question: "¿Cuál de estos métodos aporta JpaRepository y no está en CrudRepository?"
+    options:
+      - "save()"
+      - "deleteById()"
+      - "findById()"
+      - "flush()"
+    correctIndex: 3
+    explanation: "JpaRepository añade operaciones específicas de JPA como flush(), saveAndFlush() y deleteAllInBatch(). save, findById y deleteById ya existen en CrudRepository."
+
+  - id: spring-data-jpa-03
+    topic: spring-data-jpa
+    difficulty: easy
+    question: "¿Qué hace Spring Data JPA con un método declarado como este en un repositorio?"
+    code: |
+      List<User> findByEmailAndActiveTrue(String email);
+    options:
+      - "Genera la consulta a partir del nombre: email = ? AND active = true"
+      - "Lanza un error porque falta la anotación @Query"
+      - "Ejecuta un SELECT * y filtra en memoria"
+      - "Solo funciona si se implementa la interfaz a mano"
+    correctIndex: 0
+    explanation: "Spring Data analiza el nombre del método (query derivation) y construye la consulta automáticamente. No hace falta @Query ni implementación."
+
+  - id: spring-data-jpa-04
+    topic: spring-data-jpa
+    difficulty: easy
+    question: "¿Cuál es el tipo de carga (fetch) por defecto en JPA para @ManyToOne y para @OneToMany?"
+    options:
+      - "Ambos LAZY"
+      - "Ambos EAGER"
+      - "@ManyToOne es EAGER y @OneToMany es LAZY"
+      - "@ManyToOne es LAZY y @OneToMany es EAGER"
+    correctIndex: 2
+    explanation: "Las asociaciones a un solo elemento (@ManyToOne, @OneToOne) son EAGER por defecto; las colecciones (@OneToMany, @ManyToMany) son LAZY. Muchos equipos fuerzan LAZY también en @ManyToOne."
+
+  - id: spring-data-jpa-05
+    topic: spring-data-jpa
+    difficulty: easy
+    question: "¿Qué estrategia de @GeneratedValue delega la generación del id a una columna autoincremental de la base de datos?"
+    options:
+      - "GenerationType.SEQUENCE"
+      - "GenerationType.IDENTITY"
+      - "GenerationType.TABLE"
+      - "GenerationType.UUID"
+    correctIndex: 1
+    explanation: "IDENTITY usa la columna autoincremental del motor. SEQUENCE usa un objeto secuencia de la base de datos y UUID genera un identificador universal."
+
+  - id: spring-data-jpa-06
+    topic: spring-data-jpa
+    difficulty: easy
+    question: "¿Qué ofrece un Page<T> que no ofrece un simple List<T> al paginar con Pageable?"
+    options:
+      - "Que los resultados vienen siempre cifrados"
+      - "Que evita ejecutar cualquier consulta SQL"
+      - "Que devuelve solo la primera fila"
+      - "Metadatos como el total de elementos y de páginas"
+    correctIndex: 3
+    explanation: "Page incluye getTotalElements() y getTotalPages(), por lo que Spring Data lanza una consulta count adicional. Slice evita ese count y solo indica si hay página siguiente."
+
+  - id: spring-data-jpa-07
+    topic: spring-data-jpa
+    difficulty: easy
+    question: "Un campo enum de una entidad se anota solo con @Enumerated sin indicar tipo. ¿Cómo se guarda por defecto?"
+    options:
+      - "Como el nombre del enum (texto)"
+      - "Como un JSON"
+      - "Como su posición ordinal (número)"
+      - "Como un blob binario"
+    correctIndex: 2
+    explanation: "El valor por defecto es EnumType.ORDINAL, que guarda la posición del valor. Es frágil si se reordena el enum, por eso se recomienda EnumType.STRING."
+
+  - id: spring-data-jpa-08
+    topic: spring-data-jpa
+    difficulty: easy
+    question: "¿Por qué se recomienda devolver DTOs en lugar de entidades JPA desde un controlador REST?"
+    options:
+      - "Para no exponer el modelo interno ni disparar cargas LAZY o bucles de serialización"
+      - "Porque las entidades JPA no se pueden serializar a JSON"
+      - "Porque los DTO son siempre más rápidos que cualquier consulta"
+      - "Porque Spring prohíbe usar entidades en un @RestController"
+    correctIndex: 0
+    explanation: "Un DTO desacopla el contrato de la API del esquema de base de datos y evita problemas como LazyInitializationException o referencias bidireccionales infinitas. Técnicamente sí se pueden serializar entidades."
+
+  - id: spring-data-jpa-09
+    topic: spring-data-jpa
+    difficulty: medium
+    question: "¿En qué consiste el problema N+1 en JPA?"
+    options:
+      - "En que una tabla no puede tener más de N relaciones"
+      - "En ejecutar una consulta para traer N entidades y luego una consulta adicional por cada una para cargar su asociación"
+      - "En que el id de la entidad se incrementa N+1 veces"
+      - "En tener N transacciones anidadas más una externa"
+    correctIndex: 1
+    explanation: "Se hace 1 consulta para la lista y N consultas más al acceder a una asociación LAZY de cada elemento. Se resuelve con JOIN FETCH, @EntityGraph o carga por lotes."
+
+  - id: spring-data-jpa-10
+    topic: spring-data-jpa
+    difficulty: medium
+    question: "¿Cuál de estas medidas NO resuelve de forma fiable el problema N+1 al listar entidades con findAll()?"
+    options:
+      - "Usar JOIN FETCH en una consulta @Query"
+      - "Usar @EntityGraph en el método del repositorio"
+      - "Cambiar la asociación de LAZY a EAGER"
+      - "Cargar por lotes con @BatchSize"
+    correctIndex: 2
+    explanation: "Con findAll() una asociación EAGER sigue cargándose con consultas adicionales por cada entidad, así que el N+1 persiste y además se carga siempre aunque no se necesite."
+
+  - id: spring-data-jpa-11
+    topic: spring-data-jpa
+    difficulty: medium
+    question: "Dentro de un método @Transactional, ¿qué ocurre con este código?"
+    code: |
+      User user = userRepository.findById(1L).orElseThrow();
+      user.setName("Nuevo nombre");
+      // no se llama a save()
+    options:
+      - "Nada: sin save() el cambio nunca se guarda"
+      - "Lanza una excepción porque la entidad es de solo lectura"
+      - "Se guarda solo si la entidad es EAGER"
+      - "El cambio se guarda al hacer commit gracias al dirty checking, porque la entidad está managed"
+    correctIndex: 3
+    explanation: "Una entidad managed dentro de una transacción es vigilada por el contexto de persistencia; al hacer flush, Hibernate detecta el cambio y emite el UPDATE sin necesidad de save()."
+
+  - id: spring-data-jpa-12
+    topic: spring-data-jpa
+    difficulty: medium
+    question: "Un método @Transactional de un bean se invoca desde otro método de la misma clase (this.metodo()). ¿Qué ocurre con la transacción?"
+    options:
+      - "La anotación se ignora, porque la llamada no pasa por el proxy de Spring"
+      - "Se crea siempre una transacción nueva"
+      - "Spring lanza una excepción de configuración al arrancar"
+      - "Se aplica con propagación REQUIRES_NEW automáticamente"
+    correctIndex: 0
+    explanation: "@Transactional funciona mediante proxies AOP; una autoinvocación llama directamente al objeto real y se salta el proxy. Se soluciona moviendo el método a otro bean."
+
+  - id: spring-data-jpa-13
+    topic: spring-data-jpa
+    difficulty: medium
+    question: "En una relación bidireccional @OneToMany(mappedBy = \"order\") en Order, ¿qué indica mappedBy?"
+    options:
+      - "Que Order es el lado propietario y tiene la clave foránea"
+      - "Que la relación es de solo lectura"
+      - "Que ese lado es el inverso; la clave foránea la gestiona el campo order de la otra entidad"
+      - "Que la relación es obligatoriamente EAGER"
+    correctIndex: 2
+    explanation: "mappedBy marca el lado inverso (no propietario). La columna de la clave foránea se mapea desde el @ManyToOne del otro lado, y solo ese lado determina lo que se guarda."
+
+  - id: spring-data-jpa-14
+    topic: spring-data-jpa
+    difficulty: medium
+    question: "Un Order tiene una lista de items con cascade = ALL. Si se quita un elemento de la lista y se guarda, ¿cuándo se borra esa fila de la base de datos?"
+    options:
+      - "Siempre, porque cascade ALL incluye el borrado de huérfanos"
+      - "Solo si además se configura orphanRemoval = true"
+      - "Nunca; JPA no puede borrar filas hijas"
+      - "Solo si la relación es EAGER"
+    correctIndex: 1
+    explanation: "CascadeType.REMOVE propaga el borrado del padre a los hijos, pero quitar un hijo de la colección solo lo elimina de la base de datos con orphanRemoval = true."
+
+  - id: spring-data-jpa-15
+    topic: spring-data-jpa
+    difficulty: medium
+    question: "¿Cuál es la causa típica de una LazyInitializationException?"
+    options:
+      - "Un id duplicado al insertar"
+      - "No tener un constructor sin argumentos en la entidad"
+      - "Usar un tipo de dato no soportado por la base de datos"
+      - "Acceder a una asociación LAZY cuando la sesión o el contexto de persistencia ya se cerró"
+    correctIndex: 3
+    explanation: "La asociación LAZY es un proxy que necesita una sesión abierta para cargarse. Al acceder tras cerrar la transacción falla. Se soluciona cargándola dentro de la transacción, con JOIN FETCH o con un DTO."
+
+  - id: spring-data-jpa-16
+    topic: spring-data-jpa
+    difficulty: medium
+    question: "Con la configuración por defecto de Spring, un método @Transactional lanza una IOException (excepción comprobada). ¿Qué pasa con la transacción?"
+    options:
+      - "Se hace commit, porque solo las RuntimeException y los Error provocan rollback por defecto"
+      - "Se hace rollback siempre, sea cual sea la excepción"
+      - "Se queda abierta hasta el siguiente request"
+      - "Se hace rollback solo si la excepción es SQLException"
+    correctIndex: 0
+    explanation: "Por defecto Spring revierte solo ante excepciones no comprobadas (RuntimeException) y Error. Para revertir con comprobadas hay que usar rollbackFor."
+
+  - id: spring-data-jpa-17
+    topic: spring-data-jpa
+    difficulty: medium
+    question: "¿Qué diferencia hay entre una consulta JPQL y una nativa (nativeQuery = true) en @Query?"
+    options:
+      - "La nativa es siempre portable entre bases de datos"
+      - "JPQL solo permite SELECT sin condiciones"
+      - "JPQL se escribe sobre entidades y atributos; la nativa usa SQL y tablas/columnas del motor"
+      - "JPQL se ejecuta fuera de la transacción"
+    correctIndex: 2
+    explanation: "JPQL opera sobre el modelo de objetos (entidades y campos) y es independiente del motor. La consulta nativa usa SQL puro, con tablas y columnas reales, y puede perder portabilidad."
+
+  - id: spring-data-jpa-18
+    topic: spring-data-jpa
+    difficulty: medium
+    question: "En una relación bidireccional @OneToMany/@ManyToOne, ¿por qué se suelen crear métodos auxiliares como addItem() que actualizan ambos lados?"
+    options:
+      - "Porque JPA los exige para compilar"
+      - "Para mantener sincronizado el modelo en memoria; la base de datos solo mira el lado propietario"
+      - "Para evitar que la base de datos cree la clave foránea dos veces"
+      - "Porque sin ellos la relación se vuelve unidireccional en la base de datos"
+    correctIndex: 1
+    explanation: "Si solo se añade el hijo a la lista pero no se asigna el padre en el hijo, el lado propietario queda sin valor y la clave foránea se guarda como NULL, además de dejar inconsistente el grafo en memoria."
+
+  - id: spring-data-jpa-19
+    topic: spring-data-jpa
+    difficulty: hard
+    question: "Usas una consulta con JOIN FETCH sobre una colección y la combinas con paginación (Pageable). ¿Qué suele hacer Hibernate?"
+    options:
+      - "Aplica LIMIT y OFFSET en SQL y devuelve páginas correctas"
+      - "Lanza siempre una excepción al arrancar la aplicación"
+      - "Ignora el JOIN FETCH y carga la colección en modo LAZY"
+      - "Avisa de que aplica la paginación en memoria, cargando todos los resultados, lo cual es peligroso"
+    correctIndex: 3
+    explanation: "Al hacer fetch join de una colección, las filas se multiplican, así que Hibernate no puede paginar en SQL: carga todo y pagina en memoria (aviso HHH000104). Se evita paginando ids primero o con @BatchSize."
+
+  - id: spring-data-jpa-20
+    topic: spring-data-jpa
+    difficulty: medium
+    question: "Llamas a repository.save(entity) con una entidad cuyo id es no nulo (Long) y sin @Version. ¿Qué hace Spring Data JPA?"
+    options:
+      - "Siempre ejecuta un INSERT"
+      - "Lanza una excepción porque el id ya está asignado"
+      - "La considera existente y llama a merge() en lugar de persist()"
+      - "Elimina la fila anterior y la vuelve a crear"
+    correctIndex: 2
+    explanation: "Spring Data decide si la entidad es nueva según su id (null significa nueva) o su @Version. Con un id no nulo llama a merge(), que consulta la base de datos y actualiza o inserta según corresponda."
+
+  - id: spring-data-jpa-21
+    topic: spring-data-jpa
+    difficulty: hard
+    question: "Una entidad con id generado por la base de datos calcula su hashCode() con ese id. ¿Qué problema puede causar?"
+    options:
+      - "Ninguno; es la práctica recomendada en todos los casos"
+      - "El hashCode cambia al persistir, y una entidad guardada en un HashSet antes del persist deja de encontrarse"
+      - "Impide que Hibernate cree proxies LAZY"
+      - "Hace que la entidad no pueda ser compartida entre hilos"
+    correctIndex: 1
+    explanation: "Antes de persistir el id es null y después tiene valor, así que el hashCode cambia mientras la entidad ya está en un HashSet. Se suele usar una clave de negocio estable o un hashCode constante."
+
+  - id: spring-data-jpa-22
+    topic: spring-data-jpa
+    difficulty: hard
+    question: "Una entidad tiene dos colecciones de tipo List (sin @OrderColumn) y se intentan cargar ambas con JOIN FETCH en la misma consulta. ¿Qué ocurre?"
+    options:
+      - "Funciona sin problemas y devuelve el producto cartesiano ordenado"
+      - "Spring Data ignora el segundo JOIN FETCH"
+      - "Hibernate lanza MultipleBagFetchException; se evita con Set, @EntityGraph o varias consultas"
+      - "La base de datos rechaza la consulta por tener dos JOIN"
+    correctIndex: 2
+    explanation: "Hibernate no puede cargar simultáneamente dos «bags» (listas sin orden indexado) con fetch join y lanza MultipleBagFetchException. Usar Set o dividir la carga en consultas separadas lo soluciona."
+
+  - id: spring-data-jpa-23
+    topic: spring-data-jpa
+    difficulty: hard
+    question: "El método externo (REQUIRED) llama a otro bean cuyo método usa propagación REQUIRES_NEW y termina bien; después el externo lanza una RuntimeException. ¿Qué pasa con los datos del método interno?"
+    options:
+      - "Se quedan confirmados, porque corrían en una transacción independiente ya hecha commit"
+      - "Se revierten, porque la transacción exterior los incluye"
+      - "Se revierten solo si el interno tenía rollbackFor"
+      - "Quedan pendientes hasta el siguiente request"
+    correctIndex: 0
+    explanation: "REQUIRES_NEW suspende la transacción exterior y abre una nueva e independiente; al terminar el método interno hace su propio commit, y el rollback posterior del externo no lo afecta."
+
+  - id: spring-data-jpa-24
+    topic: spring-data-jpa
+    difficulty: hard
+    question: "¿Qué efecto tiene @Transactional(readOnly = true) en Spring con Hibernate?"
+    options:
+      - "Impide cualquier SELECT concurrente"
+      - "Optimiza la lectura, ya que Hibernate evita el flush automático y el dirty checking de las entidades modificadas"
+      - "Convierte automáticamente todas las asociaciones a EAGER"
+      - "Cierra la conexión en cuanto termina la primera consulta"
+    correctIndex: 1
+    explanation: "Spring marca la sesión de Hibernate con flush mode MANUAL en las transacciones de solo lectura, así que los cambios en entidades managed no se escriben. Es una indicación de optimización, no una garantía a nivel de base de datos."
+
+  - id: spring-data-jpa-25
+    topic: spring-data-jpa
+    difficulty: hard
+    question: "En Spring Boot, ¿qué hace la propiedad spring.jpa.open-in-view, activa por defecto?"
+    options:
+      - "Abre automáticamente una transacción por cada método de servicio"
+      - "Mantiene el EntityManager abierto durante toda la petición web, lo que permite cargar asociaciones LAZY en la vista pero retiene conexión"
+      - "Carga en modo EAGER todas las entidades de la aplicación"
+      - "Permite que la base de datos sea visible desde el navegador"
+    correctIndex: 1
+    explanation: "Open Session In View mantiene abierta la sesión hasta terminar de renderizar la respuesta, evitando LazyInitializationException en controladores. A cambio retiene la conexión más tiempo y oculta consultas; muchos equipos lo desactivan."

@@ -1,0 +1,344 @@
+questions:
+  - id: generics-01
+    topic: generics
+    difficulty: easy
+    question: "¿Cuál es el principal beneficio de usar genéricos en Java?"
+    options:
+      - "Que el código se ejecuta más rápido porque no hay conversiones en tiempo de ejecución."
+      - "Detectar errores de tipo al compilar y evitar casts manuales."
+      - "Poder guardar tipos primitivos directamente en las colecciones."
+      - "Que la JVM conserve el tipo exacto de cada elemento en ejecución."
+    correctIndex: 1
+    explanation: "Los genéricos mueven la comprobación de tipos al compilador, de modo que un `List<String>` rechaza un `Integer` sin necesidad de casts. No aportan velocidad, no admiten primitivos y el tipo se borra en ejecución."
+
+  - id: generics-02
+    topic: generics
+    difficulty: easy
+    question: "¿Cuál de estas declaraciones NO compila?"
+    options:
+      - "List<Integer> numeros = new ArrayList<>();"
+      - "Map<String, Integer> edades = new HashMap<>();"
+      - "List<int> numeros = new ArrayList<>();"
+      - "List<String[]> filas = new ArrayList<>();"
+    correctIndex: 2
+    explanation: "Los argumentos de tipo deben ser tipos de referencia, así que `List<int>` no es válido; hay que usar el wrapper `Integer`. Los arreglos sí son tipos de referencia y pueden usarse como argumento."
+
+  - id: generics-03
+    topic: generics
+    difficulty: easy
+    question: "En `List<String> nombres = new ArrayList<>();`, ¿qué es el operador diamante `<>`?"
+    options:
+      - "Una sintaxis que obliga a usar el tipo raw de ArrayList."
+      - "Una forma de declarar un comodín que acepta cualquier tipo."
+      - "Un marcador que desactiva la comprobación de tipos del compilador."
+      - "Una indicación para que el compilador infiera el argumento de tipo."
+    correctIndex: 3
+    explanation: "Con `<>` el compilador deduce que se trata de `ArrayList<String>` a partir del tipo declarado a la izquierda. No es un tipo raw ni un comodín, y la comprobación de tipos sigue activa."
+
+  - id: generics-04
+    topic: generics
+    difficulty: easy
+    question: "¿Qué significa \"type erasure\" (borrado de tipos)?"
+    options:
+      - "El compilador elimina la información de los argumentos de tipo y la sustituye por sus límites (por defecto Object)."
+      - "La JVM borra los objetos genéricos de memoria cuando dejan de usarse."
+      - "Los genéricos solo funcionan con tipos que hayan sido borrados explícitamente."
+      - "El compilador elimina las clases genéricas que no se usan en el programa."
+    correctIndex: 0
+    explanation: "Tras compilar, `List<String>` y `List<Integer>` son simplemente `List`; el compilador inserta los casts necesarios. Por eso en ejecución no se puede saber el argumento de tipo."
+
+  - id: generics-05
+    topic: generics
+    difficulty: easy
+    question: "¿Cuál es el problema de usar un tipo raw como `List lista = new ArrayList();`?"
+    options:
+      - "No compila a partir de Java 5."
+      - "Solo permite almacenar objetos de tipo String."
+      - "Se pierde la seguridad de tipos y el compilador solo emite advertencias."
+      - "Hace que la lista sea inmutable."
+    correctIndex: 2
+    explanation: "Un tipo raw compila, pero admite cualquier objeto y los errores aparecen como `ClassCastException` en ejecución. Existe solo por compatibilidad con código anterior a Java 5."
+
+  - id: generics-06
+    topic: generics
+    difficulty: easy
+    question: "En `public static <T> T primero(List<T> lista)`, ¿qué indica el `<T>` antes del tipo de retorno?"
+    options:
+      - "Que el método devuelve siempre un objeto de tipo T."
+      - "Que el método declara su propio parámetro de tipo T."
+      - "Que T debe ser una clase llamada T."
+      - "Que el método solo puede llamarse con el tipo Object."
+    correctIndex: 1
+    explanation: "El `<T>` antes del tipo de retorno declara el parámetro de tipo del método genérico, que el compilador infiere en cada llamada. Sin esa declaración, `T` sería un símbolo desconocido."
+
+  - id: generics-07
+    topic: generics
+    difficulty: easy
+    question: "Dada `List<?> lista`, ¿qué operación es válida?"
+    options:
+      - "`lista.add(\"hola\");`"
+      - "`lista.add(10);`"
+      - "`lista.add(new Object());`"
+      - "`Object o = lista.get(0);`"
+    correctIndex: 3
+    explanation: "Con `List<?>` solo se puede leer, y los elementos se ven como `Object`. No se puede añadir nada (salvo `null`) porque el tipo real de la lista es desconocido."
+
+  - id: generics-08
+    topic: generics
+    difficulty: easy
+    question: "¿Qué imprime este código?"
+    code: |
+      List<String> a = new ArrayList<>();
+      List<Integer> b = new ArrayList<>();
+      System.out.println(a.getClass() == b.getClass());
+    options:
+      - "true"
+      - "false"
+      - "Error de compilación"
+      - "ClassCastException"
+    correctIndex: 0
+    explanation: "Por el borrado de tipos, ambas son simplemente `ArrayList` en ejecución, así que comparten la misma clase y la comparación da `true`."
+
+  - id: generics-09
+    topic: generics
+    difficulty: medium
+    question: "¿Es válida la asignación `List<Object> objetos = new ArrayList<String>();`?"
+    options:
+      - "Sí, porque String es subclase de Object."
+      - "Sí, pero solo si la lista está vacía."
+      - "Sí, aunque el compilador emite una advertencia unchecked."
+      - "No, los genéricos son invariantes: `List<String>` no es subtipo de `List<Object>`."
+    correctIndex: 3
+    explanation: "Aunque `String` hereda de `Object`, `List<String>` no es un `List<Object>`. Si lo fuera, se podría añadir un `Integer` a una lista de Strings. Para eso existen los comodines (`List<? extends Object>`)."
+
+  - id: generics-10
+    topic: generics
+    difficulty: medium
+    question: "¿Qué imprime este código?"
+    code: |
+      Object[] arr = new String[1];
+      try {
+          arr[0] = 1;
+          System.out.println("ok");
+      } catch (ArrayStoreException e) {
+          System.out.println("ASE");
+      }
+    options:
+      - "ok"
+      - "ASE"
+      - "Error de compilación"
+      - "ClassCastException"
+    correctIndex: 1
+    explanation: "Los arreglos son covariantes y compilan, pero conservan su tipo real en ejecución, así que la JVM lanza `ArrayStoreException` al guardar un `Integer` en un `String[]`. Con genéricos el error se detecta al compilar."
+
+  - id: generics-11
+    topic: generics
+    difficulty: medium
+    question: "Quieres un método que copie los elementos de una lista origen (que produce valores) a una lista destino (que los consume). ¿Qué firma aplica correctamente PECS?"
+    options:
+      - "`<T> void copiar(List<? super T> destino, List<? extends T> origen)`"
+      - "`<T> void copiar(List<? extends T> destino, List<? super T> origen)`"
+      - "`<T> void copiar(List<T> destino, List<?> origen)`"
+      - "`void copiar(List<Object> destino, List<Object> origen)`"
+    correctIndex: 0
+    explanation: "PECS: Producer Extends, Consumer Super. El origen produce, por eso `? extends T`; el destino consume, por eso `? super T`. La opción invertida no permitiría ni leer ni escribir con seguridad."
+
+  - id: generics-12
+    topic: generics
+    difficulty: medium
+    question: "Dado `List<? extends Number> lista = new ArrayList<Integer>();`, ¿cuál afirmación es VERDADERA?"
+    options:
+      - "Se puede añadir un `Integer` con `lista.add(5)`."
+      - "Se puede añadir un `Double` con `lista.add(2.5)`."
+      - "Se puede leer un elemento como `Number`, pero no se puede añadir ninguno (salvo null)."
+      - "No se puede leer ningún elemento porque el tipo es desconocido."
+    correctIndex: 2
+    explanation: "Con `? extends` la lista es productora: se lee como `Number`, pero el compilador no sabe si es `List<Integer>`, `List<Double>`, etc., así que rechaza cualquier `add` salvo `null`."
+
+  - id: generics-13
+    topic: generics
+    difficulty: medium
+    question: "Dentro de `class Caja<T>`, ¿por qué `T valor = new T();` no compila?"
+    options:
+      - "Porque T podría ser una interfaz."
+      - "Porque los genéricos solo admiten clases con constructor privado."
+      - "Porque `new` está prohibido dentro de clases genéricas."
+      - "Porque por el borrado de tipos, en ejecución no se sabe qué clase es T."
+    correctIndex: 3
+    explanation: "Tras el borrado, T desaparece y la JVM no sabría qué clase instanciar. La alternativa habitual es recibir un `Supplier<T>` o un `Class<T>` y usar reflexión."
+
+  - id: generics-14
+    topic: generics
+    difficulty: medium
+    question: "¿Qué garantiza `<T extends Comparable<T>> T maximo(List<T> lista)`?"
+    options:
+      - "Que T es un número y por tanto puede usarse con operadores aritméticos."
+      - "Que T implementa Comparable, así que dentro del método se puede llamar a `compareTo`."
+      - "Que la lista está ordenada antes de entrar al método."
+      - "Que T es una clase final e inmutable."
+    correctIndex: 1
+    explanation: "El límite superior `extends Comparable<T>` permite usar `compareTo` sobre los elementos. No dice nada sobre números, orden previo ni inmutabilidad."
+
+  - id: generics-15
+    topic: generics
+    difficulty: medium
+    question: "¿Qué ocurre al compilar una clase con estos dos métodos?"
+    code: |
+      static void procesar(List<String> lista) { }
+      static void procesar(List<Integer> lista) { }
+    options:
+      - "Compila: es una sobrecarga válida por los distintos argumentos de tipo."
+      - "Error de compilación: ambos tienen la misma firma tras el borrado de tipos."
+      - "Compila, pero lanza excepción al llamar al segundo."
+      - "Compila con advertencia y la JVM elige uno al azar."
+    correctIndex: 1
+    explanation: "Tras el borrado ambos son `procesar(List)`, lo que provoca un \"name clash: have the same erasure\". Hay que cambiar el nombre o el tipo del parámetro."
+
+  - id: generics-16
+    topic: generics
+    difficulty: medium
+    question: "¿Por qué no compila `private static T instancia;` dentro de `class Repositorio<T>`?"
+    options:
+      - "Porque un miembro static es compartido por todas las parametrizaciones de la clase, y T es distinto en cada una."
+      - "Porque los campos static no pueden ser de tipo referencia."
+      - "Porque T solo puede usarse en métodos, nunca en campos."
+      - "Porque static obliga a que el campo sea final."
+    correctIndex: 0
+    explanation: "Solo existe un campo static para `Repositorio<String>`, `Repositorio<Long>`, etc.; T pertenece a cada instancia concreta y no tiene sentido a nivel de clase."
+
+  - id: generics-17
+    topic: generics
+    difficulty: medium
+    question: "¿Cuál es una declaración VÁLIDA de múltiples límites?"
+    options:
+      - "`<T extends Comparable<T> & Number>`"
+      - "`<T extends Number, Comparable<T>>`"
+      - "`<T extends Number & Comparable<T>>`"
+      - "`<T extends Number | Comparable<T>>`"
+    correctIndex: 2
+    explanation: "Los límites se separan con `&` y, si uno es una clase (como `Number`), debe ir primero; el resto deben ser interfaces. La primera opción pone la clase en segundo lugar y no compila."
+
+  - id: generics-18
+    topic: generics
+    difficulty: medium
+    question: "¿Qué imprime este código?"
+    code: |
+      List raw = new ArrayList<String>();
+      raw.add(42);
+      List<String> textos = raw;
+      try {
+          String s = textos.get(0);
+          System.out.println("ok");
+      } catch (ClassCastException e) {
+          System.out.println("CCE");
+      }
+    options:
+      - "ok"
+      - "Error de compilación en `raw.add(42)`"
+      - "Error de compilación en `List<String> textos = raw`"
+      - "CCE"
+    correctIndex: 3
+    explanation: "El tipo raw permite meter un `Integer` (heap pollution) y solo con advertencias. El compilador inserta un cast a `String` en `textos.get(0)`, y ahí falla en ejecución con `ClassCastException`."
+
+  - id: generics-19
+    topic: generics
+    difficulty: medium
+    question: "Dado `List<? super Integer> lista = new ArrayList<Number>();`, ¿qué puedes hacer con seguridad?"
+    options:
+      - "Añadir un `Integer` y leer elementos como `Object`."
+      - "Añadir cualquier `Number` y leerlo como `Number`."
+      - "Solo leer, nunca añadir."
+      - "Añadir un `String` y leerlo como `String`."
+    correctIndex: 0
+    explanation: "Con `? super Integer` la lista es consumidora: se puede añadir un `Integer` (o subtipo), porque seguro cabe, pero al leer solo se garantiza `Object`."
+
+  - id: generics-20
+    topic: generics
+    difficulty: hard
+    question: "¿Cuál es el problema de este código?"
+    code: |
+      static void intercambiar(List<?> lista) {
+          Object temp = lista.get(0);
+          lista.set(0, lista.get(1));
+      }
+    options:
+      - "`List<?>` no permite llamar a `get`."
+      - "No compila, porque `set` no acepta el valor leído de una `List<?>`."
+      - "Compila, pero falla siempre en ejecución."
+      - "El método debe declararse `final` para usar comodines."
+    correctIndex: 1
+    explanation: "El comodín se captura como un tipo desconocido distinto en cada uso, y `lista.get(1)` no es asignable a ese tipo. La solución es un método auxiliar genérico (`<T> void swapHelper(List<T> l)`) que da nombre al tipo capturado."
+
+  - id: generics-21
+    topic: generics
+    difficulty: hard
+    question: "¿Qué ocurre al compilar `System.out.println(o instanceof List<String>);` con `Object o`?"
+    options:
+      - "Compila y devuelve true si o es una lista de Strings."
+      - "Compila con advertencia y devuelve true para cualquier lista."
+      - "Compila y lanza ClassCastException si o es una lista."
+      - "Error de compilación: no se puede comprobar con seguridad un tipo parametrizado a partir de Object."
+    correctIndex: 3
+    explanation: "El argumento de tipo no existe en ejecución, así que `instanceof` no puede verificarlo. Lo válido es `o instanceof List<?>`, que solo comprueba que es una lista."
+
+  - id: generics-22
+    topic: generics
+    difficulty: hard
+    question: "¿Qué imprime este código?"
+    code: |
+      class Caja<T> {
+          @SuppressWarnings("unchecked")
+          T[] datos = (T[]) new Object[1];
+          T[] obtener() { return datos; }
+      }
+      // ...
+      Caja<String> caja = new Caja<>();
+      try {
+          String[] arr = caja.obtener();
+          System.out.println("ok");
+      } catch (ClassCastException e) {
+          System.out.println("CCE");
+      }
+    options:
+      - "ok"
+      - "Error de compilación en el cast `(T[]) new Object[1]`"
+      - "CCE"
+      - "ArrayStoreException"
+    correctIndex: 2
+    explanation: "El arreglo real es `Object[]`. Al asignar el resultado a `String[]`, el compilador inserta un cast a `String[]`, que falla en ejecución. El cast `(T[])` interno solo da advertencia, no error."
+
+  - id: generics-23
+    topic: generics
+    difficulty: hard
+    question: "Al implementar `class Persona implements Comparable<Persona>`, el compilador genera un \"bridge method\" `compareTo(Object)`. ¿Para qué sirve?"
+    options:
+      - "Para que las listas de Persona sean más rápidas de ordenar."
+      - "Para permitir comparar una Persona con cualquier objeto sin errores."
+      - "Para mantener el polimorfismo con la interfaz `Comparable` tras el borrado de tipos."
+      - "Para evitar que se pueda sobreescribir `compareTo`."
+    correctIndex: 2
+    explanation: "Tras el borrado, `Comparable` exige `compareTo(Object)`. El bridge method lo implementa, hace el cast a `Persona` y delega en `compareTo(Persona)`, preservando el polimorfismo."
+
+  - id: generics-24
+    topic: generics
+    difficulty: hard
+    question: "¿Por qué se recomienda `<T extends Comparable<? super T>>` en lugar de `<T extends Comparable<T>>`, como hace `Collections.sort`?"
+    options:
+      - "Porque `? super T` hace que la comparación sea más rápida."
+      - "Porque permite usar tipos cuyo Comparable esté declarado en una superclase (por ejemplo `Timestamp`, que hereda de `Date`)."
+      - "Porque evita que T sea una clase final."
+      - "Porque permite comparar elementos de tipos distintos entre sí."
+    correctIndex: 1
+    explanation: "`java.sql.Timestamp extends Date`, y `Date implements Comparable<Date>`. Con `Comparable<T>` estricto, `Timestamp` no cumpliría (`Comparable<Timestamp>`); con `? super T` sí."
+
+  - id: generics-25
+    topic: generics
+    difficulty: hard
+    question: "¿Por qué Java prohíbe crear arreglos de tipos genéricos como `new List<String>[3]`?"
+    options:
+      - "Porque List es una interfaz y no puede instanciarse."
+      - "Porque los arreglos de objetos solo admiten tipos primitivos."
+      - "Porque los genéricos solo funcionan dentro de clases, no en arreglos."
+      - "Porque los arreglos conservan su tipo en ejecución y, tras el borrado, no podrían verificarlo, rompiendo la seguridad de tipos."
+    correctIndex: 3
+    explanation: "Un arreglo comprueba el tipo de cada escritura en ejecución (`ArrayStoreException`), pero tras el borrado solo vería `List`, por lo que permitiría mezclar `List<Integer>` en un `List<String>[]`. Por eso es error de compilación: \"generic array creation\"."

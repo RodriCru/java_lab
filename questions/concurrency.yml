@@ -1,0 +1,262 @@
+questions:
+  - id: concurrency-01
+    topic: concurrency
+    difficulty: easy
+    question: "¿Qué imprime este programa?"
+    code: |
+      public class Main {
+          public static void main(String[] args) {
+              Thread t = new Thread(() -> System.out.println(Thread.currentThread().getName()));
+              t.run();
+          }
+      }
+    options: ["Thread-0", "main", "No imprime nada porque el hilo nunca arranca", "Lanza IllegalThreadStateException"]
+    correctIndex: 1
+    explanation: "Llamar a run() ejecuta el cuerpo como un método normal en el hilo actual, que es main. Solo start() crea un hilo nuevo (que se llamaría Thread-0)."
+
+  - id: concurrency-02
+    topic: concurrency
+    difficulty: easy
+    question: "¿Por qué suele preferirse implementar Runnable (o usar un ExecutorService) en lugar de extender Thread?"
+    options: ["Porque Runnable es más rápido que Thread en ejecución", "Porque extender Thread está prohibido desde Java 8", "Porque un Thread solo puede ejecutarse en un núcleo", "Porque separa la tarea del mecanismo de ejecución y deja libre la herencia"]
+    correctIndex: 3
+    explanation: "Java solo permite herencia simple, y Runnable desacopla qué se ejecuta de cómo se ejecuta (hilo propio, pool, etc.). No hay diferencia de velocidad ni prohibición de extender Thread."
+
+  - id: concurrency-03
+    topic: concurrency
+    difficulty: easy
+    question: "¿Qué garantiza la palabra clave volatile sobre un campo?"
+    options: ["Visibilidad de las escrituras entre hilos y orden respecto a otras operaciones, pero no atomicidad de operaciones compuestas", "Que las operaciones como contador++ sean atómicas", "Que solo un hilo a la vez pueda leer o escribir el campo", "Que el campo se guarde en disco y sobreviva al reinicio"]
+    correctIndex: 0
+    explanation: "volatile asegura que una lectura vea la última escritura y establece una relación happens-before. Pero contador++ son tres pasos (leer, sumar, escribir) y sigue siendo una condición de carrera."
+
+  - id: concurrency-04
+    topic: concurrency
+    difficulty: easy
+    question: "Si un método de instancia se declara synchronized, ¿sobre qué monitor se bloquea?"
+    options: ["Sobre el objeto Class de la clase", "Sobre el método, de forma que otros métodos no se ven afectados", "Sobre this, el objeto actual", "Sobre el hilo que lo invoca"]
+    correctIndex: 2
+    explanation: "Un método de instancia synchronized usa el monitor de this, así que bloquea también a los demás métodos synchronized del mismo objeto. Si el método es static, el monitor es el objeto Class."
+
+  - id: concurrency-05
+    topic: concurrency
+    difficulty: easy
+    question: "¿Qué diferencia hay entre ExecutorService.shutdown() y shutdownNow()?"
+    options: ["shutdown() cancela todas las tareas y shutdownNow() espera a que terminen", "shutdown() deja terminar las tareas ya enviadas pero no acepta nuevas; shutdownNow() intenta interrumpir las que corren", "Son equivalentes; solo cambia el nombre", "shutdown() libera el pool y shutdownNow() lo reinicia"]
+    correctIndex: 1
+    explanation: "shutdown() es un apagado ordenado: se completan las tareas aceptadas. shutdownNow() interrumpe los hilos en ejecución y devuelve la lista de tareas que no llegaron a empezar."
+
+  - id: concurrency-06
+    topic: concurrency
+    difficulty: easy
+    question: "¿Cuál es una diferencia real entre Runnable y Callable<V>?"
+    options: ["Callable devuelve un valor y puede lanzar excepciones comprobadas; Runnable no", "Runnable puede devolver un valor y Callable no", "Callable solo funciona con hilos daemon", "Runnable se ejecuta en paralelo y Callable de forma secuencial"]
+    correctIndex: 0
+    explanation: "Callable.call() devuelve V y declara throws Exception, y se usa con submit() para obtener un Future. Runnable.run() es void y no puede lanzar excepciones comprobadas."
+
+  - id: concurrency-07
+    topic: concurrency
+    difficulty: easy
+    question: "¿En qué estado (Thread.State) está un hilo recién creado con new Thread(...) antes de llamar a start()?"
+    options: ["RUNNABLE", "WAITING", "BLOCKED", "NEW"]
+    correctIndex: 3
+    explanation: "Los estados son NEW, RUNNABLE, BLOCKED, WAITING, TIMED_WAITING y TERMINATED. Un hilo pasa a RUNNABLE solo después de start()."
+
+  - id: concurrency-08
+    topic: concurrency
+    difficulty: easy
+    question: "¿Qué ocurre cuando solo quedan hilos daemon en ejecución?"
+    options: ["La JVM espera a que terminen antes de cerrar", "Los hilos daemon se convierten en hilos normales", "La JVM termina sin esperarlos", "Lanza una excepción en main"]
+    correctIndex: 2
+    explanation: "La JVM termina cuando ya no quedan hilos no daemon vivos, y los daemon se detienen de golpe, sin ejecutar finally. Por eso no deben usarse para trabajo que deba completarse."
+
+  - id: concurrency-09
+    topic: concurrency
+    difficulty: medium
+    question: "Dos hilos ejecutan este código a la vez sobre el mismo campo estático y luego se hace join de ambos. ¿Qué puede valer c?"
+    code: |
+      static int c = 0;
+
+      Runnable r = () -> { for (int i = 0; i < 100_000; i++) c++; };
+      Thread t1 = new Thread(r);
+      Thread t2 = new Thread(r);
+      t1.start(); t2.start();
+      t1.join(); t2.join();
+      System.out.println(c);
+    options: ["Siempre 200000, porque ++ es una sola instrucción", "Siempre 100000, porque gana el último hilo", "Cualquier valor mayor que 200000", "Un valor menor o igual a 200000, normalmente menor"]
+    correctIndex: 3
+    explanation: "c++ es leer, sumar y escribir, por lo que dos hilos pueden pisarse y perder incrementos. El resultado no es determinista y nunca supera 200000. Se corrige con AtomicInteger o synchronized."
+
+  - id: concurrency-10
+    topic: concurrency
+    difficulty: medium
+    question: "Con este código, tras el join de ambos hilos, ¿qué imprime?"
+    code: |
+      AtomicInteger ai = new AtomicInteger();
+      Runnable r = () -> { for (int i = 0; i < 100_000; i++) ai.incrementAndGet(); };
+      Thread t1 = new Thread(r);
+      Thread t2 = new Thread(r);
+      t1.start(); t2.start();
+      t1.join(); t2.join();
+      System.out.println(ai.get());
+    options: ["Un valor menor que 200000 que varía entre ejecuciones", "200000, siempre", "100000", "Lanza ConcurrentModificationException"]
+    correctIndex: 1
+    explanation: "incrementAndGet() es atómico (usa compare-and-set sin bloqueos), así que no se pierde ningún incremento. El join garantiza además que main lee el valor final."
+
+  - id: concurrency-11
+    topic: concurrency
+    difficulty: medium
+    question: "¿Qué imprime este código?"
+    code: |
+      ExecutorService ex = Executors.newSingleThreadExecutor();
+      Future<Integer> f = ex.submit(() -> {
+          if (true) throw new IllegalStateException("boom");
+          return 1;
+      });
+      try {
+          f.get();
+      } catch (ExecutionException e) {
+          System.out.println(e.getCause().getClass().getSimpleName());
+      }
+      ex.shutdown();
+    options: ["ExecutionException", "InterruptedException", "IllegalStateException", "No imprime nada: la excepción se pierde"]
+    correctIndex: 2
+    explanation: "Future.get() envuelve la excepción de la tarea en una ExecutionException; la original se obtiene con getCause(). Con execute() en cambio la excepción llegaría al UncaughtExceptionHandler."
+
+  - id: concurrency-12
+    topic: concurrency
+    difficulty: medium
+    question: "Dos hilos se bloquean mutuamente porque uno toma el lock A y luego B, y el otro toma B y luego A. ¿Cuál es la solución más simple y fiable?"
+    options: ["Aumentar la prioridad de uno de los hilos", "Llamar a Thread.sleep() entre un lock y otro", "Marcar los dos locks como volatile", "Adquirir siempre los locks en el mismo orden global"]
+    correctIndex: 3
+    explanation: "Un orden global de adquisición rompe la espera circular, una de las condiciones necesarias del deadlock. Las prioridades y los sleep solo cambian la probabilidad, no eliminan el problema."
+
+  - id: concurrency-13
+    topic: concurrency
+    difficulty: medium
+    question: "¿Qué pasa si se llama a obj.wait() sin tener el monitor de obj (fuera de un bloque synchronized(obj))?"
+    options: ["Lanza IllegalMonitorStateException", "El hilo espera normalmente, pero sin garantías de visibilidad", "Se bloquea para siempre sin lanzar nada", "El compilador rechaza el código"]
+    correctIndex: 0
+    explanation: "wait(), notify() y notifyAll() exigen poseer el monitor del objeto; si no, se lanza IllegalMonitorStateException en tiempo de ejecución. El compilador no lo detecta."
+
+  - id: concurrency-14
+    topic: concurrency
+    difficulty: medium
+    question: "¿Por qué ConcurrentHashMap suele ser mejor opción que Collections.synchronizedMap(new HashMap<>()) en alta concurrencia?"
+    options: ["Porque permite claves y valores null sin restricciones", "Porque bloquea el mapa entero con un único lock más eficiente", "Porque no bloquea en lecturas y en escrituras sincroniza solo la parte afectada, y ofrece operaciones atómicas como merge o computeIfAbsent", "Porque garantiza que iterar nunca ve datos desactualizados"]
+    correctIndex: 2
+    explanation: "ConcurrentHashMap evita un lock global (lecturas sin bloqueo, escrituras por bin) y ofrece operaciones compuestas atómicas. Además NO admite claves ni valores null, y sus iteradores son débilmente consistentes."
+
+  - id: concurrency-15
+    topic: concurrency
+    difficulty: medium
+    question: "¿Qué imprime este código?"
+    code: |
+      int r = CompletableFuture.supplyAsync(() -> 2)
+              .thenApply(v -> v * 3)
+              .thenCombine(CompletableFuture.supplyAsync(() -> 4), (p, q) -> p + q)
+              .join();
+      System.out.println(r);
+    options: ["24", "6", "10", "14"]
+    correctIndex: 2
+    explanation: "thenApply transforma 2 en 6 y thenCombine suma ese resultado con el de la segunda tarea (4), dando 10. thenCombine espera a que ambos futuros terminen."
+
+  - id: concurrency-16
+    topic: concurrency
+    difficulty: medium
+    question: "¿Qué imprime este código?"
+    code: |
+      ThreadLocal<Integer> tl = ThreadLocal.withInitial(() -> 0);
+      tl.set(5);
+      int[] box = new int[1];
+      Thread w = new Thread(() -> box[0] = tl.get());
+      w.start();
+      w.join();
+      System.out.println(tl.get() + " " + box[0]);
+    options: ["5 5", "0 0", "5 0", "0 5"]
+    correctIndex: 2
+    explanation: "Cada hilo tiene su propia copia de un ThreadLocal. main ve el 5 que fijó, pero el hilo nuevo parte del valor inicial 0."
+
+  - id: concurrency-17
+    topic: concurrency
+    difficulty: medium
+    question: "¿Qué ocurre al ejecutar este código?"
+    code: |
+      Thread s = new Thread(() -> {});
+      s.start();
+      s.join();
+      s.start();
+    options: ["El hilo se ejecuta por segunda vez sin problemas", "Lanza IllegalThreadStateException", "Lanza InterruptedException", "Bloquea main indefinidamente"]
+    correctIndex: 1
+    explanation: "Un Thread solo puede iniciarse una vez; un segundo start(), incluso con el hilo ya terminado, lanza IllegalThreadStateException. Para repetir trabajo hay que crear otro Thread o usar un pool."
+
+  - id: concurrency-18
+    topic: concurrency
+    difficulty: medium
+    question: "Tienes tareas puramente de cálculo (CPU-bound) en una máquina de 8 núcleos. ¿Qué tamaño de pool es un punto de partida razonable?"
+    options: ["Unos 8 hilos, cercano al número de núcleos", "Unos 800 hilos, para aprovechar al máximo", "Un solo hilo, siempre", "Ilimitado, con newCachedThreadPool"]
+    correctIndex: 0
+    explanation: "Con trabajo de CPU, más hilos que núcleos solo añade cambios de contexto. Para tareas con mucha espera de I/O sí conviene un pool mayor. Un pool cached sin límite puede crear miles de hilos."
+
+  - id: concurrency-19
+    topic: concurrency
+    difficulty: medium
+    question: "¿Qué imprime este código?"
+    code: |
+      static final Object lock = new Object();
+
+      static void a() { synchronized (lock) { System.out.println("a"); b(); } }
+      static void b() { synchronized (lock) { System.out.println("b"); } }
+
+      public static void main(String[] args) { a(); }
+    options: ["a y se queda bloqueado (deadlock)", "a y luego b", "Lanza IllegalMonitorStateException", "b y luego a"]
+    correctIndex: 1
+    explanation: "Los monitores de Java son reentrantes: un hilo que ya posee el lock puede volver a adquirirlo. Por eso imprime a y luego b, sin bloquearse."
+
+  - id: concurrency-20
+    topic: concurrency
+    difficulty: hard
+    question: "Usas CompletableFuture.supplyAsync(tarea) sin pasar un Executor y la tarea hace llamadas HTTP bloqueantes. ¿Cuál es el riesgo principal?"
+    options: ["Las tareas se ejecutan en el hilo que llama, bloqueándolo", "La tarea corre en el ForkJoinPool.commonPool(), compartido y de pocos hilos, que puede saturarse", "El resultado se pierde porque no se puede hacer join", "Se crea un hilo nuevo por tarea sin límite"]
+    correctIndex: 1
+    explanation: "Sin Executor se usa el common pool de ForkJoin (tamaño parecido al número de núcleos menos uno). Con tareas bloqueantes se agota y afecta también a parallel streams. Conviene pasar un Executor propio."
+
+  - id: concurrency-21
+    topic: concurrency
+    difficulty: hard
+    question: "¿Cuál de estas relaciones happens-before del Java Memory Model es VERDADERA?"
+    options: ["Todo lo que hizo el hilo que llama a start() antes de la llamada es visible para el hilo iniciado", "Una escritura normal en un campo no volatile es visible de inmediato para otros hilos", "El orden en que escribes el código garantiza el orden de ejecución visto desde otros hilos", "Una lectura de un campo volatile ocurre antes que cualquier escritura posterior de ese campo"]
+    correctIndex: 0
+    explanation: "Thread.start() establece happens-before con las acciones del hilo iniciado. Sin sincronización, el compilador y la CPU pueden reordenar, y las escrituras no volatile no tienen garantía de visibilidad."
+
+  - id: concurrency-22
+    topic: concurrency
+    difficulty: hard
+    question: "En el patrón Singleton con double-checked locking, ¿por qué el campo instance debe ser volatile?"
+    options: ["Para que el bloque synchronized sea más rápido", "Para que otro hilo no vea una referencia publicada antes de que el constructor termine de inicializar el objeto", "Para evitar que dos hilos entren a la vez al bloque synchronized", "Porque los campos estáticos no pueden ser no volátiles"]
+    correctIndex: 1
+    explanation: "Sin volatile, el reordenamiento permite publicar la referencia antes de completar la construcción, y otro hilo podría usar un objeto a medio inicializar. El synchronized ya garantiza la exclusión mutua; volatile resuelve la publicación segura."
+
+  - id: concurrency-23
+    topic: concurrency
+    difficulty: hard
+    question: "¿Qué diferencia hay entre Thread.sleep(ms) y Object.wait(ms) respecto al monitor?"
+    options: ["Ninguna: ambos liberan el monitor mientras esperan", "sleep libera el monitor y wait lo conserva", "wait libera el monitor mientras espera; sleep conserva los que tenga", "Ambos conservan el monitor, pero wait además puede ser despertado"]
+    correctIndex: 2
+    explanation: "wait() libera el monitor del objeto para que otros hilos puedan entrar y llamar a notify(); sleep() no suelta ningún lock. Por eso dormir dentro de un synchronized bloquea a los demás."
+
+  - id: concurrency-24
+    topic: concurrency
+    difficulty: hard
+    question: "¿Qué ventaja ofrece ReentrantLock frente a synchronized?"
+    options: ["Es siempre más rápido, sin excepciones", "Libera el lock automáticamente al terminar el bloque, sin finally", "Permite intentar adquirir con tryLock (con tiempo), ser interrumpible y elegir fairness", "Evita por completo los deadlocks"]
+    correctIndex: 2
+    explanation: "ReentrantLock añade tryLock, lockInterruptibly, fairness y varias Condition. A cambio hay que liberar el lock manualmente en un finally. No evita los deadlocks, y el rendimiento hoy es comparable."
+
+  - id: concurrency-25
+    topic: concurrency
+    difficulty: hard
+    question: "Sobre los virtual threads (finales en Java 21, no disponibles como característica estable en Java 17), ¿cuál afirmación es correcta?"
+    options: ["Están pensados para tareas de cálculo intensivo, mejor que los hilos de plataforma", "Son baratos y encajan en cargas con mucha espera de I/O bloqueante, con un hilo virtual por tarea", "Deben reutilizarse mediante un pool de tamaño fijo", "Reemplazan por completo la necesidad de sincronización"]
+    correctIndex: 1
+    explanation: "Los virtual threads son gestionados por la JVM y muy ligeros, ideales para miles de tareas que esperan I/O; no se hacen pool, se crea uno por tarea. No aceleran el cálculo ni eliminan las condiciones de carrera."

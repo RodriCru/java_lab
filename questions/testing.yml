@@ -1,0 +1,195 @@
+questions:
+  - id: testing-01
+    topic: testing
+    difficulty: easy
+    question: "En JUnit 5, ¿de qué paquete se importa la anotación `@Test`?"
+    options: ["org.junit.jupiter.api.Test", "org.junit.Test", "junit.framework.Test", "org.testng.annotations.Test"]
+    correctIndex: 0
+    explanation: "JUnit 5 (Jupiter) usa `org.junit.jupiter.api.Test`. `org.junit.Test` es de JUnit 4, y mezclarlos hace que el test no se ejecute con el motor Jupiter."
+  - id: testing-02
+    topic: testing
+    difficulty: easy
+    question: "¿Cuál es la diferencia entre una prueba unitaria y una de integración?"
+    options: ["La unitaria usa base de datos real y la de integración no", "La unitaria prueba una unidad aislada (por ejemplo, una clase) con sus colaboradores simulados; la de integración verifica que varios componentes funcionan juntos", "La de integración nunca puede automatizarse", "No hay diferencia; depende solo del tiempo que tarden"]
+    correctIndex: 1
+    explanation: "La prueba unitaria aísla la unidad y es rápida. La de integración incluye componentes reales (base de datos, contexto de Spring, HTTP) y es más lenta."
+  - id: testing-03
+    topic: testing
+    difficulty: easy
+    question: "¿Qué es un mock en pruebas?"
+    options: ["Una base de datos en memoria", "Una copia real del servicio en producción", "Un objeto simulado que reemplaza a una dependencia, programable y verificable", "Una clase que ejecuta las pruebas en paralelo"]
+    correctIndex: 2
+    explanation: "Un mock sustituye a un colaborador real para aislar la unidad probada, permite definir sus respuestas y verificar cómo fue invocado."
+  - id: testing-04
+    topic: testing
+    difficulty: easy
+    question: "¿Cuándo se ejecuta un método anotado con `@BeforeEach` en JUnit 5?"
+    options: ["Una sola vez antes de todas las pruebas de la clase", "Solo antes de la primera prueba", "Una sola vez al terminar la clase", "Antes de cada método de prueba"]
+    correctIndex: 3
+    explanation: "`@BeforeEach` se ejecuta antes de cada `@Test`. Para ejecutar algo una sola vez antes de todos los tests se usa `@BeforeAll`."
+  - id: testing-05
+    topic: testing
+    difficulty: easy
+    question: "En la pirámide de pruebas, ¿qué tipo de prueba debería haber en mayor cantidad?"
+    options: ["Unitarias", "De extremo a extremo (E2E) por interfaz de usuario", "Manuales exploratorias", "De integración con toda la infraestructura real"]
+    correctIndex: 0
+    explanation: "Las unitarias son rápidas, baratas y precisas, por eso forman la base. Las E2E son lentas y frágiles, así que van en la punta y en menor número."
+  - id: testing-06
+    topic: testing
+    difficulty: easy
+    question: "¿Cuál es el ciclo de TDD (Test-Driven Development)?"
+    options: ["Green, Refactor, Red", "Red, Green, Refactor", "Refactor, Red, Green", "Green, Red, Deploy"]
+    correctIndex: 1
+    explanation: "Primero se escribe una prueba que falla (Red), luego el código mínimo para que pase (Green) y por último se mejora el diseño sin romper nada (Refactor)."
+  - id: testing-07
+    topic: testing
+    difficulty: easy
+    question: "En JUnit 5, ¿cuál es el orden convencional de los argumentos de `assertEquals`?"
+    options: ["(actual, expected)", "(mensaje, actual, expected) siempre obligatorio", "(expected, actual)", "El orden no importa porque compara con `==`"]
+    correctIndex: 2
+    explanation: "La convención es `assertEquals(expected, actual)`. Invertirlos no cambia si pasa o falla, pero el mensaje de error saldrá confuso (esperado y obtenido intercambiados)."
+  - id: testing-08
+    topic: testing
+    difficulty: easy
+    question: "¿Cómo se omite temporalmente un test en JUnit 5 sin borrarlo?"
+    options: ["Con `@Ignore`", "Con `@Skip`", "Con `@Pending`", "Con `@Disabled`"]
+    correctIndex: 3
+    explanation: "`@Disabled` es la anotación de JUnit 5. `@Ignore` pertenece a JUnit 4."
+  - id: testing-09
+    topic: testing
+    difficulty: medium
+    question: "Dada la clase de prueba, ¿qué valor imprimen `t1` y `t2` (cada uno en su ejecución)?"
+    code: |
+      import org.junit.jupiter.api.*;
+      class LifeTest {
+          int n = 0;
+          @Test void t1() { n++; System.out.print("T" + n + " "); }
+          @Test void t2() { n++; System.out.print("T" + n + " "); }
+      }
+    options: ["t1 imprime T1 y t2 imprime T2, sin importar el orden", "Ambos imprimen T1, porque JUnit crea una instancia nueva de la clase para cada test", "Falla al compilar porque `n` no es estático", "El primero imprime T1 y el segundo T2 solo si se ejecutan en orden alfabético"]
+    correctIndex: 1
+    explanation: "Por defecto JUnit 5 usa `@TestInstance(PER_METHOD)`: una instancia nueva por test, así que el estado del campo no se comparte y ambos imprimen T1."
+  - id: testing-10
+    topic: testing
+    difficulty: medium
+    question: "¿Qué ocurre al ejecutar este test?"
+    code: |
+      @Test
+      void falla() {
+          Assertions.assertThrows(IllegalStateException.class, () -> {
+              throw new IllegalArgumentException();
+          });
+      }
+    options: ["Pasa, porque ambas son RuntimeException", "Pasa, porque `assertThrows` acepta cualquier excepción", "Falla, porque la excepción lanzada no es del tipo esperado ni de un subtipo", "Se produce un error de compilación"]
+    correctIndex: 2
+    explanation: "`assertThrows` exige que la excepción sea del tipo indicado o de una subclase. `IllegalArgumentException` no hereda de `IllegalStateException`, así que el test falla."
+  - id: testing-11
+    topic: testing
+    difficulty: medium
+    question: "¿Cuál es la diferencia entre un mock y un spy en Mockito?"
+    options: ["Un spy no se puede verificar con `verify`", "Un mock es un objeto completamente simulado que no ejecuta código real; un spy envuelve un objeto real y ejecuta sus métodos reales salvo los que se stubbeen", "Un mock solo funciona con interfaces y un spy solo con clases", "Son sinónimos"]
+    correctIndex: 1
+    explanation: "Los métodos de un mock devuelven valores por defecto (null, 0, false) hasta que se stubbean. El spy conserva el comportamiento real del objeto."
+  - id: testing-12
+    topic: testing
+    difficulty: medium
+    question: "¿Para qué sirve `ArgumentCaptor` en Mockito?"
+    options: ["Para forzar que un método devuelva un valor concreto", "Para ejecutar el método real de un mock", "Para capturar el argumento con que se llamó a un colaborador y luego hacer aserciones sobre él", "Para convertir un mock en spy"]
+    correctIndex: 2
+    explanation: "Se usa con `verify(mock).metodo(captor.capture())` y después `captor.getValue()` para inspeccionar el objeto que el código bajo prueba construyó y pasó al colaborador."
+  - id: testing-13
+    topic: testing
+    difficulty: medium
+    question: "¿Qué carga `@WebMvcTest` en Spring Boot?"
+    options: ["Solo la capa web (controladores, filtros, converters) y MockMvc; los servicios y repositorios deben simularse", "El contexto completo con base de datos y servidor real", "Solo los repositorios JPA", "Todos los beans de la aplicación menos los controladores"]
+    correctIndex: 0
+    explanation: "Es un slice de pruebas: carga solo la infraestructura MVC. Las dependencias del controlador, como servicios, se proveen con mocks."
+  - id: testing-14
+    topic: testing
+    difficulty: medium
+    question: "¿Qué hace por defecto `@DataJpaTest`?"
+    options: ["Levanta todo el contexto y un servidor web en un puerto aleatorio", "Carga solo la capa de persistencia JPA, usa una base de datos embebida en lugar de la configurada y hace rollback al terminar cada test", "Desactiva Hibernate y usa JDBC puro", "Hace commit de los cambios para poder revisarlos después"]
+    correctIndex: 1
+    explanation: "Configura entidades, repositorios y `EntityManager`; sustituye el DataSource por uno embebido (si está disponible) y cada test corre en una transacción que se revierte."
+  - id: testing-15
+    topic: testing
+    difficulty: medium
+    question: "¿Cuál es el principal inconveniente de usar `@SpringBootTest` en todas las pruebas?"
+    options: ["No permite inyectar beans", "Solo funciona con JUnit 4", "No puede probar controladores", "Carga el contexto completo, por lo que las pruebas son más lentas y menos aisladas"]
+    correctIndex: 3
+    explanation: "`@SpringBootTest` arranca toda la aplicación. Conviene reservarlo para pruebas de integración y usar tests unitarios o slices para el resto."
+  - id: testing-16
+    topic: testing
+    difficulty: medium
+    question: "¿Qué permite `@ParameterizedTest` junto con `@ValueSource` en JUnit 5?"
+    options: ["Ejecutar el mismo test varias veces con distintos valores de entrada", "Ejecutar tests en paralelo automáticamente", "Inyectar mocks sin Mockito", "Repetir el test hasta que pase"]
+    correctIndex: 0
+    explanation: "Cada valor de la fuente produce una invocación independiente del test. Evita duplicar métodos casi idénticos. Requiere el artefacto junit-jupiter-params."
+  - id: testing-17
+    topic: testing
+    difficulty: medium
+    question: "Un test usa `when(repo.findById(1L)).thenReturn(Optional.of(user))` y luego comprueba el valor devuelto por el servicio. ¿Qué tipo de doble se está usando principalmente en esa parte?"
+    options: ["Dummy", "Fake", "Spy", "Stub: entrega respuestas predefinidas al código bajo prueba"]
+    correctIndex: 3
+    explanation: "Un stub solo provee datos de entrada controlados. Si además se verificara con `verify` que se llamó al repositorio, esa parte sería de mock (verificación de comportamiento)."
+  - id: testing-18
+    topic: testing
+    difficulty: medium
+    question: "Con un spy de Mockito, ¿por qué se recomienda `doReturn(x).when(spy).metodo()` en lugar de `when(spy.metodo()).thenReturn(x)`?"
+    options: ["Porque `doReturn` es más rápido", "Porque `when(spy.metodo())` ejecuta primero el método real, lo que puede lanzar excepciones o provocar efectos secundarios", "Porque `thenReturn` no existe para spies", "Porque `doReturn` convierte el spy en mock"]
+    correctIndex: 1
+    explanation: "En `when(spy.metodo())` la expresión interna se evalúa antes de stubbear y llama al método real. `doReturn(...).when(spy).metodo()` stubbea sin invocarlo."
+  - id: testing-19
+    topic: testing
+    difficulty: medium
+    question: "Un equipo exige 100 % de cobertura de líneas. ¿Qué afirmación es VERDADERA?"
+    options: ["Con 100 % de cobertura se garantiza que no hay bugs", "Un test sin aserciones no puede contar para la cobertura", "La cobertura mide aserciones, no líneas ejecutadas", "La cobertura indica qué código se ejecutó, no si el comportamiento se verificó; es una métrica útil para detectar huecos, pero no mide la calidad de los tests"]
+    correctIndex: 3
+    explanation: "Un test sin aserciones puede ejecutar todo el código y subir la cobertura sin verificar nada. Conviene priorizar la lógica de negocio y los casos límite en vez de perseguir un número."
+  - id: testing-20
+    topic: testing
+    difficulty: hard
+    question: "Una clase de prueba usa `@Mock` de Mockito pero el bean real se sigue inyectando en el contexto de Spring de una prueba con `@SpringBootTest`. ¿Cuál es la causa y cómo se corrige?"
+    options: ["`@Mock` crea un mock fuera del contexto de Spring y no reemplaza al bean; se debe usar una anotación de Spring como `@MockitoBean` (o `@MockBean` en versiones anteriores)", "`@SpringBootTest` ignora siempre los mocks; no tiene solución", "Falta `@Autowired` en el mock", "Hay que anotar el bean real con `@Primary`"]
+    correctIndex: 0
+    explanation: "`@Mock` solo crea el objeto con Mockito. Para sustituir un bean dentro del `ApplicationContext` se usa `@MockitoBean` (Spring Framework 6.2+) o `@MockBean` en versiones anteriores de Spring Boot."
+  - id: testing-21
+    topic: testing
+    difficulty: hard
+    question: "¿Qué permite `@TestInstance(TestInstance.Lifecycle.PER_CLASS)` en JUnit 5?"
+    options: ["Ejecutar cada test en un hilo distinto", "Que los métodos `@BeforeAll` y `@AfterAll` no sean estáticos, porque se crea una única instancia de la clase para todos los tests", "Que los tests compartan un mismo contexto de Spring sin configuración", "Crear una instancia nueva por cada método de prueba"]
+    correctIndex: 1
+    explanation: "Con PER_CLASS hay una sola instancia, por lo que `@BeforeAll` y `@AfterAll` pueden ser métodos de instancia y el estado de los campos se comparte entre tests (con el riesgo de acoplarlos)."
+  - id: testing-22
+    topic: testing
+    difficulty: hard
+    question: "Tests que pasan o fallan sin cambiar el código (flaky tests). ¿Cuál es una causa típica y su remedio?"
+    options: ["El uso de `@BeforeEach`; eliminarlo", "Dependencia de la hora actual, el orden de ejecución, hilos o datos compartidos; se corrige inyectando un `Clock`, aislando el estado y evitando `sleep`", "Usar JUnit 5 en vez de JUnit 4; volver a la versión anterior", "Tener demasiadas aserciones; dejar solo una por clase"]
+    correctIndex: 1
+    explanation: "Los flaky tests suelen venir de tiempo real, concurrencia, orden entre tests o estado compartido. Controlar esas fuentes de no determinismo los vuelve confiables."
+  - id: testing-23
+    topic: testing
+    difficulty: hard
+    question: "¿Qué comprueba este test con MockMvc?"
+    code: |
+      mockMvc.perform(post("/api/users")
+              .contentType(MediaType.APPLICATION_JSON)
+              .content("{\"email\":\"\"}"))
+          .andExpect(status().isBadRequest());
+    options: ["Que la base de datos rechaza el correo vacío", "Que el servidor responde 500 ante datos inválidos", "Que el cliente HTTP real reintenta la petición", "Que el controlador, con su validación (por ejemplo `@Valid`), responde 400 ante un cuerpo inválido, sin levantar un servidor real"]
+    correctIndex: 3
+    explanation: "MockMvc simula la petición sobre la capa MVC sin abrir un puerto. Si el DTO tiene restricciones y el controlador usa `@Valid`, un correo vacío produce un 400."
+  - id: testing-24
+    topic: testing
+    difficulty: hard
+    question: "¿Qué hace por defecto un test anotado con `@Transactional` en el framework de pruebas de Spring?"
+    options: ["Hace commit al terminar para persistir los datos", "Ejecuta cada test en una transacción nueva que se revierte (rollback) al finalizar, salvo que se indique `@Commit`", "Ignora la transacción si hay un `@BeforeEach`", "Mantiene la transacción abierta durante toda la suite de pruebas"]
+    correctIndex: 1
+    explanation: "El `TestContext` gestiona la transacción del test y la revierte por defecto, dejando la base de datos limpia. Se cambia con `@Commit` o `@Rollback(false)`."
+  - id: testing-25
+    topic: testing
+    difficulty: hard
+    question: "En un servicio de pedidos, ¿qué conviene priorizar al decidir qué probar?"
+    options: ["Getters y setters de los DTO, para subir la cobertura", "Solo el camino feliz, porque los errores son raros", "La lógica de negocio con reglas, casos límite y errores (descuentos, estados, validaciones), más unas pocas pruebas de integración de los puntos críticos", "Los métodos privados con reflexión, uno por uno"]
+    correctIndex: 2
+    explanation: "El valor está en la lógica con ramificaciones y en los bordes donde se producen los bugs. Probar código trivial o detalles de implementación aporta poco y vuelve frágiles los tests."

@@ -1,0 +1,300 @@
+questions:
+  - id: spring-core-01
+    topic: spring-core
+    difficulty: easy
+    question: "¿Qué significa Inversión de Control (IoC) en Spring?"
+    options:
+      - "El contenedor crea los objetos y les entrega sus dependencias, en lugar de que cada clase las construya"
+      - "Las clases invierten el orden en que se ejecutan sus métodos para mejorar el rendimiento"
+      - "Cada clase controla manualmente el ciclo de vida de sus propias dependencias con new"
+      - "Las interfaces se sustituyen por clases concretas durante la compilación del proyecto"
+    correctIndex: 0
+    explanation: "Con IoC se invierte quién controla la creación y el cableado de objetos: lo hace el contenedor de Spring. La inyección de dependencias es la técnica con la que se implementa."
+
+  - id: spring-core-02
+    topic: spring-core
+    difficulty: easy
+    question: "¿Qué aporta @Repository frente a un simple @Component?"
+    options:
+      - "Hace que el bean sea prototype en lugar de singleton"
+      - "Marca la capa de persistencia y habilita la traducción de excepciones propias de la tecnología a DataAccessException"
+      - "Abre y cierra automáticamente una transacción en cada método de la clase"
+      - "Genera la implementación del acceso a datos a partir de los nombres de los métodos"
+    correctIndex: 1
+    explanation: "@Repository es un estereotipo de @Component que además activa la traducción de excepciones de persistencia. No cambia el scope ni abre transacciones; eso es @Transactional."
+
+  - id: spring-core-03
+    topic: spring-core
+    difficulty: easy
+    question: "¿Cuál es el scope por defecto de un bean en Spring?"
+    options:
+      - "prototype: se crea una instancia nueva cada vez que se inyecta"
+      - "request: una instancia por cada petición HTTP"
+      - "singleton: una única instancia por contenedor (ApplicationContext)"
+      - "session: una instancia por cada sesión de usuario"
+    correctIndex: 2
+    explanation: "El scope por defecto es singleton: una sola instancia compartida dentro del ApplicationContext. Por eso los beans singleton no deben guardar estado mutable por usuario."
+
+  - id: spring-core-04
+    topic: spring-core
+    difficulty: easy
+    question: "¿Por qué se recomienda la inyección por constructor sobre la inyección por campo con @Autowired?"
+    options:
+      - "Porque la inyección por campo no funciona con beans singleton"
+      - "Porque el constructor es más rápido en tiempo de ejecución que la reflexión"
+      - "Porque @Autowired en campos fue eliminado en Spring 6 y ya no compila"
+      - "Porque permite campos final, deja explícitas las dependencias obligatorias y facilita las pruebas sin Spring"
+    correctIndex: 3
+    explanation: "Con constructor las dependencias son inmutables y obligatorias, y se puede instanciar la clase en un test unitario con new. La inyección por campo sigue funcionando, pero oculta dependencias y es más difícil de probar."
+
+  - id: spring-core-05
+    topic: spring-core
+    difficulty: easy
+    question: "¿Para qué sirve un método anotado con @Bean dentro de una clase @Configuration?"
+    options:
+      - "Para declarar y configurar un bean cuyo objeto lo crea el propio método, útil con clases de terceros"
+      - "Para marcar un método que se ejecuta cada vez que se recibe una petición HTTP"
+      - "Para indicar que la clase debe ser detectada por el escaneo de componentes"
+      - "Para exponer el método como un endpoint REST"
+    correctIndex: 0
+    explanation: "@Bean registra en el contenedor el objeto que devuelve el método. Es la forma habitual de crear beans de librerías que no podemos anotar con @Component."
+
+  - id: spring-core-06
+    topic: spring-core
+    difficulty: easy
+    question: "Hay dos beans que implementan la misma interfaz y quieres que uno sea el elegido por defecto al inyectar. ¿Qué anotación usas en ese bean?"
+    options:
+      - "@Order"
+      - "@Primary"
+      - "@Lazy"
+      - "@DependsOn"
+    correctIndex: 1
+    explanation: "@Primary indica el candidato preferido cuando hay varios del mismo tipo. @Order solo afecta al orden en colecciones, @Lazy a la inicialización y @DependsOn al orden de creación."
+
+  - id: spring-core-07
+    topic: spring-core
+    difficulty: easy
+    question: "¿Cuál es la diferencia principal entre BeanFactory y ApplicationContext?"
+    options:
+      - "BeanFactory solo funciona con XML y ApplicationContext solo con anotaciones"
+      - "ApplicationContext no soporta beans singleton, solo prototype"
+      - "ApplicationContext extiende BeanFactory y añade eventos, internacionalización, integración con AOP y registro automático de post-procesadores"
+      - "BeanFactory es la versión moderna y ApplicationContext está obsoleto"
+    correctIndex: 2
+    explanation: "ApplicationContext es un superconjunto de BeanFactory con más funcionalidades empresariales. En aplicaciones Spring Boot siempre se trabaja con un ApplicationContext."
+
+  - id: spring-core-08
+    topic: spring-core
+    difficulty: easy
+    question: "Tienes dos beans de tipo PaymentService (\"stripeService\" y \"paypalService\"). ¿Cómo eliges uno concreto en el punto de inyección?"
+    options:
+      - "Con @Value(\"stripeService\")"
+      - "Con @Scope(\"stripeService\") en el parámetro"
+      - "Con @Profile(\"stripeService\") sobre la clase que inyecta"
+      - "Con @Qualifier(\"stripeService\") junto al parámetro o campo"
+    correctIndex: 3
+    explanation: "@Qualifier selecciona el bean por nombre (o por un qualifier personalizado) en el punto de inyección, y tiene prioridad sobre @Primary."
+
+  - id: spring-core-09
+    topic: spring-core
+    difficulty: medium
+    question: "Un método público A de un servicio llama a this.b(), donde b() tiene @Transactional y A no. ¿Qué ocurre con la transacción de b()?"
+    options:
+      - "No se aplica: la llamada interna no pasa por el proxy, así que el aspecto transaccional no se ejecuta"
+      - "Se aplica normalmente, porque la anotación está en la misma clase"
+      - "Spring lanza una excepción al arrancar por detectar la autoinvocación"
+      - "Se aplica pero con propagación REQUIRES_NEW"
+    correctIndex: 0
+    explanation: "@Transactional funciona mediante un proxy. Una llamada this.b() no atraviesa el proxy, de modo que se ignora la anotación. Soluciones: mover b() a otro bean o inyectar el propio bean."
+
+  - id: spring-core-10
+    topic: spring-core
+    difficulty: medium
+    question: "Un bean singleton recibe por inyección un bean con scope prototype. ¿Qué comportamiento se observa?"
+    options:
+      - "Cada llamada a un método del singleton obtiene automáticamente una instancia nueva del prototype"
+      - "El prototype se inyecta una sola vez al crear el singleton y esa misma instancia se reutiliza siempre"
+      - "Spring lanza una excepción porque un singleton no puede depender de un prototype"
+      - "El prototype se convierte en singleton y se registra en el contexto"
+    correctIndex: 1
+    explanation: "La inyección ocurre una vez, al crear el singleton. Para obtener una instancia nueva por uso hay que usar ObjectProvider, @Lookup o un proxy de scope."
+
+  - id: spring-core-11
+    topic: spring-core
+    difficulty: medium
+    question: "El bean A recibe B por constructor y B recibe A por constructor. ¿Qué ocurre al arrancar el contexto?"
+    options:
+      - "Spring crea ambos usando un proxy temporal y todo funciona"
+      - "Spring los crea con valor null y falla después con NullPointerException"
+      - "Falla el arranque con un error de dependencia circular (BeanCurrentlyInCreationException)"
+      - "Spring crea solo uno de los dos y descarta el otro"
+    correctIndex: 2
+    explanation: "Con inyección por constructor Spring no puede resolver el ciclo. Además, desde Spring Boot 2.6 las referencias circulares están prohibidas por defecto, incluso con setters o campos."
+
+  - id: spring-core-12
+    topic: spring-core
+    difficulty: medium
+    question: "¿Cuál es el orden correcto en el ciclo de vida básico de un bean singleton?"
+    options:
+      - "@PostConstruct, constructor, inyección de dependencias, @PreDestroy"
+      - "Inyección de dependencias, constructor, @PreDestroy, @PostConstruct"
+      - "Constructor, @PreDestroy, inyección de dependencias, @PostConstruct"
+      - "Constructor, inyección de dependencias, @PostConstruct, uso del bean, @PreDestroy al cerrar el contexto"
+    correctIndex: 3
+    explanation: "Primero se instancia, luego se inyectan las dependencias, después se ejecuta @PostConstruct y, al cerrar el contexto, @PreDestroy. Por eso en @PostConstruct ya hay dependencias disponibles."
+
+  - id: spring-core-13
+    topic: spring-core
+    difficulty: medium
+    question: "Con la configuración por defecto, ¿cuándo hace rollback una transacción con @Transactional?"
+    options:
+      - "Cuando se lanza una RuntimeException (o Error); las excepciones checked no provocan rollback"
+      - "Siempre que se lanza cualquier excepción, checked o unchecked"
+      - "Solo cuando se lanza una excepción checked"
+      - "Nunca: hay que llamar manualmente a rollback()"
+    correctIndex: 0
+    explanation: "Por defecto solo las excepciones no comprobadas (RuntimeException y Error) revierten. Para checked hay que usar rollbackFor = Exception.class o similar."
+
+  - id: spring-core-14
+    topic: spring-core
+    difficulty: medium
+    question: "¿Qué limitación tiene un proxy CGLIB, el que Spring Boot usa por defecto para AOP?"
+    options:
+      - "Solo puede proxificar clases que implementen al menos una interfaz"
+      - "No puede interceptar métodos final ni proxificar clases final, porque trabaja creando una subclase"
+      - "No permite interceptar métodos públicos"
+      - "Es incompatible con @Transactional"
+    correctIndex: 1
+    explanation: "CGLIB genera una subclase del objetivo, por lo que las clases y métodos final no se pueden sobrescribir. Los proxies JDK exigen interfaz; CGLIB no."
+
+  - id: spring-core-15
+    topic: spring-core
+    difficulty: medium
+    question: "Colocas @Transactional en un método private de un servicio. ¿Qué sucede?"
+    options:
+      - "Se aplica porque Spring usa reflexión para acceder al método"
+      - "Spring lanza BeanCreationException al arrancar"
+      - "No tiene efecto: el aspecto basado en proxy solo intercepta llamadas a métodos visibles desde fuera del bean"
+      - "Se aplica pero solo si la clase es final"
+    correctIndex: 2
+    explanation: "El proxy no puede interceptar métodos privados (ni las llamadas internas). La anotación se ignora sin error, lo que hace que el fallo pase inadvertido."
+
+  - id: spring-core-16
+    topic: spring-core
+    difficulty: medium
+    question: "¿Qué efecto tiene @Profile(\"dev\") sobre una clase anotada como @Service?"
+    options:
+      - "El bean se crea siempre, pero solo se usa en la ruta /dev"
+      - "El bean se crea solo cuando existe un archivo application-dev.yml"
+      - "El bean se destruye cuando el perfil activo es prod"
+      - "El bean se registra únicamente si el perfil dev está activo"
+    correctIndex: 3
+    explanation: "@Profile condiciona el registro del bean a que el perfil esté activo, por ejemplo con spring.profiles.active=dev. El archivo application-dev.yml es independiente del bean."
+
+  - id: spring-core-17
+    topic: spring-core
+    difficulty: medium
+    question: "Publicas un evento con ApplicationEventPublisher y tienes un @EventListener. ¿Cómo se ejecuta el listener por defecto?"
+    options:
+      - "De forma síncrona, en el mismo hilo que publica el evento"
+      - "De forma asíncrona, en un hilo de un pool de Spring"
+      - "En un hilo nuevo por cada listener, siempre"
+      - "Solo después de que termine la transacción actual"
+    correctIndex: 0
+    explanation: "Los listeners son síncronos por defecto: bloquean al publicador y comparten su hilo (y su transacción). Para asincronía hay que usar @Async; para esperar al commit, @TransactionalEventListener."
+
+  - id: spring-core-18
+    topic: spring-core
+    difficulty: medium
+    question: "En una clase @Configuration, un método @Bean llama dos veces a otro método @Bean sin parámetros. ¿Cuántas instancias se crean?"
+    options:
+      - "Dos, una por cada llamada"
+      - "Una sola, porque Spring intercepta la llamada y devuelve el singleton del contenedor"
+      - "Ninguna, porque no se puede invocar un método @Bean directamente"
+      - "Depende del orden de declaración de los métodos"
+    correctIndex: 1
+    explanation: "Las clases @Configuration se proxifican con CGLIB, de modo que las llamadas entre métodos @Bean devuelven el bean singleton. En una clase @Component (modo lite) sí se crearía una instancia por llamada."
+
+  - id: spring-core-19
+    topic: spring-core
+    difficulty: medium
+    question: "¿Cuál es una desventaja real de la inyección por campo (@Autowired sobre un atributo)?"
+    options:
+      - "No funciona con interfaces"
+      - "Impide usar @Qualifier"
+      - "No permite declarar el campo final y obliga a usar Spring o reflexión para instanciar la clase en pruebas"
+      - "Solo se puede usar con beans prototype"
+    correctIndex: 2
+    explanation: "Sin constructor ni setter no hay forma limpia de inyectar dependencias fuera del contenedor. Sí funciona con interfaces y con @Qualifier."
+
+  - id: spring-core-20
+    topic: spring-core
+    difficulty: hard
+    question: "Un servicio A (@Transactional) llama a un método de otro bean B marcado con @Transactional(propagation = REQUIRES_NEW). B termina bien y luego A lanza una RuntimeException. ¿Qué pasa con los cambios hechos en B?"
+    options:
+      - "Se revierten, porque A y B comparten la misma transacción"
+      - "Se revierten solo si B no tenía @Transactional"
+      - "Quedan en espera hasta que alguien haga commit manual"
+      - "Quedan confirmados, porque B corrió en una transacción independiente que ya hizo commit"
+    correctIndex: 3
+    explanation: "REQUIRES_NEW suspende la transacción exterior y abre una nueva, que se confirma al salir de B. El rollback posterior de A no la afecta."
+
+  - id: spring-core-21
+    topic: spring-core
+    difficulty: hard
+    question: "Un método transaccional A (REQUIRED) llama a B (REQUIRED, otro bean), que lanza una RuntimeException; A la captura y sigue normalmente. ¿Qué ocurre al terminar A?"
+    options:
+      - "Se lanza UnexpectedRollbackException, pues B marcó la transacción compartida como rollback-only"
+      - "Se hace commit de todo, porque A capturó la excepción"
+      - "Solo se revierten los cambios de B y se confirman los de A"
+      - "El resultado es indefinido y depende del motor de base de datos"
+    correctIndex: 0
+    explanation: "Al salir B con excepción, el proxy marca la transacción compartida como rollback-only. Aunque A la capture, el commit final falla con UnexpectedRollbackException."
+
+  - id: spring-core-22
+    topic: spring-core
+    difficulty: hard
+    question: "¿Cuál es la diferencia entre BeanFactoryPostProcessor y BeanPostProcessor?"
+    options:
+      - "Ambos se ejecutan después de crear cada bean y solo difieren en el nombre"
+      - "BeanFactoryPostProcessor modifica las definiciones de beans antes de instanciarlos; BeanPostProcessor actúa sobre las instancias ya creadas (por ejemplo, para crear proxies)"
+      - "BeanFactoryPostProcessor actúa sobre instancias; BeanPostProcessor solo sobre definiciones XML"
+      - "BeanPostProcessor solo se ejecuta al cerrar el contexto"
+    correctIndex: 1
+    explanation: "El primero trabaja sobre los metadatos (BeanDefinition), como en la resolución de ${...} de propiedades. El segundo intercepta cada instancia antes y después de la inicialización; así se aplican AOP y @Autowired."
+
+  - id: spring-core-23
+    topic: spring-core
+    difficulty: hard
+    question: "En un aspecto con un advice @Around, ¿qué ocurre si no se invoca proceedingJoinPoint.proceed()?"
+    options:
+      - "El método objetivo se ejecuta igualmente después del advice"
+      - "Spring lanza una excepción en tiempo de compilación"
+      - "El método objetivo no se ejecuta: el advice decide si se invoca y puede sustituir su resultado"
+      - "Se ejecuta el método objetivo dos veces"
+    correctIndex: 2
+    explanation: "@Around envuelve la llamada y controla si el método real se ejecuta, con qué argumentos y qué valor se devuelve. Es el advice más potente y por eso hay que llamar a proceed() explícitamente."
+
+  - id: spring-core-24
+    topic: spring-core
+    difficulty: hard
+    question: "¿Qué ocurre con los callbacks de destrucción (@PreDestroy) de un bean prototype?"
+    options:
+      - "Se ejecutan al cerrar el contexto, igual que en los singleton"
+      - "Se ejecutan cuando el recolector de basura elimina el objeto"
+      - "Se ejecutan al terminar el método que lo usó"
+      - "Spring no los invoca: el contenedor crea y entrega la instancia, pero no gestiona su destrucción"
+    correctIndex: 3
+    explanation: "Para los prototype el contenedor solo cubre la creación e inicialización. La liberación de recursos queda a cargo del código cliente."
+
+  - id: spring-core-25
+    topic: spring-core
+    difficulty: hard
+    question: "Un método @Transactional lanza tareas con un ExecutorService propio y dentro de cada tarea usa un repositorio. ¿Esas tareas participan en la transacción del método?"
+    options:
+      - "No: el contexto transaccional se asocia al hilo mediante ThreadLocal, así que los hilos del pool no la comparten"
+      - "Sí, porque Spring propaga la transacción a todos los hilos creados dentro del método"
+      - "Sí, pero solo si el pool tiene un único hilo"
+      - "Sí, siempre que la propagación sea REQUIRED"
+    correctIndex: 0
+    explanation: "El estado transaccional se guarda en ThreadLocal, por lo que otro hilo no lo ve y cada acceso al repositorio abre su propia transacción. Lo mismo ocurre con @Async."

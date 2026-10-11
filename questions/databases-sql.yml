@@ -1,0 +1,320 @@
+questions:
+  - id: databases-sql-01
+    topic: databases-sql
+    difficulty: easy
+    question: "¿Cuál es la diferencia principal entre WHERE y HAVING?"
+    options:
+      - "WHERE solo funciona con SELECT y HAVING solo con UPDATE"
+      - "HAVING se ejecuta antes que WHERE para ordenar los datos"
+      - "WHERE filtra filas antes de agrupar; HAVING filtra grupos ya agregados"
+      - "WHERE admite funciones de agregación y HAVING no"
+    correctIndex: 2
+    explanation: "WHERE se evalúa fila por fila antes del GROUP BY, por lo que no puede usar agregaciones como COUNT o SUM. HAVING se evalúa después de agrupar y sí puede filtrar por ellas."
+
+  - id: databases-sql-02
+    topic: databases-sql
+    difficulty: easy
+    question: "¿Qué devuelve un INNER JOIN entre dos tablas?"
+    options:
+      - "Solo las filas que cumplen la condición de unión en ambas tablas"
+      - "Todas las filas de la tabla izquierda, con NULL donde no haya coincidencia"
+      - "Todas las filas de ambas tablas, coincidan o no"
+      - "El producto cartesiano de las dos tablas"
+    correctIndex: 0
+    explanation: "INNER JOIN conserva únicamente las combinaciones que cumplen la condición ON. La opción de las filas de la izquierda con NULL describe un LEFT JOIN."
+
+  - id: databases-sql-03
+    topic: databases-sql
+    difficulty: easy
+    question: "¿Qué garantiza una clave primaria (PRIMARY KEY) en una tabla?"
+    options:
+      - "Que la columna esté siempre ordenada de menor a mayor"
+      - "Que la columna se pueda repetir pero nunca modificar"
+      - "Que la columna sea siempre de tipo entero autoincremental"
+      - "Que cada fila se identifique de forma única y sin valores NULL"
+    correctIndex: 3
+    explanation: "La clave primaria exige unicidad y no nulidad. No tiene que ser entera ni autoincremental: puede ser un UUID o una clave compuesta."
+
+  - id: databases-sql-04
+    topic: databases-sql
+    difficulty: easy
+    question: "¿Cuál de estas afirmaciones sobre DELETE y TRUNCATE es correcta?"
+    options:
+      - "TRUNCATE admite una cláusula WHERE para borrar solo algunas filas"
+      - "DELETE admite WHERE para borrar filas concretas; TRUNCATE vacía toda la tabla"
+      - "DELETE elimina también la estructura de la tabla, TRUNCATE solo los datos"
+      - "Ambos son idénticos y solo cambia el nombre según el motor"
+    correctIndex: 1
+    explanation: "DELETE puede filtrar con WHERE y trabaja fila por fila. TRUNCATE no admite WHERE y vacía la tabla completa; ninguno de los dos elimina la tabla (eso es DROP)."
+
+  - id: databases-sql-05
+    topic: databases-sql
+    difficulty: easy
+    question: "¿Qué diferencia hay entre UNION y UNION ALL?"
+    options:
+      - "UNION ALL solo funciona si las tablas tienen el mismo nombre"
+      - "UNION conserva todos los duplicados y UNION ALL los elimina"
+      - "UNION elimina las filas duplicadas del resultado; UNION ALL las conserva"
+      - "UNION une columnas y UNION ALL une filas"
+    correctIndex: 2
+    explanation: "UNION combina filas y descarta duplicados, lo que implica un paso extra de ordenación o hash. UNION ALL no deduplica, así que suele ser más rápido."
+
+  - id: databases-sql-06
+    topic: databases-sql
+    difficulty: easy
+    question: "¿Cómo se comprueba correctamente en SQL que una columna es NULL?"
+    options:
+      - "columna == NULL"
+      - "columna = NULL"
+      - "columna = ''"
+      - "columna IS NULL"
+    correctIndex: 3
+    explanation: "NULL representa un valor desconocido; cualquier comparación con = o <> contra NULL da UNKNOWN y no devuelve filas. Se debe usar IS NULL o IS NOT NULL."
+
+  - id: databases-sql-07
+    topic: databases-sql
+    difficulty: easy
+    question: "En las propiedades ACID de una transacción, ¿qué significa la «D» de Durability (durabilidad)?"
+    options:
+      - "Una vez confirmada (commit), la transacción sobrevive a fallos como una caída del sistema"
+      - "La transacción debe ejecutarse siempre en un tiempo máximo fijo"
+      - "Los datos se duplican automáticamente en otro servidor"
+      - "Las transacciones no se ven entre sí mientras se ejecutan"
+    correctIndex: 0
+    explanation: "Durabilidad significa que los cambios confirmados persisten aunque el sistema falle justo después. El aislamiento entre transacciones corresponde a la «I»."
+
+  - id: databases-sql-08
+    topic: databases-sql
+    difficulty: easy
+    question: "¿Para qué sirve una clave foránea (FOREIGN KEY)?"
+    options:
+      - "Para acelerar siempre las búsquedas por esa columna"
+      - "Para cifrar los datos de la columna referenciada"
+      - "Para garantizar integridad referencial: el valor debe existir en la tabla referenciada"
+      - "Para impedir que la tabla tenga más de una clave primaria"
+    correctIndex: 1
+    explanation: "La clave foránea asegura que cada valor apunte a una fila existente en la tabla referenciada (o sea NULL). No crea por sí sola un índice en todos los motores, así que no garantiza velocidad."
+
+  - id: databases-sql-09
+    topic: databases-sql
+    difficulty: medium
+    question: "Quieres listar los clientes que NO tienen ningún pedido. ¿Qué consulta es la correcta?"
+    options:
+      - "SELECT c.* FROM customers c INNER JOIN orders o ON o.customer_id = c.id WHERE o.id IS NULL"
+      - "SELECT c.* FROM customers c LEFT JOIN orders o ON o.customer_id = c.id WHERE o.id IS NULL"
+      - "SELECT c.* FROM customers c RIGHT JOIN orders o ON o.customer_id = c.id WHERE c.id IS NULL"
+      - "SELECT c.* FROM customers c WHERE c.id = NULL"
+    correctIndex: 1
+    explanation: "El LEFT JOIN conserva todos los clientes y deja NULL en las columnas de orders cuando no hay coincidencia; filtrar por o.id IS NULL deja solo los que no tienen pedidos. El INNER JOIN nunca produciría esas filas."
+
+  - id: databases-sql-10
+    topic: databases-sql
+    difficulty: medium
+    question: "La tabla t tiene una columna x con los valores 1, NULL, 3, NULL. ¿Qué devuelve esta consulta?"
+    code: |
+      SELECT COUNT(*), COUNT(x) FROM t;
+    options:
+      - "2 y 2"
+      - "4 y 4"
+      - "2 y 4"
+      - "4 y 2"
+    correctIndex: 3
+    explanation: "COUNT(*) cuenta todas las filas (4), mientras que COUNT(x) ignora los valores NULL y cuenta solo 2."
+
+  - id: databases-sql-11
+    topic: databases-sql
+    difficulty: medium
+    question: "Existe un índice B-tree normal sobre la columna name. ¿Cuál de estas consultas NO puede aprovechar bien ese índice?"
+    options:
+      - "WHERE name LIKE '%son'"
+      - "WHERE name = 'Ana'"
+      - "WHERE name LIKE 'An%'"
+      - "WHERE name BETWEEN 'A' AND 'B'"
+    correctIndex: 0
+    explanation: "Con un comodín al inicio ('%son') no se conoce el prefijo, así que el índice ordenado no sirve para localizar las filas y se recorre la tabla. Los patrones con prefijo fijo sí usan el índice."
+
+  - id: databases-sql-12
+    topic: databases-sql
+    difficulty: medium
+    question: "Según el estándar SQL, ¿cuál es el nivel de aislamiento más bajo que evita las lecturas sucias (dirty reads)?"
+    options:
+      - "READ UNCOMMITTED"
+      - "SERIALIZABLE, porque es el único que las evita"
+      - "READ COMMITTED"
+      - "Ninguno; las lecturas sucias solo se evitan con bloqueos manuales"
+    correctIndex: 2
+    explanation: "READ UNCOMMITTED permite leer datos no confirmados. READ COMMITTED ya impide las lecturas sucias, aunque todavía permite lecturas no repetibles y fantasma."
+
+  - id: databases-sql-13
+    topic: databases-sql
+    difficulty: medium
+    question: "Una transacción lee la misma fila dos veces y obtiene valores distintos porque otra transacción la modificó y confirmó entre las dos lecturas. ¿Cómo se llama esta anomalía?"
+    options:
+      - "Lectura sucia (dirty read)"
+      - "Lectura no repetible (non-repeatable read)"
+      - "Lectura fantasma (phantom read)"
+      - "Actualización perdida (lost update)"
+    correctIndex: 1
+    explanation: "Es una lectura no repetible: la misma fila cambia entre dos lecturas. La lectura fantasma ocurre cuando aparecen o desaparecen filas de un conjunto, no cuando cambia una fila ya leída."
+
+  - id: databases-sql-14
+    topic: databases-sql
+    difficulty: medium
+    question: "¿Qué condición debe cumplir una tabla en tercera forma normal (3NF), además de estar en 2NF?"
+    options:
+      - "No tener claves foráneas"
+      - "No tener dependencias transitivas: las columnas no clave dependen solo de la clave"
+      - "Tener exactamente una columna por tabla"
+      - "Tener todas las columnas indexadas"
+    correctIndex: 1
+    explanation: "En 3NF ningún atributo no clave depende de otro atributo no clave (dependencia transitiva). Por ejemplo, guardar ciudad y país del cliente en la misma tabla suele violarla."
+
+  - id: databases-sql-15
+    topic: databases-sql
+    difficulty: medium
+    question: "Paginas con LIMIT 20 OFFSET 1000000 y la consulta es muy lenta. ¿Qué alternativa suele mejorar el rendimiento?"
+    options:
+      - "Paginación por clave (keyset): WHERE id > :ultimoId ORDER BY id LIMIT 20"
+      - "Aumentar el OFFSET para saltar más rápido"
+      - "Quitar el ORDER BY para que no ordene"
+      - "Usar SELECT * en lugar de listar columnas"
+    correctIndex: 0
+    explanation: "Con OFFSET el motor debe recorrer y descartar el millón de filas anteriores. La paginación keyset usa un índice para saltar directo a la posición. Quitar el ORDER BY haría el orden impredecible."
+
+  - id: databases-sql-16
+    topic: databases-sql
+    difficulty: medium
+    question: "La tabla a tiene los id 1, 2 y 3. La tabla b tiene una columna a_id con los valores 1 y NULL. ¿Qué devuelve esta consulta?"
+    code: |
+      SELECT id FROM a
+      WHERE id NOT IN (SELECT a_id FROM b);
+    options:
+      - "Las filas 2 y 3"
+      - "Un error por comparar con NULL"
+      - "Ninguna fila"
+      - "Solo la fila 2"
+    correctIndex: 2
+    explanation: "NOT IN con un NULL en la subconsulta produce UNKNOWN para toda comparación que no sea una coincidencia, así que ninguna fila cumple la condición. NOT EXISTS evita esta trampa."
+
+  - id: databases-sql-17
+    topic: databases-sql
+    difficulty: medium
+    question: "¿Por qué suele fallar esta consulta en la mayoría de motores SQL?"
+    code: |
+      SELECT price * quantity AS total
+      FROM order_items
+      WHERE total > 100;
+    options:
+      - "Porque price * quantity no se puede calcular en un SELECT"
+      - "Porque falta un GROUP BY obligatorio"
+      - "Porque AS solo se permite en consultas con JOIN"
+      - "Porque WHERE se evalúa antes del SELECT y todavía no existe el alias total"
+    correctIndex: 3
+    explanation: "El orden lógico es FROM, WHERE, GROUP BY, HAVING, SELECT, ORDER BY. Los alias del SELECT no existen aún en WHERE; se repite la expresión o se usa una subconsulta. ORDER BY sí puede usarlos."
+
+  - id: databases-sql-18
+    topic: databases-sql
+    difficulty: medium
+    question: "Existe un índice compuesto en (country, city). ¿Qué consulta aprovecha mejor ese índice?"
+    options:
+      - "WHERE city = 'Madrid'"
+      - "WHERE country = 'España' AND city = 'Madrid'"
+      - "WHERE city LIKE '%drid'"
+      - "WHERE UPPER(country) = 'ESPAÑA'"
+    correctIndex: 1
+    explanation: "Un índice compuesto se usa de izquierda a derecha (prefijo más a la izquierda). Filtrar solo por city no puede aprovecharlo eficientemente, y aplicar una función sobre la columna también lo impide."
+
+  - id: databases-sql-19
+    topic: databases-sql
+    difficulty: medium
+    question: "Una aplicación hace 1 consulta para traer 100 autores y luego 100 consultas más, una por autor, para traer sus libros. ¿Cómo se resuelve este problema N+1 desde el lado SQL?"
+    options:
+      - "Con un JOIN o una consulta con IN que traiga los libros de todos los autores de una vez"
+      - "Añadiendo un índice al nombre del autor"
+      - "Usando TRUNCATE antes de cada consulta"
+      - "Ejecutando las 100 consultas dentro de una transacción"
+    correctIndex: 0
+    explanation: "El problema es el número de viajes a la base de datos. Un JOIN o un WHERE author_id IN (...) lo reduce a una o dos consultas. Una transacción no reduce el número de consultas."
+
+  - id: databases-sql-20
+    topic: databases-sql
+    difficulty: hard
+    question: "Según el estándar SQL, ¿qué anomalías permite todavía el nivel REPEATABLE READ?"
+    options:
+      - "Lecturas sucias y lecturas no repetibles"
+      - "Ninguna; es equivalente a SERIALIZABLE"
+      - "Lecturas fantasma"
+      - "Solo actualizaciones perdidas"
+    correctIndex: 2
+    explanation: "El estándar define que REPEATABLE READ evita lecturas sucias y no repetibles, pero permite fantasmas; solo SERIALIZABLE evita las tres. Algunos motores, como PostgreSQL, ofrecen garantías más fuertes que el estándar."
+
+  - id: databases-sql-21
+    topic: databases-sql
+    difficulty: hard
+    question: "Necesitas transferir dinero entre dos cuentas actualizando dos filas, de forma que o se aplican ambos cambios o ninguno. ¿Qué elección es la más adecuada?"
+    options:
+      - "Una base de datos relacional con una transacción ACID"
+      - "Dos escrituras independientes en una base NoSQL eventualmente consistente"
+      - "Una caché en memoria sin persistencia"
+      - "Un archivo de texto con bloqueo manual"
+    correctIndex: 0
+    explanation: "La atomicidad entre varias filas es justo lo que ofrecen las transacciones ACID de una base relacional. Dos escrituras independientes con consistencia eventual podrían dejar el dinero a medias."
+
+  - id: databases-sql-22
+    topic: databases-sql
+    difficulty: hard
+    question: "La transacción A actualiza la fila 1 y luego la fila 2; la transacción B, en paralelo, actualiza la fila 2 y luego la fila 1. A veces el motor aborta una de ellas. ¿Qué ocurre y cómo se previene?"
+    options:
+      - "Un timeout de red; se previene aumentando el pool de conexiones"
+      - "Un deadlock; se previene bloqueando los recursos siempre en el mismo orden"
+      - "Una lectura fantasma; se previene con un índice"
+      - "Un error de integridad referencial; se previene con una clave foránea"
+    correctIndex: 1
+    explanation: "Cada transacción espera el bloqueo que tiene la otra: es un deadlock, y el motor aborta una como víctima. Acceder siempre a las filas en el mismo orden y mantener las transacciones cortas lo previene."
+
+  - id: databases-sql-23
+    topic: databases-sql
+    difficulty: hard
+    question: "Existe un índice normal en la columna created_at. ¿Por qué puede no usarse en esta consulta?"
+    code: |
+      SELECT * FROM orders
+      WHERE DATE(created_at) = '2026-01-15';
+    options:
+      - "Porque las fechas no se pueden indexar"
+      - "Porque DATE() solo funciona con claves primarias"
+      - "Porque SELECT * impide siempre el uso de índices"
+      - "Porque aplicar una función a la columna impide usar el índice; mejor un rango created_at >= ... AND created_at < ..."
+    correctIndex: 3
+    explanation: "Al envolver la columna en una función, el índice sobre created_at no sirve para localizar valores (consulta no sargable). Expresarlo como rango sobre la columna sin transformar sí lo aprovecha."
+
+  - id: databases-sql-24
+    topic: databases-sql
+    difficulty: hard
+    question: "La tabla emp tiene los salarios 100, 200, 200 y 150. ¿Qué devuelve esta consulta?"
+    code: |
+      SELECT MAX(salary) FROM emp
+      WHERE salary < (SELECT MAX(salary) FROM emp);
+    options:
+      - "200"
+      - "100"
+      - "150"
+      - "NULL"
+    correctIndex: 2
+    explanation: "La subconsulta devuelve 200; el filtro deja 100 y 150, y el MAX es 150. Como se compara con menor estricto, el 200 repetido no cuenta como segundo salario."
+
+  - id: databases-sql-25
+    topic: databases-sql
+    difficulty: hard
+    question: "customers tiene a Ana (1) y Beto (2); orders tiene dos pedidos de Ana: PAID y PENDING. ¿Qué devuelve esta consulta?"
+    code: |
+      SELECT c.name, o.status
+      FROM customers c
+      LEFT JOIN orders o ON o.customer_id = c.id
+      WHERE o.status = 'PAID';
+    options:
+      - "Solo la fila Ana/PAID; Beto desaparece"
+      - "Ana/PAID, Ana/PENDING y Beto/NULL"
+      - "Ana/PAID y Beto/NULL"
+      - "Un error porque falta GROUP BY"
+    correctIndex: 0
+    explanation: "El WHERE sobre la tabla derecha descarta las filas donde status es NULL, así que el LEFT JOIN se comporta como un INNER JOIN. Para conservar a Beto, la condición debe ir en el ON."

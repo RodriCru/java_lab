@@ -1,0 +1,213 @@
+questions:
+  - id: jvm-memory-01
+    topic: jvm-memory
+    difficulty: easy
+    question: "¿Cuál es la relación correcta entre JDK, JRE y JVM?"
+    options: ["La JVM incluye al JDK, que incluye al JRE", "El JRE incluye la JVM y el JDK añade herramientas de desarrollo como javac", "La JVM es lo que compila el código y el JDK solo lo ejecuta", "Son tres nombres para lo mismo"]
+    correctIndex: 1
+    explanation: "La JVM ejecuta el bytecode, el JRE añade las bibliotecas estándar y el JDK suma compilador y herramientas (javac, jar, jcmd...). Desde Java 11 ya no se distribuye un JRE separado de forma oficial."
+
+  - id: jvm-memory-02
+    topic: jvm-memory
+    difficulty: easy
+    question: "¿Dónde se almacenan normalmente las variables locales primitivas y las referencias de un método, y dónde los objetos?"
+    options: ["Locales en el stack del hilo y objetos en el heap", "Todo en el heap", "Locales en el heap y objetos en el stack", "Todo en el metaspace"]
+    correctIndex: 0
+    explanation: "Cada hilo tiene su stack con un frame por llamada, donde viven locales y referencias. Los objetos se crean en el heap, compartido entre hilos y administrado por el recolector de basura."
+
+  - id: jvm-memory-03
+    topic: jvm-memory
+    difficulty: easy
+    question: "¿Qué ocurre al ejecutar este código?"
+    code: |
+      static void rec() { rec(); }
+
+      public static void main(String[] args) {
+          rec();
+      }
+    options: ["Lanza OutOfMemoryError: Java heap space", "Entra en un bucle infinito sin consumir memoria", "Lanza StackOverflowError", "El compilador lo rechaza por recursión infinita"]
+    correctIndex: 2
+    explanation: "Cada llamada añade un frame al stack del hilo, que tiene tamaño limitado, y al agotarse se lanza StackOverflowError. Java no optimiza la recursión de cola, así que no se convierte en bucle."
+
+  - id: jvm-memory-04
+    topic: jvm-memory
+    difficulty: easy
+    question: "¿Qué almacena el Metaspace?"
+    options: ["Los objetos creados con new", "Los frames de las llamadas a métodos", "Los valores de las variables locales", "Los metadatos de las clases cargadas, en memoria nativa"]
+    correctIndex: 3
+    explanation: "Desde Java 8 el Metaspace sustituyó a PermGen y guarda metadatos de clases en memoria nativa, no en el heap. Por defecto crece según haga falta, aunque puede limitarse con -XX:MaxMetaspaceSize."
+
+  - id: jvm-memory-05
+    topic: jvm-memory
+    difficulty: easy
+    question: "¿Qué libera el recolector de basura?"
+    options: ["La memoria de los objetos a los que ya no se puede llegar desde ninguna raíz", "Los archivos y conexiones que el programa dejó abiertos", "Cualquier objeto que se asigna a null", "Los objetos más antiguos, aunque se usen"]
+    correctIndex: 0
+    explanation: "El GC reclama objetos inalcanzables. No cierra recursos como archivos o sockets (para eso están close() y try-with-resources), y asignar null solo ayuda si era la última referencia."
+
+  - id: jvm-memory-06
+    topic: jvm-memory
+    difficulty: easy
+    question: "¿Qué hace System.gc()?"
+    options: ["Fuerza siempre una recolección completa inmediata", "Elimina todos los objetos del heap", "Libera la memoria del metaspace únicamente", "Solicita a la JVM una recolección, sin garantía de que ocurra"]
+    correctIndex: 3
+    explanation: "System.gc() es una sugerencia que la JVM puede ignorar (por ejemplo con -XX:+DisableExplicitGC). En código de aplicación se desaconseja llamarla."
+
+  - id: jvm-memory-07
+    topic: jvm-memory
+    difficulty: easy
+    question: "¿Por qué se dice que Java es independiente de la plataforma?"
+    options: ["Porque javac genera código máquina para cada sistema operativo", "Porque el código fuente se interpreta directamente sin compilar", "Porque javac genera bytecode que cualquier JVM compatible puede ejecutar", "Porque Java no usa memoria nativa"]
+    correctIndex: 2
+    explanation: "javac compila a bytecode (archivos .class) y cada plataforma tiene su JVM que lo ejecuta. Lo dependiente del sistema es la JVM, no el bytecode."
+
+  - id: jvm-memory-08
+    topic: jvm-memory
+    difficulty: easy
+    question: "Una aplicación lanza java.lang.OutOfMemoryError: Java heap space. ¿Qué significa?"
+    options: ["Que el stack de un hilo se agotó por recursión", "Que el heap no tiene espacio para un objeto ni tras ejecutar el GC", "Que se acabó el espacio en disco", "Que se cargaron demasiadas clases en el metaspace"]
+    correctIndex: 1
+    explanation: "El heap está lleno de objetos aún alcanzables (o es demasiado pequeño) y el GC no consigue liberar suficiente. Un stack agotado produce StackOverflowError."
+
+  - id: jvm-memory-09
+    topic: jvm-memory
+    difficulty: medium
+    question: "En un GC generacional, ¿dónde se crean normalmente los objetos nuevos y qué pasa con los que sobreviven a varias recolecciones?"
+    options: ["En la generación vieja, y pasan a la joven si se usan mucho", "En el metaspace, y luego se copian al heap", "En la generación joven (Eden) y se promueven a la vieja si sobreviven", "En el stack y se mueven al heap al terminar el método"]
+    correctIndex: 2
+    explanation: "La mayoría de los objetos muere joven, por eso se asignan en Eden y se recolectan con GC menores baratos. Los supervivientes pasan por los survivor spaces y acaban promovidos a la generación vieja."
+
+  - id: jvm-memory-10
+    topic: jvm-memory
+    difficulty: medium
+    question: "¿Cuál es el recolector de basura por defecto en Java 17 en una máquina con varios núcleos y memoria suficiente?"
+    options: ["Serial GC", "Parallel GC", "CMS", "G1"]
+    correctIndex: 3
+    explanation: "G1 es el recolector por defecto desde Java 9 (en máquinas tipo servidor). CMS fue eliminado en Java 14. G1 divide el heap en regiones y busca cumplir un objetivo de pausa."
+
+  - id: jvm-memory-11
+    topic: jvm-memory
+    difficulty: medium
+    question: "¿Qué imprime este código?"
+    code: |
+      Object o = new Object();
+      WeakReference<Object> wr = new WeakReference<>(o);
+      System.gc();
+      System.out.println(wr.get() != null);
+    options: ["true, porque o sigue siendo alcanzable por una referencia fuerte", "false, porque System.gc() siempre limpia las referencias débiles", "Lanza NullPointerException", "No compila: WeakReference exige un tipo concreto"]
+    correctIndex: 0
+    explanation: "Un objeto solo es candidato a recolección por débil cuando no hay referencias fuertes; aquí la variable local o lo mantiene vivo. Si se asignara o = null, wr.get() normalmente devolvería null tras un GC."
+
+  - id: jvm-memory-12
+    topic: jvm-memory
+    difficulty: medium
+    question: "¿Cuál es un memory leak típico en Java?"
+    options: ["Crear muchos objetos pequeños dentro de un método y descartarlos", "Usar demasiadas variables locales en un método", "Una colección estática que sigue acumulando objetos que nunca se quitan", "Llamar a un método recursivo de poca profundidad"]
+    correctIndex: 2
+    explanation: "En Java un leak es mantener referencias a objetos que ya no se necesitan, como un static Map usado como caché sin límite. El GC no puede liberarlos porque siguen siendo alcanzables."
+
+  - id: jvm-memory-13
+    topic: jvm-memory
+    difficulty: medium
+    question: "¿Para qué sirve una referencia WeakReference y, por ejemplo, un WeakHashMap?"
+    options: ["Para que el objeto sea eliminado en cuanto se crea", "Para evitar que el objeto sea recolectado mientras haya memoria", "Para guardar objetos en disco cuando faltan recursos", "Para referenciar un objeto sin impedir que el GC lo recolecte cuando ya no tiene referencias fuertes"]
+    correctIndex: 3
+    explanation: "Una referencia débil no mantiene vivo al objeto; en WeakHashMap las claves son débiles y la entrada desaparece cuando la clave ya no se usa. La que se retiene hasta que falta memoria es SoftReference."
+
+  - id: jvm-memory-14
+    topic: jvm-memory
+    difficulty: medium
+    question: "¿Cuál es el estado actual de Object.finalize() y qué se recomienda en su lugar?"
+    options: ["Está obsoleto y marcado para eliminación; se usan try-with-resources o java.lang.ref.Cleaner", "Es la forma recomendada de cerrar recursos", "Se eliminó por completo en Java 8", "Solo funciona en clases final"]
+    correctIndex: 0
+    explanation: "finalize() está deprecated desde Java 9 y marcado para eliminación desde Java 18. Es impredecible, ralentiza el GC y puede resucitar objetos. Lo correcto es cerrar con try-with-resources o usar Cleaner."
+
+  - id: jvm-memory-15
+    topic: jvm-memory
+    difficulty: medium
+    question: "¿Cómo funciona la delegación de padres (parent delegation) de los classloaders?"
+    options: ["Cada classloader carga la clase por su cuenta sin consultar a otros", "El classloader pide primero a su padre cargar la clase y solo la carga él si el padre no puede", "El classloader de aplicación sustituye siempre a las clases de java.lang", "Se carga la clase en todos los classloaders a la vez"]
+    correctIndex: 1
+    explanation: "La delegación evita que una clase propia reemplace a las del núcleo, como java.lang.String, ya que el bootstrap la carga primero. La jerarquía es Bootstrap, Platform y Application."
+
+  - id: jvm-memory-16
+    topic: jvm-memory
+    difficulty: medium
+    question: "¿Qué hace el compilador JIT de HotSpot?"
+    options: ["Traduce a código nativo, durante la ejecución, los métodos que se usan con frecuencia", "Compila el código fuente .java a bytecode antes de ejecutarlo", "Optimiza el código fuente al guardarlo en el IDE", "Libera la memoria de los objetos no usados"]
+    correctIndex: 0
+    explanation: "La JVM empieza interpretando el bytecode y detecta los métodos calientes para compilarlos a código máquina con optimizaciones (compilación escalonada). javac es quien pasa de .java a bytecode."
+
+  - id: jvm-memory-17
+    topic: jvm-memory
+    difficulty: medium
+    question: "¿Qué ocurre al ejecutar esta línea?"
+    code: |
+      int[] big = new int[Integer.MAX_VALUE];
+    options: ["Lanza NegativeArraySizeException", "Lanza OutOfMemoryError", "Compila pero no hace nada hasta que se usa el arreglo", "Lanza ArrayIndexOutOfBoundsException"]
+    correctIndex: 1
+    explanation: "El tamaño es un int válido, no negativo, pero la JVM no puede asignar un arreglo tan grande (supera el límite de la VM o el heap disponible) y lanza OutOfMemoryError. NegativeArraySizeException ocurre solo con tamaños negativos."
+
+  - id: jvm-memory-18
+    topic: jvm-memory
+    difficulty: medium
+    question: "¿Qué indican las opciones -Xms512m -Xmx2g?"
+    options: ["Stack inicial de 512 MB y máximo de 2 GB", "Metaspace inicial de 512 MB y máximo de 2 GB", "Heap inicial de 512 MB y máximo de 2 GB", "Mínimo de 512 MB para el sistema y 2 GB para el disco"]
+    correctIndex: 2
+    explanation: "-Xms define el tamaño inicial del heap y -Xmx el máximo. El stack de cada hilo se ajusta con -Xss y el Metaspace con -XX:MaxMetaspaceSize."
+
+  - id: jvm-memory-19
+    topic: jvm-memory
+    difficulty: medium
+    question: "Desde Java 7, ¿dónde se almacena el String pool (los literales internados)?"
+    options: ["En el stack de cada hilo", "En el PermGen", "En el Metaspace", "En el heap"]
+    correctIndex: 3
+    explanation: "A partir de Java 7 el pool de cadenas se movió del PermGen al heap, de modo que los strings internados pueden ser recolectados cuando ya no se usan."
+
+  - id: jvm-memory-20
+    topic: jvm-memory
+    difficulty: hard
+    question: "En un servidor con un pool de hilos, un ThreadLocal que guarda un objeto grande y nunca se limpia con remove(). ¿Cuál es el riesgo?"
+    options: ["Los hilos del pool viven mucho y conservan el objeto, provocando una fuga de memoria", "El objeto se comparte entre todos los hilos y se corrompe", "El ThreadLocal lanza una excepción en el segundo uso", "El objeto se libera al terminar cada tarea sin problema"]
+    correctIndex: 0
+    explanation: "En un pool los hilos se reutilizan, así que el valor ligado al hilo sigue referenciado. Puede incluso retener el classloader de la aplicación. Por eso se llama a remove() en un finally."
+
+  - id: jvm-memory-21
+    topic: jvm-memory
+    difficulty: hard
+    question: "¿Qué busca el recolector G1 con la opción -XX:MaxGCPauseMillis?"
+    options: ["Garantizar que ninguna pausa supere nunca ese valor", "Intentar que las pausas no pasen de ese objetivo, ajustando cuántas regiones recolecta", "Limitar el tiempo total que el programa puede ejecutarse", "Detener el GC cuando el tiempo supera ese valor"]
+    correctIndex: 1
+    explanation: "Es un objetivo blando: G1 elige el número de regiones a recolectar para intentar cumplirlo, pero no lo garantiza. Para pausas muy bajas existen recolectores como ZGC o Shenandoah."
+
+  - id: jvm-memory-22
+    topic: jvm-memory
+    difficulty: hard
+    question: "Un servicio muere en producción por OutOfMemoryError. ¿Cuál es la mejor forma de investigar la causa a posteriori?"
+    options: ["Aumentar -Xmx hasta que deje de fallar", "Revisar solo el código fuente buscando new", "Llamar a System.gc() periódicamente", "Usar -XX:+HeapDumpOnOutOfMemoryError y analizar el volcado con una herramienta como Eclipse MAT"]
+    correctIndex: 3
+    explanation: "El volcado del heap muestra qué objetos ocupan la memoria y qué raíces los retienen. Subir -Xmx solo retrasa el fallo si hay un leak, y System.gc() no libera objetos alcanzables."
+
+  - id: jvm-memory-23
+    topic: jvm-memory
+    difficulty: hard
+    question: "Tras varios redespliegues en caliente de una aplicación en un servidor, aparece OutOfMemoryError: Metaspace. ¿Cuál es la causa más probable?"
+    options: ["Las instancias de las clases se acumulan en el stack", "Un classloader de versiones anteriores sigue referenciado y sus clases no se descargan", "El heap está configurado demasiado grande", "El GC no puede ejecutarse en el metaspace"]
+    correctIndex: 1
+    explanation: "Las clases solo se descargan cuando su classloader es inalcanzable. Un hilo, un ThreadLocal o un driver retenido por otro classloader lo mantiene vivo y el Metaspace crece con cada redespliegue."
+
+  - id: jvm-memory-24
+    topic: jvm-memory
+    difficulty: hard
+    question: "¿Qué afirmación sobre el análisis de escape (escape analysis) del JIT es correcta?"
+    options: ["Mueve siempre los objetos al stack de forma permanente", "Cambia el comportamiento observable del programa", "Puede evitar la asignación en el heap de un objeto que no escapa del método", "Solo funciona con tipos primitivos"]
+    correctIndex: 2
+    explanation: "Si el JIT demuestra que un objeto no escapa del método, puede reemplazarlo por sus campos (scalar replacement) y no asignarlo en el heap. Es una optimización transparente: el comportamiento no cambia."
+
+  - id: jvm-memory-25
+    topic: jvm-memory
+    difficulty: hard
+    question: "Dos objetos A y B se referencian mutuamente (A.b = B, B.a = A) y ya ninguna variable alcanzable apunta a ellos. ¿Qué pasa?"
+    options: ["Se pueden recolectar, porque el GC parte de las raíces y no cuenta referencias", "No se recolectan nunca, porque se referencian entre sí", "Se recolectan solo si se asignan a null los campos a y b", "Se recolectan solo con un GC completo manual"]
+    correctIndex: 0
+    explanation: "La JVM usa trazado de alcanzabilidad desde las raíces (stacks, estáticos, hilos...), no conteo de referencias. Una isla de objetos con ciclos, pero sin camino desde una raíz, es basura."

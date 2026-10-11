@@ -1,0 +1,352 @@
+questions:
+  - id: streams-lambdas-01
+    topic: streams-lambdas
+    difficulty: easy
+    question: "¿Qué interfaz funcional recibe un argumento y devuelve un `boolean`?"
+    options:
+      - "Function<T, T>"
+      - "Predicate<T>"
+      - "Consumer<T>"
+      - "Supplier<Boolean>"
+    correctIndex: 1
+    explanation: "`Predicate<T>` define `boolean test(T t)`. `Function<T, T>` devuelve un valor del mismo tipo, `Consumer` no devuelve nada y `Supplier` no recibe argumentos. `Predicate` es la que usa `filter`."
+
+  - id: streams-lambdas-02
+    topic: streams-lambdas
+    difficulty: easy
+    question: "¿Cuál es la firma del método de la interfaz `Supplier<T>`?"
+    options:
+      - "`void accept(T t)`"
+      - "`R apply(T t)`"
+      - "`boolean test(T t)`"
+      - "`T get()`"
+    correctIndex: 3
+    explanation: "`Supplier<T>` no recibe argumentos y produce un valor mediante `T get()`. `accept` es de `Consumer`, `apply` de `Function` y `test` de `Predicate`."
+
+  - id: streams-lambdas-03
+    topic: streams-lambdas
+    difficulty: easy
+    question: "¿Qué hace un `Consumer<T>`?"
+    options:
+      - "Recibe un valor, realiza una acción y no devuelve nada."
+      - "Recibe un valor y devuelve otro valor transformado."
+      - "No recibe nada y devuelve un valor."
+      - "Recibe dos valores y devuelve un booleano."
+    correctIndex: 0
+    explanation: "`Consumer<T>` define `void accept(T t)`; es lo que recibe `forEach`. Producir un valor es trabajo de `Supplier` y transformarlo es trabajo de `Function`."
+
+  - id: streams-lambdas-04
+    topic: streams-lambdas
+    difficulty: easy
+    question: "¿Cuál es el equivalente de la referencia a método `String::length` como lambda?"
+    options:
+      - "`() -> String.length()`"
+      - "`s -> String.length(s) + 1`"
+      - "`(a, b) -> a.length() + b.length()`"
+      - "`s -> s.length()`"
+    correctIndex: 3
+    explanation: "`String::length` es una referencia a un método de instancia de un tipo arbitrario: el primer argumento es el receptor, por lo que equivale a `s -> s.length()`."
+
+  - id: streams-lambdas-05
+    topic: streams-lambdas
+    difficulty: easy
+    question: "¿Qué imprime este código?"
+    code: |
+      Stream.of("a", "b")
+            .peek(x -> System.out.println("peek"));
+      System.out.println("fin");
+    options:
+      - "peek, peek, fin"
+      - "fin"
+      - "fin, peek, peek"
+      - "Error de compilación"
+    correctIndex: 1
+    explanation: "Los streams son perezosos: las operaciones intermedias como `peek` no se ejecutan hasta que hay una operación terminal. Aquí no la hay, así que solo se imprime `fin`."
+
+  - id: streams-lambdas-06
+    topic: streams-lambdas
+    difficulty: easy
+    question: "¿Cuál de estas operaciones del Stream es terminal?"
+    options:
+      - "filter"
+      - "map"
+      - "sorted"
+      - "collect"
+    correctIndex: 3
+    explanation: "`collect` consume el stream y produce un resultado. `filter`, `map` y `sorted` son intermedias: devuelven otro stream y no ejecutan nada por sí solas."
+
+  - id: streams-lambdas-07
+    topic: streams-lambdas
+    difficulty: easy
+    question: "¿Qué ocurre con este código?"
+    code: |
+      int total = 0;
+      List<Integer> nums = List.of(1, 2, 3);
+      nums.forEach(n -> total += n);
+    options:
+      - "Error de compilación: `total` debe ser efectivamente final."
+      - "Compila y `total` vale 6."
+      - "Compila pero lanza excepción en ejecución."
+      - "Compila y `total` vale 0."
+    correctIndex: 0
+    explanation: "Una lambda solo puede capturar variables locales que sean final o efectivamente finales. Modificar `total` dentro de la lambda lo impide; se usa `sum()`, `reduce` o un `AtomicInteger`."
+
+  - id: streams-lambdas-08
+    topic: streams-lambdas
+    difficulty: easy
+    question: "¿Qué hace `Optional.of(null)`?"
+    options:
+      - "Devuelve un `Optional` vacío."
+      - "Lanza `NullPointerException`."
+      - "Devuelve `Optional.empty()` con una advertencia."
+      - "Devuelve un `Optional` que contiene null."
+    correctIndex: 1
+    explanation: "`Optional.of` exige un valor no nulo y lanza `NullPointerException` si recibe null. Para valores que pueden ser nulos se usa `Optional.ofNullable`."
+
+  - id: streams-lambdas-09
+    topic: streams-lambdas
+    difficulty: medium
+    question: "Tienes `List<List<Integer>> listas` y quieres un solo `Stream<Integer>` con todos los elementos. ¿Qué usas?"
+    options:
+      - "`listas.stream().map(List::stream)`"
+      - "`listas.stream().filter(List::isEmpty)`"
+      - "`listas.stream().flatMap(List::stream)`"
+      - "`listas.stream().reduce(List::size)`"
+    correctIndex: 2
+    explanation: "`flatMap` aplana: transforma cada lista en un stream y los une en uno solo. `map(List::stream)` devolvería `Stream<Stream<Integer>>`, que sigue anidado."
+
+  - id: streams-lambdas-10
+    topic: streams-lambdas
+    difficulty: medium
+    question: "¿Qué imprime este código?"
+    code: |
+      System.out.println(
+          Stream.of("abc", "de", "fgh", "ijklm", "xy")
+                .collect(Collectors.groupingBy(
+                    String::length, TreeMap::new, Collectors.counting())));
+    options:
+      - "{2=2, 3=2, 5=1}"
+      - "{2=[de, xy], 3=[abc, fgh], 5=[ijklm]}"
+      - "{3=2, 2=2, 5=1}"
+      - "{2=1, 3=1, 5=1}"
+    correctIndex: 0
+    explanation: "Agrupa por longitud y el colector `counting()` cuenta cuántos hay en cada grupo; `TreeMap` ordena las claves. Hay dos de longitud 2, dos de longitud 3 y uno de longitud 5."
+
+  - id: streams-lambdas-11
+    topic: streams-lambdas
+    difficulty: medium
+    question: "¿Qué imprime este código?"
+    code: |
+      System.out.println(
+          Stream.of(1, 3).collect(
+              Collectors.partitioningBy(x -> x % 2 == 0)));
+    options:
+      - "{true=[]}"
+      - "{false=[1, 3]}"
+      - "{false=[1, 3], true=[]}"
+      - "{}"
+    correctIndex: 2
+    explanation: "`partitioningBy` siempre devuelve un mapa con las dos claves, `false` y `true`, aunque una de las listas esté vacía. Esa es una diferencia clave con `groupingBy`."
+
+  - id: streams-lambdas-12
+    topic: streams-lambdas
+    difficulty: medium
+    question: "¿Qué ocurre al ejecutar este código?"
+    code: |
+      Stream<Integer> s = Stream.of(1, 2);
+      s.count();
+      s.count();
+    options:
+      - "Devuelve 2 las dos veces."
+      - "Devuelve 2 y luego 0."
+      - "Error de compilación en la segunda línea."
+      - "Lanza IllegalStateException en la segunda llamada."
+    correctIndex: 3
+    explanation: "Un stream solo puede consumirse una vez. Tras la operación terminal queda cerrado, y reutilizarlo lanza `IllegalStateException: stream has already been operated upon or closed`."
+
+  - id: streams-lambdas-13
+    topic: streams-lambdas
+    difficulty: medium
+    question: "¿Qué imprime este código?"
+    code: |
+      Stream.of("a", "b", "c")
+            .filter(x -> { System.out.print("f" + x + " "); return true; })
+            .map(x -> { System.out.print("m" + x + " "); return x; })
+            .findFirst();
+    options:
+      - "fa fb fc ma mb mc"
+      - "fa ma fb mb fc mc"
+      - "fa ma"
+      - "fa fb fc"
+    correctIndex: 2
+    explanation: "Los elementos se procesan uno a uno por toda la tubería (no etapa por etapa), y `findFirst` es de cortocircuito: tras el primer elemento termina. Por eso solo se ve `fa ma`."
+
+  - id: streams-lambdas-14
+    topic: streams-lambdas
+    difficulty: medium
+    question: "¿Qué imprime `System.out.println(Stream.of(1, 2, 3, 4).reduce(Integer::sum));`?"
+    options:
+      - "10"
+      - "Optional[10]"
+      - "Optional.of(10)"
+      - "OptionalInt[10]"
+    correctIndex: 1
+    explanation: "`reduce` sin valor identidad devuelve un `Optional<T>`, porque el stream podría estar vacío. Imprime `Optional[10]`. Con identidad (`reduce(0, Integer::sum)`) devolvería directamente `10`."
+
+  - id: streams-lambdas-15
+    topic: streams-lambdas
+    difficulty: medium
+    question: "¿Qué sucede al ejecutar `Stream.of(\"a\", \"b\", \"a\").collect(Collectors.toMap(x -> x, x -> 1))`?"
+    options:
+      - "Devuelve {a=1, b=1}, conservando el último valor de cada clave."
+      - "Devuelve {a=2, b=1}, sumando los valores repetidos."
+      - "Lanza IllegalStateException por clave duplicada."
+      - "Devuelve {a=1, b=1}, conservando el primer valor de cada clave."
+    correctIndex: 2
+    explanation: "`toMap` de dos argumentos falla con `IllegalStateException: Duplicate key a` si hay claves repetidas. Para resolverlo se pasa una función de combinación como tercer argumento, por ejemplo `Integer::sum`."
+
+  - id: streams-lambdas-16
+    topic: streams-lambdas
+    difficulty: medium
+    question: "¿Cuál afirmación sobre `orElse` y `orElseGet` de `Optional` es VERDADERA?"
+    options:
+      - "`orElse(valor)` evalúa el argumento siempre, incluso si el Optional tiene valor."
+      - "`orElseGet(supplier)` evalúa el supplier siempre, incluso si el Optional tiene valor."
+      - "Ambos evalúan su argumento solo cuando el Optional está vacío."
+      - "`orElse` lanza excepción si el Optional está vacío."
+    correctIndex: 0
+    explanation: "El argumento de `orElse` es una expresión normal y se evalúa antes de la llamada. `orElseGet` recibe un `Supplier` que solo se invoca si hace falta, por lo que es mejor para valores costosos de crear."
+
+  - id: streams-lambdas-17
+    topic: streams-lambdas
+    difficulty: medium
+    question: "Sobre `parallelStream()`, ¿cuál afirmación es VERDADERA?"
+    options:
+      - "Siempre es más rápido que un stream secuencial."
+      - "Garantiza que `forEach` procese los elementos en el orden original."
+      - "Usa un pool de hilos propio de cada stream, creado en cada llamada."
+      - "Modificar una colección compartida desde sus lambdas no es seguro sin sincronización."
+    correctIndex: 3
+    explanation: "Las lambdas de un stream paralelo se ejecutan en varios hilos, así que escribir en estructuras no seguras (como un `ArrayList`) causa condiciones de carrera. Además no siempre es más rápido, `forEach` no respeta el orden (para eso está `forEachOrdered`) y usa el `ForkJoinPool.commonPool()`."
+
+  - id: streams-lambdas-18
+    topic: streams-lambdas
+    difficulty: medium
+    question: "¿Qué lista devuelve este código?"
+    code: |
+      Stream.of("bob", "al", "eve", "zed", "ann")
+            .sorted(Comparator.comparing(String::length)
+                              .thenComparing(Comparator.naturalOrder()))
+            .toList();
+    options:
+      - "[al, ann, bob, eve, zed]"
+      - "[al, bob, eve, zed, ann]"
+      - "[ann, al, bob, eve, zed]"
+      - "[zed, eve, bob, ann, al]"
+    correctIndex: 0
+    explanation: "Primero ordena por longitud (`al` tiene 2, el resto 3) y los empates se resuelven alfabéticamente: ann, bob, eve, zed."
+
+  - id: streams-lambdas-19
+    topic: streams-lambdas
+    difficulty: medium
+    question: "En Java 17, ¿qué diferencia hay entre `stream.toList()` y `stream.collect(Collectors.toList())`?"
+    options:
+      - "`toList()` devuelve una lista modificable y `Collectors.toList()` una inmutable."
+      - "`toList()` devuelve una lista no modificable; `Collectors.toList()` no garantiza mutabilidad ni tipo concreto."
+      - "No hay ninguna diferencia, son equivalentes."
+      - "`toList()` solo funciona con streams paralelos."
+    correctIndex: 1
+    explanation: "`Stream.toList()` (Java 16+) devuelve una lista no modificable: `add` lanza `UnsupportedOperationException`. `Collectors.toList()` en la práctica devuelve un `ArrayList`, pero la especificación no lo garantiza."
+
+  - id: streams-lambdas-20
+    topic: streams-lambdas
+    difficulty: hard
+    question: "Tienes `Optional<Usuario> usuario` y un método `Optional<String> obtenerEmail(Usuario u)`. ¿Cómo obtienes un `Optional<String>` sin anidar?"
+    options:
+      - "`usuario.map(this::obtenerEmail)`"
+      - "`usuario.flatMap(this::obtenerEmail)`"
+      - "`usuario.filter(this::obtenerEmail)`"
+      - "`usuario.or(this::obtenerEmail)`"
+    correctIndex: 1
+    explanation: "`map` envolvería el resultado y daría `Optional<Optional<String>>`. `flatMap` aplana y devuelve directamente `Optional<String>`."
+
+  - id: streams-lambdas-21
+    topic: streams-lambdas
+    difficulty: hard
+    question: "¿Qué imprime `run()`?"
+    code: |
+      class Ejemplo {
+          public String toString() { return "externa"; }
+          void run() {
+              Runnable lambda = () -> System.out.println(this);
+              Runnable anonima = new Runnable() {
+                  public String toString() { return "anonima"; }
+                  public void run() { System.out.println(this); }
+              };
+              lambda.run();
+              anonima.run();
+          }
+      }
+    options:
+      - "externa, externa"
+      - "anonima, anonima"
+      - "anonima, externa"
+      - "externa, anonima"
+    correctIndex: 3
+    explanation: "Una lambda no introduce un nuevo ámbito: `this` es la instancia de la clase que la rodea. En una clase anónima, `this` es la propia instancia anónima."
+
+  - id: streams-lambdas-22
+    topic: streams-lambdas
+    difficulty: hard
+    question: "¿Qué imprime este código?"
+    code: |
+      Stream.of(5, 3, 1)
+            .peek(x -> System.out.print("p" + x + " "))
+            .sorted()
+            .findFirst();
+    options:
+      - "p5"
+      - "p1"
+      - "p5 p3 p1"
+      - "No imprime nada"
+    correctIndex: 2
+    explanation: "`sorted` es una operación con estado: necesita todos los elementos antes de emitir el primero, así que `findFirst` no puede cortocircuitar antes de ella y `peek` ve los tres."
+
+  - id: streams-lambdas-23
+    topic: streams-lambdas
+    difficulty: hard
+    question: "¿Qué ocurre al ejecutar este código?"
+    code: |
+      List<Integer> lista = new ArrayList<>(List.of(1, 2, 3));
+      lista.stream().forEach(x -> lista.add(x));
+    options:
+      - "Añade los elementos y termina con la lista [1, 2, 3, 1, 2, 3]."
+      - "Entra en un bucle infinito."
+      - "Lanza ConcurrentModificationException."
+      - "Error de compilación porque la lista es efectivamente final."
+    correctIndex: 2
+    explanation: "Los streams exigen que sus lambdas no interfieran con la fuente. Modificar el `ArrayList` mientras se recorre provoca `ConcurrentModificationException`. La variable es efectivamente final: se modifica el objeto, no la referencia."
+
+  - id: streams-lambdas-24
+    topic: streams-lambdas
+    difficulty: hard
+    question: "¿Cuál es el problema de `Stream.of(1, 2, 3, 4).parallel().reduce(0, (a, b) -> a - b)`?"
+    options:
+      - "Compila pero siempre devuelve 0."
+      - "La resta no es asociativa, así que el resultado puede diferir del secuencial."
+      - "No compila: `reduce` no admite lambdas con resta."
+      - "`reduce` no puede usarse con streams paralelos."
+    correctIndex: 1
+    explanation: "Para que `reduce` sea correcto en paralelo, la función debe ser asociativa (y la identidad neutra). La resta no lo es, por lo que el reparto en subproblemas cambia el resultado."
+
+  - id: streams-lambdas-25
+    topic: streams-lambdas
+    difficulty: hard
+    question: "Con `Function<Integer,Integer> f = x -> x + 1` y `Function<Integer,Integer> g = x -> x * 2`, ¿qué devuelven `f.andThen(g).apply(3)` y `f.compose(g).apply(3)`?"
+    options:
+      - "7 y 8"
+      - "8 y 7"
+      - "8 y 8"
+      - "7 y 7"
+    correctIndex: 1
+    explanation: "`f.andThen(g)` aplica primero f y luego g: (3+1)*2 = 8. `f.compose(g)` aplica primero g y luego f: (3*2)+1 = 7."

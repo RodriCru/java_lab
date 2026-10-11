@@ -1,0 +1,244 @@
+questions:
+  - id: collections-01
+    topic: collections
+    difficulty: easy
+    question: "¿Cuál de estas colecciones NO admite elementos duplicados?"
+    options: ["ArrayList", "LinkedList", "HashSet", "ArrayDeque"]
+    correctIndex: 2
+    explanation: "Un Set modela un conjunto matemático y descarta duplicados según equals. List y Deque sí admiten repetidos."
+  - id: collections-02
+    topic: collections
+    difficulty: easy
+    question: "¿Qué imprime este código?"
+    code: |
+      Map<String, Integer> hm = new HashMap<>();
+      hm.put(null, 1);
+      hm.put("a", null);
+      System.out.println(hm.get(null) + " " + hm.get("a") + " " + hm.containsKey("a"));
+    options: ["1 null true", "Lanza NullPointerException", "1 null false", "null null true"]
+    correctIndex: 0
+    explanation: "HashMap permite una clave null y valores null. get(\"a\") devuelve null, pero containsKey(\"a\") sí es true; por eso get no distingue entre ausente y null."
+  - id: collections-03
+    topic: collections
+    difficulty: easy
+    question: "¿Cuál es la complejidad de acceder por índice con get(i) en un ArrayList?"
+    options: ["O(n)", "O(log n)", "O(n log n)", "O(1)"]
+    correctIndex: 3
+    explanation: "ArrayList se apoya en un arreglo, así que el acceso por posición es constante. En LinkedList sería O(n)."
+  - id: collections-04
+    topic: collections
+    difficulty: easy
+    question: "¿Qué implementación de Map conserva el orden de inserción al iterar?"
+    options: ["HashMap", "LinkedHashMap", "TreeMap con orden natural", "Hashtable"]
+    correctIndex: 1
+    explanation: "LinkedHashMap mantiene una lista enlazada con el orden de inserción. HashMap no garantiza ningún orden y TreeMap ordena por clave."
+  - id: collections-05
+    topic: collections
+    difficulty: easy
+    question: "¿Qué ocurre al ejecutar este código?"
+    code: |
+      List<Integer> l = List.of(1, 2, 3);
+      l.add(4);
+    options: ["Añade el 4 correctamente", "Lanza UnsupportedOperationException", "Lanza IllegalArgumentException", "No compila"]
+    correctIndex: 1
+    explanation: "List.of devuelve una lista inmutable; cualquier modificación lanza UnsupportedOperationException."
+  - id: collections-06
+    topic: collections
+    difficulty: easy
+    question: "¿Qué ocurre con este código?"
+    code: |
+      List<String> al = Arrays.asList("a", "b");
+      al.set(0, "z");
+      al.add("c");
+    options: ["Ambas operaciones funcionan", "Ambas lanzan UnsupportedOperationException", "No compila", "set funciona pero add lanza UnsupportedOperationException"]
+    correctIndex: 3
+    explanation: "Arrays.asList devuelve una lista de tamaño fijo respaldada por el arreglo: permite set, pero no añadir ni quitar elementos."
+  - id: collections-07
+    topic: collections
+    difficulty: easy
+    question: "¿Qué imprime este código?"
+    code: |
+      Deque<Integer> d = new ArrayDeque<>();
+      d.push(1);
+      d.push(2);
+      d.addLast(3);
+      System.out.println(d + " " + d.pop());
+    options: ["[2, 1, 3] 2", "[1, 2, 3] 3", "[3, 2, 1] 1", "[2, 1, 3] 3"]
+    correctIndex: 0
+    explanation: "push inserta al frente, por lo que tras los dos push queda [2, 1] y addLast añade 3 al final: [2, 1, 3]. pop quita y devuelve el primero, 2."
+  - id: collections-08
+    topic: collections
+    difficulty: easy
+    question: "¿Cómo ordena este TreeMap sus entradas al imprimirlo?"
+    code: |
+      Map<Integer, String> tm = new TreeMap<>(Comparator.reverseOrder());
+      tm.put(1, "a");
+      tm.put(3, "c");
+      tm.put(2, "b");
+      System.out.println(tm);
+    options: ["{1=a, 2=b, 3=c}", "{1=a, 3=c, 2=b}", "{3=c, 2=b, 1=a}", "{2=b, 3=c, 1=a}"]
+    correctIndex: 2
+    explanation: "TreeMap mantiene las claves ordenadas según su Comparator; con reverseOrder, de mayor a menor."
+  - id: collections-09
+    topic: collections
+    difficulty: medium
+    question: "¿Cuántos elementos tiene el set al final?"
+    code: |
+      class P {
+          int id;
+          P(int i) { id = i; }
+          @Override public boolean equals(Object o) {
+              return o instanceof P p && p.id == id;
+          }
+      }
+      Set<P> s = new HashSet<>();
+      s.add(new P(1));
+      s.add(new P(1));
+      System.out.println(s.size());
+    options: ["1, porque equals devuelve true", "0, porque HashSet rechaza clases sin hashCode", "Lanza una excepción al añadir", "2, porque sin hashCode los objetos caen normalmente en buckets distintos"]
+    correctIndex: 3
+    explanation: "HashSet primero compara el hashCode y solo usa equals dentro del mismo bucket. Sin sobrescribir hashCode se rompe el contrato y los duplicados suelen convivir. Siempre se sobrescriben ambos."
+  - id: collections-10
+    topic: collections
+    difficulty: medium
+    question: "¿Qué contiene la lista al final?"
+    code: |
+      List<Integer> l = new ArrayList<>(List.of(10, 20, 30, 1));
+      l.remove(1);
+      l.remove(Integer.valueOf(1));
+      System.out.println(l);
+    options: ["[10, 20, 30]", "[10, 30]", "[20, 30]", "[10, 20]"]
+    correctIndex: 1
+    explanation: "remove(1) con un int elimina por índice (quita el 20) y remove(Integer.valueOf(1)) elimina por valor (quita el 1). Resultado: [10, 30]."
+  - id: collections-11
+    topic: collections
+    difficulty: medium
+    question: "¿Cuál es la forma segura de eliminar elementos de una lista mientras se recorre?"
+    options: ["Llamar a list.remove() dentro de un for-each", "Usar un for-each y capturar la ConcurrentModificationException", "Usar removeIf o el remove() de un Iterator explícito", "Convertir la lista a Set antes de recorrerla"]
+    correctIndex: 2
+    explanation: "Modificar la lista estructuralmente durante un for-each provoca ConcurrentModificationException. removeIf o Iterator.remove() actualizan correctamente el contador interno."
+  - id: collections-12
+    topic: collections
+    difficulty: medium
+    question: "Un HashMap se crea con valores por defecto (capacidad 16, factor de carga 0.75). ¿Cuándo se redimensiona por primera vez?"
+    options: ["Al superar 12 entradas, y la capacidad se duplica", "Al llegar a 16 entradas, y crece en 10", "Al superar 75 entradas, y se triplica", "Nunca: la capacidad es fija"]
+    correctIndex: 0
+    explanation: "El umbral es capacidad por factor de carga: 16 x 0.75 = 12. Al superarlo, la tabla duplica su tamaño y se reubican las entradas."
+  - id: collections-13
+    topic: collections
+    difficulty: medium
+    question: "¿Cuál es la diferencia entre Comparable y Comparator?"
+    options: ["Comparable define el orden natural dentro de la clase; Comparator es un criterio externo y se pueden tener varios", "Comparable se usa solo con Map y Comparator solo con List", "Comparator se implementa en la clase y Comparable se pasa como argumento", "Son equivalentes; solo cambia el nombre del método"]
+    correctIndex: 0
+    explanation: "Comparable (compareTo) define un único orden natural en la propia clase; Comparator (compare) es un objeto independiente, útil para varios criterios o clases ajenas."
+  - id: collections-14
+    topic: collections
+    difficulty: medium
+    question: "Para una lista con muchas lecturas por índice y adiciones al final, ¿qué suele ser mejor?"
+    options: ["LinkedList, porque insertar siempre es O(1)", "Vector, por ser más moderna", "ArrayList, por acceso O(1) y mejor localidad de memoria", "TreeSet, porque ordena los datos"]
+    correctIndex: 2
+    explanation: "ArrayList suele ganar a LinkedList en casi todo uso real: acceso por índice O(1) y menos sobrecarga. LinkedList solo compensa en casos muy específicos como inserciones constantes en los extremos."
+  - id: collections-15
+    topic: collections
+    difficulty: medium
+    question: "¿Qué ocurre aquí?"
+    code: |
+      Map<String, Integer> m = new TreeMap<>();
+      m.put(null, 1);
+    options: ["Funciona: TreeMap admite una clave null", "Lanza NullPointerException", "Lanza IllegalArgumentException", "Funciona y la clave null se coloca al final"]
+    correctIndex: 1
+    explanation: "TreeMap con orden natural compara las claves, así que una clave null produce NullPointerException. HashMap sí permite una clave null."
+  - id: collections-16
+    topic: collections
+    difficulty: medium
+    question: "¿Qué imprime este código?"
+    code: |
+      Map<String, Integer> lh = new LinkedHashMap<>();
+      lh.put("c", 1);
+      lh.put("a", 2);
+      lh.put("c", 3);
+      System.out.println(lh);
+    options: ["{a=2, c=3}", "{c=1, a=2, c=3}", "{c=1, a=2}", "{c=3, a=2}"]
+    correctIndex: 3
+    explanation: "Volver a poner una clave existente actualiza el valor pero, con el orden de inserción por defecto, no cambia su posición."
+  - id: collections-17
+    topic: collections
+    difficulty: medium
+    question: "¿Qué imprime este código?"
+    code: |
+      PriorityQueue<Integer> pq = new PriorityQueue<>(List.of(5, 1, 3));
+      System.out.println(pq.poll() + " " + pq.peek());
+    options: ["5 1", "1 3", "1 5", "3 1"]
+    correctIndex: 1
+    explanation: "PriorityQueue es un montículo mínimo por defecto: poll devuelve el menor (1) y peek muestra el siguiente menor (3). Iterarla no garantiza orden."
+  - id: collections-18
+    topic: collections
+    difficulty: medium
+    question: "Usas un objeto mutable como clave de un HashMap y luego modificas un campo que interviene en hashCode. ¿Qué pasa?"
+    options: ["Es probable que get(clave) ya no encuentre la entrada, pues se busca en otro bucket", "El HashMap reubica la entrada automáticamente", "Lanza ConcurrentModificationException", "Nada, la entrada se sigue encontrando"]
+    correctIndex: 0
+    explanation: "El mapa guarda la entrada según el hash calculado al insertar. Si el hash cambia, la búsqueda apunta a otro bucket. Por eso se recomiendan claves inmutables."
+  - id: collections-19
+    topic: collections
+    difficulty: medium
+    question: "¿Qué estructura de datos ofrece contains() más rápido en promedio para muchos elementos?"
+    options: ["ArrayList con O(1)", "LinkedList con O(log n)", "ArrayList ordenada con O(1)", "HashSet con O(1) promedio"]
+    correctIndex: 3
+    explanation: "HashSet busca por hash en tiempo constante promedio. En una lista contains recorre elementos: O(n)."
+  - id: collections-20
+    topic: collections
+    difficulty: hard
+    question: "¿Qué imprime este código?"
+    code: |
+      List<Integer> m = new ArrayList<>(List.of(1, 2, 3, 4));
+      for (Integer i : m) {
+          if (i == 3) m.remove(i);
+      }
+      System.out.println(m);
+    options: ["ConcurrentModificationException", "[1, 2, 3]", "[1, 2, 4], sin excepción", "[1, 2, 4] y luego una excepción"]
+    correctIndex: 2
+    explanation: "Al quitar el penúltimo elemento, hasNext() devuelve false porque el cursor (3) iguala el nuevo tamaño (3) y el bucle termina sin llamar a next(), que es quien detecta la modificación. Si se quita el 2, sí lanza ConcurrentModificationException. No se debe depender de esto."
+  - id: collections-21
+    topic: collections
+    difficulty: hard
+    question: "En Java 8 o superior, ¿qué ocurre en un HashMap cuando un bucket acumula muchas colisiones?"
+    options: ["Siempre se convierte a un TreeMap completo", "El HashMap lanza una excepción", "Si hay al menos 8 nodos y la tabla tiene 64 o más posiciones, el bucket pasa de lista enlazada a árbol rojo-negro", "Se duplica el factor de carga automáticamente"]
+    correctIndex: 2
+    explanation: "Esa treeificación reduce la búsqueda en el peor caso de O(n) a O(log n). Si la tabla es pequeña, primero se prefiere redimensionar."
+  - id: collections-22
+    topic: collections
+    difficulty: hard
+    question: "¿Qué imprime este código?"
+    code: |
+      List<Integer> sub = new ArrayList<>(List.of(1, 2, 3, 4, 5));
+      sub.subList(1, 3).clear();
+      System.out.println(sub);
+    options: ["[1, 2, 3, 4, 5]", "[1, 3, 4, 5]", "[4, 5]", "[1, 4, 5]"]
+    correctIndex: 3
+    explanation: "subList devuelve una vista de la lista original, no una copia. clear() elimina el rango [1,3), es decir los elementos 2 y 3, de la lista original."
+  - id: collections-23
+    topic: collections
+    difficulty: hard
+    question: "¿Para qué sirve la operación (h ^ (h >>> 16)) que HashMap aplica a hashCode()?"
+    options: ["Mezclar los bits altos con los bajos para mejorar la distribución al calcular el índice con una máscara", "Convertir el hash en un número negativo", "Garantizar que dos claves distintas nunca colisionen", "Cifrar la clave"]
+    correctIndex: 0
+    explanation: "El índice se calcula con (n - 1) & hash, que solo usa los bits bajos. Mezclar los altos reduce colisiones cuando los hashCode solo difieren en ellos."
+  - id: collections-24
+    topic: collections
+    difficulty: hard
+    question: "¿Qué ocurre al ejecutar este código?"
+    code: |
+      Map<String, Integer> m = new ConcurrentHashMap<>();
+      m.put("a", null);
+    options: ["Funciona igual que HashMap", "Lanza NullPointerException: no admite claves ni valores null", "Guarda la entrada con valor null", "Lanza ConcurrentModificationException"]
+    correctIndex: 1
+    explanation: "ConcurrentHashMap prohíbe null en claves y valores porque en un mapa concurrente un get() que devuelve null sería ambiguo."
+  - id: collections-25
+    topic: collections
+    difficulty: hard
+    question: "¿Qué ocurre con Set.of(1, 1)?"
+    code: |
+      Set<Integer> s = Set.of(1, 1);
+    options: ["Lanza IllegalArgumentException por elemento duplicado", "Crea un set con un solo elemento", "Crea un set con dos elementos", "No compila"]
+    correctIndex: 0
+    explanation: "Set.of y Map.of rechazan duplicados al crearse con IllegalArgumentException, a diferencia de new HashSet<>(List.of(1, 1)), que los fusiona."

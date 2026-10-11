@@ -1,0 +1,296 @@
+questions:
+  - id: java-basics-01
+    topic: java-basics
+    difficulty: easy
+    question: "¿Cuál de los siguientes tipos NO es un tipo primitivo de Java?"
+    options: ["boolean", "char", "String", "long"]
+    correctIndex: 2
+    explanation: "String es una clase (tipo por referencia). Los ocho primitivos son byte, short, int, long, float, double, char y boolean."
+
+  - id: java-basics-02
+    topic: java-basics
+    difficulty: easy
+    question: "Al comparar dos objetos String, ¿cuál es la diferencia entre == y equals()?"
+    options:
+      - "== compara la referencia (si son el mismo objeto) y equals() compara el contenido"
+      - "== compara el contenido y equals() compara la referencia"
+      - "Ambos comparan siempre el contenido; solo cambia la velocidad"
+      - "== solo funciona con primitivos y lanza error con objetos"
+    correctIndex: 0
+    explanation: "En objetos, == compara referencias. String sobreescribe equals() para comparar los caracteres. Usar == con Strings puede dar resultados engañosos por el pool."
+
+  - id: java-basics-03
+    topic: java-basics
+    difficulty: easy
+    question: "¿Qué valor tienen los elementos de un arreglo recién creado con new int[3]?"
+    options: ["null", "0", "Indefinido: hay que inicializarlos antes de leerlos", "-1"]
+    correctIndex: 1
+    explanation: "Los arreglos se inicializan con el valor por defecto del tipo: 0 para int, false para boolean y null para referencias. Solo las variables locales exigen inicialización explícita."
+
+  - id: java-basics-04
+    topic: java-basics
+    difficulty: easy
+    question: "Vas a concatenar miles de cadenas dentro de un bucle. ¿Qué es lo más recomendable?"
+    options:
+      - "Usar el operador + sobre un String en cada iteración"
+      - "Usar String.concat() en cada iteración"
+      - "Declarar el String como final para que sea más rápido"
+      - "Usar un StringBuilder y llamar a append() en cada iteración"
+    correctIndex: 3
+    explanation: "String es inmutable: cada + dentro del bucle crea un objeto nuevo y copia todo el contenido (coste cuadrático). StringBuilder es mutable y evita esas copias."
+
+  - id: java-basics-05
+    topic: java-basics
+    difficulty: easy
+    question: "¿Qué imprime este código?"
+    code: |
+      System.out.println('a' + 1 + "b" + 'c');
+    options: ["a1bc", "98bc", "abc1", "No compila"]
+    correctIndex: 1
+    explanation: "Primero se evalúa 'a' + 1 como suma numérica (char promovido a int: 97 + 1 = 98). Después, al llegar a un String, el + pasa a ser concatenación: 98bc."
+
+  - id: java-basics-06
+    topic: java-basics
+    difficulty: easy
+    question: "¿Qué imprime este código?"
+    code: |
+      final int[] arr = {1, 2};
+      arr[0] = 9;
+      System.out.println(arr[0]);
+    options: ["9", "1", "Error de compilación: arr es final", "Lanza una excepción en tiempo de ejecución"]
+    correctIndex: 0
+    explanation: "final impide reasignar la variable arr a otro arreglo, pero no vuelve inmutable el contenido del arreglo. Modificar arr[0] es válido."
+
+  - id: java-basics-07
+    topic: java-basics
+    difficulty: easy
+    question: "¿Qué imprime este código?"
+    code: |
+      System.out.println(10 / 4 + " " + 10 % 4 + " " + (-7) % 3);
+    options: ["2.5 2 2", "2 2 1", "2 2 2", "2 2 -1"]
+    correctIndex: 3
+    explanation: "La división entre enteros trunca (10 / 4 = 2). En el operador %, el resultado toma el signo del dividendo, así que (-7) % 3 es -1."
+
+  - id: java-basics-08
+    topic: java-basics
+    difficulty: easy
+    question: "¿Qué imprime este código?"
+    code: |
+      String s = "java";
+      s.concat("x");
+      s.toUpperCase();
+      System.out.println(s);
+    options: ["JAVAX", "javax", "java", "JAVA"]
+    correctIndex: 2
+    explanation: "String es inmutable: concat y toUpperCase devuelven un String nuevo y no modifican s. Como se descartan los resultados, s sigue valiendo java."
+
+  - id: java-basics-09
+    topic: java-basics
+    difficulty: medium
+    question: "¿Qué imprime este código?"
+    code: |
+      Integer a = 127, b = 127;
+      Integer c = 128, d = 128;
+      System.out.println((a == b) + " " + (c == d) + " " + c.equals(d));
+    options: ["true true true", "false false true", "true false true", "true false false"]
+    correctIndex: 2
+    explanation: "El autoboxing usa Integer.valueOf, que cachea los valores entre -128 y 127. Por eso a == b es true (mismo objeto) y c == d es false (objetos distintos). equals compara el valor y da true."
+
+  - id: java-basics-10
+    topic: java-basics
+    difficulty: medium
+    question: "¿Qué imprime este código?"
+    code: |
+      String s1 = "hi";
+      String s2 = "hi";
+      String s3 = new String("hi");
+      System.out.println((s1 == s2) + " " + (s1 == s3) + " " + s1.equals(s3) + " " + (s1 == s3.intern()));
+    options: ["true false true true", "true true true true", "false false true false", "true false true false"]
+    correctIndex: 0
+    explanation: "Los literales iguales comparten el objeto del pool (s1 == s2). new String crea un objeto aparte en el heap (s1 != s3). intern() devuelve la referencia del pool, por eso s1 == s3.intern() es true."
+
+  - id: java-basics-11
+    topic: java-basics
+    difficulty: medium
+    question: "¿Qué imprime este código?"
+    code: |
+      static void change(StringBuilder sb) {
+          sb.append("x");
+          sb = new StringBuilder("y");
+      }
+
+      StringBuilder sb = new StringBuilder("a");
+      change(sb);
+      System.out.println(sb);
+    options: ["a", "y", "xy", "ax"]
+    correctIndex: 3
+    explanation: "Java siempre pasa por valor; con objetos se copia el valor de la referencia. El append modifica el mismo objeto que ve el llamador, pero reasignar el parámetro solo cambia la copia local."
+
+  - id: java-basics-12
+    topic: java-basics
+    difficulty: medium
+    question: "¿Qué imprime este código?"
+    code: |
+      int x = 2;
+      switch (x) {
+          case 2: System.out.print("B");
+          case 3: System.out.print("C"); break;
+          default: System.out.print("D");
+      }
+    options: ["B", "BC", "BCD", "C"]
+    correctIndex: 1
+    explanation: "En el switch clásico, sin break la ejecución continúa en el siguiente case (fall-through). Se ejecutan case 2 y case 3 y el break detiene antes del default."
+
+  - id: java-basics-13
+    topic: java-basics
+    difficulty: medium
+    question: "¿Qué imprime la primera vez que se ejecuta new C()?"
+    code: |
+      class P {
+          static { System.out.print("1 "); }
+          { System.out.print("2 "); }
+          P() { System.out.print("3 "); }
+      }
+      class C extends P {
+          static { System.out.print("4 "); }
+          { System.out.print("5 "); }
+          C() { System.out.print("6 "); }
+      }
+      new C();
+    options: ["1 4 2 3 5 6", "1 2 3 4 5 6", "2 3 5 6 1 4", "4 1 5 6 2 3"]
+    correctIndex: 0
+    explanation: "Primero se inicializan las clases (estáticos del padre y luego del hijo, una sola vez). Después, por cada instancia: bloque de instancia y constructor del padre, y luego los del hijo."
+
+  - id: java-basics-14
+    topic: java-basics
+    difficulty: medium
+    question: "¿Qué imprime este código?"
+    code: |
+      int i = 5;
+      i += 3.7;
+      System.out.println(i);
+    options: ["8.7", "Error de compilación: double no cabe en int", "8", "9"]
+    correctIndex: 2
+    explanation: "Los operadores compuestos como += incluyen un cast implícito al tipo de la variable. Se calcula 8.7 y se castea a int truncando: 8. Con i = i + 3.7 sí habría error."
+
+  - id: java-basics-15
+    topic: java-basics
+    difficulty: medium
+    question: "Dado `record Point(int x, int y) {}`, ¿qué imprime este código?"
+    code: |
+      System.out.println(new Point(1, 2).equals(new Point(1, 2)) + " " + new Point(1, 2));
+    options: ["false Point@1b6d3586", "true Point[x=1, y=2]", "true Point(1, 2)", "true Point{x=1, y=2}"]
+    correctIndex: 1
+    explanation: "Un record genera automáticamente equals, hashCode y toString basados en sus componentes. El toString tiene el formato Point[x=1, y=2]."
+
+  - id: java-basics-16
+    topic: java-basics
+    difficulty: medium
+    question: "¿Cuál afirmación sobre `var` (Java 10+) es VERDADERA?"
+    options:
+      - "Convierte la variable en dinámica: puede cambiar de tipo después"
+      - "Se puede usar en campos de clase y en parámetros de métodos"
+      - "Permite declarar sin inicializar, como en var x;"
+      - "Solo se usa en variables locales y el tipo se infiere en compilación del inicializador"
+    correctIndex: 3
+    explanation: "var es inferencia de tipo estática: el tipo queda fijo al compilar. Exige un inicializador (var x; y var x = null; no compilan) y no se permite en campos ni en parámetros."
+
+  - id: java-basics-17
+    topic: java-basics
+    difficulty: medium
+    question: "¿Cuánto vale `t.length()` en este text block?"
+    code: |
+      String t = """
+              hola
+              """;
+    options: ["5", "4", "13", "9"]
+    correctIndex: 0
+    explanation: "La sangría común se elimina tomando como referencia la línea más a la izquierda, incluida la del delimitador de cierre. Queda hola seguido de un salto de línea: 5 caracteres."
+
+  - id: java-basics-18
+    topic: java-basics
+    difficulty: medium
+    question: "¿Cuál afirmación sobre los enum de Java es VERDADERA?"
+    options:
+      - "Pueden extender otra clase, igual que cualquier clase"
+      - "Pueden tener campos, constructor (privado) y métodos, e implementar interfaces"
+      - "Se pueden instanciar con new desde cualquier clase"
+      - "Sus constantes no se pueden comparar con ==, hay que usar equals"
+    correctIndex: 1
+    explanation: "Un enum es una clase especial con instancias fijas: admite campos, constructor privado, métodos e interfaces, pero ya extiende java.lang.Enum, así que no puede extender otra clase. Comparar con == es correcto y seguro."
+
+  - id: java-basics-19
+    topic: java-basics
+    difficulty: medium
+    question: "Con `List<Integer> list = new ArrayList<>(List.of(10, 20, 30));`, ¿qué contiene list tras ejecutar `list.remove(1);`?"
+    options: ["[10, 30]", "[20, 30]", "[10, 20, 30]", "[10, 20]"]
+    correctIndex: 0
+    explanation: "Con un argumento int se elige remove(int index), que borra la posición 1 (el 20). Para borrar el valor 1 habría que usar list.remove(Integer.valueOf(1))."
+
+  - id: java-basics-20
+    topic: java-basics
+    difficulty: hard
+    question: "¿Qué imprime este código?"
+    code: |
+      System.out.println(Math.abs(Integer.MIN_VALUE));
+    options: ["2147483648", "0", "-2147483648", "Lanza ArithmeticException"]
+    correctIndex: 2
+    explanation: "El rango de int es asimétrico: MIN_VALUE es -2147483648 y su valor absoluto (2147483648) no cabe en int, así que se desborda y el resultado sigue siendo negativo."
+
+  - id: java-basics-21
+    topic: java-basics
+    difficulty: hard
+    question: "¿Qué imprime este código?"
+    code: |
+      Long l = 127L;
+      System.out.println(l.equals(127) + " " + l.equals(127L));
+    options: ["true true", "true false", "false false", "false true"]
+    correctIndex: 3
+    explanation: "Long.equals exige que el argumento sea un Long. El literal 127 se autoboxea a Integer, y un Integer nunca es igual a un Long aunque el valor numérico coincida."
+
+  - id: java-basics-22
+    topic: java-basics
+    difficulty: hard
+    question: "¿Qué ocurre al ejecutar este código?"
+    code: |
+      Integer n = null;
+      boolean flag = true;
+      int r = flag ? n : 0;
+      System.out.println(r);
+    options: ["Imprime 0", "Lanza NullPointerException", "Imprime null", "Error de compilación"]
+    correctIndex: 1
+    explanation: "Si un operando del ternario es Integer y el otro int, el resultado es int y n se desempaqueta automáticamente. Como n es null, el unboxing lanza NullPointerException."
+
+  - id: java-basics-23
+    topic: java-basics
+    difficulty: hard
+    question: "Dada una clase T con `static void st() { System.out.print(\"static-ok\"); }`, ¿qué ocurre al ejecutar `((T) null).st();`?"
+    options: ["Imprime static-ok", "Lanza NullPointerException", "Error de compilación", "Imprime null"]
+    correctIndex: 0
+    explanation: "Los métodos estáticos se resuelven por el tipo declarado en compilación, no por el objeto. La referencia nula no se usa, por lo que no hay NPE (aunque es mala práctica llamar estáticos por instancia)."
+
+  - id: java-basics-24
+    topic: java-basics
+    difficulty: hard
+    question: "¿Qué valor tiene j al final?"
+    code: |
+      int j = 5;
+      j = j++ + ++j;
+      System.out.println(j);
+    options: ["11", "12", "10", "13"]
+    correctIndex: 1
+    explanation: "Se evalúa de izquierda a derecha: j++ aporta 5 (y j pasa a 6); luego ++j incrementa a 7 y aporta 7. La suma es 12 y la asignación sobrescribe el incremento previo."
+
+  - id: java-basics-25
+    topic: java-basics
+    difficulty: hard
+    question: "¿Qué imprime este código?"
+    code: |
+      String s = "ab";
+      String t1 = "a" + "b";
+      String u = "a";
+      String u2 = u + "b";
+      System.out.println((t1 == s) + " " + (u2 == s));
+    options: ["true true", "false false", "false true", "true false"]
+    correctIndex: 3
+    explanation: "\"a\" + \"b\" es una expresión constante que el compilador resuelve a \"ab\", por lo que usa el pool. u + \"b\" se calcula en ejecución y crea un objeto nuevo. Si u fuera final, también sería constante."

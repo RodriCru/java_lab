@@ -1,0 +1,266 @@
+questions:
+  - id: exceptions-01
+    topic: exceptions
+    difficulty: easy
+    question: "¿Cuál de estas excepciones es checked (verificada por el compilador)?"
+    options: ["NullPointerException", "IllegalArgumentException", "IOException", "ArithmeticException"]
+    correctIndex: 2
+    explanation: "IOException extiende de Exception sin ser RuntimeException, por lo que es checked: hay que capturarla o declararla con throws. Las otras tres son RuntimeException (unchecked)."
+  - id: exceptions-02
+    topic: exceptions
+    difficulty: easy
+    question: "¿Qué representa la clase Error en la jerarquía de Throwable?"
+    options: ["Problemas graves de la JVM (como OutOfMemoryError) que normalmente una aplicación no debe intentar recuperar", "Errores de lógica del programador que siempre deben capturarse con try/catch", "Excepciones checked que el compilador obliga a declarar", "Cualquier excepción lanzada por código de terceros"]
+    correctIndex: 0
+    explanation: "Error y sus subclases (OutOfMemoryError, StackOverflowError…) indican fallos de la JVM o del entorno de los que no suele poder recuperarse la aplicación. No son excepciones de negocio."
+  - id: exceptions-03
+    topic: exceptions
+    difficulty: easy
+    question: "¿Cuál es la diferencia entre throw y throws?"
+    options: ["throw va en la firma del método y throws dentro del cuerpo", "throw es para excepciones checked y throws para unchecked", "No hay diferencia: son sinónimos", "throw lanza una instancia de excepción; throws declara en la firma del método las excepciones que puede propagar"]
+    correctIndex: 3
+    explanation: "throw es una sentencia que lanza un objeto Throwable concreto; throws es una cláusula de la firma que advierte a quien llama de las excepciones que pueden salir del método."
+  - id: exceptions-04
+    topic: exceptions
+    difficulty: easy
+    question: "¿Qué imprime este código?"
+    code: |
+      static int f() {
+          try {
+              return 1;
+          } finally {
+              System.out.print("F ");
+          }
+      }
+      public static void main(String[] args) {
+          System.out.println(f());
+      }
+    options: ["1 F", "F 1", "1", "F"]
+    correctIndex: 1
+    explanation: "El bloque finally se ejecuta antes de que el método devuelva el valor, así que primero imprime \"F \" y luego main imprime 1."
+  - id: exceptions-05
+    topic: exceptions
+    difficulty: easy
+    question: "¿De qué clase heredan NullPointerException e IllegalArgumentException?"
+    options: ["Error", "RuntimeException", "IOException", "Throwable directamente"]
+    correctIndex: 1
+    explanation: "Ambas extienden RuntimeException, por lo que son unchecked: el compilador no obliga a capturarlas ni declararlas."
+  - id: exceptions-06
+    topic: exceptions
+    difficulty: easy
+    question: "¿Qué requisito debe cumplir un recurso declarado en un try-with-resources?"
+    options: ["Tener un método finalize()", "Extender de Exception", "Ser una variable estática", "Implementar la interfaz AutoCloseable (o Closeable)"]
+    correctIndex: 3
+    explanation: "El try-with-resources llama automáticamente a close() al salir del bloque, por lo que el recurso debe implementar AutoCloseable (Closeable la extiende)."
+  - id: exceptions-07
+    topic: exceptions
+    difficulty: easy
+    question: "¿Cuál de estos multi-catch es válido y compila?"
+    options: ["catch (IllegalArgumentException | IllegalStateException e)", "catch (FileNotFoundException | IOException e)", "catch (RuntimeException | IllegalArgumentException e)", "catch (Exception | Throwable e)"]
+    correctIndex: 0
+    explanation: "En un multi-catch las alternativas no pueden estar relacionadas por herencia. Las dos excepciones de la opción válida son hermanas bajo RuntimeException; en las demás una es subclase de la otra."
+  - id: exceptions-08
+    topic: exceptions
+    difficulty: easy
+    question: "Un compañero escribe catch (Exception e) { } con el bloque vacío. ¿Cuál es el problema principal?"
+    options: ["No compila porque el bloque catch no puede estar vacío", "Provoca un StackOverflowError en tiempo de ejecución", "Se silencia el error: se pierde información para diagnosticar y el programa sigue en un estado posiblemente inconsistente", "Hace que finally no se ejecute"]
+    correctIndex: 2
+    explanation: "Tragarse excepciones es un anti-patrón: oculta fallos reales. Como mínimo se debe registrar en el log o relanzar con contexto. Sí compila y finally se ejecuta igual."
+  - id: exceptions-09
+    topic: exceptions
+    difficulty: medium
+    question: "¿Qué devuelve este método?"
+    code: |
+      @SuppressWarnings("finally")
+      static int f() {
+          try {
+              throw new RuntimeException("x");
+          } catch (Exception e) {
+              return 1;
+          } finally {
+              return 2;
+          }
+      }
+    options: ["1", "Lanza RuntimeException", "No compila", "2"]
+    correctIndex: 3
+    explanation: "Un return en finally sustituye cualquier return o excepción pendiente. Por eso se considera mala práctica: puede ocultar errores."
+  - id: exceptions-10
+    topic: exceptions
+    difficulty: medium
+    question: "¿Qué devuelve este método?"
+    code: |
+      static int f() {
+          int x = 1;
+          try {
+              return x;
+          } finally {
+              x = 99;
+          }
+      }
+    options: ["99", "1", "0", "Lanza una excepción"]
+    correctIndex: 1
+    explanation: "El valor de x (1) se copia como valor de retorno antes de ejecutar finally. Modificar la variable después no cambia lo ya guardado para devolver, porque es un tipo primitivo."
+  - id: exceptions-11
+    topic: exceptions
+    difficulty: medium
+    question: "¿Qué imprime este código?"
+    code: |
+      static class R implements AutoCloseable {
+          String n;
+          R(String n) { this.n = n; System.out.print("open" + n + " "); }
+          public void close() {
+              System.out.print("close" + n + " ");
+              throw new IllegalStateException("c" + n);
+          }
+      }
+      public static void main(String[] args) {
+          try (R r1 = new R("1"); R r2 = new R("2")) {
+              throw new RuntimeException("body");
+          } catch (Exception e) {
+              System.out.println(e.getMessage() + " "
+                  + e.getSuppressed().length + " "
+                  + e.getSuppressed()[0].getMessage());
+          }
+      }
+    options: ["open1 open2 close1 close2 body 2 c1", "open1 open2 close2 close1 c1 0", "open1 open2 close2 close1 body 2 c2", "open1 open2 close2 close1 body 0"]
+    correctIndex: 2
+    explanation: "Los recursos se cierran en orden inverso al de apertura. La excepción principal (body) se conserva y las que lanzan los close() se añaden como suprimidas (suppressed): c2 y c1, es decir 2 en total y la primera es c2."
+  - id: exceptions-12
+    topic: exceptions
+    difficulty: medium
+    question: "En un try-with-resources, el cuerpo termina bien pero close() lanza una excepción. ¿Qué ocurre?"
+    options: ["Esa excepción de close() se propaga normalmente como excepción principal", "Se descarta en silencio", "Se convierte en una excepción suprimida de otra que no existe y se pierde", "El programa termina con un Error"]
+    correctIndex: 0
+    explanation: "Las excepciones suprimidas solo se usan cuando ya hay una excepción principal del cuerpo. Si el cuerpo no falla, la de close() es la que sale."
+  - id: exceptions-13
+    topic: exceptions
+    difficulty: medium
+    question: "¿Qué ocurre con este código?"
+    code: |
+      try {
+          read();
+      } catch (Exception e) {
+          handle(e);
+      } catch (IOException e) {
+          handle(e);
+      }
+    options: ["Error de compilación: IOException ya queda cubierta por el catch anterior", "Compila y el segundo catch captura las IOException", "Compila, pero el segundo catch nunca se ejecuta y solo da un aviso", "Lanza un error solo en tiempo de ejecución"]
+    correctIndex: 0
+    explanation: "Un catch de una subclase colocado después del de su superclase es inalcanzable y el compilador lo rechaza. Siempre hay que ordenar de lo más específico a lo más general."
+  - id: exceptions-14
+    topic: exceptions
+    difficulty: medium
+    question: "Una clase padre declara void leer() throws IOException. ¿Qué puede declarar el método sobrescrito en la hija?"
+    options: ["throws Exception", "throws SQLException", "throws FileNotFoundException, o ninguna excepción", "Cualquier excepción checked nueva"]
+    correctIndex: 2
+    explanation: "Un método sobrescrito no puede lanzar checked más amplias o nuevas que las del padre; sí puede lanzar subclases (FileNotFoundException), menos o ninguna. Las unchecked no tienen restricción."
+  - id: exceptions-15
+    topic: exceptions
+    difficulty: medium
+    question: "Capturas una SQLException y quieres lanzar tu propia ServicioException. ¿Cuál es la mejor práctica?"
+    options: ["Lanzar new ServicioException() sin más datos para no filtrar detalles", "Pasar la original como causa: new ServicioException(\"mensaje\", e)", "Imprimir e.printStackTrace() y lanzar la nueva sin causa", "Relanzar solo e.getMessage() como String"]
+    correctIndex: 1
+    explanation: "Encadenar la causa conserva el stack trace original, lo que facilita el diagnóstico. Perderla es uno de los errores más habituales al envolver excepciones."
+  - id: exceptions-16
+    topic: exceptions
+    difficulty: medium
+    question: "En Spring con @Transactional por defecto, ¿cuándo se hace rollback automático?"
+    options: ["Ante cualquier excepción, checked o no", "Solo ante excepciones checked", "Nunca: siempre hay que llamar a rollback() a mano", "Ante RuntimeException y Error, pero no ante excepciones checked"]
+    correctIndex: 3
+    explanation: "El comportamiento por defecto hace rollback con excepciones unchecked y Error. Para checked hay que indicarlo con rollbackFor."
+  - id: exceptions-17
+    topic: exceptions
+    difficulty: medium
+    question: "¿Qué sucede con el bloque finally si dentro del try se ejecuta System.exit(0)?"
+    options: ["Se ejecuta siempre, sin excepción", "No se ejecuta, porque la JVM termina de inmediato", "Se ejecuta solo si hay un catch", "Se ejecuta antes de que la JVM se detenga"]
+    correctIndex: 1
+    explanation: "System.exit detiene la JVM sin completar el flujo normal, así que finally no se ejecuta. Lo mismo pasa si el hilo muere o se corta la máquina."
+  - id: exceptions-18
+    topic: exceptions
+    difficulty: medium
+    question: "¿Qué ocurre al intentar reasignar la variable e dentro de un multi-catch, por ejemplo e = new RuntimeException(); en catch (A | B e)?"
+    options: ["Error de compilación: el parámetro del multi-catch es implícitamente final", "Compila y sustituye la excepción capturada", "Compila pero lanza ClassCastException", "Solo da un aviso del compilador"]
+    correctIndex: 0
+    explanation: "En un multi-catch el parámetro es implícitamente final porque su tipo es la unión de varios tipos; reasignarlo no está permitido."
+  - id: exceptions-19
+    topic: exceptions
+    difficulty: medium
+    question: "¿Por qué se desaconseja usar excepciones para el control de flujo normal (por ejemplo, salir de un bucle)?"
+    options: ["Porque Java no permite capturar la misma excepción dos veces", "Porque solo se pueden lanzar una vez por ejecución", "Porque no se pueden usar dentro de bucles", "Son lentas por construir el stack trace y hacen el código confuso"]
+    correctIndex: 3
+    explanation: "Crear una excepción implica rellenar el stack trace, algo costoso, y además ocultan la lógica real. Las excepciones son para situaciones excepcionales."
+  - id: exceptions-20
+    topic: exceptions
+    difficulty: hard
+    question: "¿Qué ocurre al ejecutar este código?"
+    code: |
+      static void m() {
+          try {
+              throw new IllegalStateException("A");
+          } finally {
+              throw new IllegalArgumentException("B");
+          }
+      }
+      // en main:
+      try { m(); }
+      catch (Exception e) {
+          System.out.println(e.getMessage() + " " + e.getSuppressed().length);
+      }
+    options: ["Imprime \"A 1\": B queda como suprimida", "Imprime \"A 0\"", "Imprime \"B 0\": la excepción de finally reemplaza a la original sin suprimirla", "Imprime \"B 1\": A queda como suprimida"]
+    correctIndex: 2
+    explanation: "Cuando finally lanza una excepción, esta sustituye a la pendiente y la original se pierde. Las suprimidas solo se añaden automáticamente en try-with-resources, no en finally."
+  - id: exceptions-21
+    topic: exceptions
+    difficulty: hard
+    question: "¿Qué imprime este código?"
+    code: |
+      static String n() {
+          StringBuilder sb = new StringBuilder();
+          try {
+              try {
+                  sb.append("1");
+                  throw new RuntimeException("x");
+              } catch (RuntimeException e) {
+                  sb.append("2");
+                  throw new IllegalStateException("y");
+              } finally {
+                  sb.append("3");
+              }
+          } catch (IllegalStateException e) {
+              sb.append("4");
+          } finally {
+              sb.append("5");
+          }
+          return sb.toString();
+      }
+    options: ["1234", "12435", "12345", "1235"]
+    correctIndex: 2
+    explanation: "Se ejecuta el try interno (1), su catch (2) que relanza, luego el finally interno (3), el catch externo (4) y el finally externo (5)."
+  - id: exceptions-22
+    topic: exceptions
+    difficulty: hard
+    question: "¿Qué ocurre si un bloque estático de una clase lanza una excepción durante la carga de la clase?"
+    options: ["Se propaga la excepción original en cada uso posterior de la clase", "La clase se carga igualmente con los campos en su valor por defecto", "La JVM se cierra inmediatamente", "Se lanza ExceptionInInitializerError y los usos posteriores de la clase dan NoClassDefFoundError"]
+    correctIndex: 3
+    explanation: "Un fallo en la inicialización estática se envuelve en ExceptionInInitializerError. La clase queda inutilizable y los intentos siguientes lanzan NoClassDefFoundError."
+  - id: exceptions-23
+    topic: exceptions
+    difficulty: hard
+    question: "Con try (Res r = null) { ... }, donde Res implementa AutoCloseable, ¿qué ocurre al salir del bloque?"
+    options: ["No pasa nada: los recursos null se omiten al cerrar", "Lanza NullPointerException al llamar a close()", "No compila porque el recurso no puede ser null", "Se crea un Res nuevo automáticamente"]
+    correctIndex: 0
+    explanation: "El try-with-resources comprueba que el recurso no sea null antes de invocar close(), así que se permite y no falla."
+  - id: exceptions-24
+    topic: exceptions
+    difficulty: hard
+    question: "¿Qué ocurre al intentar usar una lambda como Function<String,String> que llama a un método que lanza una excepción checked?"
+    options: ["Compila y la excepción se convierte automáticamente en unchecked", "No compila si la excepción no se captura dentro de la lambda, porque apply() no declara throws", "Compila pero la excepción se pierde", "Funciona solo con Stream paralelos"]
+    correctIndex: 1
+    explanation: "Las interfaces funcionales estándar no declaran excepciones checked, por lo que hay que capturarlas dentro de la lambda o envolverlas en una unchecked."
+  - id: exceptions-25
+    topic: exceptions
+    difficulty: hard
+    question: "¿Qué afirmación sobre StackOverflowError y OutOfMemoryError es correcta?"
+    options: ["Ambas son subclases de VirtualMachineError, que a su vez extiende Error", "Ambas son subclases de RuntimeException", "StackOverflowError es checked y OutOfMemoryError unchecked", "Las dos extienden de Exception y deben declararse con throws"]
+    correctIndex: 0
+    explanation: "Las dos pertenecen a la rama Error: VirtualMachineError. No son excepciones y no hay obligación de declararlas."

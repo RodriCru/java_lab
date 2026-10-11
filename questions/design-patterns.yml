@@ -1,0 +1,244 @@
+questions:
+  - id: design-patterns-01
+    topic: design-patterns
+    difficulty: easy
+    question: "¿Cuál es el objetivo principal del patrón Singleton?"
+    options: ["Garantizar que una clase tenga una única instancia y ofrecer un punto de acceso global a ella", "Crear copias de un objeto existente sin depender de su clase concreta", "Permitir que dos interfaces incompatibles trabajen juntas", "Notificar a varios objetos cuando cambia el estado de otro"]
+    correctIndex: 0
+    explanation: "Singleton restringe la instanciación a un único objeto. Copiar objetos es Prototype, unir interfaces es Adapter y notificar cambios es Observer."
+  - id: design-patterns-02
+    topic: design-patterns
+    difficulty: easy
+    question: "¿Qué problema resuelve el patrón Factory Method?"
+    options: ["Evita que una clase se modifique después de creada", "Delega en un método la decisión de qué clase concreta instanciar, ocultándola al cliente", "Permite agregar responsabilidades a un objeto en tiempo de ejecución", "Controla el acceso a un objeto costoso mediante un sustituto"]
+    correctIndex: 1
+    explanation: "Factory Method encapsula la creación para que el cliente dependa de una abstracción y no de `new ClaseConcreta()`. Agregar responsabilidades dinámicamente es Decorator."
+  - id: design-patterns-03
+    topic: design-patterns
+    difficulty: easy
+    question: "¿En qué situación es más útil el patrón Builder?"
+    options: ["Cuando se necesita una sola instancia global de la clase", "Cuando se quiere cambiar el algoritmo usado en tiempo de ejecución", "Cuando se quiere simplificar el acceso a un subsistema complejo", "Cuando un objeto tiene muchos parámetros, varios opcionales, y los constructores telescópicos se vuelven ilegibles"]
+    correctIndex: 3
+    explanation: "Builder construye objetos complejos paso a paso con una API legible (`.nombre(...).edad(...).build()`). Cambiar algoritmos es Strategy y simplificar subsistemas es Facade."
+  - id: design-patterns-04
+    topic: design-patterns
+    difficulty: easy
+    question: "¿Qué describe mejor el patrón Strategy?"
+    options: ["Un objeto que representa una petición como objeto para poder encolarla o deshacerla", "Una familia de algoritmos intercambiables, cada uno encapsulado tras una misma interfaz", "Una clase que define el esqueleto de un algoritmo y deja pasos a las subclases", "Un objeto que oculta la creación de una familia de productos relacionados"]
+    correctIndex: 1
+    explanation: "Strategy encapsula algoritmos detrás de una interfaz y permite elegirlos en tiempo de ejecución. La opción del esqueleto describe Template Method."
+  - id: design-patterns-05
+    topic: design-patterns
+    difficulty: easy
+    question: "En el patrón Observer, ¿qué ocurre cuando cambia el estado del sujeto (subject)?"
+    options: ["El sujeto se destruye y se vuelve a crear", "Los observadores deben consultar al sujeto periódicamente en un hilo propio", "El sujeto notifica a todos sus observadores registrados", "Solo el primer observador registrado es notificado"]
+    correctIndex: 2
+    explanation: "El sujeto mantiene una lista de observadores y los notifica automáticamente. Es la base de los listeners y de los eventos de aplicación."
+  - id: design-patterns-06
+    topic: design-patterns
+    difficulty: easy
+    question: "Tienes una librería externa de pagos con una interfaz distinta a la que espera tu código. ¿Qué patrón usas para integrarla sin modificarla?"
+    options: ["Adapter", "Singleton", "Prototype", "Observer"]
+    correctIndex: 0
+    explanation: "Adapter envuelve la clase incompatible y la expone con la interfaz que el cliente espera, sin tocar el código original."
+  - id: design-patterns-07
+    topic: design-patterns
+    difficulty: easy
+    question: "¿Qué es la inyección de dependencias (Dependency Injection)?"
+    options: ["Crear las dependencias con `new` dentro del propio constructor de la clase", "Declarar todas las dependencias como variables estáticas", "Que un componente reciba desde fuera los objetos que necesita en lugar de crearlos él mismo", "Heredar de las clases de las que se depende"]
+    correctIndex: 2
+    explanation: "Con DI las dependencias se entregan al objeto (por constructor, setter o campo), lo que reduce el acoplamiento y facilita las pruebas con dobles."
+  - id: design-patterns-08
+    topic: design-patterns
+    difficulty: easy
+    question: "¿Para qué sirve el patrón Facade?"
+    options: ["Para hacer pasar una petición por una cadena de manejadores", "Para clonar objetos complejos", "Para evitar que una clase tenga subclases", "Para ofrecer una interfaz simple que oculta la complejidad de un subsistema"]
+    correctIndex: 3
+    explanation: "Facade expone una API sencilla sobre varias clases internas. Un servicio que orquesta repositorios y clientes externos para un caso de uso actúa como fachada."
+  - id: design-patterns-09
+    topic: design-patterns
+    difficulty: medium
+    question: "¿Qué imprime el siguiente programa?"
+    code: |
+      interface Coffee { String desc(); int cost(); }
+      class Simple implements Coffee {
+          public String desc() { return "Cafe"; }
+          public int cost() { return 10; }
+      }
+      class Milk implements Coffee {
+          Coffee c; Milk(Coffee c) { this.c = c; }
+          public String desc() { return c.desc() + "+Leche"; }
+          public int cost() { return c.cost() + 3; }
+      }
+      class Sugar implements Coffee {
+          Coffee c; Sugar(Coffee c) { this.c = c; }
+          public String desc() { return c.desc() + "+Azucar"; }
+          public int cost() { return c.cost() + 1; }
+      }
+      public class Main {
+          public static void main(String[] args) {
+              Coffee c = new Sugar(new Milk(new Simple()));
+              System.out.println(c.desc() + " " + c.cost());
+          }
+      }
+    options: ["Cafe+Azucar+Leche 14", "Cafe+Leche+Azucar 14", "Cafe+Leche+Azucar 10", "Cafe 10"]
+    correctIndex: 1
+    explanation: "Es el patrón Decorator: la llamada baja hasta `Simple` y cada decorador agrega su parte al volver, de dentro hacia fuera (Leche y luego Azucar). El costo es 10 + 3 + 1 = 14."
+  - id: design-patterns-10
+    topic: design-patterns
+    difficulty: medium
+    question: "¿Qué imprime el siguiente programa?"
+    code: |
+      abstract class Report {
+          final void run() { open(); body(); close(); }
+          void open() { System.out.print("A"); }
+          abstract void body();
+          void close() { System.out.print("C"); }
+      }
+      class Sales extends Report {
+          void body() { System.out.print("B"); }
+          void close() { super.close(); System.out.print("D"); }
+      }
+      public class Main {
+          public static void main(String[] args) {
+              new Sales().run();
+          }
+      }
+    options: ["ABC", "ABDC", "ACBD", "ABCD"]
+    correctIndex: 3
+    explanation: "Template Method: `run()` fija el orden open, body, close. `Sales.close()` llama primero a `super.close()` (imprime C) y después imprime D, de modo que el resultado es ABCD."
+  - id: design-patterns-11
+    topic: design-patterns
+    difficulty: medium
+    question: "¿Cuál es una forma segura y simple de implementar un Singleton thread-safe en Java?"
+    options: ["Un método `getInstance()` con `if (instance == null) instance = new X();` sin sincronización", "Un enum con un único valor `INSTANCE`", "Un campo de instancia estático no final que se asigna desde cualquier hilo", "Un constructor público con una variable estática que cuenta las instancias"]
+    correctIndex: 1
+    explanation: "El enum garantiza una sola instancia, es thread-safe por la inicialización de clases de la JVM y resiste serialización y reflexión. La versión sin sincronizar puede crear dos instancias con varios hilos."
+  - id: design-patterns-12
+    topic: design-patterns
+    difficulty: medium
+    question: "¿Qué imprime el siguiente programa?"
+    code: |
+      import java.util.*;
+      class Shape implements Cloneable {
+          List<String> tags = new ArrayList<>();
+          int n = 1;
+          public Shape clone() {
+              try { return (Shape) super.clone(); }
+              catch (CloneNotSupportedException e) { throw new RuntimeException(e); }
+          }
+      }
+      public class Main {
+          public static void main(String[] args) {
+              Shape s = new Shape();
+              Shape t = s.clone();
+              t.tags.add("x");
+              t.n = 5;
+              System.out.println(s.tags.size() + " " + s.n);
+          }
+      }
+    options: ["0 1", "1 5", "0 5", "1 1"]
+    correctIndex: 3
+    explanation: "`super.clone()` hace una copia superficial: el `int` se copia por valor, pero la referencia a la lista se comparte. Agregar a `t.tags` modifica la lista de `s`, y `s.n` sigue siendo 1."
+  - id: design-patterns-13
+    topic: design-patterns
+    difficulty: medium
+    question: "¿Cuál es la diferencia principal entre Decorator y Proxy?"
+    options: ["Decorator agrega comportamiento nuevo al objeto envuelto; Proxy controla el acceso a él (carga perezosa, seguridad, caché) sin cambiar su función", "Decorator solo funciona con clases y Proxy solo con interfaces", "Proxy crea el objeto real en cada llamada y Decorator nunca lo crea", "No hay diferencia: son nombres distintos del mismo patrón"]
+    correctIndex: 0
+    explanation: "Ambos envuelven un objeto con la misma interfaz, pero la intención es distinta: el Decorator enriquece el comportamiento y el Proxy gestiona el acceso al objeto real."
+  - id: design-patterns-14
+    topic: design-patterns
+    difficulty: medium
+    question: "¿Qué distingue a Abstract Factory de Factory Method?"
+    options: ["Abstract Factory solo puede crear un tipo de objeto por fábrica", "Factory Method requiere siempre reflexión y Abstract Factory no", "Abstract Factory crea familias de objetos relacionados; Factory Method crea un solo producto delegando en subclases", "Son idénticos y solo cambia el nombre de los métodos"]
+    correctIndex: 2
+    explanation: "Abstract Factory expone varios métodos de creación que producen productos compatibles entre sí (por ejemplo, widgets de un mismo tema). Factory Method se centra en un único producto."
+  - id: design-patterns-15
+    topic: design-patterns
+    difficulty: medium
+    question: "¿Qué imprime el siguiente programa?"
+    code: |
+      import java.util.*;
+      interface Obs { void on(String e); }
+      public class Main {
+          public static void main(String[] args) {
+              List<Obs> l = new ArrayList<>();
+              l.add(e -> System.out.print("1" + e));
+              l.add(e -> System.out.print("2" + e));
+              l.forEach(o -> o.on("!"));
+          }
+      }
+    options: ["2!1!", "1!2!", "1!", "12!"]
+    correctIndex: 1
+    explanation: "Los observadores se notifican en el orden de registro porque `ArrayList` conserva el orden de inserción. Cada uno recibe el evento `!`."
+  - id: design-patterns-16
+    topic: design-patterns
+    difficulty: medium
+    question: "Necesitas implementar un historial de acciones con deshacer (undo) en un editor. ¿Qué patrón encaja mejor?"
+    options: ["Singleton", "Command", "Factory Method", "Facade"]
+    correctIndex: 1
+    explanation: "Command encapsula cada acción como objeto con `execute()` y, opcionalmente, `undo()`, lo que permite guardarlas en una pila, encolarlas o repetirlas."
+  - id: design-patterns-17
+    topic: design-patterns
+    difficulty: medium
+    question: "¿Qué patrón de diseño usa Spring AOP para aplicar comportamiento como `@Transactional` alrededor de un bean?"
+    options: ["Un proxy que envuelve al bean y ejecuta la lógica transversal antes y después de la llamada", "Un Singleton que reemplaza al bean original", "Un Builder que reconstruye el bean con transacciones", "Un Observer que escucha cada llamada a método"]
+    correctIndex: 0
+    explanation: "Spring crea un proxy (JDK dinámico o CGLIB) que intercepta las llamadas. Por eso una llamada interna `this.metodo()` dentro del mismo bean no pasa por el proxy."
+  - id: design-patterns-18
+    topic: design-patterns
+    difficulty: medium
+    question: "¿Cuál de estas afirmaciones sobre un bean singleton de Spring y el patrón Singleton clásico (GoF) es VERDADERA?"
+    options: ["Ambos garantizan una única instancia por JVM sin importar cuántos contextos existan", "El bean singleton de Spring es una única instancia por contenedor (ApplicationContext) y por definición de bean, no por JVM ni por classloader", "El patrón GoF crea la instancia con DI y el de Spring con un constructor privado", "El bean singleton de Spring es siempre thread-safe de forma automática"]
+    correctIndex: 1
+    explanation: "El scope singleton de Spring es por contenedor: dos contextos pueden tener dos instancias de la misma clase. Spring tampoco hace thread-safe el estado mutable del bean."
+  - id: design-patterns-19
+    topic: design-patterns
+    difficulty: medium
+    question: "Un servicio calcula descuentos con una cadena de `if/else if` por tipo de cliente y cada tipo nuevo obliga a modificarlo. ¿Qué refactor aplica mejor el principio abierto/cerrado?"
+    options: ["Mover todos los `if` a un método estático más largo", "Usar Strategy: una interfaz `DescuentoStrategy` con una implementación por tipo de cliente, resueltas por mapa o inyección", "Convertir el servicio en Singleton", "Usar herencia para que el servicio sea una subclase de cada tipo de cliente"]
+    correctIndex: 1
+    explanation: "Con Strategy, agregar un tipo nuevo es crear otra clase sin tocar el código existente. Mover los `if` solo cambia el lugar del problema."
+  - id: design-patterns-20
+    topic: design-patterns
+    difficulty: hard
+    question: "En un Singleton con double-checked locking (`if (instance == null) { synchronized (...) { if (instance == null) instance = new X(); } }`), ¿por qué el campo `instance` debe ser `volatile`?"
+    options: ["Para que el bloque `synchronized` sea reentrante", "Para que `instance` se guarde en el stack y no en el heap", "Para evitar que `getInstance()` se ejecute más de una vez por hilo", "Para impedir que otro hilo vea la referencia publicada antes de que el objeto esté completamente construido por reordenamiento de instrucciones"]
+    correctIndex: 3
+    explanation: "Sin `volatile`, el compilador o la CPU pueden reordenar y publicar la referencia antes de terminar el constructor, así que otro hilo podría usar un objeto a medio construir. `volatile` establece la relación happens-before necesaria."
+  - id: design-patterns-21
+    topic: design-patterns
+    difficulty: hard
+    question: "Un Singleton clásico con constructor privado implementa `Serializable`. ¿Qué problema puede aparecer?"
+    options: ["La serialización lo convierte automáticamente en un enum", "Deserializarlo puede crear una segunda instancia, salvo que se implemente `readResolve()` que devuelva la instancia única", "Java prohíbe serializar clases con constructor privado", "La deserialización siempre reutiliza la instancia existente sin código adicional"]
+    correctIndex: 1
+    explanation: "`ObjectInputStream` crea un objeto nuevo sin pasar por el constructor privado. `readResolve()` permite sustituirlo por la instancia única; el enum ya lo resuelve de forma nativa."
+  - id: design-patterns-22
+    topic: design-patterns
+    difficulty: hard
+    question: "Quieres un objeto inmutable con 3 campos obligatorios y 6 opcionales, y que nunca esté en un estado inválido. ¿Qué diseño es mejor?"
+    options: ["Un Builder que acumula los valores, valida en `build()` y crea la instancia con campos `final`", "Un constructor vacío y 9 setters, validando al final con un método `isValid()`", "Un constructor con 9 parámetros posicionales, pasando `null` en los opcionales", "Un Singleton con setters sincronizados"]
+    correctIndex: 0
+    explanation: "El Builder permite nombrar cada valor, validar en un solo punto y producir un objeto inmutable. Con setters, el objeto existe en estados intermedios inválidos y no puede ser inmutable."
+  - id: design-patterns-23
+    topic: design-patterns
+    difficulty: hard
+    question: "¿Por qué se considera Service Locator un anti-patrón frente a la inyección de dependencias?"
+    options: ["Porque es más lento que cualquier contenedor de DI", "Porque obliga a usar reflexión en tiempo de compilación", "Porque no puede devolver más de un servicio", "Porque oculta las dependencias reales de una clase: están dentro del cuerpo de los métodos y no en su constructor, lo que dificulta pruebas y comprensión"]
+    correctIndex: 3
+    explanation: "Con Service Locator la clase pide lo que necesita a un registro global, así que su contrato no revela sus dependencias y hay que configurar el registro en cada prueba. Con DI se ven en el constructor."
+  - id: design-patterns-24
+    topic: design-patterns
+    difficulty: hard
+    question: "¿Qué ventaja tiene Strategy sobre Template Method al variar un comportamiento?"
+    options: ["Strategy es más rápido porque evita el polimorfismo", "Strategy solo puede aplicarse a métodos estáticos", "Strategy usa composición: el comportamiento se cambia en tiempo de ejecución y se combina sin depender de una jerarquía de herencia fija", "Strategy permite modificar clases `final` sin recompilarlas"]
+    correctIndex: 2
+    explanation: "Template Method fija la variación en tiempo de compilación mediante subclases. Strategy delega en un objeto intercambiable, lo que favorece la composición sobre la herencia."
+  - id: design-patterns-25
+    topic: design-patterns
+    difficulty: hard
+    question: "Una clase `AppManager` valida usuarios, envía correos, genera PDFs, guarda en base de datos y registra logs. ¿Cómo se llama este anti-patrón y cuál es el remedio?"
+    options: ["Singleton abusivo; hacerla `final`", "Spaghetti code; añadir más comentarios", "God Object (clase Dios); dividir responsabilidades en clases cohesivas siguiendo el principio de responsabilidad única", "Lava flow; borrar el código antiguo"]
+    correctIndex: 2
+    explanation: "Una clase que concentra demasiadas responsabilidades es un God Object y viola SRP. Se separa en servicios pequeños y cohesivos (validación, notificación, reportes, persistencia) inyectados donde se necesiten."

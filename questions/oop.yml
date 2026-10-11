@@ -1,0 +1,309 @@
+questions:
+  - id: oop-01
+    topic: oop
+    difficulty: easy
+    question: "¿En qué consiste el encapsulamiento?"
+    options:
+      - "En heredar atributos y métodos de una clase padre"
+      - "En ocultar el estado interno de un objeto y exponerlo solo mediante métodos controlados"
+      - "En que un mismo método pueda comportarse distinto según el objeto"
+      - "En declarar todos los atributos como static"
+    correctIndex: 1
+    explanation: "Encapsular es proteger el estado (atributos privados) y ofrecer una interfaz pública que valide los cambios. Heredar es herencia y comportarse distinto es polimorfismo."
+
+  - id: oop-02
+    topic: oop
+    difficulty: easy
+    question: "¿Qué ocurre si intentas instanciar una clase abstracta con new?"
+    options:
+      - "Se crea el objeto, pero sus métodos abstractos lanzan excepción"
+      - "Se crea un objeto con los métodos abstractos vacíos"
+      - "Compila, pero falla al ejecutar con InstantiationException"
+      - "Error de compilación: una clase abstracta no se puede instanciar directamente"
+    correctIndex: 3
+    explanation: "Una clase abstracta es incompleta por diseño y el compilador impide new sobre ella. Solo se instancian sus subclases concretas (o una clase anónima que implemente lo faltante)."
+
+  - id: oop-03
+    topic: oop
+    difficulty: easy
+    question: "Tienes `Animal a = new Perro();` y ambas clases definen hablar(). ¿Qué versión se ejecuta con a.hablar()?"
+    options:
+      - "La de Perro, porque el método se resuelve según el objeto real en tiempo de ejecución"
+      - "La de Animal, porque la variable está declarada como Animal"
+      - "Error de compilación: tipos incompatibles"
+      - "Se ejecutan ambas, primero la del padre"
+    correctIndex: 0
+    explanation: "Es polimorfismo por sobreescritura: el despacho de métodos de instancia es dinámico y depende del tipo real del objeto, no del tipo de la variable."
+
+  - id: oop-04
+    topic: oop
+    difficulty: easy
+    question: "¿Qué regla de herencia aplica en Java para clases e interfaces?"
+    options:
+      - "Una clase puede extender varias clases y una interfaz solo una"
+      - "Una clase no puede implementar interfaces si ya extiende otra clase"
+      - "Una clase extiende una sola clase pero puede implementar varias interfaces"
+      - "Una clase puede extender varias clases si todas son abstractas"
+    correctIndex: 2
+    explanation: "Java no permite herencia múltiple de clases (evita el problema del diamante con estado), pero sí implementar tantas interfaces como se necesite."
+
+  - id: oop-05
+    topic: oop
+    difficulty: easy
+    question: "¿Cuál de estos casos es un ejemplo de SOBRECARGA (overload)?"
+    options:
+      - "Una subclase redefine un método del padre con la misma firma"
+      - "Una clase define sumar(int a, int b) y sumar(double a, double b)"
+      - "Una clase implementa el método de una interfaz"
+      - "Una clase marca un método como final"
+    correctIndex: 1
+    explanation: "Sobrecargar es tener métodos con el mismo nombre y distinta lista de parámetros en la misma clase (resuelto en compilación). Redefinir con la misma firma es sobreescritura."
+
+  - id: oop-06
+    topic: oop
+    difficulty: easy
+    question: "¿Para qué sirve la palabra clave super dentro de una subclase?"
+    options:
+      - "Para referirse a miembros y constructores de la clase padre"
+      - "Para referirse al objeto actual"
+      - "Para convertir la subclase en abstracta"
+      - "Para acceder a variables estáticas de cualquier clase"
+    correctIndex: 0
+    explanation: "super permite invocar el constructor del padre (super(...)) o un método del padre ya sobreescrito (super.metodo()). this, en cambio, se refiere al objeto actual."
+
+  - id: oop-07
+    topic: oop
+    difficulty: easy
+    question: "Una clase no declara ningún constructor. ¿Qué hace Java?"
+    options:
+      - "No permite crear instancias de esa clase"
+      - "Obliga a declarar un constructor en la primera instanciación"
+      - "El compilador genera un constructor por defecto sin parámetros"
+      - "Genera un constructor que recibe todos los atributos"
+    correctIndex: 2
+    explanation: "Si no hay ningún constructor, el compilador añade uno sin argumentos. En cuanto declaras cualquier constructor, ese por defecto deja de generarse."
+
+  - id: oop-08
+    topic: oop
+    difficulty: easy
+    question: "¿Qué relación expresa la composición?"
+    options:
+      - "Es-un: una subclase es un tipo de su clase padre"
+      - "Implementa-un: una clase cumple un contrato"
+      - "Usa-temporalmente: una clase recibe un objeto solo como parámetro"
+      - "Tiene-un: un objeto contiene a otros como parte de su estado y delega en ellos"
+    correctIndex: 3
+    explanation: "Composición es tener referencias a otros objetos (por ejemplo, un Auto tiene un Motor). La herencia expresa es-un y suele ser más rígida."
+
+  - id: oop-09
+    topic: oop
+    difficulty: medium
+    question: "¿Qué imprime este código?"
+    code: |
+      class Par { String name = "par"; String get() { return "par"; } static String s() { return "Ps"; } }
+      class Chi extends Par { String name = "chi"; String get() { return "chi"; } static String s() { return "Cs"; } }
+
+      Par p = new Chi();
+      System.out.println(p.name + " " + p.get() + " " + p.s());
+    options: ["chi chi Cs", "par chi Ps", "par par Ps", "chi chi Ps"]
+    correctIndex: 1
+    explanation: "Solo los métodos de instancia son polimórficos (get() usa el objeto real: chi). Los campos y los métodos estáticos se resuelven por el tipo declarado de la variable (Par): par y Ps."
+
+  - id: oop-10
+    topic: oop
+    difficulty: medium
+    question: "¿Qué imprime este código?"
+    code: |
+      class B1 {
+          B1() { init(); }
+          void init() { System.out.print("B1 "); }
+      }
+      class D1 extends B1 {
+          int v = 7;
+          String t = "t";
+          D1() { super(); }
+          void init() { System.out.print(v + " " + t + " "); }
+      }
+      new D1();
+    options: ["B1", "7 t", "0 null", "No compila"]
+    correctIndex: 2
+    explanation: "El constructor del padre se ejecuta antes de inicializar los campos del hijo y llama al init() sobreescrito, que ve los valores por defecto (0 y null). Por eso no se debe llamar a métodos sobreescribibles desde un constructor."
+
+  - id: oop-11
+    topic: oop
+    difficulty: medium
+    question: "Con las sobrecargas f(long), f(Integer) y f(Object), ¿cuál se invoca con f(5)?"
+    options: ["f(long)", "f(Integer)", "f(Object)", "Error: llamada ambigua"]
+    correctIndex: 0
+    explanation: "La resolución de sobrecarga prueba por fases: primero coincidencia exacta y ensanchamiento primitivo (int a long), y solo después boxing. Por eso gana f(long) sobre f(Integer)."
+
+  - id: oop-12
+    topic: oop
+    difficulty: medium
+    question: "Con las sobrecargas g(Object o) y g(String s), ¿cuál se invoca con g(null)?"
+    options: ["g(Object)", "Error: llamada ambigua", "Lanza NullPointerException", "g(String)"]
+    correctIndex: 3
+    explanation: "Java elige la sobrecarga más específica aplicable. String es subtipo de Object, así que g(String) es más específica. Habría ambigüedad solo con tipos sin relación, como String e Integer."
+
+  - id: oop-13
+    topic: oop
+    difficulty: medium
+    question: "¿Cuál afirmación sobre el contrato equals/hashCode es VERDADERA?"
+    options:
+      - "Si dos objetos tienen el mismo hashCode, equals debe devolver true"
+      - "Si equals devuelve true para dos objetos, deben tener el mismo hashCode"
+      - "Si sobreescribes hashCode no hace falta sobreescribir equals"
+      - "equals y hashCode son independientes entre sí"
+    correctIndex: 1
+    explanation: "El contrato exige que objetos iguales tengan el mismo hash. Lo contrario no se cumple: hay colisiones. Romperlo hace que HashMap y HashSet no encuentren elementos que deberían ser iguales."
+
+  - id: oop-14
+    topic: oop
+    difficulty: medium
+    question: "Una clase implementa dos interfaces A y B, que declaran el mismo método default hi(). ¿Qué pasa?"
+    options:
+      - "Se usa el de la primera interfaz listada"
+      - "Se usa el de la última interfaz listada"
+      - "Error de compilación: la clase debe sobreescribir hi() (puede delegar con A.super.hi())"
+      - "Compila, pero lanza excepción al invocar hi()"
+    correctIndex: 2
+    explanation: "Ante dos defaults en conflicto, Java no elige: la clase debe resolver la ambigüedad sobreescribiendo el método y, si quiere, llamar a una versión con A.super.hi()."
+
+  - id: oop-15
+    topic: oop
+    difficulty: medium
+    question: "Varias clases comparten estado (campos) y código común, y además cada una debe implementar un paso propio. ¿Qué conviene usar?"
+    options:
+      - "Una clase abstracta con el estado y el código común, y métodos abstractos para lo específico"
+      - "Una interfaz, porque las interfaces pueden tener campos de instancia"
+      - "Una interfaz con métodos default que guarden el estado"
+      - "Un enum con un constructor por cada clase"
+    correctIndex: 0
+    explanation: "Las clases abstractas pueden tener campos de instancia y constructores; las interfaces no pueden tener estado de instancia (sus campos son constantes static final)."
+
+  - id: oop-16
+    topic: oop
+    difficulty: medium
+    question: "¿Qué imprime este código?"
+    code: |
+      class A1 { void hi() { System.out.print("A "); } }
+      class A2 extends A1 { void hi() { super.hi(); System.out.print("B "); } }
+      class A3 extends A2 { void hi() { super.hi(); System.out.print("C "); } }
+
+      new A3().hi();
+    options: ["C", "C B A", "A", "A B C"]
+    correctIndex: 3
+    explanation: "Cada hi() llama primero a super.hi() y luego imprime su letra, así que la ejecución desciende hasta A1 y las letras salen en orden A B C."
+
+  - id: oop-17
+    topic: oop
+    difficulty: medium
+    question: "Una clase UserService valida datos, guarda en la base de datos y envía el correo de bienvenida. ¿Qué principio SOLID incumple?"
+    options:
+      - "Liskov (LSP)"
+      - "Responsabilidad única (SRP)"
+      - "Segregación de interfaces (ISP)"
+      - "Abierto/cerrado (OCP)"
+    correctIndex: 1
+    explanation: "SRP dice que una clase debe tener una sola razón para cambiar. Aquí mezcla validación, persistencia y notificación; conviene separarlas en colaboradores."
+
+  - id: oop-18
+    topic: oop
+    difficulty: medium
+    question: "Un cálculo de descuentos tiene un if/else largo por tipo de cliente y cada tipo nuevo obliga a modificarlo. ¿Qué refactor aplica el principio abierto/cerrado (OCP)?"
+    options:
+      - "Agregar más ramas else if, ordenadas por frecuencia"
+      - "Mover el if/else a un método estático más grande"
+      - "Definir una interfaz Descuento con una implementación por tipo y elegir la implementación (polimorfismo/Strategy)"
+      - "Reemplazar los tipos de cliente por constantes int"
+    correctIndex: 2
+    explanation: "OCP busca extender comportamiento sin modificar código existente: se añade una nueva implementación de la interfaz sin tocar la lógica ya probada."
+
+  - id: oop-19
+    topic: oop
+    difficulty: medium
+    question: "¿Qué se necesita para diseñar una clase inmutable correctamente?"
+    options:
+      - "Clase final, campos private final, sin setters y copias defensivas de los campos mutables"
+      - "Marcar la clase como abstract y los métodos como synchronized"
+      - "Solo declarar los campos como final; el resto no importa"
+      - "Hacer los campos public para que no haya getters que puedan cambiarlos"
+    correctIndex: 0
+    explanation: "Además de final y sin setters, si un campo es mutable (una List, un Date) hay que copiarlo al recibirlo y al devolverlo; si no, el estado puede cambiar desde fuera."
+
+  - id: oop-20
+    topic: oop
+    difficulty: hard
+    question: "Square extiende Rectangle y sobreescribe setWidth/setHeight para mantener lados iguales. Un código que recibe un Rectangle hace setWidth(5), setHeight(2) y espera área 10, pero con Square obtiene 4. ¿Qué principio se viola?"
+    options:
+      - "Inversión de dependencias (DIP)"
+      - "Responsabilidad única (SRP)"
+      - "Abierto/cerrado (OCP)"
+      - "Sustitución de Liskov (LSP)"
+    correctIndex: 3
+    explanation: "LSP exige que un subtipo pueda usarse donde se espera el supertipo sin romper su comportamiento. Square cambia el contrato de Rectangle (ancho y alto independientes), por lo que la herencia es incorrecta."
+
+  - id: oop-21
+    topic: oop
+    difficulty: hard
+    question: "Una clase PedidoService crea internamente un new MySqlRepo() y por eso no se puede probar sin base de datos. ¿Qué cambio aplica la inversión de dependencias (DIP)?"
+    options:
+      - "Hacer MySqlRepo un singleton con un método estático getInstance()"
+      - "Depender de una interfaz PedidoRepo recibida por constructor (inyección)"
+      - "Heredar PedidoService de MySqlRepo para reutilizar sus métodos"
+      - "Marcar el campo del repositorio como final y seguir creándolo dentro"
+    correctIndex: 1
+    explanation: "DIP indica que los módulos de alto nivel dependan de abstracciones y no de implementaciones concretas. Inyectar una interfaz permite sustituirla por un doble en las pruebas."
+
+  - id: oop-22
+    topic: oop
+    difficulty: hard
+    question: "Una clase padre declara `public void run()`. ¿Qué pasa si la subclase lo sobreescribe como `protected void run()`?"
+    options:
+      - "Compila: se puede reducir la visibilidad al sobreescribir"
+      - "Compila, pero el método del padre sigue usándose"
+      - "Error de compilación: un método sobreescrito no puede reducir su visibilidad"
+      - "Compila solo si el método del padre es abstracto"
+    correctIndex: 2
+    explanation: "Al sobreescribir se puede mantener o ampliar la visibilidad, nunca reducirla; de lo contrario, un Padre p = new Hijo() no podría garantizar que p.run() sea accesible."
+
+  - id: oop-23
+    topic: oop
+    difficulty: hard
+    question: "¿Qué imprime este código?"
+    code: |
+      class P {
+          int v;
+          P(int v) { this.v = v; }
+          public boolean equals(P o) { return o.v == v; }
+      }
+
+      List<P> lp = List.of(new P(1));
+      System.out.println(lp.contains(new P(1)));
+    options: ["false", "true", "Lanza NullPointerException", "No compila"]
+    correctIndex: 0
+    explanation: "equals(P) es una sobrecarga, no sobreescribe equals(Object). contains usa equals(Object), que sigue siendo el de Object (identidad). Por eso conviene usar @Override: el compilador detectaría el error."
+
+  - id: oop-24
+    topic: oop
+    difficulty: hard
+    question: "¿Cuál afirmación sobre las interfaces en Java 17 es VERDADERA?"
+    options:
+      - "Sus métodos pueden ser protected para que solo los usen las clases hijas"
+      - "Pueden tener métodos private (desde Java 9) y métodos static con cuerpo"
+      - "Sus campos son de instancia y se pueden modificar libremente"
+      - "Una interfaz puede tener constructor para inicializar sus constantes"
+    correctIndex: 1
+    explanation: "Los métodos son public por defecto (no protected), los campos son implícitamente public static final y no hay constructores. Sí se permiten métodos default, static y private con cuerpo."
+
+  - id: oop-25
+    topic: oop
+    difficulty: hard
+    question: "Un equipo hace `class Pila<T> extends ArrayList<T>` para reutilizar código. ¿Cuál es el principal problema de diseño?"
+    options:
+      - "ArrayList es final, por lo que ni siquiera compila"
+      - "La herencia siempre es más lenta que la composición"
+      - "Expone toda la API de ArrayList (add(index), remove...), rompiendo la invariante de pila; es mejor componer"
+      - "Los genéricos no se pueden heredar"
+    correctIndex: 2
+    explanation: "Pila no es-un ArrayList en sentido estricto: hereda operaciones que violan su contrato LIFO y acopla a la implementación. Con composición (un campo List privado) se expone solo push/pop."
