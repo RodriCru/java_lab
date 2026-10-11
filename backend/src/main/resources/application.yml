@@ -1,0 +1,55 @@
+server:
+  port: 8080
+  # Las cookies de otras apps en localhost viajan en cada petición y pueden pasar de 8 KB
+  max-http-request-header-size: 32KB
+
+spring:
+  application:
+    name: javalab-backend
+  config:
+    # Lee el .env de la raiz del proyecto (esta o la carpeta de arriba segun desde donde se arranque).
+    # Es opcional: si no existe, se usan los valores por defecto. Esta en el .gitignore.
+    import: optional:file:../.env[.properties],optional:file:./.env[.properties]
+  datasource:
+    url: jdbc:sqlite:${JAVALAB_DB_PATH:./data/javalab.db}
+    driver-class-name: org.sqlite.JDBC
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.community.dialect.SQLiteDialect
+  jackson:
+    default-property-inclusion: non_null
+
+javalab:
+  auth:
+    # OBLIGATORIO: viene del .env o del entorno, no hay valor por defecto (>= 32 caracteres).
+    # Si falta, JwtService aborta el arranque con un mensaje claro.
+    jwt-secret: ${JAVALAB_JWT_SECRET:}
+    jwt-expiration-minutes: ${JAVALAB_JWT_EXPIRATION_MINUTES:1440}
+    cookie-name: javalab_token
+    # En produccion debe ser true: la cookie de sesion solo viaja por HTTPS.
+    cookie-secure: ${JAVALAB_COOKIE_SECURE:false}
+    # Origenes permitidos para el frontend (separados por coma).
+    allowed-origins: ${JAVALAB_ALLOWED_ORIGINS:http://localhost:3000}
+  mail:
+    # Sin API key el correo (y su codigo OTP) sale en el log del backend.
+    resend-api-key: ${JAVALAB_RESEND_API_KEY:}
+    from: ${JAVALAB_MAIL_FROM:Java Lab <no-reply@mail.luisrodrigoch.lat>}
+  catalog:
+    exercises-dir: ${JAVALAB_EXERCISES_DIR:../exercises}
+    questions-dir: ${JAVALAB_QUESTIONS_DIR:../questions}
+  runner:
+    use-docker: ${JAVALAB_RUNNER_USE_DOCKER:true}
+    image: ${JAVALAB_RUNNER_IMAGE:javalab-runner:17}
+    timeout-seconds: ${JAVALAB_RUNNER_TIMEOUT_SECONDS:10}
+    memory: ${JAVALAB_RUNNER_MEMORY:256m}
+    cpus: ${JAVALAB_RUNNER_CPUS:0.5}
+    # Jar de JUnit usado tanto por la imagen Docker como por el fallback local.
+    junit-jar: ${JAVALAB_RUNNER_JUNIT_JAR:../runner/junit-platform-console-standalone.jar}
+
+logging:
+  level:
+    com.lrch.javalab: INFO

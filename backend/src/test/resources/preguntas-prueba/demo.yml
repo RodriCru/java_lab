@@ -1,0 +1,24 @@
+questions:
+  - id: demo-01
+    topic: demo
+    difficulty: easy
+    question: "¿Cuánto es 1 + 1?"
+    options: ["1", "2", "3", "4"]
+    correctIndex: 1
+    explanation: "Porque 1 + 1 = 2."
+  - id: demo-02
+    topic: demo
+    difficulty: hard
+    question: "¿Qué imprime el código?"
+    code: |
+      System.out.println("a" + 1);
+    options: ["a", "1", "a1", "Error"]
+    correctIndex: 2
+    explanation: "La concatenación produce a1."
+  - id: otro-01
+    topic: otro
+    difficulty: medium
+    question: "Pregunta de otro tema"
+    options: ["A", "B"]
+    correctIndex: 0
+    explanation: "Es A."

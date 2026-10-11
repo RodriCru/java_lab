@@ -1,0 +1,196 @@
+package com.lrch.javalab.catalog;
+
+import com.lrch.javalab.common.ApiException;
+import com.lrch.javalab.common.PageResult;
+import com.lrch.javalab.progress.ProgressService;
+import com.lrch.javalab.progress.UserSolution;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+
+/** Combina el catalogo (estatico) con el avance del usuario para armar las respuestas de la API. */
+@Service
+public class CatalogService {
+
+    /** Estados por los que se puede filtrar la lista de ejercicios. */
+    public enum EstadoFiltro {
+        TODOS, RESUELTOS, PENDIENTES, FALLADOS;
+
+        static EstadoFiltro desde(String valor) {
+            if (valor == null || valor.isBlank()) {
+                return TODOS;
+            }
+            return switch (valor.trim().toLowerCase(Locale.ROOT)) {
+                case "solved", "resueltos" -> RESUELTOS;
+                case "pending", "pendientes" -> PENDIENTES;
+                case "failed", "fallados" -> FALLADOS;
+                default -> TODOS;
+            };
+        }
+    }
+
+    private final ExerciseCatalog catalog;
+    private final ProgressService progressService;
+
+    public CatalogService(ExerciseCatalog catalog, ProgressService progressService) {
+        this.catalog = catalog;
+        this.progressService = progressService;
+    }
+
+    public List<LevelResponse> niveles(Long userId) {
+        Map<String, UserSolution> soluciones = progressService.solucionesPorSlug(userId);
+        return catalog.levels().stream()
+                .map(nivel -> {
+                    List<Exercise> delNivel = catalog.byLevel(nivel);
+                    int resueltos = (int) delNivel.stream()
+                            .filter(e -> esResuelto(soluciones.get(e.slug())))
+                            .count();
+                    int total = delNivel.size();
+                    int porcentaje = total == 0 ? 0 : (int) Math.round(resueltos * 100.0 / total);
+                    List<TopicSection> secciones = catalog.topicsOfLevel(nivel).stream()
+                            .map(id -> {
+                                List<Exercise> deTema = delNivel.stream()
+                                        .filter(e -> id.equals(e.topic()))
+                                        .toList();
+                                int hechos = (int) deTema.stream()
+                                        .filter(e -> esResuelto(soluciones.get(e.slug())))
+                                        .count();
+                                TopicInfo tema = catalog.topic(id).orElse(null);
+                                return new TopicSection(id, tema == null ? id : tema.name(),
+                                        tema == null ? "" : tema.description(), deTema.size(), hechos);
+                            })
+                            .toList();
+                    return new LevelResponse(nivel, nombreDeNivel(nivel), total, resueltos, porcentaje,
+                            catalog.topicsOfLevel(nivel), secciones);
+                })
+                .toList();
+    }
+
+    public PageResult<ExerciseSummary> listar(Long userId, Integer level, String topic, String estado,
+                                              String busqueda, int page, int perPage) {
+        Map<String, UserSolution> soluciones = progressService.solucionesPorSlug(userId);
+        Set<String> intentados = progressService.slugsIntentados(userId);
+        EstadoFiltro filtro = EstadoFiltro.desde(estado);
+        String texto = busqueda == null ? "" : busqueda.trim().toLowerCase(Locale.ROOT);
+
+        List<ExerciseSummary> filtrados = catalog.all().stream()
+                .filter(e -> level == null || e.level() == level)
+                .filter(e -> topic == null || topic.isBlank() || topic.equalsIgnoreCase(e.topic()))
+                .filter(e -> texto.isEmpty()
+                        || e.title().toLowerCase(Locale.ROOT).contains(texto)
+                        || e.slug().toLowerCase(Locale.ROOT).contains(texto))
+                .filter(e -> coincideConEstado(filtro, e.slug(), soluciones, intentados))
+                .map(e -> resumen(e, soluciones.get(e.slug()), intentados.contains(e.slug())))
+                .toList();
+
+        long total = filtrados.size();
+        int desde = Math.min((page - 1) * perPage, filtrados.size());
+        int hasta = Math.min(desde + perPage, filtrados.size());
+        return new PageResult<>(filtrados.subList(desde, hasta), total, page, perPage);
+    }
+
+    public ExerciseDetail detalle(Long userId, String slug) {
+        Exercise ejercicio = buscar(slug);
+        UserSolution solucion = progressService.solucionesPorSlug(userId).get(slug);
+        Set<String> intentados = progressService.slugsIntentados(userId);
+        List<String> pistas = ejercicio.safeHints();
+
+        return new ExerciseDetail(
+                ejercicio.slug(),
+                ejercicio.level(),
+                ejercicio.topic(),
+                catalog.topicName(ejercicio.topic()),
+                catalog.topic(ejercicio.topic()).map(TopicInfo::description).orElse(""),
+                catalog.topic(ejercicio.topic()).map(TopicInfo::theory).orElse(null),
+                ejercicio.title(),
+                ejercicio.statement(),
+                ejercicio.methodSignature(),
+                ejercicio.className(),
+                ejercicio.starterCode(),
+                ejercicio.difficulty(),
+                ejercicio.estimatedMinutes(),
+                ejercicio.hasComplexityQuestion() ? ejercicio.complexityQuestion().view() : null,
+                contarTests(ejercicio),
+                pistas.size(),
+                esResuelto(solucion),
+                intentados.contains(slug),
+                solucion == null ? 0 : solucion.getAttempts(),
+                solucion == null ? null : solucion.getCode(),
+                catalog.next(slug).map(Exercise::slug).orElse(null),
+                catalog.next(slug).map(Exercise::title).orElse(null));
+    }
+
+    public HintResponse pista(String slug, int indice) {
+        Exercise ejercicio = buscar(slug);
+        List<String> pistas = ejercicio.safeHints();
+        if (pistas.isEmpty()) {
+            throw ApiException.notFound("SIN_PISTAS", "Este ejercicio no tiene pistas.");
+        }
+        if (indice < 0 || indice >= pistas.size()) {
+            throw ApiException.notFound("PISTA_NO_EXISTE",
+                    "La pista " + indice + " no existe. Este ejercicio tiene " + pistas.size() + " pistas.");
+        }        return new HintResponse(slug, indice, pistas.get(indice), pistas.size(), indice < pistas.size() - 1);
+    }
+
+    public Exercise buscar(String slug) {
+        return catalog.bySlug(slug)
+                .orElseThrow(() -> ApiException.notFound("EJERCICIO_NO_ENCONTRADO",
+                        "No existe el ejercicio «" + slug + "»."));
+    }
+
+    private ExerciseSummary resumen(Exercise ejercicio, UserSolution solucion, boolean intentado) {
+        return new ExerciseSummary(
+                ejercicio.slug(),
+                ejercicio.level(),
+                ejercicio.topic(),
+                catalog.topicName(ejercicio.topic()),
+                ejercicio.title(),
+                ejercicio.difficulty(),
+                ejercicio.estimatedMinutes(),
+                contarTests(ejercicio),
+                esResuelto(solucion),
+                intentado);
+    }
+
+    private boolean coincideConEstado(EstadoFiltro filtro, String slug,
+                                      Map<String, UserSolution> soluciones, Set<String> intentados) {
+        boolean resuelto = esResuelto(soluciones.get(slug));
+        return switch (filtro) {
+            case TODOS -> true;
+            case RESUELTOS -> resuelto;
+            case PENDIENTES -> !intentados.contains(slug);
+            case FALLADOS -> intentados.contains(slug) && !resuelto;
+        };
+    }
+
+    private boolean esResuelto(UserSolution solucion) {
+        return solucion != null && solucion.isSolved();
+    }
+
+    /** Cuantos metodos de prueba tiene el ejercicio. */
+    private int contarTests(Exercise ejercicio) {
+        String tests = ejercicio.tests();
+        if (tests == null) {
+            return 0;
+        }
+        int total = 0;
+        int desde = tests.indexOf("@Test");
+        while (desde >= 0) {
+            total++;
+            desde = tests.indexOf("@Test", desde + 5);
+        }
+        return total;
+    }
+
+    private String nombreDeNivel(int nivel) {
+        return switch (nivel) {
+            case 0 -> "Fundamentos";
+            case 1 -> "Básico";
+            case 2 -> "Intermedio";
+            default -> "Nivel " + nivel;
+        };
+    }
+}
