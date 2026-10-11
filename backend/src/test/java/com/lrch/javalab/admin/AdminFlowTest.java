@@ -207,6 +207,37 @@ class AdminFlowTest {
     }
 
     @Test
+    @DisplayName("Mandar role/admin en el JSON de registro no da privilegios")
+    void roleEnElJsonSeIgnora() throws Exception {
+        String correo = correo();
+        mockMvc.perform(post("/api/v1/auth/register").contentType(MediaType.APPLICATION_JSON)
+                        .content(json(Map.of("email", correo, "password", "secreta123",
+                                "role", "SUPER_ADMIN", "admin", true, "active", true))))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.data.role").value("USER"));
+
+        assertThat(userRepository.findByEmailIgnoreCase(correo).orElseThrow().getRole()).isEqualTo(UserRole.USER);
+        Cookie sesion = login(correo, "secreta123").andReturn().getResponse().getCookie("javalab_token");
+        mockMvc.perform(get("/api/v1/admin/users").cookie(sesion)).andExpect(status().isForbidden());
+    }
+
+    @Test
+    @DisplayName("Un token firmado con otra clave no sirve, aunque diga ser un super admin")
+    void tokenFalsificadoNoSirve() throws Exception {
+        User admin = crearUsuario(UserRole.SUPER_ADMIN);
+        String falso = io.jsonwebtoken.Jwts.builder()
+                .subject(String.valueOf(admin.getId()))
+                .claim("email", admin.getEmail())
+                .claim("role", "SUPER_ADMIN")
+                .signWith(io.jsonwebtoken.security.Keys.hmacShaKeyFor(
+                        "una-clave-que-no-es-la-del-servidor-0123456789".getBytes(java.nio.charset.StandardCharsets.UTF_8)))
+                .compact();
+
+        mockMvc.perform(get("/api/v1/admin/users").cookie(new Cookie("javalab_token", falso)))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
     @DisplayName("El estado del registro es público y refleja la configuración")
     void estadoDelRegistro() throws Exception {
         mockMvc.perform(get("/api/v1/auth/registration-status"))
