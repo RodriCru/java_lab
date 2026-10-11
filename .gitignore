@@ -23,6 +23,7 @@ next-env.d.ts
 
 # --- Memoria local de Claude (no se sube) ---
 CLAUDE.md
+DESPLIEGUE.md
 
 # --- Base de datos local ---
 *.db
