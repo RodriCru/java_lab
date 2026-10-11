@@ -2,6 +2,7 @@ package com.lrch.javalab.admin;
 
 import com.lrch.javalab.auth.AuthenticatedUser;
 import com.lrch.javalab.common.ApiResponse;
+import com.lrch.javalab.progress.ProgressService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,14 +21,18 @@ import java.util.List;
 public class AdminController {
 
     private final AdminService adminService;
+    private final ProgressService progressService;
 
-    public AdminController(AdminService adminService) {
+    public AdminController(AdminService adminService, ProgressService progressService) {
         this.adminService = adminService;
+        this.progressService = progressService;
     }
 
     @GetMapping("/users")
     public ApiResponse<List<AdminUserResponse>> usuarios(@AuthenticationPrincipal AuthenticatedUser principal) {
-        return ApiResponse.ok(adminService.listar(principal.id()).stream().map(AdminUserResponse::from).toList());
+        return ApiResponse.ok(adminService.listar(principal.id()).stream()
+                .map(u -> AdminUserResponse.from(u, progressService.resumen(u.getId()).levels()))
+                .toList());
     }
 
     @PostMapping("/invitations")

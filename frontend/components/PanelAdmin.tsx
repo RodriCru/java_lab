@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { Estado, EstadoCargando } from "@/components/Estado";
-import { api, ApiError } from "@/lib/api";
+import { api, ApiError, nombreDeNivel } from "@/lib/api";
 import { formatearFecha } from "@/lib/format";
 import type { AdminUser } from "@/lib/types";
 
@@ -169,6 +169,7 @@ export function PanelAdmin() {
                 <th scope="col" className="px-4 py-2 font-medium">Nombre</th>
                 <th scope="col" className="px-4 py-2 font-medium">Rol</th>
                 <th scope="col" className="px-4 py-2 font-medium">Estado</th>
+                <th scope="col" className="px-4 py-2 font-medium">Avance por nivel</th>
                 <th scope="col" className="px-4 py-2 font-medium">Último acceso</th>
                 <th scope="col" className="px-4 py-2 font-medium">
                   <span className="sr-only">Acciones</span>
@@ -197,6 +198,23 @@ export function PanelAdmin() {
                     >
                       {usuario.active ? "Activo" : "Desactivado"}
                     </span>
+                  </td>
+                  <td className="px-4 py-2 text-zinc-600">
+                    {usuario.levels?.length ? (
+                      <ul className="space-y-0.5 text-xs">
+                        {usuario.levels.map((nivel) => (
+                          <li key={nivel.level}>
+                            {nombreDeNivel(nivel.level)}:{" "}
+                            <span className="font-semibold text-zinc-900">{nivel.percent}%</span>{" "}
+                            <span className="text-zinc-400">
+                              ({nivel.solved}/{nivel.total})
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      "—"
+                    )}
                   </td>
                   <td className="px-4 py-2 text-zinc-500">
                     {usuario.lastLoginAt ? formatearFecha(new Date(usuario.lastLoginAt).toISOString()) : "Nunca"}

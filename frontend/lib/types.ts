@@ -37,6 +37,8 @@ export type AdminUser = {
   active: boolean;
   createdAt: string;
   lastLoginAt?: number;
+  /** Solo viene en el listado; los demas endpoints de admin no lo traen. */
+  levels?: LevelProgress[];
 };
 
 export type LevelProgress = {

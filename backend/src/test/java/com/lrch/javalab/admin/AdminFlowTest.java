@@ -123,9 +123,12 @@ class AdminFlowTest {
 
         login(invitado, temporal).andExpect(status().isOk());
 
-        mockMvc.perform(get("/api/v1/admin/users").cookie(admin))
+        String listado = mockMvc.perform(get("/api/v1/admin/users").cookie(admin))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data[?(@.email=='" + invitado + "')]").isNotEmpty());
+                .andExpect(jsonPath("$.data[?(@.email=='" + invitado + "')]").isNotEmpty())
+                .andReturn().getResponse().getContentAsString(java.nio.charset.StandardCharsets.UTF_8);
+        // El listado trae el avance por nivel (porcentaje de cada uno).
+        assertThat(listado).contains("\"levels\":[{\"level\":0").contains("\"percent\":0");
     }
 
     @Test
