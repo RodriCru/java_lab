@@ -1,5 +1,21 @@
 @import "tailwindcss";
 
+@theme {
+  /* Paleta de marca (verde). Se redefine `indigo` para que las clases
+     `indigo-*` usadas en los componentes apunten a este verde. */
+  --color-indigo-50: #f2faf5;
+  --color-indigo-100: #e2f3e9;
+  --color-indigo-200: #c9e9d6;
+  --color-indigo-300: #a4daba;
+  --color-indigo-400: #84d0a5;
+  --color-indigo-500: #6cc691;
+  --color-indigo-600: #58bf82;
+  --color-indigo-700: #368c59;
+  --color-indigo-800: #2a6f46;
+  --color-indigo-900: #23593a;
+  --color-indigo-950: #0f2b1c;
+}
+
 @theme inline {
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
