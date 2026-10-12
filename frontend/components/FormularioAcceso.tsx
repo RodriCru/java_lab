@@ -8,9 +8,11 @@ import { api, ApiError } from "@/lib/api";
 type Props = {
   modo: "login" | "registro";
   destino?: string;
+  /** Por que se llego al login: "caducada" (el token vencio) o "requerida" (se entro sin sesion). */
+  motivo?: string;
 };
 
-export function FormularioAcceso({ modo, destino }: Props) {
+export function FormularioAcceso({ modo, destino, motivo }: Props) {
   const router = useRouter();
   const esRegistro = modo === "registro";
 
@@ -94,6 +96,17 @@ export function FormularioAcceso({ modo, destino }: Props) {
             ? "Tu progreso se guarda por cuenta, así que puedes seguir donde lo dejaste."
             : "Retoma tus ejercicios pendientes y sigue practicando para tu entrevista."}
         </p>
+
+        {!esRegistro && motivo ? (
+          <p
+            role="status"
+            className="mt-4 rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-800"
+          >
+            {motivo === "caducada"
+              ? "Tu sesión caducó. Vuelve a entrar y retomarás donde lo dejaste."
+              : "Necesitas iniciar sesión para ver esa página."}
+          </p>
+        ) : null}
 
         <form onSubmit={manejarEnvio} className="mt-6 space-y-4">
           {esRegistro ? (

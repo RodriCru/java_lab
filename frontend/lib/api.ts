@@ -46,17 +46,23 @@ const RUTAS_SIN_SESION = ["/login", "/registro", "/olvide-contrasena"];
 /**
  * Si el token caduca con la pantalla abierta, el backend responde 401 SESION_REQUERIDA.
  * Solo ese codigo cuenta: un 401 CREDENCIALES_INVALIDAS del login no debe sacar al usuario.
- * Solo en el navegador (en el servidor no hay donde redirigir).
+ * Solo en el navegador (en el servidor no hay donde redirigir). Se marca el motivo en `?sesion=caducada`
+ * para que el login lo explique en vez de dejar al usuario sin saber por que volvio alli.
  */
 function redirigirSiSesionCaducada(status: number, codigo?: string): void {
   if (typeof window === "undefined" || status !== 401 || codigo !== "SESION_REQUERIDA") {
     return;
   }
-  const { pathname } = window.location;
+  const { pathname, search } = window.location;
   if (RUTAS_SIN_SESION.some((ruta) => pathname.startsWith(ruta))) {
     return;
   }
-  window.location.assign("/login");
+  const destino = new URLSearchParams();
+  destino.set("sesion", "caducada");
+  if (pathname !== "/") {
+    destino.set("destino", pathname + search);
+  }
+  window.location.assign(`/login?${destino.toString()}`);
 }
 
 async function peticion<T>(path: string, init?: RequestInit): Promise<Envelope<T>> {

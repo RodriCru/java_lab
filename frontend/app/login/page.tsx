@@ -5,12 +5,14 @@ import { FormularioAcceso } from "@/components/FormularioAcceso";
 
 export default function PaginaLogin() {
   const [destino, setDestino] = useState<string | undefined>(undefined);
+  const [motivo, setMotivo] = useState<string | undefined>(undefined);
 
   // Se lee de la barra de direcciones en el cliente para no forzar render dinamico.
   useEffect(() => {
     const parametros = new URLSearchParams(window.location.search);
     setDestino(parametros.get("destino") ?? undefined);
+    setMotivo(parametros.get("sesion") ?? undefined);
   }, []);
 
-  return <FormularioAcceso modo="login" destino={destino} />;
+  return <FormularioAcceso modo="login" destino={destino} motivo={motivo} />;
 }

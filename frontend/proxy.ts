@@ -18,6 +18,8 @@ export default function proxy(request: NextRequest) {
 
   if (!tieneSesion && !esRutaPublica) {
     const destino = new URL("/login", request.url);
+    // El parametro `sesion` distingue entrar sin sesion de una sesion que caduco: mismo destino, aviso distinto.
+    destino.searchParams.set("sesion", "requerida");
     if (pathname !== "/") {
       destino.searchParams.set("destino", pathname);
     }
