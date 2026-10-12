@@ -2,12 +2,9 @@
 # JAVALAB_DB_URL con formato JDBC, por ejemplo:
 #   jdbc:postgresql://ep-xxxx.us-east-2.aws.neon.tech/neondb?sslmode=require
 #
-# Reutiliza el perfil "postgres" (datasource, driver y dialecto) y solo anade lo propio
-# de produccion, para que ambos no se desincronicen.
-spring:
-  profiles:
-    include: postgres
-
+# El datasource de Postgres (driver y dialecto) vive en el perfil "postgres"; el grupo de
+# perfiles declarado en application.yml hace que activar "prod" active tambien "postgres".
+# No se puede usar spring.profiles.include aqui: es invalido en un recurso de perfil.
 javalab:
   auth:
     # En produccion el registro esta cerrado salvo que se abra a proposito: las cuentas se crean por invitacion.

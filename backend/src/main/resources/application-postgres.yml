@@ -1,7 +1,8 @@
 # Perfil "postgres": apunta a un Postgres (Neon u otro) SIN activar el resto de
 # reglas de produccion (el registro sigue abierto, la cookie no exige HTTPS).
 # Uso en local:  ./mvnw spring-boot:run -Dspring-boot.run.profiles=postgres
-# El perfil "prod" sigue siendo el de despliegue: reutiliza esto y ademas cierra el registro.
+# El perfil "prod" (despliegue) lo activa por el grupo de perfiles de application.yml
+# y solo anade el registro cerrado.
 javalab:
   auth:
     # En local, con Postgres, el registro sigue abierto salvo que se indique lo contrario.

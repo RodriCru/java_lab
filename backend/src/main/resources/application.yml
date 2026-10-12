@@ -7,6 +7,13 @@ server:
 spring:
   application:
     name: javalab-backend
+  profiles:
+    # Activar "prod" activa tambien "postgres": prod solo anade lo propio de produccion
+    # (registro cerrado) y hereda de postgres el datasource, el driver y el dialecto.
+    # Va aqui, en el application.yml principal: spring.profiles.include seria invalido
+    # dentro de application-prod.yml.
+    group:
+      prod: postgres
   config:
     # Lee el .env de la raiz del proyecto (esta o la carpeta de arriba segun desde donde se arranque).
     # Es opcional: si no existe, se usan los valores por defecto. Esta en el .gitignore.
