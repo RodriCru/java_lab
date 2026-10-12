@@ -3,6 +3,8 @@ package com.lrch.javalab.auth;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lrch.javalab.common.ApiResponse;
 import jakarta.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -23,6 +25,8 @@ import java.util.List;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
+    private static final Logger log = LoggerFactory.getLogger(SecurityConfig.class);
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final AuthProperties authProperties;
@@ -74,7 +78,19 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(authProperties.originList());
+        List<String> origenes = authProperties.originList();
+
+        // Con credenciales (la cookie de sesion), Spring prohibe "Access-Control-Allow-Origin: *".
+        // Un comodin como "https://*.midominio.com" o "*" solo es valido en allowedOriginPatterns.
+        // Asi, una mala configuracion no tumba cada peticion con un 500: se degrada a patrones.
+        if (origenes.stream().anyMatch(origen -> origen.contains("*"))) {
+            log.warn("JAVALAB_ALLOWED_ORIGINS contiene un comodin ({}): se usan patrones de origen. "
+                    + "En produccion conviene listar los dominios exactos.", origenes);
+            config.setAllowedOriginPatterns(origenes);
+        } else {
+            config.setAllowedOrigins(origenes);
+        }
+
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("Content-Type", "Accept", "Authorization"));
         // Necesario para que el navegador envie y acepte la cookie de sesion.
