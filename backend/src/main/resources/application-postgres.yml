@@ -1,0 +1,22 @@
+# Perfil "postgres": apunta a un Postgres (Neon u otro) SIN activar el resto de
+# reglas de produccion (el registro sigue abierto, la cookie no exige HTTPS).
+# Uso en local:  ./mvnw spring-boot:run -Dspring-boot.run.profiles=postgres
+# El perfil "prod" sigue siendo el de despliegue: reutiliza esto y ademas cierra el registro.
+javalab:
+  auth:
+    # En local, con Postgres, el registro sigue abierto salvo que se indique lo contrario.
+    registration-enabled: ${JAVALAB_REGISTRATION_ENABLED:true}
+
+spring:
+  datasource:
+    url: ${JAVALAB_DB_URL}
+    username: ${JAVALAB_DB_USER:}
+    password: ${JAVALAB_DB_PASSWORD:}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      # El plan gratis de Neon admite pocas conexiones.
+      maximum-pool-size: 5
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
