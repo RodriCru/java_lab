@@ -1,6 +1,7 @@
 package com.lrch.javalab.auth;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -53,8 +54,11 @@ public class JwtService {
                     .parseSignedClaims(token)
                     .getPayload();
             return Optional.of(Long.valueOf(claims.getSubject()));
+        } catch (ExpiredJwtException ex) {
+            log.info("Token JWT caducado (expiraba en {}): se rechaza la peticion", ex.getClaims().getExpiration());
+            return Optional.empty();
         } catch (JwtException | IllegalArgumentException ex) {
-            log.debug("Token JWT invalido: {}", ex.getMessage());
+            log.warn("Token JWT invalido ({}): se rechaza la peticion", ex.getMessage());
             return Optional.empty();
         }
     }

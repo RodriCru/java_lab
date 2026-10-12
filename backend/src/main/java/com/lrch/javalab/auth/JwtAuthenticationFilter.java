@@ -7,6 +7,8 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -21,9 +23,14 @@ import java.util.Optional;
 /**
  * Lee el JWT de la cookie httpOnly y, si es valido, carga el usuario y lo deja en el
  * SecurityContext. Si el token no es valido la peticion sigue sin autenticar.
+ *
+ * <p>Cuando un token presente no sirve, se registra el motivo (caducado, usuario inexistente
+ * o cuenta inactiva): sin ese log, un 401 en el frontend es indistinguible de no llevar sesion.
  */
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
+
+    private static final Logger log = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
 
     private final JwtService jwtService;
     private final UserRepository userRepository;
@@ -39,13 +46,32 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
 
-        leerToken(request)
-                .flatMap(jwtService::extractUserId)
-                .flatMap(userRepository::findById)
-                .filter(User::isActive)
-                .ifPresent(user -> autenticar(user, request));
+        leerToken(request).ifPresent(token -> autenticarSiProcede(token, request));
 
         chain.doFilter(request, response);
+    }
+
+    /** Un token presente que no autentica deja un rastro claro en el log. */
+    private void autenticarSiProcede(String token, HttpServletRequest request) {
+        Optional<Long> userId = jwtService.extractUserId(token);
+        if (userId.isEmpty()) {
+            return;
+        }
+
+        Optional<User> encontrado = userRepository.findById(userId.get());
+        if (encontrado.isEmpty()) {
+            log.warn("El token apunta al usuario {} pero no existe en la base de datos "
+                    + "(¿base de datos distinta de la que emitio el token?)", userId.get());
+            return;
+        }
+
+        User user = encontrado.get();
+        if (!user.isActive()) {
+            log.info("La cuenta {} ({}) esta inactiva: se rechaza la peticion", user.getId(), user.getEmail());
+            return;
+        }
+
+        autenticar(user, request);
     }
 
     private void autenticar(User user, HttpServletRequest request) {
