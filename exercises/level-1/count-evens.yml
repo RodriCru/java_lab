@@ -6,9 +6,9 @@ statement: |
   Escribe un método que cuente cuántos números pares hay en el arreglo recibido.
 
   Ejemplo:
-  - Entrada: numbers=[1, 2, 3, 4] -> Salida: 2
-  - Entrada: numbers=[2, 4, 6] -> Salida: 3
-  - Entrada: numbers=[] -> Salida: 0
+  - countEvens([1, 2, 3, 4]) -> 2
+  - countEvens([2, 4, 6]) -> 3
+  - countEvens([]) -> 0
 
   Reglas:
   - Un número es par cuando el resto de dividirlo entre 2 es 0.

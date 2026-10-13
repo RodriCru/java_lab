@@ -7,9 +7,9 @@ statement: |
   exactamente `target`. El arreglo puede contener números negativos y ceros.
 
   Ejemplo:
-  - Entrada: numbers=[1, 2, 3, 7], target=5 -> Salida: true ([2, 3])
-  - Entrada: numbers=[4, -1, 2, 1], target=6 -> Salida: true (todo el arreglo)
-  - Entrada: numbers=[1, 2, 3], target=7 -> Salida: false
+  - hasSubarrayWithSum([1, 2, 3, 7], target=5) -> true ([2, 3])
+  - hasSubarrayWithSum([4, -1, 2, 1], target=6) -> true (todo el arreglo)
+  - hasSubarrayWithSum([1, 2, 3], target=7) -> false
 
   Si el arreglo es null o vacío, devuelve false. Usa long para acumular las sumas.
 methodSignature: "public static boolean hasSubarrayWithSum(int[] numbers, int target)"

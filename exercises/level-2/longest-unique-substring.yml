@@ -6,10 +6,10 @@ statement: |
   Dada una cadena, devuelve la longitud de la subcadena (caracteres contiguos) más larga que no contiene caracteres repetidos.
 
   Ejemplos:
-  - "abcabcbb" -> 3 (la subcadena "abc")
-  - "bbbbb" -> 1
-  - "pwwkew" -> 3 (la subcadena "wke")
-  - "" -> 0
+  - lengthOfLongestSubstring("abcabcbb") -> 3 (la subcadena "abc")
+  - lengthOfLongestSubstring("bbbbb") -> 1
+  - lengthOfLongestSubstring("pwwkew") -> 3 (la subcadena "wke")
+  - lengthOfLongestSubstring("") -> 0
 
   Si el texto es null o vacío, devuelve 0. Se distinguen mayúsculas de minúsculas.
 methodSignature: "public static int lengthOfLongestSubstring(String text)"

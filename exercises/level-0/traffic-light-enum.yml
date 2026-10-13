@@ -13,10 +13,10 @@ statement: |
   Además, totalSeconds(start, changes) devuelve el tiempo total que transcurre desde que se enciende la luz start hasta que se han completado exactamente `changes` cambios de luz. Es decir, suma la duración de start y de las luces siguientes, en total `changes` luces. Si changes es 0 devuelve 0. Si start es null devuelve 0. changes no será negativo.
 
   Ejemplo:
-  - Entrada: start=RED, changes=1 -> Salida: 30
-  - Entrada: start=RED, changes=3 -> Salida: 60 (30 + 25 + 5)
-  - Entrada: start=GREEN, changes=3 -> Salida: 60 (25 + 5 + 30)
-  - Entrada: start=YELLOW, changes=2 -> Salida: 35 (5 + 30)
+  - totalSeconds(Light.RED, 1) -> 30
+  - totalSeconds(Light.RED, 3) -> 60   (30 + 25 + 5)
+  - totalSeconds(Light.GREEN, 3) -> 60   (25 + 5 + 30)
+  - totalSeconds(Light.YELLOW, 2) -> 35   (5 + 30)
 methodSignature: public static int totalSeconds(Light start, int changes)
 className: Solution
 estimatedMinutes: 18

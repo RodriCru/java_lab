@@ -8,9 +8,9 @@ statement: |
   Los tres números pueden ser negativos; el método siempre devuelve el mayor según el orden natural de los enteros.
 
   Ejemplo:
-  - Entrada: a=3, b=7, c=5 -> Salida: 7
-  - Entrada: a=-1, b=-8, c=-3 -> Salida: -1
-  - Entrada: a=9, b=9, c=2 -> Salida: 9
+  - maxOfThree(a=3, b=7, c=5) -> 7
+  - maxOfThree(a=-1, b=-8, c=-3) -> -1
+  - maxOfThree(a=9, b=9, c=2) -> 9
 methodSignature: "public static int maxOfThree(int a, int b, int c)"
 className: Solution
 estimatedMinutes: 8

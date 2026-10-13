@@ -6,9 +6,9 @@ statement: |
   Escribe un método que cuente cuántas palabras tiene un texto.
 
   Ejemplo:
-  - Entrada: "hola mundo" -> Salida: 2
-  - Entrada: "   hola    mundo   " -> Salida: 2
-  - Entrada: "java" -> Salida: 1
+  - countWords("hola mundo") -> 2
+  - countWords("   hola    mundo   ") -> 2
+  - countWords("java") -> 1
 
   Una palabra es una secuencia de caracteres separada por uno o más espacios.
   Si el texto es null, vacío o solo tiene espacios, devuelve 0.

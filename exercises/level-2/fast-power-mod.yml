@@ -7,9 +7,9 @@ statement: |
   (hasta 10^18). Una solución que multiplique `exponent` veces no terminará a tiempo.
 
   Ejemplo:
-  - Entrada: base=2, exponent=10, modulus=1000 -> Salida: 24
-  - Entrada: base=3, exponent=0, modulus=7 -> Salida: 1
-  - Entrada: base=5, exponent=3, modulus=1 -> Salida: 0
+  - fastPower(base=2, exponent=10, modulus=1000) -> 24
+  - fastPower(base=3, exponent=0, modulus=7) -> 1
+  - fastPower(base=5, exponent=3, modulus=1) -> 0
 
   Restricciones: base >= 0, exponent >= 0, 1 <= modulus <= 1_000_000_007 (así los productos
   caben en un long). Cualquier cosa elevada a 0 vale 1 (mod modulus), y todo mod 1 vale 0.

@@ -12,9 +12,9 @@ statement: |
   - No hay signos de puntuación en las entradas.
 
   Ejemplos:
-  - "Hola hola Mundo" -> {hola=2, mundo=1}
-  - "  a   b  a " -> {a=2, b=1}
-  - "" -> {} (Map vacío)
+  - wordCount("Hola hola Mundo") -> {hola=2, mundo=1}
+  - wordCount("  a   b  a ") -> {a=2, b=1}
+  - wordCount("") -> {} (Map vacío)
 
   Si el texto es null o vacío, devuelve un Map vacío.
 methodSignature: "public static java.util.Map<String, Integer> wordCount(String text)"

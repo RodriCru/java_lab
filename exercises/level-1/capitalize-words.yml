@@ -12,9 +12,9 @@ statement: |
   - Si el texto está vacío, devuelve una cadena vacía.
 
   Ejemplo:
-  - Entrada: "hola mundo" -> Salida: "Hola Mundo"
-  - Entrada: "hOLA mUNDO" -> Salida: "Hola Mundo"
-  - Entrada: "  java   es genial  " -> Salida: "  Java   Es Genial  "
+  - capitalizeWords("hola mundo") -> "Hola Mundo"
+  - capitalizeWords("hOLA mUNDO") -> "Hola Mundo"
+  - capitalizeWords("  java   es genial  ") -> "  Java   Es Genial  "
 methodSignature: "public static String capitalizeWords(String text)"
 className: Solution
 estimatedMinutes: 12

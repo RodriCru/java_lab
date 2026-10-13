@@ -7,9 +7,9 @@ statement: |
   espacios: la salida lleva una sola espacio entre palabras y sin espacios en los extremos.
 
   Ejemplo:
-  - Entrada: "hola mundo" -> Salida: "mundo hola"
-  - Entrada: "  java   es  genial " -> Salida: "genial es java"
-  - Entrada: "uno" -> Salida: "uno"
+  - reverseWords("hola mundo") -> "mundo hola"
+  - reverseWords("  java   es  genial ") -> "genial es java"
+  - reverseWords("uno") -> "uno"
 
   Si el texto es null, vacío o solo tiene espacios, devuelve una cadena vacía ("").
 methodSignature: "public static String reverseWords(String text)"

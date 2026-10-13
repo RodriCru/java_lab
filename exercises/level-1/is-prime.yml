@@ -10,9 +10,9 @@ statement: |
   - Los números negativos tampoco son primos.
 
   Ejemplo:
-  - Entrada: 7 -> Salida: true
-  - Entrada: 10 -> Salida: false
-  - Entrada: 1 -> Salida: false
+  - isPrime(7) -> true
+  - isPrime(10) -> false
+  - isPrime(1) -> false
 methodSignature: "public static boolean isPrime(int number)"
 className: Solution
 estimatedMinutes: 12

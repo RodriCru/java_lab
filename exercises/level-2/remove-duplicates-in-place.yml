@@ -8,9 +8,9 @@ statement: |
   en el mismo orden, y devuelve k. Lo que haya después de la posición k no importa.
 
   Ejemplo:
-  - Entrada: [1, 1, 2] -> Salida: 2 y el arreglo queda [1, 2, _]
-  - Entrada: [0, 0, 1, 1, 1, 2, 2, 3, 3, 4] -> Salida: 5 y el arreglo empieza con [0, 1, 2, 3, 4]
-  - Entrada: [] -> Salida: 0
+  - removeDuplicatesInPlace([1, 1, 2]) -> 2 y el arreglo queda [1, 2, _]
+  - removeDuplicatesInPlace([0, 0, 1, 1, 1, 2, 2, 3, 3, 4]) -> 5 y el arreglo empieza con [0, 1, 2, 3, 4]
+  - removeDuplicatesInPlace([]) -> 0
 
   Si el arreglo es null o vacío, devuelve 0. No crees un arreglo nuevo: usa O(1) de espacio extra.
 methodSignature: "public static int removeDuplicatesInPlace(int[] sorted)"

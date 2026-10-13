@@ -6,9 +6,9 @@ statement: |
   Escribe un método que devuelva un arreglo NUEVO sin valores duplicados, conservando el ORDEN de primera aparición de cada valor.
 
   Ejemplo:
-  - Entrada: numbers=[1, 2, 1, 3, 2] -> Salida: [1, 2, 3]
-  - Entrada: numbers=[5, 5, 5] -> Salida: [5]
-  - Entrada: numbers=[] -> Salida: []
+  - removeDuplicates([1, 2, 1, 3, 2]) -> [1, 2, 3]
+  - removeDuplicates([5, 5, 5]) -> [5]
+  - removeDuplicates([]) -> []
 
   Si el arreglo es null, devuelve un arreglo vacío (new int[0]). El arreglo de entrada nunca debe modificarse.
 methodSignature: "public static int[] removeDuplicates(int[] numbers)"

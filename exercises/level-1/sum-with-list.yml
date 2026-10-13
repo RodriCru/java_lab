@@ -6,9 +6,9 @@ statement: |
   Escribe un método que sume todos los números de una lista.
 
   Ejemplo:
-  - Entrada: [1, 2, 3] -> Salida: 6
-  - Entrada: [10] -> Salida: 10
-  - Entrada: [-5, 5] -> Salida: 0
+  - sumList([1, 2, 3]) -> 6
+  - sumList([10]) -> 10
+  - sumList([-5, 5]) -> 0
 
   Si la lista es null o está vacía, devuelve 0.
 methodSignature: "public static int sumList(java.util.List<Integer> numbers)"

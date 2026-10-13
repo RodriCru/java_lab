@@ -12,11 +12,11 @@ statement: |
   - En otro caso, devuelve "escaleno".
 
   Ejemplos:
-  - Entrada: a=3, b=3, c=3 -> Salida: "equilátero"
-  - Entrada: a=5, b=5, c=8 -> Salida: "isósceles"
-  - Entrada: a=3, b=4, c=5 -> Salida: "escaleno"
-  - Entrada: a=1, b=2, c=3 -> Salida: "inválido" (1 + 2 no es mayor que 3)
-  - Entrada: a=0, b=4, c=4 -> Salida: "inválido"
+  - classifyTriangle(3, 3, 3) -> "equilátero"
+  - classifyTriangle(5, 5, 8) -> "isósceles"
+  - classifyTriangle(3, 4, 5) -> "escaleno"
+  - classifyTriangle(1, 2, 3) -> "inválido"   (1 + 2 no es mayor que 3)
+  - classifyTriangle(0, 4, 4) -> "inválido"
 
   Los textos se devuelven exactamente así, en minúsculas y con acentos.
 methodSignature: "public static String classify(int a, int b, int c)"

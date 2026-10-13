@@ -15,10 +15,10 @@ statement: |
   Si la calificación es menor que 0 o mayor que 100, devuelve "inválido".
 
   Ejemplos:
-  - Entrada: 95 -> Salida: "A"
-  - Entrada: 80 -> Salida: "B"
-  - Entrada: 59 -> Salida: "F"
-  - Entrada: 101 -> Salida: "inválido"
+  - gradeLetter(95) -> "A"
+  - gradeLetter(80) -> "B"
+  - gradeLetter(59) -> "F"
+  - gradeLetter(101) -> "inválido"
 methodSignature: "public static String letter(int score)"
 className: Solution
 estimatedMinutes: 8

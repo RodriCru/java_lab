@@ -11,9 +11,9 @@ statement: |
   - Se distinguen mayúsculas y minúsculas: los caracteres no se transforman.
 
   Ejemplo:
-  - Entrada: "hola" -> Salida: "aloh"
-  - Entrada: "" -> Salida: ""
-  - Entrada: "Java" -> Salida: "avaJ"
+  - reverse("hola") -> "aloh"
+  - reverse("") -> ""
+  - reverse("Java") -> "avaJ"
 methodSignature: "public static String reverse(String text)"
 className: Solution
 estimatedMinutes: 8

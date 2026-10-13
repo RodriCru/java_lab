@@ -7,9 +7,9 @@ statement: |
   `numbers` en orden ascendente. El arreglo original no debe modificarse.
 
   Ejemplo:
-  - Entrada: [5, 2, 9, 1, 5, 6] -> Salida: [1, 2, 5, 5, 6, 9]
-  - Entrada: [3] -> Salida: [3]
-  - Entrada: [] -> Salida: []
+  - quickSort([5, 2, 9, 1, 5, 6]) -> [1, 2, 5, 5, 6, 9]
+  - quickSort([3]) -> [3]
+  - quickSort([]) -> []
 
   Si `numbers` es null, devuelve un arreglo vacío. Se conservan los duplicados.
   Se espera una solución que divida el problema alrededor de un pivote (no vale Arrays.sort).

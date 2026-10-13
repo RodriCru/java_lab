@@ -13,9 +13,9 @@ statement: |
   Además, advance(day, n) devuelve el día que resulta de avanzar n días desde day (usa next()). Si n es 0 devuelve el mismo día. Si day es null devuelve null. n no será negativo.
 
   Ejemplo:
-  - Entrada: day=MONDAY, n=1 -> Salida: TUESDAY
-  - Entrada: day=SATURDAY, n=2 -> Salida: MONDAY
-  - Entrada: day=WEDNESDAY, n=7 -> Salida: WEDNESDAY
+  - advance(Day.MONDAY, 1) -> TUESDAY
+  - advance(Day.SATURDAY, 2) -> MONDAY
+  - advance(Day.WEDNESDAY, 7) -> WEDNESDAY
 methodSignature: public static Day advance(Day day, int n)
 className: Solution
 estimatedMinutes: 15

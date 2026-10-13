@@ -16,9 +16,9 @@ statement: |
   - Comprueba primero la condición de "FizzBuzz", porque un múltiplo de 15 cumple las otras dos a la vez.
 
   Ejemplo:
-  - Entrada: 5 -> Salida: ["1", "2", "Fizz", "4", "Buzz"]
-  - Entrada: 15 -> la posición 14 (el número 15) es "FizzBuzz"
-  - Entrada: 0 -> Salida: []
+  - fizzBuzz(5) -> ["1", "2", "Fizz", "4", "Buzz"]
+  - fizzBuzz(15) -> la posición 14 (el número 15) es "FizzBuzz"
+  - fizzBuzz(0) -> []
 methodSignature: "public static String[] fizzBuzz(int limit)"
 className: Solution
 estimatedMinutes: 15

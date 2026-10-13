@@ -13,9 +13,9 @@ statement: |
   - El resultado se declara como long[] porque un valor como fib(90) ya no cabe en un int.
 
   Ejemplo:
-  - Entrada: count=1 -> Salida: [0]
-  - Entrada: count=6 -> Salida: [0, 1, 1, 2, 3, 5]
-  - Entrada: count=0 -> Salida: []
+  - fibonacci(count=1) -> [0]
+  - fibonacci(count=6) -> [0, 1, 1, 2, 3, 5]
+  - fibonacci(count=0) -> []
 methodSignature: "public static long[] fibonacci(int count)"
 className: Solution
 estimatedMinutes: 15

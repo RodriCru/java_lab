@@ -11,11 +11,11 @@ statement: |
   - No uses String.join: practica con un bucle y StringBuilder.
 
   Ejemplos:
-  - Entrada: separator=", ", parts="a", "b", "c" -> Salida: "a, b, c"
-  - Entrada: separator="-", parts="2024", "10", "08" -> Salida: "2024-10-08"
-  - Entrada: separator="-", parts="solo" -> Salida: "solo"
-  - Entrada: separator="-" (sin partes) -> Salida: ""
-  - Entrada: separator="", parts="x", "y" -> Salida: "xy"
+  - joinWithSeparator(", ", "a", "b", "c") -> "a, b, c"
+  - joinWithSeparator("-", "2024", "10", "08") -> "2024-10-08"
+  - joinWithSeparator("-", "solo") -> "solo"
+  - joinWithSeparator("-") -> ""
+  - joinWithSeparator("", "x", "y") -> "xy"
 methodSignature: "public static String joinWith(String separator, String... parts)"
 className: Solution
 estimatedMinutes: 12

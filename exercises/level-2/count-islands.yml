@@ -8,9 +8,9 @@ statement: |
   izquierda, derecha); las diagonales NO cuentan como conexión.
 
   Ejemplo:
-  - Entrada: [[1,1,0,0],[1,0,0,1],[0,0,1,1]] -> Salida: 2
-  - Entrada: [[1,0],[0,1]] -> Salida: 2   (están en diagonal)
-  - Entrada: [[0,0]] -> Salida: 0
+  - countIslands([[1,1,0,0],[1,0,0,1],[0,0,1,1]]) -> 2
+  - countIslands([[1,0],[0,1]]) -> 2 (están en diagonal)
+  - countIslands([[0,0]]) -> 0
 
   Si `grid` es null o vacío, devuelve 0. La matriz de entrada NO debe modificarse
   (usa una matriz auxiliar de visitados).

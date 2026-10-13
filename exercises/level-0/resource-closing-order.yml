@@ -17,8 +17,20 @@ statement: |
   5. Devuelve la lista.
 
   Ejemplos:
-  - useResources("A", "B", false) -> [abrir A, abrir B, usar, cerrar B, cerrar A]
-  - useResources("A", "B", true) -> [abrir A, abrir B, cerrar B, cerrar A, capturado]
+  ```java
+  useResources("A", "B", false)
+  ```
+  ```java-lab
+  [abrir A, abrir B, usar, cerrar B, cerrar A]
+  ```
+
+  Otro ejemplo:
+  ```java
+  useResources("A", "B", true)
+  ```
+  ```java-lab
+  [abrir A, abrir B, cerrar B, cerrar A, capturado]
+  ```
   (el catch se ejecuta DESPUÉS de cerrar los recursos).
 methodSignature: public static List<String> useResources(String first, String second, boolean fail)
 className: Solution

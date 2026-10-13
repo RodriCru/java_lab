@@ -6,9 +6,9 @@ statement: |
   Escribe un método que devuelva el SEGUNDO mayor valor distinto dentro del arreglo.
 
   Ejemplo:
-  - Entrada: numbers=[3, 1, 4, 1, 5] -> Salida: 4
-  - Entrada: numbers=[7, 2] -> Salida: 2
-  - Entrada: numbers=[10, 10, 10] -> Salida: -1
+  - secondLargest([3, 1, 4, 1, 5]) -> 4
+  - secondLargest([7, 2]) -> 2
+  - secondLargest([10, 10, 10]) -> -1
 
   Reglas:
   - Se comparan valores distintos: los repetidos no cuentan como segundo mayor.

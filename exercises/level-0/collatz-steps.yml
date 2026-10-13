@@ -6,10 +6,10 @@ statement: |
   La conjetura de Collatz parte de un entero positivo n y repite: si n es par, n = n / 2; si es impar, n = 3 * n + 1; hasta llegar a 1. Escribe un método con un ciclo while que cuente cuántos pasos se necesitan para llegar a 1.
 
   Ejemplos:
-  - 1 -> 0 (ya está en 1)
-  - 2 -> 1 (2 -> 1)
-  - 6 -> 8 (6, 3, 10, 5, 16, 8, 4, 2, 1)
-  - 27 -> 111
+  - collatzSteps(1) -> 0   (ya está en 1)
+  - collatzSteps(2) -> 1   (2 -> 1)
+  - collatzSteps(6) -> 8   (6, 3, 10, 5, 16, 8, 4, 2, 1)
+  - collatzSteps(27) -> 111
 
   Si n es menor o igual a 0, devuelve 0.
 methodSignature: public static int collatzSteps(int n)

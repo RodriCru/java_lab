@@ -6,10 +6,10 @@ statement: |
   Dos cadenas son isomorfas si los caracteres de la primera se pueden reemplazar para obtener la segunda, con un mapeo uno a uno: un mismo carácter siempre se reemplaza por el mismo, y dos caracteres distintos nunca se reemplazan por el mismo carácter. El orden se conserva.
 
   Ejemplos:
-  - "egg", "add" -> true
-  - "foo", "bar" -> false (o no puede ser a la vez a y r)
-  - "paper", "title" -> true
-  - "ab", "aa" -> false (a y b irían ambas a "a")
+  - isIsomorphic("egg", "add") -> true
+  - isIsomorphic("foo", "bar") -> false (o no puede ser a la vez a y r)
+  - isIsomorphic("paper", "title") -> true
+  - isIsomorphic("ab", "aa") -> false (a y b irían ambas a "a")
 
   Si las longitudes difieren o alguna cadena es null, devuelve false. Dos cadenas vacías son isomorfas (true).
 methodSignature: "public static boolean isIsomorphic(String first, String second)"

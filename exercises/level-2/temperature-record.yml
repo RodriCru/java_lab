@@ -15,9 +15,9 @@ statement: |
   - Si la lista es null o está vacía, devuelve null.
 
   Ejemplo:
-  - Entrada: [("Madrid", 35.5), ("Sevilla", 41.0), ("Oslo", 12.0)] -> Salida: "Sevilla"
-  - Entrada: [("A", 20), ("B", 20)] -> Salida: "A"
-  - Entrada: new CityTemp("X", 100) -> lanza IllegalArgumentException
+  - hottestCity([("Madrid", 35.5), ("Sevilla", 41.0), ("Oslo", 12.0)]) -> "Sevilla"
+  - hottestCity([("A", 20), ("B", 20)]) -> "A"
+  - new CityTemp("X", 100) -> lanza IllegalArgumentException
 methodSignature: "public static String hottestCity(java.util.List<CityTemp> readings)"
 className: Solution
 estimatedMinutes: 18

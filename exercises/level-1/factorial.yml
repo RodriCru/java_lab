@@ -11,9 +11,9 @@ statement: |
   - El resultado se declara como long porque el factorial crece muy rápido: factorial(20) es el mayor valor que cabe en un long.
 
   Ejemplo:
-  - Entrada: 0 -> Salida: 1
-  - Entrada: 5 -> Salida: 120
-  - Entrada: 20 -> Salida: 2432902008176640000
+  - factorial(0) -> 1
+  - factorial(5) -> 120
+  - factorial(20) -> 2432902008176640000
 methodSignature: "public static long factorial(int number)"
 className: Solution
 estimatedMinutes: 8

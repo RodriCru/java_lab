@@ -7,9 +7,9 @@ statement: |
   y cada elemento interior es la suma de los dos elementos que tiene encima en la fila anterior.
 
   Ejemplo:
-  - Entrada: rows=5 -> Salida: [[1], [1,1], [1,2,1], [1,3,3,1], [1,4,6,4,1]]
-  - Entrada: rows=1 -> Salida: [[1]]
-  - Entrada: rows=0 -> Salida: []   (lista vacía)
+  - pascalTriangle(rows=5) -> [[1], [1,1], [1,2,1], [1,3,3,1], [1,4,6,4,1]]
+  - pascalTriangle(rows=1) -> [[1]]
+  - pascalTriangle(rows=0) -> [] (lista vacía)
 
   Restricción: 0 <= rows <= 30 (los valores caben en un int).
 methodSignature: "public static java.util.List<java.util.List<Integer>> pascalTriangle(int rows)"

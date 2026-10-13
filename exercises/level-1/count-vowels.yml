@@ -11,9 +11,9 @@ statement: |
   - Si el texto es null, el método devuelve 0.
 
   Ejemplo:
-  - Entrada: "hola" -> Salida: 2
-  - Entrada: "AEIOU" -> Salida: 5
-  - Entrada: "" -> Salida: 0
+  - countVowels("hola") -> 2
+  - countVowels("AEIOU") -> 5
+  - countVowels("") -> 0
 methodSignature: "public static int countVowels(String text)"
 className: Solution
 estimatedMinutes: 8

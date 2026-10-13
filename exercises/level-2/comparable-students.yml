@@ -14,8 +14,8 @@ statement: |
   - Si la lista es null, devuelve una lista vacía.
 
   Ejemplo:
-  - Entrada: [("Luis", 70), ("Ana", 90), ("Eva", 90)] -> Salida: [("Ana", 90), ("Eva", 90), ("Luis", 70)]
-  - Entrada: [] -> Salida: []
+  - sortStudents([("Luis", 70), ("Ana", 90), ("Eva", 90)]) -> [("Ana", 90), ("Eva", 90), ("Luis", 70)]
+  - sortStudents([]) -> []
 methodSignature: "public static java.util.List<Student> sortStudents(java.util.List<Student> students)"
 className: Solution
 estimatedMinutes: 18

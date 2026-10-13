@@ -6,9 +6,9 @@ statement: |
   Cuenta cuántas veces aparece un patrón dentro de un texto, contando también las apariciones que se solapan.
 
   Ejemplos:
-  - text="aaa", pattern="aa" -> 2 (posiciones 0 y 1)
-  - text="abababa", pattern="aba" -> 3
-  - text="hola", pattern="x" -> 0
+  - countSubstring(text="aaa", pattern="aa") -> 2 (posiciones 0 y 1)
+  - countSubstring(text="abababa", pattern="aba") -> 3
+  - countSubstring(text="hola", pattern="x") -> 0
 
   Si el patrón es vacío, devuelve 0. Si el texto o el patrón son null, devuelve 0. Se distinguen mayúsculas.
 methodSignature: "public static int countSubstring(String text, String pattern)"

@@ -11,9 +11,9 @@ statement: |
   - El resultado contiene solo los nombres, no las edades.
 
   Ejemplo:
-  - Entrada: names=["Ana", "Luis", "Eva"], ages=[30, 20, 25] -> Salida: ["Luis", "Eva", "Ana"]
-  - Entrada: names=["Zoe", "Amy"], ages=[20, 20] -> Salida: ["Amy", "Zoe"]
-  - Entrada: names=["Ana"], ages=[40] -> Salida: ["Ana"]
+  - sortByAge(names=["Ana", "Luis", "Eva"], ages=[30, 20, 25]) -> ["Luis", "Eva", "Ana"]
+  - sortByAge(names=["Zoe", "Amy"], ages=[20, 20]) -> ["Amy", "Zoe"]
+  - sortByAge(names=["Ana"], ages=[40]) -> ["Ana"]
 
   Si algún arreglo es null o las longitudes no coinciden, devuelve un arreglo vacío (new String[0]).
 methodSignature: "public static String[] sortByAge(String[] names, int[] ages)"

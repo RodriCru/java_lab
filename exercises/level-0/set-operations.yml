@@ -15,8 +15,8 @@ statement: |
   - Si un parámetro es null se trata como un conjunto vacío.
 
   Ejemplos (a = {1, 2, 3}, b = {3, 4}):
-  - union -> [1, 2, 3, 4]
-  - intersection -> [3]
+  - union(a, b) -> [1, 2, 3, 4]
+  - intersection(a, b) -> [3]
   - difference(a, b) -> [1, 2]
   - difference(b, a) -> [4]
 

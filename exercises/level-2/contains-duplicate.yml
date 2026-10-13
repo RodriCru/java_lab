@@ -6,9 +6,9 @@ statement: |
   Escribe un método que indique si un arreglo de enteros contiene al menos un valor repetido.
 
   Ejemplo:
-  - Entrada: [1, 2, 3, 1] -> Salida: true
-  - Entrada: [1, 2, 3, 4] -> Salida: false
-  - Entrada: [] -> Salida: false
+  - containsDuplicate([1, 2, 3, 1]) -> true
+  - containsDuplicate([1, 2, 3, 4]) -> false
+  - containsDuplicate([]) -> false
 
   Si el arreglo es null o está vacío, devuelve false. No modifiques el arreglo de entrada.
 methodSignature: "public static boolean containsDuplicate(int[] numbers)"

@@ -12,7 +12,16 @@ statement: |
   Además, el método newContainer devuelve un contenedor nuevo y vacío.
 
   Ejemplo:
-  - c.register("saludo", () -> new StringBuilder("hola")); c.get("saludo") == c.get("saludo") -> true
+  ```java
+  var c = newContainer();
+  c.register("saludo", () -> new StringBuilder("hola"));
+  c.get("saludo") == c.get("saludo")
+  ```
+  ```java-lab
+  true
+  ```
+
+  Otro ejemplo:
   - c.get("noExiste") -> lanza IllegalArgumentException
 methodSignature: "public static Container newContainer()"
 className: Solution

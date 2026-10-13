@@ -15,9 +15,9 @@ statement: |
   Además, createTickets(n): llama primero a Ticket.reset(), crea n tickets y devuelve la lista de sus ids en orden de creación. Si n <= 0 devuelve una lista vacía.
 
   Ejemplo:
-  - Entrada: n=3 -> Salida: [1, 2, 3]
-  - Entrada: n=1 -> Salida: [1] (porque createTickets reinicia el contador)
-  - Entrada: n=0 -> Salida: []
+  - createTickets(3) -> [1, 2, 3]
+  - createTickets(1) -> [1]   (porque createTickets reinicia el contador)
+  - createTickets(0) -> []
 methodSignature: public static List<Integer> createTickets(int n)
 className: Solution
 estimatedMinutes: 15

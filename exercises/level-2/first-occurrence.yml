@@ -7,9 +7,9 @@ statement: |
   valor `target`, devuelve el índice de la PRIMERA aparición de `target`, o -1 si no está.
 
   Ejemplo:
-  - Entrada: sorted=[1, 2, 2, 2, 5], target=2 -> Salida: 1
-  - Entrada: sorted=[1, 3, 5], target=4 -> Salida: -1
-  - Entrada: sorted=[], target=1 -> Salida: -1
+  - firstOccurrence(sorted=[1, 2, 2, 2, 5], target=2) -> 1
+  - firstOccurrence(sorted=[1, 3, 5], target=4) -> -1
+  - firstOccurrence(sorted=[], target=1) -> -1
 
   Si `sorted` es null, devuelve -1. Se espera una búsqueda binaria (no recorrer todo el arreglo).
 methodSignature: "public static int firstOccurrence(int[] sorted, int target)"

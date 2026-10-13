@@ -12,10 +12,10 @@ statement: |
   Devuelve el texto final. Una lista null o vacía devuelve "".
 
   Ejemplos:
-  - ["WRITE Hola", "WRITE  mundo"] -> "Hola mundo"   (el segundo comando agrega " mundo" con espacio inicial)
-  - ["WRITE a", "WRITE b", "UNDO"] -> "a"
-  - ["UNDO", "WRITE x"] -> "x"
-  - ["WRITE a", "UNDO", "UNDO"] -> ""
+  - runCommands(List.of("WRITE Hola", "WRITE  mundo")) -> "Hola mundo"   (el segundo comando agrega " mundo" con espacio inicial)
+  - runCommands(List.of("WRITE a", "WRITE b", "UNDO")) -> "a"
+  - runCommands(List.of("UNDO", "WRITE x")) -> "x"
+  - runCommands(List.of("WRITE a", "UNDO", "UNDO")) -> ""
 methodSignature: "public static String applyCommands(List<String> commands)"
 className: Solution
 estimatedMinutes: 15

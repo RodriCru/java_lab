@@ -8,10 +8,10 @@ statement: |
   Si hay varias con la misma longitud máxima, devuelve la que aparece más a la izquierda.
 
   Ejemplos:
-  - "babad" -> "bab" (también "aba" tiene longitud 3, pero "bab" aparece primero)
-  - "cbbd" -> "bb"
-  - "a" -> "a"
-  - "abc" -> "a"
+  - longestPalindrome("babad") -> "bab" (también "aba" tiene longitud 3, pero "bab" aparece primero)
+  - longestPalindrome("cbbd") -> "bb"
+  - longestPalindrome("a") -> "a"
+  - longestPalindrome("abc") -> "a"
 
   Si el texto es null o vacío, devuelve "". Se distinguen mayúsculas.
 methodSignature: "public static String longestPalindrome(String text)"

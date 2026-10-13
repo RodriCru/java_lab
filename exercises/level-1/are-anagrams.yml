@@ -7,9 +7,9 @@ statement: |
   exactamente las mismas letras con la misma cantidad de apariciones.
 
   Ejemplo:
-  - Entrada: "roma", "amor" -> Salida: true
-  - Entrada: "Hola", "aloh" -> Salida: true
-  - Entrada: "casa", "casas" -> Salida: false
+  - areAnagrams("roma", "amor") -> true
+  - areAnagrams("Hola", "aloh") -> true
+  - areAnagrams("casa", "casas") -> false
 
   La comparación ignora mayúsculas y minúsculas, y también los espacios en blanco.
   Si alguna de las cadenas es null, devuelve false.

@@ -10,9 +10,9 @@ statement: |
   - El arreglo puede contener números negativos y valores repetidos.
 
   Ejemplo:
-  - Entrada: [3, 7, 2, 9, 5] -> Salida: 9
-  - Entrada: [-4, -1, -8] -> Salida: -1
-  - Entrada: [42] -> Salida: 42
+  - max([3, 7, 2, 9, 5]) -> 9
+  - max([-4, -1, -8]) -> -1
+  - max([42]) -> 42
 methodSignature: "public static int max(int[] numbers)"
 className: Solution
 estimatedMinutes: 8

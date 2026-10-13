@@ -7,9 +7,9 @@ statement: |
   arreglo NUEVO que contenga todos los elementos en orden ascendente.
 
   Ejemplo:
-  - Entrada: first=[1, 3, 5], second=[2, 4, 6] -> Salida: [1, 2, 3, 4, 5, 6]
-  - Entrada: first=[1, 2], second=[] -> Salida: [1, 2]
-  - Entrada: first=[7], second=[3, 9] -> Salida: [3, 7, 9]
+  - mergeSorted(first=[1, 3, 5], second=[2, 4, 6]) -> [1, 2, 3, 4, 5, 6]
+  - mergeSorted(first=[1, 2], second=[]) -> [1, 2]
+  - mergeSorted(first=[7], second=[3, 9]) -> [3, 7, 9]
 
   Se asume que ambos arreglos vienen ordenados. Si alguno es null, se trata como vacío.
   El arreglo de entrada nunca debe modificarse.

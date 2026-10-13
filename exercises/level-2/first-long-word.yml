@@ -12,9 +12,9 @@ statement: |
   - Nunca devuelvas null: usa siempre Optional.
 
   Ejemplo:
-  - Entrada: words=["sol", "casa", "elefante", "mar"], minLength=4 -> Salida: Optional["casa"]
-  - Entrada: words=["a", "bb"], minLength=5 -> Salida: Optional.empty
-  - Entrada: words=null, minLength=1 -> Salida: Optional.empty
+  - firstLongWord(words=["sol", "casa", "elefante", "mar"], minLength=4) -> Optional["casa"]
+  - firstLongWord(words=["a", "bb"], minLength=5) -> Optional.empty
+  - firstLongWord(words=null, minLength=1) -> Optional.empty
 methodSignature: "public static java.util.Optional<String> firstLongWord(java.util.List<String> words, int minLength)"
 className: Solution
 estimatedMinutes: 12

@@ -13,9 +13,9 @@ statement: |
   - Los números de un solo dígito (del 0 al 9) son todos de Armstrong.
 
   Ejemplo:
-  - Entrada: 153 -> Salida: true
-  - Entrada: 9474 -> Salida: true
-  - Entrada: 100 -> Salida: false
+  - isArmstrong(153) -> true
+  - isArmstrong(9474) -> true
+  - isArmstrong(100) -> false
 methodSignature: "public static boolean isArmstrong(int number)"
 className: Solution
 estimatedMinutes: 15

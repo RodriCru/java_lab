@@ -14,9 +14,9 @@ statement: |
   Si la lista es null o está vacía, devuelve 0.0.
 
   Ejemplo:
-  - Entrada: [Rectangle(2, 3), Triangle(4, 5)] -> Salida: 16.0 (6.0 + 10.0)
-  - Entrada: [Circle(1)] -> Salida: 3.141592653589793
-  - Entrada: [] -> Salida: 0.0
+  - totalArea(List.of(new Rectangle(2, 3), new Triangle(4, 5))) -> 16.0   (6.0 + 10.0)
+  - totalArea(List.of(new Circle(1))) -> 3.141592653589793
+  - totalArea(List.of()) -> 0.0
 methodSignature: public static double totalArea(List<Shape> shapes)
 className: Solution
 estimatedMinutes: 15

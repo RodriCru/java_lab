@@ -7,9 +7,9 @@ statement: |
   ordenados de forma ascendente.
 
   Ejemplo:
-  - Entrada: first=[1, 2, 2, 1], second=[2, 2] -> Salida: [2]
-  - Entrada: first=[4, 9, 5], second=[9, 4, 9, 8, 4] -> Salida: [4, 9]
-  - Entrada: first=[1, 2], second=[3, 4] -> Salida: []
+  - intersection(first=[1, 2, 2, 1], second=[2, 2]) -> [2]
+  - intersection(first=[4, 9, 5], second=[9, 4, 9, 8, 4]) -> [4, 9]
+  - intersection(first=[1, 2], second=[3, 4]) -> []
 
   Si alguno de los arreglos es null, trátalo como vacío. No modifiques los arreglos de entrada.
 methodSignature: "public static int[] intersection(int[] first, int[] second)"

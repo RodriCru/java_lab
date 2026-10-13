@@ -11,7 +11,7 @@ statement: |
 
   Además, escribe el método greetUser, que crea un GreetingService con el repositorio recibido y devuelve greet(id).
 
-  Ejemplos (repositorio donde 1 -> "Ana"):
+  Ejemplos (repositorio donde el id 1 es "Ana"):
   - greetUser(repo, 1) -> "Hola, Ana!"
   - greetUser(repo, 99) -> "Hola, invitado!"
   - greetUser(null, 1) -> lanza IllegalArgumentException

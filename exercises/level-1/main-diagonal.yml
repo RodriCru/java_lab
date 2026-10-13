@@ -6,9 +6,9 @@ statement: |
   Escribe un método que devuelva un arreglo NUEVO con los elementos de la diagonal principal de una matriz, es decir, los elementos en la posición (i, i).
 
   Ejemplo:
-  - Entrada: matrix=[[1, 2, 3], [4, 5, 6], [7, 8, 9]] -> Salida: [1, 5, 9]
-  - Entrada: matrix=[[1, 2, 3], [4, 5, 6]] -> Salida: [1, 5]
-  - Entrada: matrix=[[4]] -> Salida: [4]
+  - mainDiagonal(matrix=[[1, 2, 3], [4, 5, 6], [7, 8, 9]]) -> [1, 5, 9]
+  - mainDiagonal(matrix=[[1, 2, 3], [4, 5, 6]]) -> [1, 5]
+  - mainDiagonal(matrix=[[4]]) -> [4]
 
   Reglas:
   - Si la matriz no es cuadrada, la diagonal tiene min(número de filas, número de columnas) elementos.

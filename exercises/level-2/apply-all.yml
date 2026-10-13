@@ -11,9 +11,9 @@ statement: |
   - Las funciones null de la lista se ignoran.
 
   Ejemplo:
-  - Entrada: initial=3, functions=[x -> x + 1, x -> x * 2] -> Salida: 8   ((3 + 1) * 2)
-  - Entrada: initial=3, functions=[x -> x * 2, x -> x + 1] -> Salida: 7   ((3 * 2) + 1)
-  - Entrada: initial=5, functions=[] -> Salida: 5
+  - applyAll(3, functions=[x -> x + 1, x -> x * 2]) -> 8   ((3 + 1) * 2)
+  - applyAll(3, functions=[x -> x * 2, x -> x + 1]) -> 7   ((3 * 2) + 1)
+  - applyAll(5, functions=[]) -> 5
 methodSignature: "public static int applyAll(int initial, java.util.List<java.util.function.Function<Integer, Integer>> functions)"
 className: Solution
 estimatedMinutes: 12

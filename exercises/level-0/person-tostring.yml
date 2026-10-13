@@ -13,9 +13,9 @@ statement: |
   Además, countDistinct recibe una lista de personas y devuelve cuántas son distintas según equals (usa un HashSet, que depende de equals y hashCode). Si la lista es null o vacía, devuelve 0.
 
   Ejemplo:
-  - Entrada: [Person("Ana", 30), Person("Ana", 30), Person("Luis", 25)] -> Salida: 2
-  - Entrada: [Person("Ana", 30), Person("Ana", 31)] -> Salida: 2
-  - Entrada: [] -> Salida: 0
+  - countDistinct(List.of(new Person("Ana", 30), new Person("Ana", 30), new Person("Luis", 25))) -> 2
+  - countDistinct(List.of(new Person("Ana", 30), new Person("Ana", 31))) -> 2
+  - countDistinct(List.of()) -> 0
 methodSignature: public static int countDistinct(List<Person> people)
 className: Solution
 estimatedMinutes: 18

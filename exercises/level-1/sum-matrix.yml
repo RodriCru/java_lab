@@ -6,9 +6,9 @@ statement: |
   Escribe un método que devuelva la suma de todos los elementos de una matriz de enteros.
 
   Ejemplo:
-  - Entrada: matrix=[[1, 2], [3, 4]] -> Salida: 10
-  - Entrada: matrix=[[5]] -> Salida: 5
-  - Entrada: matrix=[[-1, -2], [1, 2]] -> Salida: 0
+  - sumMatrix(matrix=[[1, 2], [3, 4]]) -> 10
+  - sumMatrix(matrix=[[5]]) -> 5
+  - sumMatrix(matrix=[[-1, -2], [1, 2]]) -> 0
 
   Si la matriz es null, devuelve 0. La matriz de entrada nunca debe modificarse.
 methodSignature: "public static int sumMatrix(int[][] matrix)"

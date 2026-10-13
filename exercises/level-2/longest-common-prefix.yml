@@ -6,9 +6,9 @@ statement: |
   Dado un arreglo de cadenas, devuelve el prefijo común más largo a todas ellas.
 
   Ejemplos:
-  - ["flower", "flow", "flight"] -> "fl"
-  - ["dog", "racecar", "car"] -> ""
-  - ["alone"] -> "alone"
+  - longestCommonPrefix(["flower", "flow", "flight"]) -> "fl"
+  - longestCommonPrefix(["dog", "racecar", "car"]) -> ""
+  - longestCommonPrefix(["alone"]) -> "alone"
 
   Devuelve "" si no hay prefijo común, si el arreglo es null o está vacío.
 methodSignature: "public static String longestCommonPrefix(String[] words)"

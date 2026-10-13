@@ -17,9 +17,9 @@ statement: |
   - Si movements es null, devuelve initial.
 
   Ejemplo:
-  - Entrada: initial=100, movements=[50, -30, -200, 20] -> Salida: 140.0 (el retiro de 200 se ignora)
-  - Entrada: initial=10, movements=[] -> Salida: 10.0
-  - Entrada: initial=0, movements=[0, 5] -> Salida: 5.0
+  - finalBalance(initial=100, movements=[50, -30, -200, 20]) -> 140.0 (el retiro de 200 se ignora)
+  - finalBalance(initial=10, movements=[]) -> 10.0
+  - finalBalance(initial=0, movements=[0, 5]) -> 5.0
 methodSignature: "public static double finalBalance(double initial, double[] movements)"
 className: Solution
 estimatedMinutes: 20

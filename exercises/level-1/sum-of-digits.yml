@@ -8,9 +8,9 @@ statement: |
   Se trabaja con el valor absoluto, así que el signo no afecta al resultado: la suma de los dígitos de -123 es 6.
 
   Ejemplo:
-  - Entrada: 12345 -> Salida: 15
-  - Entrada: 0 -> Salida: 0
-  - Entrada: -123 -> Salida: 6
+  - sumOfDigits(12345) -> 15
+  - sumOfDigits(0) -> 0
+  - sumOfDigits(-123) -> 6
 methodSignature: "public static int sumOfDigits(int number)"
 className: Solution
 estimatedMinutes: 10

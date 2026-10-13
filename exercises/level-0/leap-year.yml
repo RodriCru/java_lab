@@ -11,10 +11,10 @@ statement: |
   - salvo que también sea divisible entre 400 (en ese caso sí es bisiesto).
 
   Ejemplos:
-  - Entrada: 2024 -> Salida: true
-  - Entrada: 2023 -> Salida: false
-  - Entrada: 1900 -> Salida: false (divisible entre 100 pero no entre 400)
-  - Entrada: 2000 -> Salida: true (divisible entre 400)
+  - isLeapYear(2024) -> true
+  - isLeapYear(2023) -> false
+  - isLeapYear(1900) -> false   (divisible entre 100 pero no entre 400)
+  - isLeapYear(2000) -> true   (divisible entre 400)
 
   Se garantiza que year >= 1.
 methodSignature: "public static boolean isLeap(int year)"

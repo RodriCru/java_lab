@@ -12,9 +12,9 @@ statement: |
   - Si el texto es null, el método devuelve false.
 
   Ejemplo:
-  - Entrada: "reconocer" -> Salida: true
-  - Entrada: "Hola" -> Salida: false
-  - Entrada: "A man, a plan, a canal: Panama" -> Salida: true
+  - isPalindrome("reconocer") -> true
+  - isPalindrome("Hola") -> false
+  - isPalindrome("A man, a plan, a canal: Panama") -> true
 methodSignature: "public static boolean isPalindrome(String text)"
 className: Solution
 estimatedMinutes: 12

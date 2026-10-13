@@ -6,9 +6,9 @@ statement: |
   Escribe un método que devuelva el primer carácter que aparece una sola vez en el texto.
 
   Ejemplo:
-  - Entrada: "aabbc" -> Salida: 'c'
-  - Entrada: "Java" -> Salida: 'J'
-  - Entrada: "aabb" -> Salida: '\0'
+  - firstNonRepeated("aabbc") -> 'c'
+  - firstNonRepeated("Java") -> 'J'
+  - firstNonRepeated("aabb") -> '\0'
 
   La comparación ignora mayúsculas y minúsculas: por ejemplo, 'a' y 'A' cuentan como
   el mismo carácter. Si ningún carácter es único, o si el texto es null o vacío,

@@ -6,10 +6,10 @@ statement: |
   Escribe un método que reciba un texto con "palabras" separadas por espacios o saltos de línea y devuelva la suma de todos los tokens que sean enteros, ignorando los demás. Usa un Scanner sobre el String con hasNextInt() para saber si el siguiente token es un entero y next() para descartar el que no lo es.
 
   Ejemplos:
-  - "1 a 2 b 3" -> 6
-  - "hola mundo" -> 0
-  - "10 -4\nx 5" -> 11
-  - "3.5 7" -> 7 (3.5 no es un entero)
+  - sumTokens("1 a 2 b 3") -> 6
+  - sumTokens("hola mundo") -> 0
+  - sumTokens("10 -4\nx 5") -> 11
+  - sumTokens("3.5 7") -> 7   (3.5 no es un entero)
 
   Si el texto es null o vacío, devuelve 0.
 methodSignature: public static int sumTokens(String input)

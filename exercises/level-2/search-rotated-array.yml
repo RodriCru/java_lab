@@ -8,9 +8,9 @@ statement: |
   en el arreglo, o -1 si no está.
 
   Ejemplo:
-  - Entrada: numbers=[4, 5, 6, 7, 0, 1, 2], target=0 -> Salida: 4
-  - Entrada: numbers=[4, 5, 6, 7, 0, 1, 2], target=3 -> Salida: -1
-  - Entrada: numbers=[1], target=1 -> Salida: 0
+  - searchRotated([4, 5, 6, 7, 0, 1, 2], target=0) -> 4
+  - searchRotated([4, 5, 6, 7, 0, 1, 2], target=3) -> -1
+  - searchRotated([1], target=1) -> 0
 
   Si `numbers` es null o vacío, devuelve -1. La solución debe ser O(log n).
 methodSignature: "public static int searchRotated(int[] numbers, int target)"

@@ -12,9 +12,9 @@ statement: |
   - Si dos palabras empatan en frecuencia, devuelve la que aparece primero en el texto.
 
   Ejemplo:
-  - Entrada: "el gato y el perro" -> Salida: "el"
-  - Entrada: "Java java JAVA" -> Salida: "java"
-  - Entrada: "Hola" -> Salida: "hola"
+  - mostCommonWord("el gato y el perro") -> "el"
+  - mostCommonWord("Java java JAVA") -> "java"
+  - mostCommonWord("Hola") -> "hola"
 
   Si el texto es null o está vacío, devuelve una cadena vacía ("").
 methodSignature: "public static String mostCommonWord(String text)"

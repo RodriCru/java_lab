@@ -6,9 +6,9 @@ statement: |
   Escribe un método que devuelva un arreglo NUEVO rotado a la izquierda las posiciones indicadas.
 
   Ejemplo:
-  - Entrada: numbers=[1, 2, 3, 4, 5], positions=2 -> Salida: [3, 4, 5, 1, 2]
-  - Entrada: numbers=[1, 2, 3], positions=0 -> Salida: [1, 2, 3]
-  - Entrada: numbers=[1, 2, 3], positions=5 -> Salida: [3, 1, 2]
+  - rotateLeft([1, 2, 3, 4, 5], positions=2) -> [3, 4, 5, 1, 2]
+  - rotateLeft([1, 2, 3], positions=0) -> [1, 2, 3]
+  - rotateLeft([1, 2, 3], positions=5) -> [3, 1, 2]
 
   Si positions es mayor que el largo del arreglo, usa el módulo (positions % length).
   Si positions es negativo, aplícalo con módulo positivo para obtener una rotación válida.

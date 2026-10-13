@@ -11,9 +11,9 @@ statement: |
   - El record Money tiene un accesor cents() que devuelve los centavos.
 
   Ejemplo:
-  - Entrada: wallet=Money(500), price=300 -> Salida: true
-  - Entrada: wallet=Money(300), price=300 -> Salida: true
-  - Entrada: wallet=Money(100), price=250 -> Salida: false
+  - hasEnough(wallet=Money(500), price=300) -> true
+  - hasEnough(wallet=Money(300), price=300) -> true
+  - hasEnough(wallet=Money(100), price=250) -> false
 
   Si wallet es null, devuelve false.
 methodSignature: "public static boolean hasEnough(Money wallet, int price)"

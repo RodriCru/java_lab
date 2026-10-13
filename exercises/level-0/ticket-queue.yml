@@ -12,9 +12,9 @@ statement: |
   Devuelve la lista de nombres atendidos, en el orden en que se atendieron. Si llega "ATENDER" y no hay nadie en la cola, agrega "VACÍA" a la lista de resultados. Las personas que sigan esperando al final simplemente no aparecen. Una lista null o vacía devuelve una lista vacía.
 
   Ejemplos:
-  - ["Ana", "Luis", "ATENDER", "Marta", "ATENDER", "ATENDER"] -> ["Ana", "Luis", "Marta"]
-  - ["ATENDER", "Ana"] -> ["VACÍA"]
-  - ["Ana", "Luis"] -> []
+  - attendQueue(List.of("Ana", "Luis", "ATENDER", "Marta", "ATENDER", "ATENDER")) -> ["Ana", "Luis", "Marta"]
+  - attendQueue(List.of("ATENDER", "Ana")) -> ["VACÍA"]
+  - attendQueue(List.of("Ana", "Luis")) -> []
 methodSignature: "public static List<String> processEvents(List<String> events)"
 className: Solution
 estimatedMinutes: 15

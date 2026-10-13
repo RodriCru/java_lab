@@ -11,9 +11,9 @@ statement: |
   - No puedes usar bucles ni StringBuilder.reverse(): el enunciado exige una solución recursiva.
 
   Ejemplo:
-  - Entrada: "hola" -> Salida: "aloh"
-  - Entrada: "a" -> Salida: "a"
-  - Entrada: "" -> Salida: ""
+  - recursiveReverse("hola") -> "aloh"
+  - recursiveReverse("a") -> "a"
+  - recursiveReverse("") -> ""
 methodSignature: "public static String recursiveReverse(String text)"
 className: Solution
 estimatedMinutes: 15

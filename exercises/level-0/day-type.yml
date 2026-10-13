@@ -10,11 +10,11 @@ statement: |
   - Cualquier otro número -> "inválido"
 
   Ejemplos:
-  - Entrada: 1 -> Salida: "laboral"
-  - Entrada: 5 -> Salida: "laboral"
-  - Entrada: 7 -> Salida: "fin de semana"
-  - Entrada: 0 -> Salida: "inválido"
-  - Entrada: 8 -> Salida: "inválido"
+  - dayType(1) -> "laboral"
+  - dayType(5) -> "laboral"
+  - dayType(7) -> "fin de semana"
+  - dayType(0) -> "inválido"
+  - dayType(8) -> "inválido"
 
   Los textos se devuelven exactamente así, en minúsculas y con acentos.
 methodSignature: "public static String dayType(int day)"

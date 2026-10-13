@@ -14,7 +14,7 @@ statement: |
 
   Ejemplos:
   - totalToPay(new CardPayment(), 100) -> 103
-  - totalToPay(new CardPayment(), 250) -> 257 (250 * 3 / 100 = 7)
+  - totalToPay(new CardPayment(), 250) -> 257   (250 * 3 / 100 = 7)
   - totalToPay(new CashPayment(), 100) -> 100
 
   Si payment es null, devuelve el monto sin comisión.

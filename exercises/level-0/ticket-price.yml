@@ -15,12 +15,12 @@ statement: |
   El descuento de estudiante solo aplica en el último caso.
 
   Ejemplos:
-  - Entrada: age=3, isStudent=false -> Salida: 0.0
-  - Entrada: age=10, isStudent=true -> Salida: 8.0
-  - Entrada: age=70, isStudent=true -> Salida: 10.0
-  - Entrada: age=20, isStudent=true -> Salida: 12.0
-  - Entrada: age=20, isStudent=false -> Salida: 20.0
-  - Entrada: age=-1, isStudent=false -> Salida: -1.0
+  - ticketPrice(3, false) -> 0.0
+  - ticketPrice(10, true) -> 8.0
+  - ticketPrice(70, true) -> 10.0
+  - ticketPrice(20, true) -> 12.0
+  - ticketPrice(20, false) -> 20.0
+  - ticketPrice(-1, false) -> -1.0
 methodSignature: "public static double ticketPrice(int age, boolean isStudent)"
 className: Solution
 estimatedMinutes: 12

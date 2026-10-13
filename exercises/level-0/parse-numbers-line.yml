@@ -6,9 +6,9 @@ statement: |
   Escribe un método que reciba una línea de texto con números enteros separados por espacios y los devuelva en un arreglo, en el mismo orden. Usa un Scanner creado sobre el String (new Scanner(line)).
 
   Ejemplos:
-  - "3 10 -4" -> {3, 10, -4}
-  - "  7   8 " -> {7, 8} (los espacios extra se ignoran)
-  - "42" -> {42}
+  - parseNumbersLine("3 10 -4") -> {3, 10, -4}
+  - parseNumbersLine("  7   8 ") -> {7, 8}   (los espacios extra se ignoran)
+  - parseNumbersLine("42") -> {42}
 
   Si la línea es null, está vacía o solo tiene espacios, devuelve un arreglo vacío. Puedes asumir que todos los tokens son enteros válidos.
 methodSignature: public static int[] parseNumbersLine(String line)

@@ -12,9 +12,9 @@ statement: |
   - Si la lista es null o está vacía, devuelve 0.
 
   Ejemplo:
-  - Entrada: [(1,2), (3,4), (1,2)] -> Salida: 2
-  - Entrada: [(0,0), (0,0), (0,0)] -> Salida: 1
-  - Entrada: [] -> Salida: 0
+  - countDistinctPoints([(1,2), (3,4), (1,2)]) -> 2
+  - countDistinctPoints([(0,0), (0,0), (0,0)]) -> 1
+  - countDistinctPoints([]) -> 0
 methodSignature: "public static int countDistinctPoints(java.util.List<Point> points)"
 className: Solution
 estimatedMinutes: 15

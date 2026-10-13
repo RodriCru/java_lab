@@ -14,9 +14,9 @@ statement: |
   Si la lista es null o está vacía, devuelve "".
 
   Ejemplo:
-  - Entrada: [Car("Toyota", 4)] -> Salida: "Vehículo Toyota con 4 ruedas y 4 puertas"
-  - Entrada: [Motorcycle("Honda")] -> Salida: "Vehículo Honda con 2 ruedas (moto)"
-  - Entrada: [Motorcycle("Honda"), Car("Kia", 2)] -> Salida: "Vehículo Honda con 2 ruedas (moto); Vehículo Kia con 4 ruedas y 2 puertas"
+  - describeAll(List.of(new Car("Toyota", 4))) -> "Vehículo Toyota con 4 ruedas y 4 puertas"
+  - describeAll(List.of(new Motorcycle("Honda"))) -> "Vehículo Honda con 2 ruedas (moto)"
+  - describeAll(List.of(new Motorcycle("Honda"), new Car("Kia", 2))) -> "Vehículo Honda con 2 ruedas (moto); Vehículo Kia con 4 ruedas y 2 puertas"
 methodSignature: public static String describeAll(List<Vehicle> vehicles)
 className: Solution
 estimatedMinutes: 15

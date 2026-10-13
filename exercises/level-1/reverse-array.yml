@@ -6,9 +6,9 @@ statement: |
   Escribe un método que devuelva un arreglo NUEVO con los elementos del arreglo recibido en orden inverso. El arreglo original NUNCA debe modificarse.
 
   Ejemplo:
-  - Entrada: numbers=[1, 2, 3] -> Salida: [3, 2, 1]
-  - Entrada: numbers=[10, 20] -> Salida: [20, 10]
-  - Entrada: numbers=[] -> Salida: []
+  - reverse([1, 2, 3]) -> [3, 2, 1]
+  - reverse([10, 20]) -> [20, 10]
+  - reverse([]) -> []
 
   Si el arreglo es null, devuelve un arreglo vacío (new int[0]).
 methodSignature: "public static int[] reverse(int[] numbers)"

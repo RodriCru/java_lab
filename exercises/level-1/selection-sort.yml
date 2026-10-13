@@ -13,9 +13,9 @@ statement: |
   - Si el arreglo está vacío, devuelve un arreglo vacío.
 
   Ejemplo:
-  - Entrada: [64, 25, 12, 22] -> Salida: [12, 22, 25, 64]
-  - Entrada: [-3, -1, -7] -> Salida: [-7, -3, -1]
-  - Entrada: [] -> Salida: []
+  - selectionSort([64, 25, 12, 22]) -> [12, 22, 25, 64]
+  - selectionSort([-3, -1, -7]) -> [-7, -3, -1]
+  - selectionSort([]) -> []
 methodSignature: "public static int[] selectionSort(int[] numbers)"
 className: Solution
 estimatedMinutes: 20

@@ -7,9 +7,9 @@ statement: |
   (n = longitud del arreglo). Se garantiza que siempre existe, así que no necesitas validarlo.
 
   Ejemplo:
-  - Entrada: [3, 2, 3] -> Salida: 3
-  - Entrada: [2, 2, 1, 1, 1, 2, 2] -> Salida: 2
-  - Entrada: [7] -> Salida: 7
+  - majorityElement([3, 2, 3]) -> 3
+  - majorityElement([2, 2, 1, 1, 1, 2, 2]) -> 2
+  - majorityElement([7]) -> 7
 
   Se espera una solución O(n) tiempo y O(1) espacio (algoritmo de votación de Boyer-Moore).
   No modifiques el arreglo de entrada.

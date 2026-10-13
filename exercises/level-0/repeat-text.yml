@@ -8,7 +8,7 @@ statement: |
   Ejemplos:
   - repeatText("ab", 3) -> "ababab"
   - repeatText("x", 1) -> "x"
-  - repeatText("hola", 0) -> "" (cadena vacía)
+  - repeatText("hola", 0) -> ""   (cadena vacía)
 methodSignature: public static String repeatText(String text, int times)
 className: Solution
 estimatedMinutes: 8

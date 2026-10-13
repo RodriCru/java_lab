@@ -11,9 +11,9 @@ statement: |
   - El arreglo devuelto debe tener exactamente la cantidad de primos encontrados, sin ceros de relleno.
 
   Ejemplo:
-  - Entrada: 10 -> Salida: [2, 3, 5, 7]
-  - Entrada: 2 -> Salida: [2]
-  - Entrada: 1 -> Salida: []
+  - primesUpTo(10) -> [2, 3, 5, 7]
+  - primesUpTo(2) -> [2]
+  - primesUpTo(1) -> []
 methodSignature: "public static int[] primesUpTo(int limit)"
 className: Solution
 estimatedMinutes: 15

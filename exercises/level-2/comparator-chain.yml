@@ -16,8 +16,7 @@ statement: |
   - La comparación de textos es la natural de String (distingue mayúsculas).
 
   Ejemplo:
-  - Entrada: [("Ruiz","Ana",30), ("Gómez","Luis",40), ("Ruiz","Ana",35), ("Ruiz","Aba",20)]
-    -> Salida: [("Gómez","Luis",40), ("Ruiz","Aba",20), ("Ruiz","Ana",35), ("Ruiz","Ana",30)]
+  - sortPeople([("Ruiz","Ana",30), ("Gómez","Luis",40), ("Ruiz","Ana",35), ("Ruiz","Aba",20)]) -> [("Gómez","Luis",40), ("Ruiz","Aba",20), ("Ruiz","Ana",35), ("Ruiz","Ana",30)]
 methodSignature: "public static java.util.List<Person> sortPeople(java.util.List<Person> people)"
 className: Solution
 estimatedMinutes: 20

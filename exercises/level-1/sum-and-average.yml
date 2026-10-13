@@ -13,9 +13,9 @@ statement: |
   - La división debe ser decimal: el promedio de [1, 2] es 1.5 y no 1.
 
   Ejemplo:
-  - Entrada: [1, 2, 3, 4] -> Salida: 2.5
-  - Entrada: [-2, -4] -> Salida: -3.0
-  - Entrada: [5] -> Salida: 5.0
+  - average([1, 2, 3, 4]) -> 2.5
+  - average([-2, -4]) -> -3.0
+  - average([5]) -> 5.0
 methodSignature: "public static double average(int[] numbers)"
 className: Solution
 estimatedMinutes: 10

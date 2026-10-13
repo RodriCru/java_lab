@@ -6,10 +6,10 @@ statement: |
   Determina si la segunda cadena es una rotación de la primera. Una rotación mueve algunos caracteres del inicio al final, manteniendo el orden.
 
   Ejemplos:
-  - "abcde", "cdeab" -> true
-  - "abcde", "abced" -> false
-  - "abc", "abcd" -> false (distinta longitud)
-  - "", "" -> true
+  - isRotation("abcde", "cdeab") -> true
+  - isRotation("abcde", "abced") -> false
+  - isRotation("abc", "abcd") -> false (distinta longitud)
+  - isRotation("", "") -> true
 
   Si alguna de las cadenas es null, devuelve false. Se distinguen mayúsculas.
 methodSignature: "public static boolean isRotation(String first, String second)"

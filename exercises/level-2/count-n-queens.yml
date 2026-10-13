@@ -7,9 +7,9 @@ statement: |
   ninguna se ataque entre sí (dos reinas se atacan si comparten fila, columna o diagonal).
 
   Ejemplo:
-  - Entrada: n=1 -> Salida: 1
-  - Entrada: n=4 -> Salida: 2
-  - Entrada: n=8 -> Salida: 92
+  - countQueens(n=1) -> 1
+  - countQueens(n=4) -> 2
+  - countQueens(n=8) -> 92
 
   Restricción: 1 <= n <= 8. Las soluciones que son rotaciones o reflejos de otras se cuentan
   por separado. Usa backtracking: coloca una reina por fila y retrocede si no hay jugada válida.

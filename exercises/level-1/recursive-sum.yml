@@ -12,9 +12,9 @@ statement: |
   - No puedes usar bucles: el enunciado exige una solución recursiva.
 
   Ejemplo:
-  - Entrada: numbers=[1, 2, 3, 4], index=0 -> Salida: 10
-  - Entrada: numbers=[1, 2, 3, 4], index=2 -> Salida: 7
-  - Entrada: numbers=[1, 2, 3, 4], index=4 -> Salida: 0
+  - recursiveSum([1, 2, 3, 4], index=0) -> 10
+  - recursiveSum([1, 2, 3, 4], index=2) -> 7
+  - recursiveSum([1, 2, 3, 4], index=4) -> 0
 methodSignature: "public static int recursiveSum(int[] numbers, int index)"
 className: Solution
 estimatedMinutes: 12

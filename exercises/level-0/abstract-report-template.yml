@@ -12,10 +12,24 @@ statement: |
   - buildAll recibe una lista de informes y une el resultado de generate() de cada uno separándolos por una línea en blanco ("\n\n"). Si la lista es null o vacía devuelve "".
 
   Ejemplo:
-  - Entrada: [SalesReport(150.5)] -> Salida:
-    "=== Ventas ===\nTotal: 150.5\n-- Fin --"
-  - Entrada: [InventoryReport(12)] -> Salida:
-    "=== Inventario ===\nArtículos: 12\n-- Inventario cerrado --"
+  ```java
+  buildAll(List.of(new SalesReport(150.5)))
+  ```
+  ```java-lab
+  === Ventas ===
+  Total: 150.5
+  -- Fin --
+  ```
+
+  Otro ejemplo:
+  ```java
+  buildAll(List.of(new InventoryReport(12)))
+  ```
+  ```java-lab
+  === Inventario ===
+  Artículos: 12
+  -- Inventario cerrado --
+  ```
 methodSignature: public static String buildAll(List<Report> reports)
 className: Solution
 estimatedMinutes: 20

@@ -7,9 +7,9 @@ statement: |
   palabra en mayúscula y el resto en minúscula.
 
   Ejemplo:
-  - Entrada: "hola mundo" -> Salida: "Hola Mundo"
-  - Entrada: "JAVA es GENIAL" -> Salida: "Java Es Genial"
-  - Entrada: "  hola   mundo  " -> Salida: "  Hola   Mundo  "
+  - titleCase("hola mundo") -> "Hola Mundo"
+  - titleCase("JAVA es GENIAL") -> "Java Es Genial"
+  - titleCase("  hola   mundo  ") -> "  Hola   Mundo  "
 
   Respeta los espacios existentes sin colapsarlos: los espacios múltiples se conservan
   igual que en la entrada. Si el texto es null, devuelve una cadena vacía ("").

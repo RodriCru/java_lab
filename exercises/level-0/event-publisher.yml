@@ -15,7 +15,7 @@ statement: |
   El método newPublisher devuelve un publicador nuevo y sin suscriptores.
 
   Ejemplo:
-  - Dos listeners suscritos a "pedidos"; publish("pedidos", "nuevo") -> ambos reciben "nuevo" y devuelve 2
+  - dos listeners suscritos a "pedidos"; publish("pedidos", "nuevo") -> ambos reciben "nuevo" y devuelve 2
   - publish("otro", "x") -> devuelve 0
 methodSignature: "public static EventPublisher newPublisher()"
 className: Solution

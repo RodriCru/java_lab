@@ -13,9 +13,9 @@ statement: |
   - Si el arreglo está vacío, devuelve un arreglo vacío.
 
   Ejemplo:
-  - Entrada: [5, 2, 9, 1] -> Salida: [1, 2, 5, 9]
-  - Entrada: [3, 3, 1] -> Salida: [1, 3, 3]
-  - Entrada: [] -> Salida: []
+  - bubbleSort([5, 2, 9, 1]) -> [1, 2, 5, 9]
+  - bubbleSort([3, 3, 1]) -> [1, 3, 3]
+  - bubbleSort([]) -> []
 methodSignature: "public static int[] bubbleSort(int[] numbers)"
 className: Solution
 estimatedMinutes: 20

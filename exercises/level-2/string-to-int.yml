@@ -13,11 +13,11 @@ statement: |
   5. Si el valor sale del rango de int, satura: Integer.MAX_VALUE o Integer.MIN_VALUE.
 
   Ejemplos:
-  - "42" -> 42
-  - "   -42" -> -42
-  - "4193 with words" -> 4193
-  - "words 987" -> 0
-  - "-91283472332" -> -2147483648
+  - myAtoi("42") -> 42
+  - myAtoi("   -42") -> -42
+  - myAtoi("4193 with words") -> 4193
+  - myAtoi("words 987") -> 0
+  - myAtoi("-91283472332") -> -2147483648
 
   Si el texto es null, devuelve 0.
 methodSignature: "public static int myAtoi(String text)"

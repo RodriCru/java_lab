@@ -6,10 +6,10 @@ statement: |
   Devuelve todas las permutaciones de una cadena cuyos caracteres son todos distintos, ordenadas lexicográficamente (orden de String.compareTo).
 
   Ejemplos:
-  - "abc" -> ["abc", "acb", "bac", "bca", "cab", "cba"]
-  - "ab" -> ["ab", "ba"]
-  - "x" -> ["x"]
-  - "" -> [""] (una lista con la cadena vacía)
+  - permutations("abc") -> ["abc", "acb", "bac", "bca", "cab", "cba"]
+  - permutations("ab") -> ["ab", "ba"]
+  - permutations("x") -> ["x"]
+  - permutations("") -> [""] (una lista con la cadena vacía)
 
   Si el texto es null, devuelve una lista vacía.
 methodSignature: "public static java.util.List<String> permutations(String text)"

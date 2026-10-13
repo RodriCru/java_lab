@@ -7,9 +7,9 @@ statement: |
   dos elementos en posiciones distintas que sumen `target` y devuelve sus índices [i, j] con i < j.
 
   Ejemplo:
-  - Entrada: sorted=[2, 7, 11, 15], target=9 -> Salida: [0, 1]
-  - Entrada: sorted=[1, 2, 3, 4, 6], target=6 -> Salida: [1, 3]
-  - Entrada: sorted=[1, 2, 3], target=10 -> Salida: [-1, -1]
+  - twoSumSorted(sorted=[2, 7, 11, 15], target=9) -> [0, 1]
+  - twoSumSorted(sorted=[1, 2, 3, 4, 6], target=6) -> [1, 3]
+  - twoSumSorted(sorted=[1, 2, 3], target=10) -> [-1, -1]
 
   Si no existe ninguna pareja (o el arreglo es null o tiene menos de 2 elementos), devuelve
   [-1, -1]. En los casos de prueba existe como máximo una pareja válida. Se espera O(n) tiempo

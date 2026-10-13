@@ -11,9 +11,9 @@ statement: |
   - El MCD de (n, 0) y de (0, n) es el valor absoluto del número distinto de cero.
 
   Ejemplo:
-  - Entrada: 48 y 18 -> Salida: 6
-  - Entrada: 0 y 0 -> Salida: 0
-  - Entrada: -18 y 24 -> Salida: 6
+  - gcd(48, 18) -> 6
+  - gcd(0, 0) -> 0
+  - gcd(-18, 24) -> 6
 methodSignature: "public static int gcd(int a, int b)"
 className: Solution
 estimatedMinutes: 12

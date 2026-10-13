@@ -8,7 +8,7 @@ statement: |
   Ejemplos:
   - printOneToN(3) imprime: 1, 2 y 3, uno por línea
   - printOneToN(1) imprime: 1
-  - printOneToN(0) no imprime nada
+  - printOneToN(0) imprime: (nada)
 methodSignature: public static void printOneToN(int n)
 className: Solution
 estimatedMinutes: 8

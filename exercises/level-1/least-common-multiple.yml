@@ -12,9 +12,9 @@ statement: |
   - Se puede calcular como el producto de los valores absolutos dividido entre su máximo común divisor.
 
   Ejemplo:
-  - Entrada: 4 y 6 -> Salida: 12
-  - Entrada: 0 y 5 -> Salida: 0
-  - Entrada: -4 y 6 -> Salida: 12
+  - lcm(4, 6) -> 12
+  - lcm(0, 5) -> 0
+  - lcm(-4, 6) -> 12
 methodSignature: "public static long lcm(int a, int b)"
 className: Solution
 estimatedMinutes: 12

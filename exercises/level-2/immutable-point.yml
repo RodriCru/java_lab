@@ -15,8 +15,8 @@ statement: |
   Después implementa translate(point, dx, dy), que devuelve un nuevo Point desplazado dx en x y dy en y, sin modificar el original.
 
   Ejemplo:
-  - Entrada: point=(1, 2), dx=3, dy=-1 -> Salida: (4, 1) (y el punto original sigue siendo (1, 2))
-  - Entrada: point=(0, 0).withX(5) -> Salida: (5, 0)
+  - translate(point=(1, 2), dx=3, dy=-1) -> (4, 1) (y el punto original sigue siendo (1, 2))
+  - point=(0, 0).withX(5) -> (5, 0)
 methodSignature: "public static Point translate(Point point, int dx, int dy)"
 className: Solution
 estimatedMinutes: 20

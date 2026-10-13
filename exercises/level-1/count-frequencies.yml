@@ -8,9 +8,9 @@ statement: |
   La clave del mapa es el número y el valor es la cantidad de apariciones.
 
   Ejemplo:
-  - Entrada: [1, 2, 2, 3, 3, 3] -> Salida: {1=1, 2=2, 3=3}
-  - Entrada: [5, 5, 5] -> Salida: {5=3}
-  - Entrada: [7] -> Salida: {7=1}
+  - countFrequencies([1, 2, 2, 3, 3, 3]) -> {1=1, 2=2, 3=3}
+  - countFrequencies([5, 5, 5]) -> {5=3}
+  - countFrequencies([7]) -> {7=1}
 
   Si el arreglo es null o está vacío, devuelve un mapa vacío (no null).
 methodSignature: "public static java.util.Map<Integer, Integer> countFrequencies(int[] numbers)"

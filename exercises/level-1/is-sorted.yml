@@ -7,9 +7,9 @@ statement: |
   es decir, cada elemento es mayor o igual que el anterior.
 
   Ejemplo:
-  - Entrada: numbers=[1, 2, 2, 5] -> Salida: true
-  - Entrada: numbers=[3, 1, 4] -> Salida: false
-  - Entrada: numbers=[7] -> Salida: true
+  - isSorted([1, 2, 2, 5]) -> true
+  - isSorted([3, 1, 4]) -> false
+  - isSorted([7]) -> true
 
   Si el arreglo es null o está vacío, devuelve true.
   El arreglo de entrada nunca debe modificarse.

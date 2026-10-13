@@ -8,8 +8,8 @@ statement: |
   aparecen en la entrada. Las palabras repetidas se conservan.
 
   Ejemplo:
-  - Entrada: ["hola", "a", "casa", "yo", "sol"] -> Salida: {1=[a], 2=[yo], 3=[sol], 4=[hola, casa]}
-  - Entrada: [] -> Salida: {}
+  - groupByLength(["hola", "a", "casa", "yo", "sol"]) -> {1=[a], 2=[yo], 3=[sol], 4=[hola, casa]}
+  - groupByLength([]) -> {}
 
   Si la lista es null o vacía, devuelve un mapa vacío. Solo aparecen las longitudes presentes.
   Se espera que las claves queden ordenadas de menor a mayor al recorrer el mapa (usa un TreeMap).

@@ -6,9 +6,9 @@ statement: |
   Escribe un método que reciba una lista de palabras y devuelva la más larga, usando un ciclo for-each. Si hay empate en longitud, devuelve la primera que aparece en la lista.
 
   Ejemplos:
-  - ["sol", "montaña", "mar"] -> "montaña"
-  - ["uno", "dos", "tres", "siete"] -> "siete"
-  - ["ab", "cd"] -> "ab" (empate: gana la primera)
+  - longestWord(List.of("sol", "montaña", "mar")) -> "montaña"
+  - longestWord(List.of("uno", "dos", "tres", "siete")) -> "siete"
+  - longestWord(List.of("ab", "cd")) -> "ab"   (empate: gana la primera)
 
   Si la lista es null o está vacía, devuelve "" (cadena vacía).
 methodSignature: public static String longestWord(List<String> words)

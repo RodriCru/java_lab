@@ -6,12 +6,13 @@ statement: |
   Escribe un método que sume todos los enteros que reciba, sin importar cuántos sean. Para eso Java ofrece los parámetros variables (varargs): int... numbers. Dentro del método, numbers se comporta como un arreglo int[].
 
   Ejemplos:
-  - Entrada: sumAll(1, 2, 3) -> Salida: 6
-  - Entrada: sumAll(10) -> Salida: 10
-  - Entrada: sumAll() -> Salida: 0 (sin argumentos, el arreglo está vacío)
-  - Entrada: sumAll(5, -5, 7) -> Salida: 7
+  - sumAll(1, 2, 3) -> 6
+  - sumAll(10) -> 10
+  - sumAll() -> 0   (sin argumentos, el arreglo está vacío)
+  - sumAll(5, -5, 7) -> 7
 
-  El método también se puede llamar pasando un arreglo: sumAll(new int[]{1, 2, 3}) -> 6.
+  También se puede pasar un arreglo:
+  - sumAll(new int[]{1, 2, 3}) -> 6
 methodSignature: "public static int sumAll(int... numbers)"
 className: Solution
 estimatedMinutes: 8

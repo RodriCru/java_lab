@@ -7,9 +7,9 @@ statement: |
   Devuelve de cuántas maneras distintas se puede llegar hasta arriba (el orden importa).
 
   Ejemplo:
-  - Entrada: steps=2 -> Salida: 2   (1+1, 2)
-  - Entrada: steps=3 -> Salida: 3   (1+1+1, 1+2, 2+1)
-  - Entrada: steps=0 -> Salida: 1   (una sola manera: no dar ningún paso)
+  - climbStairs(steps=2) -> 2 (1+1, 2)
+  - climbStairs(steps=3) -> 3 (1+1+1, 1+2, 2+1)
+  - climbStairs(steps=0) -> 1 (una sola manera: no dar ningún paso)
 
   Restricción: 0 <= steps <= 60. La recursión ingenua sin memoria es demasiado lenta:
   usa programación dinámica o memoización.

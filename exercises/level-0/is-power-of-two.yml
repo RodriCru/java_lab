@@ -8,11 +8,11 @@ statement: |
   Pista de concepto: una potencia de dos tiene un único bit en 1 en su representación binaria (8 = 1000). Restarle 1 invierte ese bit y pone en 1 todos los de la derecha (7 = 0111), así que n & (n - 1) da 0 solo en las potencias de dos.
 
   Ejemplos:
-  - Entrada: 1 -> Salida: true (2^0)
-  - Entrada: 16 -> Salida: true
-  - Entrada: 18 -> Salida: false
-  - Entrada: 0 -> Salida: false
-  - Entrada: -8 -> Salida: false (los negativos nunca son potencia de dos)
+  - isPowerOfTwo(1) -> true   (2^0)
+  - isPowerOfTwo(16) -> true
+  - isPowerOfTwo(18) -> false
+  - isPowerOfTwo(0) -> false
+  - isPowerOfTwo(-8) -> false   (los negativos nunca son potencia de dos)
 methodSignature: "public static boolean isPowerOfTwo(int n)"
 className: Solution
 estimatedMinutes: 12

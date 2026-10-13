@@ -7,11 +7,8 @@ statement: |
   imprima cada movimiento con System.out.println.
 
   Formato de salida:
-  - Cada movimiento se imprime en su propia línea con el formato origen -> destino;
-  - Para 2 discos desde A hacia C usando B como auxiliar la salida es exactamente:
-    A -> B;
-    A -> C;
-    B -> C;
+  - Cada movimiento se imprime en su propia línea con el origen, la flecha y el destino, y termina en punto y coma;
+  - Para 2 discos desde A hacia C usando B como auxiliar la salida son tres líneas, en este orden.
 
   Reglas del contrato:
   - Si disks <= 0 no se imprime nada (salida vacía).
@@ -20,7 +17,7 @@ statement: |
     grande al destino y vuelve a mover los n-1 discos del auxiliar al destino.
 
   Ejemplo:
-  - Entrada: disks=2, from="A", to="C", auxiliary="B" -> Salida: "A -> B;" / "A -> C;" / "B -> C;"
+  - hanoi(2, "A", "C", "B") imprime: A -> B;, A -> C; y B -> C;, uno por línea
 methodSignature: "public static void hanoi(int disks, String from, String to, String auxiliary)"
 className: Solution
 estimatedMinutes: 20

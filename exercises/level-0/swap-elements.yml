@@ -10,9 +10,9 @@ statement: |
   - Si arr es null, o i o j están fuera del rango [0, arr.length - 1], no hagas nada (sin lanzar excepción).
 
   Ejemplos:
-  - Entrada: arr=[1, 2, 3, 4], i=0, j=3 -> arr queda [4, 2, 3, 1]
-  - Entrada: arr=[5, 6], i=1, j=1 -> arr queda [5, 6]
-  - Entrada: arr=[1, 2, 3], i=0, j=9 -> arr queda [1, 2, 3]
+  - swapElements(new int[]{1, 2, 3, 4}, 0, 3) -> el arreglo queda [4, 2, 3, 1]
+  - swapElements(new int[]{5, 6}, 1, 1) -> el arreglo queda [5, 6]
+  - swapElements(new int[]{1, 2, 3}, 0, 9) -> el arreglo queda [1, 2, 3]
 methodSignature: "public static void swap(int[] arr, int i, int j)"
 className: Solution
 estimatedMinutes: 10

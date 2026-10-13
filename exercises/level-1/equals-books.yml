@@ -10,9 +10,9 @@ statement: |
   - El método debe delegar la comparación en equals del propio libro.
 
   Ejemplo:
-  - Entrada: first=Book("Java", "Ana"), second=Book("Java", "Ana") -> Salida: true
-  - Entrada: first=Book("Java", "Ana"), second=Book("Java", "Luis") -> Salida: false
-  - Entrada: first=Book("Java", "Ana"), second=Book("Python", "Ana") -> Salida: false
+  - sameBook(first=Book("Java", "Ana"), second=Book("Java", "Ana")) -> true
+  - sameBook(first=Book("Java", "Ana"), second=Book("Java", "Luis")) -> false
+  - sameBook(first=Book("Java", "Ana"), second=Book("Python", "Ana")) -> false
 
   Si cualquiera de los dos libros es null, devuelve false.
 methodSignature: "public static boolean sameBook(Book first, Book second)"

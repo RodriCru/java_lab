@@ -11,9 +11,9 @@ statement: |
   - Si no queda ninguna palabra, la lista es null o está vacía, devuelve "" (cadena vacía).
 
   Ejemplo:
-  - Entrada: ["java", "", "stream", "api"] -> Salida: "JAVA, STREAM, API"
-  - Entrada: ["hola"] -> Salida: "HOLA"
-  - Entrada: ["", ""] -> Salida: ""
+  - joinUppercase(["java", "", "stream", "api"]) -> "JAVA, STREAM, API"
+  - joinUppercase(["hola"]) -> "HOLA"
+  - joinUppercase(["", ""]) -> ""
 methodSignature: "public static String joinUppercase(java.util.List<String> words)"
 className: Solution
 estimatedMinutes: 10

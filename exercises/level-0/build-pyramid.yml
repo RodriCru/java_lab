@@ -5,17 +5,20 @@ title: Construir una pirámide
 statement: |
   Escribe un método que construya una pirámide de asteriscos de n filas usando ciclos anidados. La fila i (empezando en 1) tiene n - i espacios a la izquierda y 2*i - 1 asteriscos; no lleva espacios a la derecha. Las filas se unen con '\n' y NO hay salto de línea al final.
 
-  Ejemplo con n = 3 (los puntos aquí solo representan espacios):
+  Ejemplo:
+  ```java
+  buildPyramid(3)
   ```
+  ```java-lab
   ..*
   .***
   *****
   ```
-  Es decir: "  *\n ***\n*****"
+  (los puntos solo representan los espacios)
 
   Otros ejemplos:
-  - n = 1 -> "*"
-  - n = 2 -> " *\n***"
+  - buildPyramid(1) -> "*"
+  - buildPyramid(2) -> " *\n***"
 
   Si n es menor o igual a 0, devuelve "" (cadena vacía).
 methodSignature: public static String buildPyramid(int n)

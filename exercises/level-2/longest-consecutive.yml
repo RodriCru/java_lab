@@ -8,9 +8,9 @@ statement: |
   el orden en que aparecen. Los duplicados no suman a la secuencia.
 
   Ejemplo:
-  - Entrada: [100, 4, 200, 1, 3, 2] -> Salida: 4 (1, 2, 3, 4)
-  - Entrada: [0, 3, 7, 2, 5, 8, 4, 6, 0, 1] -> Salida: 9 (0 a 8)
-  - Entrada: [] -> Salida: 0
+  - longestConsecutive([100, 4, 200, 1, 3, 2]) -> 4 (1, 2, 3, 4)
+  - longestConsecutive([0, 3, 7, 2, 5, 8, 4, 6, 0, 1]) -> 9 (0 a 8)
+  - longestConsecutive([]) -> 0
 
   Si el arreglo es null o vacío, devuelve 0. Se espera una solución O(n), sin ordenar el arreglo.
 methodSignature: "public static int longestConsecutive(int[] numbers)"

@@ -6,9 +6,9 @@ statement: |
   Escribe un método que sume todos los valores de un Map<String, Integer> usando un ciclo for-each (sobre map.values() o sobre map.entrySet()).
 
   Ejemplos:
-  - {a=1, b=2, c=3} -> 6
-  - {x=-5, y=5} -> 0
-  - {} -> 0
+  - sumMapValues(Map.of("a", 1, "b", 2, "c", 3)) -> 6
+  - sumMapValues(Map.of("x", -5, "y", 5)) -> 0
+  - sumMapValues(Map.of()) -> 0
 
   Si el mapa es null o está vacío, devuelve 0.
 methodSignature: public static int sumMapValues(Map<String, Integer> map)

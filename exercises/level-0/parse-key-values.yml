@@ -6,9 +6,9 @@ statement: |
   Escribe un método que convierta un texto con pares "clave=valor" separados por punto y coma en un Map<String, Integer>. Respeta el orden en que aparecen los pares: usa un LinkedHashMap, que conserva el orden de inserción (HashMap no lo garantiza).
 
   Ejemplos:
-  - "a=1;b=2" -> {a=1, b=2}
-  - "x=10" -> {x=10}
-  - "a=1;b=2;a=5" -> {a=5, b=2} (si una clave se repite, el último valor gana y la clave conserva su posición original)
+  - parseKeyValues("a=1;b=2") -> {a=1, b=2}
+  - parseKeyValues("x=10") -> {x=10}
+  - parseKeyValues("a=1;b=2;a=5") -> {a=5, b=2}   (si una clave se repite, el último valor gana y la clave conserva su posición original)
 
   Reglas: las claves no contienen espacios ni "=" ni ";" y los valores son enteros válidos. Si el texto es null, vacío o solo espacios, devuelve un mapa vacío. Ignora los fragmentos vacíos (por ejemplo, el que deja un ";" final).
 methodSignature: public static Map<String, Integer> parseKeyValues(String text)

@@ -6,7 +6,7 @@ statement: |
   Un ciclo que acumula un resultado. Escribe un método que devuelva la suma de los enteros del 1 al n. Si n es menor que 1 devuelve 0.
 
   Ejemplos:
-  - sumOneToN(4) -> 10 (1+2+3+4)
+  - sumOneToN(4) -> 10   (1+2+3+4)
   - sumOneToN(1) -> 1
   - sumOneToN(0) -> 0
 methodSignature: public static int sumOneToN(int n)

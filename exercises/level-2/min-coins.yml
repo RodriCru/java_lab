@@ -8,9 +8,9 @@ statement: |
   sumar exactamente `amount`. Si es imposible, devuelve -1.
 
   Ejemplo:
-  - Entrada: coins=[1, 2, 5], amount=11 -> Salida: 3   (5+5+1)
-  - Entrada: coins=[2], amount=3 -> Salida: -1
-  - Entrada: coins=[1], amount=0 -> Salida: 0
+  - minCoins(coins=[1, 2, 5], amount=11) -> 3 (5+5+1)
+  - minCoins(coins=[2], amount=3) -> -1
+  - minCoins(coins=[1], amount=0) -> 0
 
   Con amount = 0 la respuesta siempre es 0. Atención: el enfoque voraz (tomar siempre la
   moneda más grande) falla, por ejemplo con coins=[1, 3, 4] y amount=6 la respuesta es 2 (3+3).

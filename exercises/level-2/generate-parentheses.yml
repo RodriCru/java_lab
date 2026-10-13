@@ -6,10 +6,10 @@ statement: |
   Dado un número n de pares de paréntesis, genera todas las combinaciones bien formadas, ordenadas lexicográficamente considerando '(' menor que ')'.
 
   Ejemplos:
-  - n=1 -> ["()"]
-  - n=2 -> ["(())", "()()"]
-  - n=3 -> ["((()))", "(()())", "(())()", "()(())", "()()()"]
-  - n=0 -> [""] (una lista con la cadena vacía)
+  - generateParentheses(n=1) -> ["()"]
+  - generateParentheses(n=2) -> ["(())", "()()"]
+  - generateParentheses(n=3) -> ["((()))", "(()())", "(())()", "()(())", "()()()"]
+  - generateParentheses(n=0) -> [""] (una lista con la cadena vacía)
 
   Si n es negativo, devuelve una lista vacía.
 methodSignature: "public static java.util.List<String> generateParentheses(int pairs)"

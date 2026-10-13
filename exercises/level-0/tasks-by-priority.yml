@@ -12,8 +12,8 @@ statement: |
   Una lista null o vacía devuelve una lista vacía. No modifiques la lista recibida.
 
   Ejemplos:
-  - [Task("lavar", 3), Task("pagar", 1), Task("cocinar", 2)] -> ["pagar", "cocinar", "lavar"]
-  - [Task("b", 1), Task("a", 1)] -> ["a", "b"]
+  - orderByPriority(List.of(new Task("lavar", 3), new Task("pagar", 1), new Task("cocinar", 2))) -> ["pagar", "cocinar", "lavar"]
+  - orderByPriority(List.of(new Task("b", 1), new Task("a", 1))) -> ["a", "b"]
 methodSignature: "public static List<String> executionOrder(List<Task> tasks)"
 className: Solution
 estimatedMinutes: 20

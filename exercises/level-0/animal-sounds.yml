@@ -14,9 +14,9 @@ statement: |
   Si la lista es null o está vacía, devuelve una lista vacía.
 
   Ejemplo:
-  - Entrada: [Dog, Cat, Dog] -> Salida: ["Guau", "Miau", "Guau"]
-  - Entrada: [Cow] -> Salida: ["Muu"]
-  - Entrada: [] -> Salida: []
+  - sounds(List.of(new Dog(), new Cat(), new Dog())) -> ["Guau", "Miau", "Guau"]
+  - sounds(List.of(new Cow())) -> ["Muu"]
+  - sounds(List.of()) -> []
 methodSignature: public static List<String> sounds(List<Animal> animals)
 className: Solution
 estimatedMinutes: 12

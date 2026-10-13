@@ -6,9 +6,9 @@ statement: |
   Escribe un método que calcule base elevado a exponent y devuelva el resultado como long, sin usar Math.pow.
 
   Ejemplo:
-  - Entrada: base=2, exponent=10 -> Salida: 1024
-  - Entrada: base=5, exponent=0 -> Salida: 1
-  - Entrada: base=-2, exponent=3 -> Salida: -8
+  - power(base=2, exponent=10) -> 1024
+  - power(base=5, exponent=0) -> 1
+  - power(base=-2, exponent=3) -> -8
 
   Reglas:
   - exponent siempre es mayor o igual a 0.

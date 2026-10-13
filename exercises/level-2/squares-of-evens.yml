@@ -12,9 +12,9 @@ statement: |
   - No modifiques la lista de entrada.
 
   Ejemplo:
-  - Entrada: [1, 2, 3, 4] -> Salida: [4, 16]
-  - Entrada: [-2, 0, 5, 2] -> Salida: [4, 0, 4]
-  - Entrada: [1, 3, 5] -> Salida: []
+  - squaresOfEvens([1, 2, 3, 4]) -> [4, 16]
+  - squaresOfEvens([-2, 0, 5, 2]) -> [4, 0, 4]
+  - squaresOfEvens([1, 3, 5]) -> []
 methodSignature: "public static java.util.List<Integer> squaresOfEvens(java.util.List<Integer> numbers)"
 className: Solution
 estimatedMinutes: 10

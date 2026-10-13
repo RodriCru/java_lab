@@ -14,9 +14,9 @@ statement: |
   Además, completa applyOperations: crea un Counter(min, max), recorre el texto ops y, por cada carácter '+' llama a increment() y por cada '-' llama a decrement() (cualquier otro carácter se ignora). Devuelve el valor final. Si ops es null, devuelve el valor inicial.
 
   Ejemplo:
-  - Entrada: min=0, max=3, ops="++-" -> Salida: 1
-  - Entrada: min=0, max=2, ops="+++++" -> Salida: 2 (no pasa del máximo)
-  - Entrada: min=0, max=2, ops="---" -> Salida: 0 (no baja del mínimo)
+  - applyOperations(0, 3, "++-") -> 1
+  - applyOperations(0, 2, "+++++") -> 2   (no pasa del máximo)
+  - applyOperations(0, 2, "---") -> 0   (no baja del mínimo)
 methodSignature: public static int applyOperations(int min, int max, String ops)
 className: Solution
 estimatedMinutes: 15

@@ -11,9 +11,9 @@ statement: |
   - Los caracteres que no son corchetes no afectan el resultado.
 
   Ejemplo:
-  - Entrada: "(a+b)" -> Salida: true
-  - Entrada: "([)]" -> Salida: false
-  - Entrada: "sin corchetes" -> Salida: true
+  - isBalanced("(a+b)") -> true
+  - isBalanced("([)]") -> false
+  - isBalanced("sin corchetes") -> true
 
   Si el texto es null o está vacío, devuelve true.
 methodSignature: "public static boolean isBalanced(String text)"

@@ -15,9 +15,9 @@ statement: |
   - Si la lista es null o está vacía, devuelve 0.
 
   Ejemplo:
-  - Entrada: [FullTime("Ana", 3000), Hourly("Luis", 100, 10)] -> Salida: 4000.0
-  - Entrada: [Hourly("Eva", 170, 10)] -> Salida: 1750.0 (1600 + 10 * 15)
-  - Entrada: [] -> Salida: 0.0
+  - totalPayroll([FullTime("Ana", 3000), Hourly("Luis", 100, 10)]) -> 4000.0
+  - totalPayroll([Hourly("Eva", 170, 10)]) -> 1750.0 (1600 + 10 * 15)
+  - totalPayroll([]) -> 0.0
 methodSignature: "public static double totalPayroll(java.util.List<Employee> employees)"
 className: Solution
 estimatedMinutes: 20

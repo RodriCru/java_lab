@@ -8,9 +8,9 @@ statement: |
   El cero se considera par. Los números negativos siguen la misma regla: -4 es par porque el resto de dividirlo entre 2 es 0.
 
   Ejemplo:
-  - Entrada: 4 -> Salida: true
-  - Entrada: 7 -> Salida: false
-  - Entrada: -3 -> Salida: false
+  - isEven(4) -> true
+  - isEven(7) -> false
+  - isEven(-3) -> false
 methodSignature: "public static boolean isEven(int number)"
 className: Solution
 estimatedMinutes: 5

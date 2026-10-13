@@ -7,9 +7,9 @@ statement: |
   una matriz NUEVA. La matriz de entrada no debe modificarse.
 
   Ejemplo:
-  - Entrada: [[1,2,3],[4,5,6],[7,8,9]] -> Salida: [[7,4,1],[8,5,2],[9,6,3]]
-  - Entrada: [[1,2],[3,4]] -> Salida: [[3,1],[4,2]]
-  - Entrada: [[5]] -> Salida: [[5]]
+  - rotateMatrix([[1,2,3],[4,5,6],[7,8,9]]) -> [[7,4,1],[8,5,2],[9,6,3]]
+  - rotateMatrix([[1,2],[3,4]]) -> [[3,1],[4,2]]
+  - rotateMatrix([[5]]) -> [[5]]
 
   Si `matrix` es null o vacía, devuelve una matriz vacía (new int[0][0]).
 methodSignature: "public static int[][] rotateMatrix(int[][] matrix)"

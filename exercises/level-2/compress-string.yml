@@ -6,10 +6,10 @@ statement: |
   Comprime una cadena reemplazando cada racha de caracteres iguales consecutivos por el carácter seguido de la cantidad de repeticiones. Siempre se escribe la cantidad, incluso si es 1.
 
   Ejemplos:
-  - "aaabcc" -> "a3b1c2"
-  - "abc" -> "a1b1c1"
-  - "zzzzzzzzzzzz" (12 z) -> "z12"
-  - "" -> ""
+  - compress("aaabcc") -> "a3b1c2"
+  - compress("abc") -> "a1b1c1"
+  - compress("zzzzzzzzzzzz") -> "z12"   (el texto es 12 letras z)
+  - compress("") -> ""
 
   Si el texto es null o vacío, devuelve "".
 methodSignature: "public static String compress(String text)"

@@ -6,6 +6,7 @@ import { api, ApiError } from "@/lib/api";
 import { nombreDeDificultad } from "@/lib/format";
 import type { ExerciseDetail, SubmissionResult } from "@/lib/types";
 import { EditorCodigo } from "./EditorCodigo";
+import { Ejemplos } from "./Ejemplos";
 import { Estado, EstadoCargando } from "./Estado";
 import { ResultadoEnvio } from "./ResultadoEnvio";
 import { Teoria } from "./Teoria";
@@ -223,9 +224,9 @@ export function PanelEjercicio({ slug }: Props) {
         <div className="space-y-4">
           <section className="rounded-lg border border-zinc-200 bg-white p-5">
             <h2 className="text-sm font-semibold uppercase tracking-wide text-zinc-500">Enunciado</h2>
-            <p className="mt-3 whitespace-pre-wrap text-sm leading-relaxed text-zinc-800">
-              {ejercicio.statement}
-            </p>
+            <div className="mt-3">
+              <Ejemplos statement={ejercicio.statement} />
+            </div>
             <div className="mt-4 rounded-md bg-zinc-50 p-3">
               <p className="text-xs font-medium text-zinc-500">Firma esperada</p>
               <code className="mt-1 block font-mono text-xs break-words text-indigo-700">

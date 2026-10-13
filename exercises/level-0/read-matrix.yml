@@ -6,9 +6,9 @@ statement: |
   Escribe un método que construya una matriz a partir de un texto. La primera línea trae dos enteros: "filas columnas". Después vienen filas*columnas valores enteros (en una o varias líneas), que se llenan por filas, de izquierda a derecha. Usa un Scanner sobre el String.
 
   Ejemplos:
-  - "2 3\n1 2 3\n4 5 6" -> {{1, 2, 3}, {4, 5, 6}}
-  - "1 1\n9" -> {{9}}
-  - "2 2 1 2 3 4" -> {{1, 2}, {3, 4}} (los saltos de línea no importan para el Scanner)
+  - readMatrix("2 3\n1 2 3\n4 5 6") -> {{1, 2, 3}, {4, 5, 6}}
+  - readMatrix("1 1\n9") -> {{9}}
+  - readMatrix("2 2 1 2 3 4") -> {{1, 2}, {3, 4}}   (los saltos de línea no importan para el Scanner)
 
   Si el texto es null, está vacío, o filas o columnas es 0, devuelve una matriz vacía (new int[0][]). Puedes asumir que hay suficientes valores.
 methodSignature: public static int[][] readMatrix(String input)
