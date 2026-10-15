@@ -45,7 +45,14 @@ public abstract class AbstractJUnitRunner implements CodeRunner {
     public ExecutionResult ejecutar(ExecutionRequest request) {
         Path trabajo = null;
         try {
-            trabajo = Files.createTempDirectory("javalab-");
+            Path base = properties.workDirPath();
+            if (base != null) {
+                // Docker: los archivos van a un directorio compartido, con la misma ruta en backend y runner.
+                Files.createDirectories(base);
+                trabajo = Files.createTempDirectory(base, "javalab-");
+            } else {
+                trabajo = Files.createTempDirectory("javalab-");
+            }
             Path srcDir = Files.createDirectories(trabajo.resolve("src"));
             Path outDir = Files.createDirectories(trabajo.resolve("out"));
 

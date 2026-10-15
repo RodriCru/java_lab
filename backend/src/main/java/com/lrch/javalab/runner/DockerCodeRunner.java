@@ -6,6 +6,7 @@ import com.lrch.javalab.runner.lang.LanguageAdapter;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -77,11 +78,26 @@ public class DockerCodeRunner extends AbstractJUnitRunner {
                 "--security-opt", "no-new-privileges",
                 "--read-only",
                 "--tmpfs", "/tmp:rw,size=64m,mode=1777",
-                "-v", srcDir.toAbsolutePath() + ":/in:ro",
-                "-v", outDir.toAbsolutePath() + ":/out:rw",
+                "-v", paraElHost(srcDir) + ":/in:ro",
+                "-v", paraElHost(outDir) + ":/out:rw",
                 adapter.image()));
 
         return lanzar(comando, outDir, () -> matarContenedor(contenedor));
+    }
+
+    /**
+     * El daemon de Docker resuelve los {@code -v} contra el HOST, no contra el contenedor del backend.
+     * Si el backend corre en un contenedor y el directorio de trabajo se monto desde el host, hay que
+     * traducir la ruta del contenedor a la del host (JAVALAB_RUNNER_HOST_WORK_DIR).
+     */
+    private String paraElHost(Path rutaDentroDelBackend) {
+        Path base = properties.workDirPath();
+        String hostBase = properties.hostWorkDirOrDefault();
+        if (base == null || hostBase == null) {
+            return rutaDentroDelBackend.toAbsolutePath().toString();
+        }
+        Path relativa = base.relativize(rutaDentroDelBackend.toAbsolutePath());
+        return Paths.get(hostBase).resolve(relativa).toString();
     }
 
     /** El timeout de 'docker run' puede dejar el contenedor vivo: hay que matarlo aparte. */

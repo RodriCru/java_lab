@@ -64,6 +64,12 @@ javalab:
     cpus: ${JAVALAB_RUNNER_CPUS:0.5}
     # Jar de JUnit usado tanto por la imagen Docker como por el fallback local.
     junit-jar: ${JAVALAB_RUNNER_JUNIT_JAR:../runner/junit-platform-console-standalone.jar}
+    # Directorio compartido backend<->runners (obligatorio con Docker en un servidor: el daemon del
+    # host no ve los temporales del contenedor). Vacio en local: se usa el temporal del sistema.
+    work-dir: ${JAVALAB_RUNNER_WORK_DIR:}
+    # Ruta del mismo directorio VISTA POR EL HOST (solo si el backend corre en un contenedor). El
+    # daemon de Docker resuelve los -v contra el host, no contra el contenedor del backend.
+    host-work-dir: ${JAVALAB_RUNNER_HOST_WORK_DIR:}
 
 logging:
   level:

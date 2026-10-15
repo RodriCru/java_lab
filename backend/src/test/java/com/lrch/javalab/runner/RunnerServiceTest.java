@@ -41,7 +41,7 @@ class RunnerServiceTest {
         when(docker.disponible()).thenReturn(false);
         when(local.disponible()).thenReturn(true);
         RunnerProperties propiedades = new RunnerProperties(false, null, 10, null, null, null,
-                maxConcurrent, esperaSegundos);
+                maxConcurrent, esperaSegundos, null, null);
         return new RunnerService(docker, local, propiedades);
     }
 
