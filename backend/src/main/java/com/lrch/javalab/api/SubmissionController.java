@@ -3,12 +3,15 @@ package com.lrch.javalab.api;
 import com.lrch.javalab.auth.AuthenticatedUser;
 import com.lrch.javalab.catalog.CatalogService;
 import com.lrch.javalab.catalog.Exercise;
+import com.lrch.javalab.common.ApiException;
 import com.lrch.javalab.common.ApiResponse;
 import com.lrch.javalab.progress.ProgressService;
 import com.lrch.javalab.runner.ExecutionRequest;
 import com.lrch.javalab.runner.ExecutionResult;
 import com.lrch.javalab.runner.RunnerService;
 import com.lrch.javalab.runner.SourceValidator;
+import com.lrch.javalab.runner.lang.LanguageAdapter;
+import com.lrch.javalab.runner.lang.LanguageRegistry;
 import jakarta.validation.Valid;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,15 +29,18 @@ public class SubmissionController {
 
     private final CatalogService catalogService;
     private final SourceValidator sourceValidator;
+    private final LanguageRegistry languageRegistry;
     private final RunnerService runnerService;
     private final ProgressService progressService;
 
     public SubmissionController(CatalogService catalogService,
                                 SourceValidator sourceValidator,
+                                LanguageRegistry languageRegistry,
                                 RunnerService runnerService,
                                 ProgressService progressService) {
         this.catalogService = catalogService;
         this.sourceValidator = sourceValidator;
+        this.languageRegistry = languageRegistry;
         this.runnerService = runnerService;
         this.progressService = progressService;
     }
@@ -43,12 +49,15 @@ public class SubmissionController {
     public ApiResponse<SubmissionResponse> enviar(@AuthenticationPrincipal AuthenticatedUser usuario,
                                                   @Valid @RequestBody SubmissionRequest solicitud) {
         Exercise ejercicio = catalogService.buscar(solicitud.exerciseSlug());
-        sourceValidator.validar(solicitud.sourceCode(), ejercicio.className());
+        LanguageAdapter adapter = languageRegistry.porLenguaje(ejercicio.language())
+                .orElseThrow(() -> ApiException.badRequest("LENGUAJE_NO_SOPORTADO",
+                        "Todavía no se pueden ejecutar ejercicios de «" + ejercicio.language() + "»."));
+        adapter.validar(solicitud.sourceCode(), ejercicio);
 
         boolean yaEstabaResuelto = progressService.slugsResueltos(usuario.id()).contains(ejercicio.slug());
 
         ExecutionResult resultado = runnerService.ejecutar(
-                new ExecutionRequest(ejercicio.className(), solicitud.sourceCode(), ejercicio.tests()));
+                new ExecutionRequest(ejercicio, adapter, solicitud.sourceCode()));
 
         boolean resuelto = progressService.registrarIntento(
                 usuario.id(), ejercicio, solicitud.sourceCode(), resultado);

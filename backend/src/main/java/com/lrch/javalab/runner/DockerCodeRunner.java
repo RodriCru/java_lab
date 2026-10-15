@@ -2,6 +2,8 @@ package com.lrch.javalab.runner;
 
 import org.springframework.stereotype.Component;
 
+import com.lrch.javalab.runner.lang.LanguageAdapter;
+
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -61,7 +63,7 @@ public class DockerCodeRunner extends AbstractJUnitRunner {
     }
 
     @Override
-    protected SalidaProceso ejecutarProceso(Path srcDir, Path outDir) throws IOException {
+    protected SalidaProceso ejecutarProceso(Path srcDir, Path outDir, LanguageAdapter adapter) throws IOException {
         String contenedor = "javalab-" + UUID.randomUUID();
 
         List<String> comando = new ArrayList<>(List.of(
@@ -77,7 +79,7 @@ public class DockerCodeRunner extends AbstractJUnitRunner {
                 "--tmpfs", "/tmp:rw,size=64m,mode=1777",
                 "-v", srcDir.toAbsolutePath() + ":/in:ro",
                 "-v", outDir.toAbsolutePath() + ":/out:rw",
-                properties.image()));
+                adapter.image()));
 
         return lanzar(comando, outDir, () -> matarContenedor(contenedor));
     }

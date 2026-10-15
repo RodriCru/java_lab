@@ -30,7 +30,9 @@ public class RunnerService {
      */
     private final Semaphore turnos;
 
-    private volatile CodeRunner motor;
+    /** Un motor elegido por lenguaje (Docker suele ganar; el local solo sirve para Java). */
+    private final java.util.concurrent.ConcurrentHashMap<String, CodeRunner> motores =
+            new java.util.concurrent.ConcurrentHashMap<>();
 
     public RunnerService(DockerCodeRunner dockerRunner, LocalCodeRunner localRunner, RunnerProperties properties) {
         this.dockerRunner = dockerRunner;
@@ -42,7 +44,7 @@ public class RunnerService {
     public ExecutionResult ejecutar(ExecutionRequest request) {
         esperarTurno();
         try {
-            return seleccionar().ejecutar(request);
+            return seleccionar(request).ejecutar(request);
         } finally {
             turnos.release();
         }
@@ -64,26 +66,34 @@ public class RunnerService {
 
     /** Motor efectivamente en uso, para mostrarlo en la respuesta de la API. */
     public String motorActivo() {
-        return seleccionar().nombre();
+        return seleccionar(null).nombre();
     }
 
-    private CodeRunner seleccionar() {
-        CodeRunner elegido = motor;
+    /**
+     * Elige el motor segun el lenguaje del ejercicio: Docker puede con cualquiera (usa la imagen del
+     * adaptador), el motor local solo con Java (es {@code javac}). El resultado se cachea por lenguaje.
+     */
+    private CodeRunner seleccionar(ExecutionRequest request) {
+        String lenguaje = request == null ? "java" : request.adapter().language();
+        CodeRunner elegido = motores.get(lenguaje);
         if (elegido != null) {
             return elegido;
         }
         synchronized (this) {
-            if (motor == null) {
-                motor = decidir();
-            }
-            return motor;
+            return motores.computeIfAbsent(lenguaje, this::decidir);
         }
     }
 
-    private CodeRunner decidir() {
+    private CodeRunner decidir(String lenguaje) {
+        boolean esJava = "java".equals(lenguaje);
         if (properties.isUseDocker() && dockerRunner.disponible()) {
-            log.info("Motor de ejecucion: Docker ({})", properties.image());
+            log.info("Motor de ejecucion: Docker para '{}'", lenguaje);
             return dockerRunner;
+        }
+        if (!esJava) {
+            throw ApiException.badRequest("MOTOR_NO_DISPONIBLE",
+                    "El lenguaje «" + lenguaje + "» necesita Docker. Arranca Docker y ejecuta "
+                            + "'runner/build.sh' para poder enviar soluciones.");
         }
         if (properties.isUseDocker()) {
             log.warn("Docker no disponible: se usara el motor local. El aislamiento es menor.");

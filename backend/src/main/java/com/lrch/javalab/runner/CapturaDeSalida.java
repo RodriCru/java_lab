@@ -15,17 +15,17 @@ import java.util.regex.Pattern;
  * (una linea marcada con {@link #MARCA}); el backend la lee y la quita de la salida visible. Si el test ya redirige la salida por su cuenta, no hay conflicto:
  * restaura la que encontro, que es la de la extension.
  */
-final class CapturaDeSalida {
+public final class CapturaDeSalida {
 
     /** Prefijo de las lineas que la extension escribe en la consola real: {@code MARCA nombre|base64}. */
     static final String MARCA = "\u0001JAVALAB|";
-    static final String CLASE = "JavaLabCapture";
+    public static final String CLASE = "JavaLabCapture";
     private static final int MAX_CHARS = 1_000;
 
     private static final Pattern DECLARACION_TESTS =
             Pattern.compile("(?m)^([ \\t]*)((?:public\\s+)?class\\s+" + AbstractJUnitRunner.TEST_CLASS + "\\b)");
 
-    static final String FUENTE = """
+    public static final String FUENTE = """
             import org.junit.jupiter.api.extension.AfterEachCallback;
             import org.junit.jupiter.api.extension.BeforeEachCallback;
             import org.junit.jupiter.api.extension.ExtensionContext;
@@ -67,11 +67,11 @@ final class CapturaDeSalida {
     }
 
     /** Salidas por test y consola sin las lineas de marcado. */
-    record Extraido(Map<String, String> salidas, String consola) {
+    public record Extraido(Map<String, String> salidas, String consola) {
     }
 
     /** Separa de la consola las lineas que escribio la extension. */
-    static Extraido extraer(String consola) {
+    public static Extraido extraer(String consola) {
         Map<String, String> salidas = new HashMap<>();
         if (consola == null || !consola.contains(MARCA)) {
             return new Extraido(salidas, consola);
@@ -96,7 +96,7 @@ final class CapturaDeSalida {
     }
 
     /** Anade {@code @ExtendWith} a la clase de tests. */
-    static String conExtension(String testCode) {
+    public static String conExtension(String testCode) {
         Matcher m = DECLARACION_TESTS.matcher(testCode);
         return m.replaceFirst("$1@org.junit.jupiter.api.extension.ExtendWith(" + CLASE + ".class)\n$1$2");
     }

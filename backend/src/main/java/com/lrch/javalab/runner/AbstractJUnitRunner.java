@@ -3,6 +3,8 @@ package com.lrch.javalab.runner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.lrch.javalab.runner.lang.LanguageAdapter;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -47,16 +49,15 @@ public abstract class AbstractJUnitRunner implements CodeRunner {
             Path srcDir = Files.createDirectories(trabajo.resolve("src"));
             Path outDir = Files.createDirectories(trabajo.resolve("out"));
 
-            Files.writeString(srcDir.resolve(request.className() + ".java"), request.studentCode(),
-                    StandardCharsets.UTF_8);
-            Files.writeString(srcDir.resolve(TEST_CLASS + ".java"), CapturaDeSalida.conExtension(request.testCode()),
-                    StandardCharsets.UTF_8);
-            Files.writeString(srcDir.resolve(CapturaDeSalida.CLASE + ".java"), CapturaDeSalida.FUENTE,
-                    StandardCharsets.UTF_8);
+            request.adapter().escribirEntrada(srcDir, request.ejercicio(), request.studentCode());
+            boolean esJava = "java".equals(request.adapter().language());
 
             long inicio = System.currentTimeMillis();
-            SalidaProceso bruta = ejecutarProceso(srcDir, outDir);
-            CapturaDeSalida.Extraido capturado = CapturaDeSalida.extraer(bruta.texto());
+            SalidaProceso bruta = ejecutarProceso(srcDir, outDir, request.adapter());
+            // La captura por test solo existe en Java (extension JUnit); en otros lenguajes no hay nada que extraer.
+            CapturaDeSalida.Extraido capturado = esJava
+                    ? CapturaDeSalida.extraer(bruta.texto())
+                    : new CapturaDeSalida.Extraido(Map.of(), bruta.texto());
             SalidaProceso salida = new SalidaProceso(bruta.codigo(), capturado.consola(), bruta.timeout());
             long duracion = System.currentTimeMillis() - inicio;
 
@@ -70,8 +71,10 @@ public abstract class AbstractJUnitRunner implements CodeRunner {
             }
 
             List<TestCaseOutcome> tests = parser.parse(outDir.resolve("reports")).stream()
-                    .map(t -> t.conEntrada(TestSourceInspector.cuerpoDe(request.testCode(), t.name()))
-                            .conSalida(capturado.salidas().get(t.name())))
+                    .map(t -> esJava
+                            ? t.conEntrada(TestSourceInspector.cuerpoDe(request.ejercicio().tests(), t.name()))
+                                    .conSalida(capturado.salidas().get(t.name()))
+                            : t)
                     .toList();
             if (tests.isEmpty()) {
                 log.warn("JUnit no genero reporte (exit={}, motor={})", salida.codigo(), nombre());
@@ -91,8 +94,9 @@ public abstract class AbstractJUnitRunner implements CodeRunner {
         }
     }
 
-    /** Lanza el proceso que compila y ejecuta los tests. */
-    protected abstract SalidaProceso ejecutarProceso(Path srcDir, Path outDir) throws IOException;
+    /** Lanza el proceso que compila y ejecuta los tests, con la imagen del lenguaje del ejercicio. */
+    protected abstract SalidaProceso ejecutarProceso(Path srcDir, Path outDir, LanguageAdapter adapter)
+            throws IOException;
 
     protected record SalidaProceso(int codigo, String texto, boolean timeout) {
     }

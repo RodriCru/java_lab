@@ -57,8 +57,13 @@ public class JUnitReportParser {
     private ArchivoConTotal conTotalDeTests(Path archivo) {
         try {
             Document doc = parsearDocumento(archivo);
+            // JUnit pone 'tests' en el elemento raiz (<testsuite>); pytest lo pone en el <testsuite>
+            // que va dentro de <testsuites>. Si no aparece en la raiz, se cuentan los <testcase>.
             String tests = doc.getDocumentElement().getAttribute("tests");
-            return new ArchivoConTotal(archivo, tests.isBlank() ? 0L : Long.parseLong(tests));
+            if (!tests.isBlank()) {
+                return new ArchivoConTotal(archivo, Long.parseLong(tests));
+            }
+            return new ArchivoConTotal(archivo, doc.getElementsByTagName("testcase").getLength());
         } catch (Exception ex) {
             return new ArchivoConTotal(archivo, 0L);
         }

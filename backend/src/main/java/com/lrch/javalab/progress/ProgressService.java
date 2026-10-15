@@ -54,11 +54,20 @@ public class ProgressService {
 
     @Transactional(readOnly = true)
     public ProgressSummary resumen(Long userId) {
+        return resumen(userId, null);
+    }
+
+    /** Resumen de progreso; con {@code lenguaje} nulo, cuenta ejercicios de todos los lenguajes. */
+    @Transactional(readOnly = true)
+    public ProgressSummary resumen(Long userId, String lenguaje) {
         Map<String, UserSolution> soluciones = solucionesPorSlug(userId);
 
-        List<LevelProgress> niveles = catalog.levels().stream()
+        List<Exercise> delLenguaje = lenguaje == null ? catalog.all() : catalog.byLanguage(lenguaje);
+        Set<String> slugsDelLenguaje = delLenguaje.stream().map(Exercise::slug).collect(Collectors.toSet());
+
+        List<LevelProgress> niveles = catalog.levels(lenguaje).stream()
                 .map(nivel -> {
-                    List<Exercise> delNivel = catalog.byLevel(nivel);
+                    List<Exercise> delNivel = catalog.byLevel(lenguaje, nivel);
                     int resueltos = (int) delNivel.stream()
                             .filter(e -> esResuelto(soluciones.get(e.slug())))
                             .count();
@@ -66,12 +75,15 @@ public class ProgressService {
                 })
                 .toList();
 
-        int resueltosTotales = (int) soluciones.values().stream().filter(UserSolution::isSolved).count();
+        int resueltosTotales = (int) soluciones.values().stream()
+                .filter(UserSolution::isSolved)
+                .filter(solucion -> slugsDelLenguaje.contains(solucion.getExerciseSlug()))
+                .count();
 
         return new ProgressSummary(
                 (long) resueltosTotales * XP_POR_EJERCICIO,
                 resueltosTotales,
-                catalog.size(),
+                delLenguaje.size(),
                 calcularRacha(userId),
                 (int) attemptRepository.countByUserId(userId),
                 niveles);

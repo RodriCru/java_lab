@@ -25,8 +25,11 @@ public class ProgressController {
     }
 
     @GetMapping
-    public ApiResponse<ProgressSummary> resumen(@AuthenticationPrincipal AuthenticatedUser usuario) {
-        return ApiResponse.ok(progressService.resumen(usuario.id()));
+    public ApiResponse<ProgressSummary> resumen(@AuthenticationPrincipal AuthenticatedUser usuario,
+                                                @RequestParam(required = false) String language) {
+        String lenguaje = language == null || language.isBlank()
+                ? null : language.trim().toLowerCase(java.util.Locale.ROOT);
+        return ApiResponse.ok(progressService.resumen(usuario.id(), lenguaje));
     }
 
     @GetMapping("/history")

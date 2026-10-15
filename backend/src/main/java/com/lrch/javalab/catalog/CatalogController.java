@@ -26,13 +26,20 @@ public class CatalogController {
     }
 
     @GetMapping("/levels")
-    public ApiResponse<List<LevelResponse>> niveles(@AuthenticationPrincipal AuthenticatedUser usuario) {
-        return ApiResponse.ok(catalogService.niveles(usuario.id()));
+    public ApiResponse<List<LevelResponse>> niveles(@AuthenticationPrincipal AuthenticatedUser usuario,
+                                                    @RequestParam(required = false) String language) {
+        return ApiResponse.ok(catalogService.niveles(usuario.id(), normalizar(language)));
+    }
+
+    @GetMapping("/languages")
+    public ApiResponse<List<String>> languages() {
+        return ApiResponse.ok(catalogService.lenguajes());
     }
 
     @GetMapping("/exercises")
     public ApiResponse<List<ExerciseSummary>> listar(
             @AuthenticationPrincipal AuthenticatedUser usuario,
+            @RequestParam(required = false) String language,
             @RequestParam(required = false) Integer level,
             @RequestParam(required = false) String topic,
             @RequestParam(required = false, name = "status") String estado,
@@ -43,8 +50,8 @@ public class CatalogController {
         int pagina = Math.max(page, 1);
         int tamano = Math.min(Math.max(perPage, 1), PER_PAGE_MAXIMO);
 
-        PageResult<ExerciseSummary> resultado =
-                catalogService.listar(usuario.id(), level, topic, estado, search, pagina, tamano);
+        PageResult<ExerciseSummary> resultado = catalogService.listar(usuario.id(), normalizar(language),
+                level, topic, estado, search, pagina, tamano);
         return ApiResponse.page(resultado.items(), resultado.pagination());
     }
 
@@ -57,5 +64,10 @@ public class CatalogController {
     @GetMapping("/exercises/{slug}/hints/{index}")
     public ApiResponse<HintResponse> pista(@PathVariable String slug, @PathVariable int index) {
         return ApiResponse.ok(catalogService.pista(slug, index));
+    }
+
+    /** Normaliza el lenguaje: en blanco -> null (todos los lenguajes), si no, en minusculas. */
+    private static String normalizar(String language) {
+        return language == null || language.isBlank() ? null : language.trim().toLowerCase(java.util.Locale.ROOT);
     }
 }

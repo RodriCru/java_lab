@@ -8,6 +8,7 @@ package com.lrch.javalab.catalog;
  */
 public record ExerciseDetail(
         String slug,
+        String language,
         int level,
         String topic,
         String topicName,

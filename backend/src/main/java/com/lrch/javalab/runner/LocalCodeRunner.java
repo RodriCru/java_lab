@@ -2,6 +2,8 @@ package com.lrch.javalab.runner;
 
 import org.springframework.stereotype.Component;
 
+import com.lrch.javalab.runner.lang.LanguageAdapter;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -48,8 +50,18 @@ public class LocalCodeRunner extends AbstractJUnitRunner {
         entorno.clear();
     }
 
+    /**
+     * El motor local solo sabe compilar Java (usa el {@code javac} del equipo). Si el ejercicio es de
+     * otro lenguaje, se rechaza en vez de intentar compilarlo mal.
+     */
     @Override
-    protected SalidaProceso ejecutarProceso(Path srcDir, Path outDir) throws IOException {
+    protected SalidaProceso ejecutarProceso(Path srcDir, Path outDir, LanguageAdapter adapter) throws IOException {
+        if (!"java".equals(adapter.language())) {
+            return new SalidaProceso(EXIT_COMPILE_ERROR,
+                    "[javalab] El motor local solo ejecuta Java. Arranca Docker para el lenguaje '"
+                            + adapter.language() + "'.", false);
+        }
+
         Path classesDir = Files.createDirectories(outDir.resolve("classes"));
         Path reportsDir = Files.createDirectories(outDir.resolve("reports"));
         String junitJar = properties.junitJarPath().toString();
