@@ -6,6 +6,7 @@ import { api, ApiError } from "@/lib/api";
 import { nombreDeDificultad } from "@/lib/format";
 import type { ExerciseSummary, Level } from "@/lib/types";
 import { Estado, EstadoCargando } from "./Estado";
+import { useLenguaje } from "./LenguajeContext";
 
 const FILTROS_ESTADO = [
   { valor: "", etiqueta: "Todos" },
@@ -19,6 +20,7 @@ type Props = {
 };
 
 export function ListaEjercicios({ level }: Props) {
+  const { lenguaje } = useLenguaje();
   const [ejercicios, setEjercicios] = useState<ExerciseSummary[]>([]);
   const [total, setTotal] = useState(0);
   const [cargando, setCargando] = useState(true);
@@ -34,6 +36,7 @@ export function ListaEjercicios({ level }: Props) {
 
     api
       .ejercicios({
+        language: lenguaje,
         level: level.level,
         topic: tema || undefined,
         status: estado || undefined,
@@ -61,7 +64,7 @@ export function ListaEjercicios({ level }: Props) {
     return () => {
       activo = false;
     };
-  }, [level.level, tema, estado, busqueda]);
+  }, [level.level, lenguaje, tema, estado, busqueda]);
 
   return (
     <div className="space-y-5">

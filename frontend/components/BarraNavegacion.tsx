@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { LENGUAJES, useLenguaje } from "@/components/LenguajeContext";
 import { api, ApiError } from "@/lib/api";
 import type { User } from "@/lib/types";
 
@@ -19,6 +20,7 @@ const ENLACES = [
 export function BarraNavegacion() {
   const pathname = usePathname();
   const router = useRouter();
+  const { lenguaje, cambiarLenguaje } = useLenguaje();
   const [usuario, setUsuario] = useState<User | null>(null);
   const [saliendo, setSaliendo] = useState(false);
 
@@ -101,6 +103,27 @@ export function BarraNavegacion() {
         </div>
 
         <div className="flex items-center gap-3">
+          <div role="tablist" aria-label="Lenguaje" className="inline-flex rounded-md border border-zinc-300 p-0.5">
+            {LENGUAJES.map((opcion) => {
+              const activo = opcion.id === lenguaje;
+              return (
+                <button
+                  key={opcion.id}
+                  role="tab"
+                  type="button"
+                  aria-selected={activo}
+                  onClick={() => cambiarLenguaje(opcion.id)}
+                  className={`rounded px-2.5 py-1 text-sm font-medium transition-colors ${
+                    activo
+                      ? "bg-indigo-600 text-white"
+                      : "text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900"
+                  }`}
+                >
+                  {opcion.nombre}
+                </button>
+              );
+            })}
+          </div>
           {usuario ? (
             <span className="hidden text-sm text-zinc-600 md:inline">
               {usuario.displayName}

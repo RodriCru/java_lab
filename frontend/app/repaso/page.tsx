@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Estado, EstadoCargando } from "@/components/Estado";
+import { useLenguaje } from "@/components/LenguajeContext";
 import { api, ApiError } from "@/lib/api";
 import { nombreDeDificultad } from "@/lib/format";
 import type { ExerciseSummary } from "@/lib/types";
@@ -15,16 +16,22 @@ type Bloque = {
 };
 
 export default function PaginaRepaso() {
+  const { lenguaje, listo } = useLenguaje();
   const [bloques, setBloques] = useState<Bloque[]>([]);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    if (!listo) {
+      return;
+    }
     let activo = true;
+    setCargando(true);
+    setError(null);
 
     Promise.all([
-      api.ejercicios({ status: "failed", perPage: 100 }),
-      api.ejercicios({ status: "pending", perPage: 6 }),
+      api.ejercicios({ language: lenguaje, status: "failed", perPage: 100 }),
+      api.ejercicios({ language: lenguaje, status: "pending", perPage: 6 }),
     ])
       .then(([fallados, pendientes]) => {
         if (!activo) {
@@ -60,7 +67,7 @@ export default function PaginaRepaso() {
     return () => {
       activo = false;
     };
-  }, []);
+  }, [lenguaje, listo]);
 
   if (cargando) {
     return <EstadoCargando mensaje="Preparando tu repaso…" />;

@@ -5,21 +5,26 @@ import { useEffect, useState } from "react";
 import { BarraProgreso } from "@/components/BarraProgreso";
 import { Estado, EstadoCargando } from "@/components/Estado";
 import { ListaEjercicios } from "@/components/ListaEjercicios";
+import { useLenguaje } from "@/components/LenguajeContext";
 import { api, ApiError } from "@/lib/api";
 import type { Level } from "@/lib/types";
 
 export function VistaNivel({ level }: { level: number }) {
+  const { lenguaje, listo } = useLenguaje();
   const [nivel, setNivel] = useState<Level | null>(null);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    if (!listo) {
+      return;
+    }
     let activo = true;
     setCargando(true);
     setError(null);
 
     api
-      .niveles()
+      .niveles(lenguaje)
       .then((respuesta) => {
         if (!activo) {
           return;
@@ -44,7 +49,7 @@ export function VistaNivel({ level }: { level: number }) {
     return () => {
       activo = false;
     };
-  }, [level]);
+  }, [level, lenguaje, listo]);
 
   if (cargando) {
     return <EstadoCargando mensaje="Cargando nivel…" />;

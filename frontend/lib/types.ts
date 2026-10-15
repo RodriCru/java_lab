@@ -77,6 +77,8 @@ export type TopicSection = {
 
 export type ExerciseSummary = {
   slug: string;
+  /** Lenguaje del ejercicio: java, python... */
+  language: string;
   level: number;
   topic: string;
   topicName: string;

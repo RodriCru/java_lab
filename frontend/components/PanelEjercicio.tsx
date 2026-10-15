@@ -318,7 +318,7 @@ export function PanelEjercicio({ slug }: Props) {
               +Enter para enviar.
             </p>
             <div className="mt-3">
-              <EditorCodigo valor={codigo} onChange={setCodigo} altura={altura} />
+              <EditorCodigo valor={codigo} onChange={setCodigo} altura={altura} lenguaje={ejercicio.language} />
               <div
                 role="separator"
                 aria-orientation="horizontal"

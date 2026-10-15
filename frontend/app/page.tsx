@@ -4,21 +4,29 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { BarraProgreso } from "@/components/BarraProgreso";
 import { Estado, EstadoCargando } from "@/components/Estado";
+import { nombreDeLenguaje, useLenguaje } from "@/components/LenguajeContext";
+import { SelectorLenguaje } from "@/components/SelectorLenguaje";
 import { api, ApiError, nombreDeNivel } from "@/lib/api";
 import type { ExerciseSummary, ProgressSummary } from "@/lib/types";
 
 export default function PaginaInicio() {
+  const { lenguaje, listo } = useLenguaje();
   const [progreso, setProgreso] = useState<ProgressSummary | null>(null);
   const [siguiente, setSiguiente] = useState<ExerciseSummary | null>(null);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    if (!listo) {
+      return;
+    }
     let activo = true;
+    setCargando(true);
+    setError(null);
 
     Promise.all([
-      api.progreso(),
-      api.ejercicios({ status: "pending", perPage: 1 }),
+      api.progreso(lenguaje),
+      api.ejercicios({ language: lenguaje, status: "pending", perPage: 1 }),
     ])
       .then(([resumen, pendientes]) => {
         if (!activo) {
@@ -41,7 +49,7 @@ export default function PaginaInicio() {
     return () => {
       activo = false;
     };
-  }, []);
+  }, [lenguaje, listo]);
 
   if (cargando) {
     return <EstadoCargando mensaje="Cargando tu progreso…" />;
@@ -63,12 +71,15 @@ export default function PaginaInicio() {
   if (progreso.attempts === 0) {
     return (
       <div className="space-y-6">
-        <header>
-          <h1 className="text-3xl font-bold text-zinc-900">Bienvenido al Java Practice Lab</h1>
-          <p className="mt-2 max-w-2xl text-zinc-600">
-            {progreso.total} ejercicios de lógica para entrenar entrevistas técnicas: escribes el
-            código en el navegador, se compila y se ejecutan los tests por ti.
-          </p>
+        <header className="flex flex-wrap items-start justify-between gap-4">
+          <div>
+            <h1 className="text-3xl font-bold text-zinc-900">Bienvenido al Java Practice Lab</h1>
+            <p className="mt-2 max-w-2xl text-zinc-600">
+              {progreso.total} ejercicios de {nombreDeLenguaje(lenguaje)} para entrenar entrevistas
+              técnicas: escribes el código en el navegador, se compila y se ejecutan los tests por ti.
+            </p>
+          </div>
+          <SelectorLenguaje />
         </header>
 
         <div className="rounded-lg border border-indigo-200 bg-indigo-50 p-6">
@@ -89,12 +100,15 @@ export default function PaginaInicio() {
 
   return (
     <div className="space-y-8">
-      <header>
-        <h1 className="text-2xl font-bold text-zinc-900">Tu progreso</h1>
-        <p className="mt-1 text-sm text-zinc-500">
-          {progreso.solved} de {progreso.total} ejercicios resueltos ({porcentajeTotal}%)
-        </p>
-        <BarraProgreso valor={porcentajeTotal} etiqueta="Avance general" className="mt-3 max-w-xl" />
+      <header className="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-zinc-900">Tu progreso en {nombreDeLenguaje(lenguaje)}</h1>
+          <p className="mt-1 text-sm text-zinc-500">
+            {progreso.solved} de {progreso.total} ejercicios resueltos ({porcentajeTotal}%)
+          </p>
+          <BarraProgreso valor={porcentajeTotal} etiqueta="Avance general" className="mt-3 max-w-xl" />
+        </div>
+        <SelectorLenguaje />
       </header>
 
       <section aria-label="Resumen" className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">

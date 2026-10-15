@@ -35,15 +35,26 @@ type Props = {
   valor: string;
   onChange: (valor: string) => void;
   altura?: number;
+  /** Lenguaje del ejercicio: java, python... Decide el resaltado de sintaxis de Monaco. */
+  lenguaje?: string;
+};
+
+/** Lenguaje del laboratorio -> id que entiende Monaco. */
+const LENGUAJE_MONACO: Record<string, string> = {
+  java: "java",
+  python: "python",
+  typescript: "typescript",
+  c: "c",
+  cpp: "cpp",
 };
 
 /**
- * Editor de Java.
+ * Editor de codigo.
  *
  * <p>Monaco se descarga en el navegador. Para que el laboratorio nunca se quede sin editor,
  * mientras carga (y si falla) se muestra un area de texto equivalente.
  */
-export function EditorCodigo({ valor, onChange, altura = 420 }: Props) {
+export function EditorCodigo({ valor, onChange, altura = 420, lenguaje = "java" }: Props) {
   const [monacoListo, setMonacoListo] = useState(false);
   const [monacoDescartado, setMonacoDescartado] = useState(false);
   const [intento, setIntento] = useState(0);
@@ -117,7 +128,7 @@ export function EditorCodigo({ valor, onChange, altura = 420 }: Props) {
         <div className="overflow-hidden rounded-lg border border-zinc-300">
           <MonacoEditor
             height={`${altura}px`}
-            language="java"
+            language={LENGUAJE_MONACO[lenguaje] ?? "plaintext"}
             theme="vs"
             value={valor}
             onChange={(nuevo) => onChange(nuevo ?? "")}

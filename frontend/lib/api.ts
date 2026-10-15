@@ -170,9 +170,13 @@ export const api = {
   confirmarCambioDeCorreo: (code: string) => enviar<User>("/auth/me/email/confirm", { code }),
 
   // --- Catalogo ---
-  niveles: () => obtener<Level[]>("/levels"),
+  niveles: (language?: string) => obtener<Level[]>(`/levels${aQuery({ language })}`),
+
+  /** Lenguajes presentes en el catálogo (java, python...). */
+  lenguajes: () => obtener<string[]>("/languages"),
 
   ejercicios: (filtros: {
+    language?: string;
     level?: number;
     topic?: string;
     status?: string;
@@ -182,6 +186,7 @@ export const api = {
   }) =>
     obtener<ExerciseSummary[]>(
       `/exercises${aQuery({
+        language: filtros.language,
         level: filtros.level,
         topic: filtros.topic,
         status: filtros.status,
@@ -203,7 +208,7 @@ export const api = {
   }) =>
     enviar<SubmissionResult>("/submissions", datos),
 
-  progreso: () => obtener<ProgressSummary>("/progress"),
+  progreso: (language?: string) => obtener<ProgressSummary>(`/progress${aQuery({ language })}`),
 
   // --- Banco de preguntas ---
   temasDePreguntas: () => obtener<QuestionTopic[]>("/questions/topics"),

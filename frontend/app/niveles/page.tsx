@@ -4,19 +4,27 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { BarraProgreso } from "@/components/BarraProgreso";
 import { Estado, EstadoCargando } from "@/components/Estado";
+import { nombreDeLenguaje, useLenguaje } from "@/components/LenguajeContext";
+import { SelectorLenguaje } from "@/components/SelectorLenguaje";
 import { api, ApiError } from "@/lib/api";
 import type { Level } from "@/lib/types";
 
 export default function PaginaNiveles() {
+  const { lenguaje, listo } = useLenguaje();
   const [niveles, setNiveles] = useState<Level[]>([]);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    if (!listo) {
+      return;
+    }
     let activo = true;
+    setCargando(true);
+    setError(null);
 
     api
-      .niveles()
+      .niveles(lenguaje)
       .then((respuesta) => {
         if (activo) {
           setNiveles(respuesta.data);
@@ -36,7 +44,7 @@ export default function PaginaNiveles() {
     return () => {
       activo = false;
     };
-  }, []);
+  }, [lenguaje, listo]);
 
   const totalEjercicios = niveles.reduce((suma, nivel) => suma + nivel.total, 0);
   const totalResueltos = niveles.reduce((suma, nivel) => suma + nivel.solved, 0);
@@ -45,13 +53,16 @@ export default function PaginaNiveles() {
 
   return (
     <div className="space-y-6">
-      <header>
-        <h1 className="text-2xl font-bold text-zinc-900">Ejercicios</h1>
-        <p className="mt-1 text-sm text-zinc-500">
-          {totalEjercicios} ejercicios en {niveles.length}{" "}
-          {niveles.length === 1 ? "nivel" : "niveles"} · llevas {totalResueltos} resueltos (
-          {porcentajeGeneral}%)
-        </p>
+      <header className="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-zinc-900">Ejercicios de {nombreDeLenguaje(lenguaje)}</h1>
+          <p className="mt-1 text-sm text-zinc-500">
+            {totalEjercicios} ejercicios en {niveles.length}{" "}
+            {niveles.length === 1 ? "nivel" : "niveles"} · llevas {totalResueltos} resueltos (
+            {porcentajeGeneral}%)
+          </p>
+        </div>
+        <SelectorLenguaje />
       </header>
 
       {cargando ? <EstadoCargando mensaje="Cargando niveles…" /> : null}
@@ -63,7 +74,7 @@ export default function PaginaNiveles() {
       {!cargando && !error && niveles.length === 0 ? (
         <Estado
           titulo="Todavía no hay niveles"
-          mensaje="El catálogo de ejercicios está vacío. Revisa el directorio 'exercises' del proyecto."
+          mensaje={`El catálogo de ${nombreDeLenguaje(lenguaje)} está vacío. Revisa el directorio 'exercises' del proyecto.`}
         />
       ) : null}
 
