@@ -7,7 +7,8 @@ Comprueba que:
   - los bloques ```java van seguidos de un bloque ```java-lab
   - no quedan restos de etiquetas `Entrada:`/`Salida:`
 
-Uso: python3 verificar_marcado.py [level-0 level-1 ...]
+Uso: python3 verificar_marcado.py [java python ...]
+     python3 verificar_marcado.py python/basics
 """
 import glob
 import os
@@ -47,12 +48,19 @@ def revisar(ruta):
     return problemas
 
 
+def archivos_a_revisar(argumentos):
+    """Sin argumentos, todos los lenguajes. Acepta 'python' o 'python/basics'."""
+    objetivos = argumentos or sorted(
+        d for d in os.listdir(EJERCICIOS) if os.path.isdir(os.path.join(EJERCICIOS, d)))
+    rutas = []
+    for objetivo in objetivos:
+        base = os.path.join(EJERCICIOS, *objetivo.split("/"))
+        rutas.extend(glob.glob(os.path.join(base, "**", "*.yml"), recursive=True))
+    return sorted(r for r in rutas if os.path.basename(r) != "topics.yml")
+
+
 def main():
-    niveles = sys.argv[1:] or sorted(
-        d for d in os.listdir(EJERCICIOS) if d.startswith("level-"))
-    archivos = sorted(
-        os.path.join(EJERCICIOS, n, f) for n in niveles
-        for f in os.listdir(os.path.join(EJERCICIOS, n)) if f.endswith(".yml"))
+    archivos = archivos_a_revisar(sys.argv[1:])
 
     total = 0
     for ruta in archivos:

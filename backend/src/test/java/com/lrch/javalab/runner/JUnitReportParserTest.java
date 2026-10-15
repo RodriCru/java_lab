@@ -66,6 +66,32 @@ class JUnitReportParserTest {
     }
 
     @Test
+    @DisplayName("Interpreta el reporte de pytest (testsuites anidado, sin atributo tests en la raiz)")
+    void interpretaReporteDePytest(@TempDir Path directorio) throws Exception {
+        Files.writeString(directorio.resolve("TEST-solution.xml"), """
+                <?xml version="1.0" encoding="utf-8"?>
+                <testsuites name="pytest tests">
+                <testsuite name="pytest" errors="0" failures="1" skipped="0" tests="3" time="0.016">
+                <testcase classname="test_solution" name="test_add_positivos" time="0.000" />
+                <testcase classname="test_solution" name="test_add_negativos" time="0.000" />
+                <testcase classname="test_solution" name="test_falla_a_proposito" time="0.000">
+                <failure message="assert 5 == 6&#10; +  where 5 = add(2, 3)">detalle</failure>
+                </testcase>
+                </testsuite>
+                </testsuites>
+                """);
+
+        List<TestCaseOutcome> resultados = parser.parse(directorio);
+
+        assertThat(resultados).hasSize(3);
+        assertThat(resultados).extracting(TestCaseOutcome::name)
+                .containsExactly("test_add_positivos", "test_add_negativos", "test_falla_a_proposito");
+        assertThat(resultados).filteredOn(TestCaseOutcome::passed).hasSize(2);
+        assertThat(resultados.get(2).passed()).isFalse();
+        assertThat(resultados.get(2).message()).contains("assert 5 == 6");
+    }
+
+    @Test
     @DisplayName("Devuelve una lista vacia si no hay reportes")
     void sinReportesDevuelveVacio(@TempDir Path directorio) {
         assertThat(parser.parse(directorio)).isEmpty();

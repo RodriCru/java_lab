@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Verifica que cada bloque ```java de exercises/theory/*.md compile.
+"""Verifica que cada bloque ```java de la teoria de Java compile.
 
 Un bloque se acepta si compila de alguna de estas formas, en este orden:
   1. tal cual (clases, interfaces, enums o records de nivel superior)
@@ -7,6 +7,9 @@ Un bloque se acepta si compila de alguna de estas formas, en este orden:
   3. como miembros de una clase (métodos y campos sueltos)
 Se añade `import java.util.*; import java.math.*;` automáticamente.
 Los bloques con la primera línea `// no compila` se omiten (para mostrar errores a propósito).
+
+Solo revisa la teoria de Java (exercises/java/theory): los bloques de otros lenguajes
+no los compila javac. Para añadir otro lenguaje con verificador propio, ampliar aqui.
 
 Uso: python3 verificar_teoria.py [tema ...]   (sin argumentos: todos)
 """
@@ -19,7 +22,7 @@ import sys
 import tempfile
 
 RAIZ = os.path.dirname(os.path.abspath(__file__))
-TEORIA = os.path.join(RAIZ, "exercises", "theory")
+TEORIA = os.path.join(RAIZ, "exercises", "java", "theory")
 IMPORTS = "import java.util.*;\nimport java.math.*;\nimport java.util.function.*;\nimport java.util.stream.*;\n"
 
 

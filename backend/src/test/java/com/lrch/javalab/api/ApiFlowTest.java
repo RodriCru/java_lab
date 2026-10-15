@@ -332,6 +332,71 @@ class ApiFlowTest {
                 .andExpect(jsonPath("$.data.tests[?(@.name=='t3')].output").doesNotExist());
     }
 
+    @Test
+    @DisplayName("El catálogo se puede filtrar por lenguaje")
+    void elCatalogoSeFiltraPorLenguaje() throws Exception {
+        Cookie sesion = sesion();
+
+        // Los lenguajes disponibles incluyen java y python.
+        mockMvc.perform(get("/api/v1/languages").cookie(sesion))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data").value(org.hamcrest.Matchers.hasItems("java", "python")));
+
+        // Los niveles de Python no traen los niveles 1 y 2 (que solo existen en Java).
+        mockMvc.perform(get("/api/v1/levels").param("language", "python").cookie(sesion))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.length()").value(1))
+                .andExpect(jsonPath("$.data[0].level").value(0))
+                .andExpect(jsonPath("$.data[0].total").value(catalog.byLevel("python", 0).size()));
+
+        // La lista de un lenguaje nunca mezcla ejercicios de otro.
+        mockMvc.perform(get("/api/v1/exercises").param("language", "python").param("per_page", "100").cookie(sesion))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.pagination.total").value(catalog.byLanguage("python").size()))
+                .andExpect(jsonPath("$.data[*].language").value(org.hamcrest.Matchers.everyItem(
+                        org.hamcrest.Matchers.is("python"))));
+    }
+
+    @Test
+    @DisplayName("El progreso se puede pedir por lenguaje")
+    void elProgresoSePuedeFiltrarPorLenguaje() throws Exception {
+        Cookie sesion = sesion();
+
+        mockMvc.perform(get("/api/v1/progress").param("language", "python").cookie(sesion))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.total").value(catalog.byLanguage("python").size()))
+                .andExpect(jsonPath("$.data.levels.length()").value(1));
+    }
+
+    @Test
+    @DisplayName("Un ejercicio de Python se ejecuta de verdad (Docker + pytest) y guarda progreso")
+    void unEjercicioDePythonSeEjecutaDeVerdad() throws Exception {
+        Cookie sesion = sesion();
+        String codigo = """
+                def add_two_numbers(a, b):
+                    return a + b
+                """;
+
+        mockMvc.perform(enviar(codigo, sesion, "py-add-two-numbers"))
+                .andExpect(jsonPath("$.data.status").value("PASSED"))
+                .andExpect(jsonPath("$.data.solved").value(true))
+                .andExpect(jsonPath("$.data.total").value(5))
+                .andExpect(jsonPath("$.data.passed").value(5));
+
+        // Y con una solucion incorrecta, falla y no se marca como resuelto.
+        String mal = """
+                def add_two_numbers(a, b):
+                    return a - b
+                """;
+        mockMvc.perform(enviar(mal, sesion, "py-add-two-numbers"))
+                .andExpect(jsonPath("$.data.status").value("FAILED"))
+                .andExpect(jsonPath("$.data.solved").value(true));
+
+        mockMvc.perform(enviar(mal, sesion(), "py-reverse-text"))
+                .andExpect(jsonPath("$.data.status").value("FAILED"))
+                .andExpect(jsonPath("$.data.solved").value(false));
+    }
+
     private org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder enviar(
             String codigo, Cookie sesion, String slug) throws Exception {
         return post("/api/v1/submissions")

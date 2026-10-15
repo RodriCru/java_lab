@@ -20,7 +20,17 @@ import static org.mockito.Mockito.when;
 
 class RunnerServiceTest {
 
-    private static final ExecutionRequest PETICION = new ExecutionRequest("Solution", "codigo", "tests");
+    private static final ExecutionRequest PETICION = peticionJava();
+
+    /** Petición de un ejercicio Java mínimo: el adaptador no se usa porque el motor está mockeado. */
+    private static ExecutionRequest peticionJava() {
+        var ejercicio = new com.lrch.javalab.catalog.Exercise("java", "slug", 1, "topic", "Titulo",
+                "enunciado", "public static int suma(int a, int b)", "Solution", 5, "easy",
+                List.of("pista 1", "pista 2"), "class Solution {}", "class Solution {}", "@Test", null);
+        var adapter = new com.lrch.javalab.runner.lang.JavaLanguageAdapter(
+                new com.lrch.javalab.runner.SourceValidator());
+        return new ExecutionRequest(ejercicio, adapter, "codigo");
+    }
 
     private static ExecutionResult resultado() {
         return new ExecutionResult(ExecutionResult.Status.PASSED, true, List.of(), "", "", 0, "local");

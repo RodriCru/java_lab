@@ -29,13 +29,13 @@ Actualmente incluye **50 ejercicios de Nivel Básico** (el plan son ~100 entre B
 
 ## Puesta en marcha
 
-### 1. Construir la imagen que ejecuta el código de los alumnos
+### 1. Construir las imágenes que ejecutan el código de los alumnos
 
 Solo la primera vez (y cuando cambie `runner/`):
 
 ```bash
 cd runner
-./build.sh            # crea la imagen javalab-runner:17
+./build.sh            # crea javalab-runner:17 (Java) y javalab-runner-python:3.12 (Python)
 ```
 
 ### 2. Arrancar el backend
@@ -87,7 +87,7 @@ java_practice_project/
 ├── backend/     Spring Boot: API, autenticación JWT, catálogo y motor de ejecución
 ├── frontend/    Next.js 16 + Tailwind + Monaco Editor
 ├── exercises/   Catálogo de ejercicios en YAML (enunciado, pistas, solución y tests)
-├── runner/      Imagen Docker que compila y ejecuta el código
+├── runner/      Imágenes Docker que compilan y ejecutan el código (una por lenguaje)
 └── PLAN.md      Plan del proyecto y fases pendientes
 ```
 
