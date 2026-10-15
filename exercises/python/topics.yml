@@ -1,0 +1,16 @@
+# Catálogo de temas de Python: nombre, descripción, orden y teoría (Markdown) de cada sección.
+# Todo `topic` de un ejercicio debe existir aquí. `order` ordena las secciones dentro de un nivel.
+# La clave `theory` se rellena por tema; si falta, la pantalla del ejercicio no muestra teoría.
+topics:
+  - id: basics
+    name: Lo más básico
+    description: Tus primeros programas en Python - funciones, variables y devolver resultados.
+    order: 1
+  - id: strings
+    name: Cadenas
+    description: Manipular texto con los métodos de str y las f-strings.
+    order: 2
+  - id: collections
+    name: Colecciones
+    description: Listas, diccionarios y conjuntos para agrupar datos.
+    order: 3

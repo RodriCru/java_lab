@@ -1,0 +1,43 @@
+language: python
+slug: py-add-two-numbers
+level: 0
+topic: basics
+title: Sumar dos números
+statement: |
+  Una función recibe datos (parámetros) y devuelve un resultado con return. Escribe una función que devuelva la suma de dos enteros.
+
+  Ejemplos:
+  - `add_two_numbers(2, 3) -> 5`
+  - `add_two_numbers(-4, 4) -> 0`
+  - `add_two_numbers(10, -3) -> 7`
+
+methodSignature: add_two_numbers(a, b)
+estimatedMinutes: 3
+difficulty: easy
+hints:
+- Usa el operador + entre los dos parámetros.
+- Devuelve el resultado con return.
+starterCode: |
+  def add_two_numbers(a, b):
+      # Tu código aquí
+      return 0
+referenceSolution: |
+  def add_two_numbers(a, b):
+      return a + b
+tests: |
+  from solution import add_two_numbers
+
+  def test_positivos():
+      assert add_two_numbers(2, 3) == 5
+
+  def test_opuestos():
+      assert add_two_numbers(-4, 4) == 0
+
+  def test_mezcla_de_signos():
+      assert add_two_numbers(10, -3) == 7
+
+  def test_ceros():
+      assert add_two_numbers(0, 0) == 0
+
+  def test_negativos():
+      assert add_two_numbers(-4, -5) == -9

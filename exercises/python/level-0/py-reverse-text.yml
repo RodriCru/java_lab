@@ -1,0 +1,46 @@
+language: python
+slug: py-reverse-text
+level: 0
+topic: strings
+title: Invertir una cadena
+statement: |
+  Escribe una función que devuelva el texto recibido al revés.
+
+  Ejemplos:
+  - `reverse_text("hola") -> "aloh"`
+  - `reverse_text("Python") -> "nohtyP"`
+  - `reverse_text("") -> ""`
+
+methodSignature: reverse_text(texto)
+estimatedMinutes: 4
+difficulty: easy
+hints:
+- En Python puedes cortar una secuencia con [inicio:fin:paso]; un paso negativo la recorre al revés.
+- También puedes recorrer el texto con un for y construir el resultado carácter a carácter.
+starterCode: |
+  def reverse_text(texto):
+      # Tu código aquí
+      return ""
+referenceSolution: |
+  def reverse_text(texto):
+      return texto[::-1]
+tests: |
+  from solution import reverse_text
+
+  def test_palabra_simple():
+      assert reverse_text("hola") == "aloh"
+
+  def test_respeta_mayusculas():
+      assert reverse_text("Python") == "nohtyP"
+
+  def test_vacia():
+      assert reverse_text("") == ""
+
+  def test_un_caracter():
+      assert reverse_text("a") == "a"
+
+  def test_palindromo():
+      assert reverse_text("oso") == "oso"
+
+  def test_con_espacios():
+      assert reverse_text("ab cd") == "dc ba"
