@@ -1,8 +1,13 @@
-# Backend de Java Practice Lab para Render (contexto de build = raiz del repositorio).
+# Backend de Java Practice Lab (contexto de build = raiz del repositorio).
 #
-# El runner usa el modo local (JAVALAB_RUNNER_USE_DOCKER=false): un contenedor no puede lanzar otros
-# contenedores, asi que el codigo del alumno se compila y ejecuta aqui dentro. Por eso la imagen final
-# es un JDK (hace falta javac) y no un JRE.
+# El runner lanza contenedores desechables (javalab-runner:17, javalab-runner-python:3.12) para
+# ejecutar el codigo del alumno. Para eso el backend necesita acceso a un socket de Docker; en el
+# despliegue se monta un SOCKET PROXY (no el socket crudo): el backend solo puede crear/listar/
+# inspeccionar/borrar contenedores e imagenes, y no puede crear contenedores privilegiados ni
+# ejecutar comandos dentro de ellos (ver la guia de despliegue).
+#
+# La variable JAVALAB_RUNNER_USE_DOCKER se puede sobreescribir en el entorno del despliegue.
+# Por defecto queda en true (Docker); el modo local solo sirve para Java y no tiene Python.
 
 # --- 1) Compilar el jar ---------------------------------------------------------------------------
 FROM eclipse-temurin:17-jdk AS build
@@ -19,10 +24,21 @@ RUN ./mvnw -q -B -DskipTests package && cp target/*.jar /build/app.jar
 # --- 2) Imagen final -------------------------------------------------------------------------------
 FROM eclipse-temurin:17-jdk
 ARG JUNIT_VERSION=1.12.2
+ARG DOCKER_CLI_VERSION=27.3.1
+
+# El backend lanza los runners con el CLI de Docker, asi que el binario tiene que estar en la imagen.
+# Se copia solo el cliente (no el daemon) desde la imagen oficial; pesa unos pocos MB.
+COPY --from=docker:${DOCKER_CLI_VERSION}-cli /usr/local/bin/docker /usr/local/bin/docker
 
 # Usuario sin privilegios: el codigo del alumno se ejecuta con este usuario, nunca como root.
 RUN useradd --system --uid 10001 --no-create-home --shell /usr/sbin/nologin app
 WORKDIR /app
+
+# Directorio compartido con los runners: el backend escribe aqui y los contenedores lo montan con la
+# MISMA ruta. En el despliegue, Coolify monta un directorio del HOST en /work (con JAVALAB_RUNNER_WORK_DIR=/work
+# y JAVALAB_RUNNER_HOST_WORK_DIR=<ruta en el host>). El propietario tiene que ser el UID de 'app' (10001)
+# EN EL HOST: el bind-mount oculta lo que se cree aqui, por eso hay que preparar el directorio del host.
+RUN mkdir -p /work && chown app:app /work
 
 COPY --from=build /build/app.jar app.jar
 COPY exercises exercises
@@ -36,9 +52,10 @@ ENV SPRING_PROFILES_ACTIVE=prod \
     JAVALAB_EXERCISES_DIR=/app/exercises \
     JAVALAB_QUESTIONS_DIR=/app/questions \
     JAVALAB_RUNNER_JUNIT_JAR=/app/runner/junit-platform-console-standalone.jar \
-    JAVALAB_RUNNER_USE_DOCKER=false \
-    # Render gratis tiene 512 MB: heap pequeno para dejar sitio a javac y a la JVM del alumno.
-    JAVA_OPTS="-Xmx192m -XX:MaxMetaspaceSize=128m -XX:+UseSerialGC -XX:TieredStopAtLevel=1"
+    JAVALAB_RUNNER_USE_DOCKER=true \
+    JAVALAB_RUNNER_WORK_DIR=/work \
+    # Heap moderado: el servidor atiende la API y ademas coordina los contenedores del runner.
+    JAVA_OPTS="-Xmx512m -XX:MaxMetaspaceSize=256m -XX:+UseSerialGC -XX:TieredStopAtLevel=1"
 
 USER app
 EXPOSE 8080

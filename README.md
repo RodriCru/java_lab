@@ -75,8 +75,8 @@ Abre `http://localhost:3000`, crea una cuenta y empieza a resolver ejercicios.
 5. Se devuelve el resultado test por test y se guarda el intento en el progreso.
 
 Si Docker no está disponible, el backend cae automáticamente al **motor local** (`javac` del
-equipo) y lo avisa en los logs. El aislamiento es menor, por eso se puede desactivar con
-`JAVALAB_RUNNER_USE_DOCKER=false`.
+equipo) y lo avisa en los logs. El aislamiento es menor. Se puede forzar/comprobar con
+`JAVALAB_RUNNER_USE_DOCKER` (**el motor local sólo ejecuta Java**: Python necesita Docker).
 
 ---
 
@@ -197,48 +197,67 @@ Todas las respuestas siguen el contrato LRCH:
 
 ---
 
-## Despliegue (Render + Neon + Vercel)
+## Despliegue (Coolify + Docker + Neon + frontend)
 
 ```
-Navegador ──► Vercel (Next.js) ──rewrite /api/v1/*──► Render (Docker, Spring Boot) ──► Neon (Postgres)
+Navegador ──► Frontend (Next.js) ──/api/v1/*──► Backend (Coolify, Spring Boot) ──► Neon (Postgres)
+                                                       │
+                                                       ├─► docker-socket-proxy ─► Docker del host
+                                                       │        └─► runner efímero (Java/Python)
+                                                       └─► Resend (correos)
 ```
 
-El navegador solo habla con Vercel; Next reenvía `/api/v1/*` al backend. Así la cookie de sesión queda en un
-único dominio y `SameSite=Lax` sigue funcionando.
+El backend corre en un contenedor y lanza **otros contenedores desechables** (uno por envío) para
+ejecutar el código del alumno. Para eso necesita el CLI de Docker (viene en la imagen), acceso al
+daemon a través de un **socket proxy** y un **directorio compartido** en `/work`.
 
-**1. Base de datos (Neon).** Crea un proyecto en neon.tech y copia host, base, usuario y contraseña. La URL
-de Neon empieza por `postgresql://`; el backend necesita el formato JDBC:
+**1. Base de datos (Neon).** Crea un proyecto y copia host, base, usuario y contraseña. La URL de Neon
+empieza por `postgresql://`; el backend necesita el formato JDBC:
 `jdbc:postgresql://<host>/<base>?sslmode=require`, con usuario y contraseña en variables aparte.
 
-**2. Backend (Render, Web Service con Docker).** Repositorio de GitHub, `Dockerfile Path` = `./Dockerfile`,
-Root Directory vacío, Health Check Path = `/api/v1/health`. Variables:
+**2. Imágenes de los runners (una vez, por SSH en el servidor).**
+
+```bash
+cd runner && ./build.sh        # crea javalab-runner:17 y javalab-runner-python:3.12
+```
+
+Repetir cuando cambie algo de `runner/`.
+
+**3. Socket proxy.** Un servicio que expone el daemon de Docker al backend **filtrando** lo que puede
+hacer: sólo crear/listar/inspeccionar/borrar contenedores e imágenes (`CONTAINERS=1 IMAGES=1 POST=1`,
+con `EXEC=0 BUILD=0 SWARM=0`). El backend nunca ve el socket crudo.
+
+**4. Backend (Coolify).** Dockerfile Path = `./Dockerfile`, Health Check = `/api/v1/health`. Variables:
 
 | Variable | Valor |
 |---|---|
 | `JAVALAB_JWT_SECRET` | aleatorio (`openssl rand -base64 48`), distinto al local |
 | `JAVALAB_COOKIE_SECURE` | `true` |
-| `JAVALAB_ALLOWED_ORIGINS` | `https://tu-app.vercel.app` |
+| `JAVALAB_ALLOWED_ORIGINS` | el origen del frontend |
 | `JAVALAB_DB_URL` / `JAVALAB_DB_USER` / `JAVALAB_DB_PASSWORD` | los de Neon (formato JDBC) |
 | `JAVALAB_RESEND_API_KEY` / `JAVALAB_MAIL_FROM` | los de Resend |
 | `JAVALAB_SUPER_ADMIN_EMAIL` | tu correo: esa cuenta se promueve a SUPER_ADMIN al arrancar |
+| `DOCKER_HOST` | `tcp://<servicio-del-proxy>:2375` |
+| `JAVALAB_RUNNER_WORK_DIR` | `/work` |
+| `JAVALAB_RUNNER_HOST_WORK_DIR` | la ruta del mismo directorio **vista por el host** (p. ej. `/srv/javalab/work`) |
 
-Los envíos se ejecutan **de uno en uno** (`JAVALAB_RUNNER_MAX_CONCURRENT=1`): cada compilación y ejecución de Java usa
-~150–200 MB y el plan gratis de Render tiene 512 MB. Si hay otros en curso, el siguiente espera su turno hasta
-60 s; pasado ese tiempo responde 429 `SERVIDOR_OCUPADO`.
+Monta un directorio del host en `/work` (el backend y los runners lo comparten: el daemon del host no
+ve los temporales del contenedor). Ejemplo: host `/srv/javalab/work` → contenedor `/work`.
 
-El `Dockerfile` ya fija `SPRING_PROFILES_ACTIVE=prod` y `JAVALAB_RUNNER_USE_DOCKER=false`. En producción el
-**registro está cerrado por defecto** (`JAVALAB_REGISTRATION_ENABLED=false`): las cuentas se crean por invitación. El plan gratis de
-Render se duerme tras ~15 minutos sin tráfico: el primer acceso tarda cerca de un minuto.
+Los envíos se ejecutan de uno en uno (`JAVALAB_RUNNER_MAX_CONCURRENT=1`) para acotar memoria; el resto
+espera su turno hasta `JAVALAB_RUNNER_QUEUE_WAIT_SECONDS` y si se agota responde 429 `SERVIDOR_OCUPADO`.
 
-**3. Frontend (Vercel).** Root Directory = `frontend`. Variables (definirlas **antes** del primer build,
-porque `NEXT_PUBLIC_*` se incrusta al compilar):
+El `Dockerfile` ya fija `SPRING_PROFILES_ACTIVE=prod`; en producción el **registro está cerrado por
+defecto** (`JAVALAB_REGISTRATION_ENABLED=false`): las cuentas se crean por invitación.
+
+**5. Frontend.** Variables (definirlas **antes** del build, porque `NEXT_PUBLIC_*` se incrusta):
 
 | Variable | Valor |
 |---|---|
 | `NEXT_PUBLIC_API_BASE_URL` | `/api/v1` |
-| `BACKEND_URL` | `https://tu-api.onrender.com` (sin barra final) |
+| `BACKEND_URL` | la URL del backend (sin barra final) |
 
-La key de Resend y el secreto JWT van **solo** en Render; lo que empieza por `NEXT_PUBLIC_` lo ve cualquiera.
+La key de Resend y el secreto JWT van **solo** en el backend; lo que empieza por `NEXT_PUBLIC_` lo ve cualquiera.
 
 **Cuentas por invitación.** El SUPER_ADMIN entra a `/admin`, escribe el correo de la persona y el sistema crea la
 cuenta con una **contraseña temporal aleatoria** que llega por correo (con la indicación de que puede cambiarla desde
@@ -246,10 +265,10 @@ Perfil → Cambiar contraseña). Desde el mismo panel se reenvía una contraseñ
 contraseña temporal solo viaja en ese correo; la API nunca la devuelve. El rol se comprueba contra la base de datos en
 cada llamada, no contra el token.
 
-**Ojo con la seguridad del runner.** En Render no hay Docker, así que el código del alumno se compila y
-ejecuta **dentro del mismo contenedor que la API**. Mitigaciones: entorno vacío y `-Xmx128m` para el proceso
-del alumno, usuario sin privilegios y el filtro de `SourceValidator`. No es un aislamiento real: por eso
-conviene mantener el registro cerrado e invitar solo a gente de confianza.
+**Sobre la seguridad del runner.** El código del alumno corre en un contenedor **efímero** aparte
+(`--network none --memory 256m --cpus 0.5 --pids-limit 64 --cap-drop ALL --read-only`, timeout 10 s),
+nunca dentro del backend. El socket proxy limita lo que el backend puede pedir al daemon (sin `EXEC`,
+sin contenedores privilegiados). El registro está cerrado: la única puerta de entrada son las invitaciones.
 
 ## Seguridad
 
