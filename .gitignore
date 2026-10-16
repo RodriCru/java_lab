@@ -6,6 +6,10 @@ target/
 !.mvn/wrapper/maven-wrapper.jar
 .mvn/wrapper/maven-wrapper.properties.bak
 
+# --- Python ---
+__pycache__/
+*.pyc
+
 # --- Node / Next.js ---
 node_modules/
 .next/
