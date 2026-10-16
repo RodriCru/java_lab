@@ -21,13 +21,16 @@ COPY backend/src src
 RUN ./mvnw -q -B -DskipTests package && cp target/*.jar /build/app.jar
 
 # --- 2) Imagen final -------------------------------------------------------------------------------
+# Etapa aparte para traer el CLI de docker: `COPY --from` no admite variables en el nombre de la imagen,
+# asi que se resuelve con un FROM fijo y un alias.
+FROM docker:27.3.1-cli AS dockercli
+
 FROM eclipse-temurin:17-jdk
 ARG JUNIT_VERSION=1.12.2
-ARG DOCKER_CLI_VERSION=27.3.1
 
 # El backend lanza los runners con el CLI de Docker, asi que el binario tiene que estar en la imagen.
-# Se copia solo el cliente (no el daemon) desde la imagen oficial; pesa unos pocos MB.
-COPY --from=docker:${DOCKER_CLI_VERSION}-cli /usr/local/bin/docker /usr/local/bin/docker
+# Se copia solo el cliente (no el daemon) desde la etapa de arriba; pesa unos pocos MB.
+COPY --from=dockercli /usr/local/bin/docker /usr/local/bin/docker
 
 # Usuario sin privilegios: el codigo del alumno se ejecuta con este usuario, nunca como root.
 RUN useradd --system --uid 10001 --no-create-home --shell /usr/sbin/nologin app
