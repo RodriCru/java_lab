@@ -202,14 +202,13 @@ Todas las respuestas siguen el contrato LRCH:
 ```
 Navegador ──► Frontend (Next.js) ──/api/v1/*──► Backend (Coolify, Spring Boot) ──► Neon (Postgres)
                                                        │
-                                                       ├─► docker-socket-proxy ─► Docker del host
-                                                       │        └─► runner efímero (Java/Python)
+                                                       ├─► Docker del host (socket) ─► runner efímero
                                                        └─► Resend (correos)
 ```
 
 El backend corre en un contenedor y lanza **otros contenedores desechables** (uno por envío) para
 ejecutar el código del alumno. Para eso necesita el CLI de Docker (viene en la imagen), acceso al
-daemon a través de un **socket proxy** y un **directorio compartido** en `/work`.
+daemon del host y un **directorio compartido** en `/work`.
 
 **1. Base de datos (Neon).** Crea un proyecto y copia host, base, usuario y contraseña. La URL de Neon
 empieza por `postgresql://`; el backend necesita el formato JDBC:
@@ -223,9 +222,11 @@ cd runner && ./build.sh        # crea javalab-runner:17 y javalab-runner-python:
 
 Repetir cuando cambie algo de `runner/`.
 
-**3. Socket proxy.** Un servicio que expone el daemon de Docker al backend **filtrando** lo que puede
-hacer: sólo crear/listar/inspeccionar/borrar contenedores e imágenes (`CONTAINERS=1 IMAGES=1 POST=1`,
-con `EXEC=0 BUILD=0 SWARM=0`). El backend nunca ve el socket crudo.
+**3. Directorio compartido (una vez, por SSH).**
+
+```bash
+sudo mkdir -p /srv/javalab/work && sudo chown 10001:10001 /srv/javalab/work
+```
 
 **4. Backend (Coolify).** Dockerfile Path = `./Dockerfile`, Health Check = `/api/v1/health`. Variables:
 
@@ -233,22 +234,34 @@ con `EXEC=0 BUILD=0 SWARM=0`). El backend nunca ve el socket crudo.
 |---|---|
 | `JAVALAB_JWT_SECRET` | aleatorio (`openssl rand -base64 48`), distinto al local |
 | `JAVALAB_COOKIE_SECURE` | `true` |
-| `JAVALAB_ALLOWED_ORIGINS` | el origen del frontend |
+| `JAVALAB_ALLOWED_ORIGINS` | el origen del frontend (nunca `*`) |
 | `JAVALAB_DB_URL` / `JAVALAB_DB_USER` / `JAVALAB_DB_PASSWORD` | los de Neon (formato JDBC) |
 | `JAVALAB_RESEND_API_KEY` / `JAVALAB_MAIL_FROM` | los de Resend |
 | `JAVALAB_SUPER_ADMIN_EMAIL` | tu correo: esa cuenta se promueve a SUPER_ADMIN al arrancar |
-| `DOCKER_HOST` | `tcp://<servicio-del-proxy>:2375` |
 | `JAVALAB_RUNNER_WORK_DIR` | `/work` |
-| `JAVALAB_RUNNER_HOST_WORK_DIR` | la ruta del mismo directorio **vista por el host** (p. ej. `/srv/javalab/work`) |
+| `JAVALAB_RUNNER_HOST_WORK_DIR` | la ruta del mismo directorio **vista por el host** (`/srv/javalab/work`) |
 
-Monta un directorio del host en `/work` (el backend y los runners lo comparten: el daemon del host no
-ve los temporales del contenedor). Ejemplo: host `/srv/javalab/work` → contenedor `/work`.
+Volúmenes (Storages) del backend, ambos *bind mount*:
+
+```
+/var/run/docker.sock   →  /var/run/docker.sock     # para que pueda lanzar los runners
+/srv/javalab/work      →  /work                    # directorio compartido backend<->runners
+```
+
+El backend y los runners comparten `/work` porque el daemon del host no ve los temporales del
+contenedor del backend. `JAVALAB_RUNNER_HOST_WORK_DIR` le dice al backend la ruta del host para montar
+en los runners.
 
 Los envíos se ejecutan de uno en uno (`JAVALAB_RUNNER_MAX_CONCURRENT=1`) para acotar memoria; el resto
 espera su turno hasta `JAVALAB_RUNNER_QUEUE_WAIT_SECONDS` y si se agota responde 429 `SERVIDOR_OCUPADO`.
 
 El `Dockerfile` ya fija `SPRING_PROFILES_ACTIVE=prod`; en producción el **registro está cerrado por
 defecto** (`JAVALAB_REGISTRATION_ENABLED=false`): las cuentas se crean por invitación.
+
+> **Mejora futura (opcional):** montar el socket crudo le da al backend control del Docker del host.
+> Si en algún momento se abre a más gente, se puede interponer un *socket proxy*
+> (`tecnativa/docker-socket-proxy`) que sólo permita crear/listar/borrar contenedores. Hoy no hace
+> falta: el laboratorio es personal y el registro está cerrado.
 
 **5. Frontend.** Variables (definirlas **antes** del build, porque `NEXT_PUBLIC_*` se incrusta):
 
@@ -267,8 +280,9 @@ cada llamada, no contra el token.
 
 **Sobre la seguridad del runner.** El código del alumno corre en un contenedor **efímero** aparte
 (`--network none --memory 256m --cpus 0.5 --pids-limit 64 --cap-drop ALL --read-only`, timeout 10 s),
-nunca dentro del backend. El socket proxy limita lo que el backend puede pedir al daemon (sin `EXEC`,
-sin contenedores privilegiados). El registro está cerrado: la única puerta de entrada son las invitaciones.
+nunca dentro del backend. El backend habla con el daemon de Docker por el socket del host, así que
+puede lanzar contenedores: el aislamiento real está en los flags del runner y en el validador del
+código. El registro está cerrado: la única puerta de entrada son las invitaciones.
 
 ## Seguridad
 

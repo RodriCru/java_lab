@@ -1,10 +1,9 @@
 # Backend de Java Practice Lab (contexto de build = raiz del repositorio).
 #
 # El runner lanza contenedores desechables (javalab-runner:17, javalab-runner-python:3.12) para
-# ejecutar el codigo del alumno. Para eso el backend necesita acceso a un socket de Docker; en el
-# despliegue se monta un SOCKET PROXY (no el socket crudo): el backend solo puede crear/listar/
-# inspeccionar/borrar contenedores e imagenes, y no puede crear contenedores privilegiados ni
-# ejecutar comandos dentro de ellos (ver la guia de despliegue).
+# ejecutar el codigo del alumno. Para eso el backend necesita el CLI de docker (se copia abajo) y
+# acceso al daemon del host (en el despliegue se monta /var/run/docker.sock). Ademas comparte un
+# directorio con los runners (JAVALAB_RUNNER_WORK_DIR / JAVALAB_RUNNER_HOST_WORK_DIR).
 #
 # La variable JAVALAB_RUNNER_USE_DOCKER se puede sobreescribir en el entorno del despliegue.
 # Por defecto queda en true (Docker); el modo local solo sirve para Java y no tiene Python.
