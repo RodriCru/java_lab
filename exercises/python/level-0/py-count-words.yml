@@ -1,0 +1,43 @@
+language: python
+slug: py-count-words
+level: 0
+topic: strings
+title: Contar palabras de un texto
+statement: |
+  Escribe una función que devuelva cuántas palabras hay en un texto. Las palabras están separadas por espacios (una o más).
+
+  Ejemplos:
+  - `count_words("hola mundo") -> 2`
+  - `count_words("  uno   dos  tres ") -> 3`
+  - `count_words("") -> 0`
+
+methodSignature: count_words(text)
+estimatedMinutes: 4
+difficulty: easy
+hints:
+- Usa `text.split()` sin argumentos para separar por cualquier espacio en blanco y descartar los vacíos.
+- El número de palabras es `len(...)` de esa lista.
+starterCode: |
+  def count_words(text):
+      # Tu código aquí
+      return 0
+referenceSolution: |
+  def count_words(text):
+      return len(text.split())
+tests: |
+  from solution import count_words
+
+  def test_dos_palabras():
+      assert count_words("hola mundo") == 2
+
+  def test_vacia():
+      assert count_words("") == 0
+
+  def test_espacios_de_mas():
+      assert count_words("  uno   dos  tres ") == 3
+
+  def test_una_palabra():
+      assert count_words("Python") == 1
+
+  def test_con_saltos_de_linea():
+      assert count_words("a\nb\tc") == 3

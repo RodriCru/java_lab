@@ -4,13 +4,49 @@
 topics:
   - id: basics
     name: Lo más básico
-    description: Tus primeros programas en Python - funciones, variables y devolver resultados.
+    description: Tus primeros programas en Python - funciones, variables, condicionales y devolver resultados.
     order: 1
+  - id: operators-decisions
+    name: Operadores y decisiones
+    description: if, elif, else, operadores lógicos y de comparación para decidir qué camino sigue el programa.
+    order: 10
+  - id: functions
+    name: Funciones y argumentos
+    description: Parámetros, valores por defecto, *args y **kwargs; cómo se pasan los datos a una función.
+    order: 20
+  - id: loops
+    name: Ciclos
+    description: for, while, range y enumerate para repetir y recorrer datos.
+    order: 30
+  - id: input-parsing
+    name: Entrada de datos
+    description: Convertir texto en números, pares y matrices, como llegan los datos en una entrevista.
+    order: 40
   - id: strings
-    name: Cadenas
-    description: Manipular texto con los métodos de str y las f-strings.
-    order: 2
+    name: Cadenas de texto
+    description: Recorrer, comparar, invertir y transformar str con sus métodos y las f-strings.
+    order: 50
   - id: collections
     name: Colecciones
-    description: Listas, diccionarios y conjuntos para agrupar datos.
-    order: 3
+    description: list, set, dict, deque y heapq; cuándo usar cada una y cómo recorrerlas con seguridad.
+    order: 60
+  - id: oop-basics
+    name: POO - herencia y polimorfismo
+    description: Clases, encapsulamiento, herencia, super(), polimorfismo y __str__/__eq__.
+    order: 70
+  - id: enums
+    name: Enums
+    description: Conjuntos fijos de valores con enum.Enum, con campos, métodos y máquinas de estados sencillas.
+    order: 75
+  - id: abstraction
+    name: Clases abstractas y protocolos
+    description: Contratos con ABC y Protocol, métodos abstractos y el patrón método plantilla y estrategia.
+    order: 80
+  - id: exceptions
+    name: Excepciones
+    description: try, except, else, finally, raise y excepciones propias.
+    order: 90
+  - id: spring-principles
+    name: Principios de inyección de dependencias
+    description: Inyección de dependencias e inversión de control explicadas en Python puro.
+    order: 100

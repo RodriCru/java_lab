@@ -1,0 +1,51 @@
+language: python
+slug: py-collatz-steps
+level: 0
+topic: loops
+title: Pasos de Collatz
+statement: |
+  Cuando no sabes cuántas vueltas hará falta, un bucle while repite mientras se cumpla una condición. La conjetura de Collatz dice: si n es par se divide entre 2; si es impar se multiplica por 3 y se suma 1. Escribe una función que devuelva cuántos pasos tarda n en llegar a 1.
+
+  Ejemplos:
+  - `collatz_steps(1) -> 0`
+  - `collatz_steps(2) -> 1`
+  - `collatz_steps(6) -> 8`
+
+methodSignature: collatz_steps(n)
+estimatedMinutes: 6
+difficulty: medium
+hints:
+- 'Empieza con un contador en 0 y repite mientras n sea distinto de 1: while n != 1.'
+- 'Para saber si un número es par usa el resto de la división: n % 2 == 0.'
+- Recuerda sumar 1 al contador dentro del bucle.
+starterCode: |
+  def collatz_steps(n):
+      # Tu código aquí
+      return 0
+referenceSolution: |
+  def collatz_steps(n):
+      pasos = 0
+      while n != 1:
+          if n % 2 == 0:
+              n = n // 2
+          else:
+              n = 3 * n + 1
+          pasos += 1
+      return pasos
+tests: |
+  from solution import collatz_steps
+
+  def test_uno_ya_esta_en_uno():
+      assert collatz_steps(1) == 0
+
+  def test_dos():
+      assert collatz_steps(2) == 1
+
+  def test_seis():
+      assert collatz_steps(6) == 8
+
+  def test_tres():
+      assert collatz_steps(3) == 7
+
+  def test_veintisiete():
+      assert collatz_steps(27) == 111

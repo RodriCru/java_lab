@@ -1,0 +1,43 @@
+language: python
+slug: py-read-matrix
+level: 0
+topic: input-parsing
+title: Leer una matriz de texto
+statement: |
+  Escribe una función que reciba una matriz escrita como texto. Cada fila va separada por `;` y dentro de cada fila los números van separados por espacios. Devuelve una lista de listas de enteros.
+
+  Ejemplos:
+  - `read_matrix("1 2;3 4") -> [[1, 2], [3, 4]]`
+  - `read_matrix("5 6 7") -> [[5, 6, 7]]`
+  - `read_matrix("9") -> [[9]]`
+
+methodSignature: read_matrix(text)
+estimatedMinutes: 7
+difficulty: medium
+hints:
+- Primero separa las filas con `text.split(";")`.
+- Para cada fila, separa los números con `.split()` y conviértelos a `int` con una comprensión de listas.
+starterCode: |
+  def read_matrix(text):
+      # Tu código aquí
+      return []
+referenceSolution: |
+  def read_matrix(text):
+      return [[int(numero) for numero in fila.split()] for fila in text.split(";")]
+tests: |
+  from solution import read_matrix
+
+  def test_dos_por_dos():
+      assert read_matrix("1 2;3 4") == [[1, 2], [3, 4]]
+
+  def test_una_fila():
+      assert read_matrix("5 6 7") == [[5, 6, 7]]
+
+  def test_un_solo_elemento():
+      assert read_matrix("9") == [[9]]
+
+  def test_filas_de_distinto_tamano():
+      assert read_matrix("1;2 3;4 5 6") == [[1], [2, 3], [4, 5, 6]]
+
+  def test_negativos():
+      assert read_matrix("-1 0;2 -3") == [[-1, 0], [2, -3]]

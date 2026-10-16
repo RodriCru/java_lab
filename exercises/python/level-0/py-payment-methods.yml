@@ -1,0 +1,102 @@
+language: python
+slug: py-payment-methods
+level: 0
+topic: abstraction
+title: Métodos de pago (contrato abstracto)
+statement: |
+  Crea la clase abstracta `Payment(ABC)` con el método abstracto `pay(amount)`, que devuelve un texto. Implementa `Cash`, que siempre devuelve `"Pagado {amount} en efectivo"`, y `CreditCard(limite)`: si el importe supera el límite devuelve `"Rechazado"`, y si no descuenta el importe del límite y devuelve `"Pagado {amount} con tarjeta"`.
+
+  Ejemplos:
+  - `Cash().pay(50) -> "Pagado 50 en efectivo"`
+  - `CreditCard(100).pay(30) -> "Pagado 30 con tarjeta"`
+  - `CreditCard(100).pay(150) -> "Rechazado"`
+
+methodSignature: "class Payment(ABC):"
+estimatedMinutes: 12
+difficulty: medium
+hints:
+- "Usa `from abc import ABC, abstractmethod` y decora `pay` con `@abstractmethod`."
+- "En `CreditCard`, resta el importe al límite solo cuando el pago se acepta."
+- 'Las f-strings facilitan el texto exacto: `f"Pagado {amount} con tarjeta"`.'
+starterCode: |
+  from abc import ABC, abstractmethod
+
+
+  class Payment(ABC):
+      @abstractmethod
+      def pay(self, amount):
+          ...
+
+
+  class Cash(Payment):
+      def pay(self, amount):
+          # Tu código aquí
+          return ""
+
+
+  class CreditCard(Payment):
+      def __init__(self, limite):
+          self.limite = limite
+
+      def pay(self, amount):
+          # Tu código aquí
+          return ""
+referenceSolution: |
+  from abc import ABC, abstractmethod
+
+
+  class Payment(ABC):
+      @abstractmethod
+      def pay(self, amount):
+          ...
+
+
+  class Cash(Payment):
+      def pay(self, amount):
+          return f"Pagado {amount} en efectivo"
+
+
+  class CreditCard(Payment):
+      def __init__(self, limite):
+          self.limite = limite
+
+      def pay(self, amount):
+          if amount > self.limite:
+              return "Rechazado"
+          self.limite -= amount
+          return f"Pagado {amount} con tarjeta"
+tests: |
+  from solution import Payment, Cash, CreditCard
+
+
+  def test_cash_paga():
+      assert Cash().pay(50) == "Pagado 50 en efectivo"
+
+
+  def test_tarjeta_dentro_del_limite():
+      assert CreditCard(100).pay(30) == "Pagado 30 con tarjeta"
+
+
+  def test_tarjeta_rechaza_si_supera():
+      assert CreditCard(100).pay(150) == "Rechazado"
+
+
+  def test_tarjeta_descuenta_del_limite():
+      t = CreditCard(100)
+      t.pay(40)
+      assert t.limite == 60
+
+
+  def test_dos_pagos_seguidos():
+      t = CreditCard(100)
+      t.pay(60)
+      assert t.pay(60) == "Rechazado"
+
+
+  def test_payment_es_abstracto():
+      try:
+          Payment()
+          creado = True
+      except TypeError:
+          creado = False
+      assert not creado

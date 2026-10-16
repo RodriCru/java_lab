@@ -1,0 +1,45 @@
+language: python
+slug: py-set-operations
+level: 0
+topic: collections
+title: Operaciones con conjuntos
+statement: |
+  Escribe una función que reciba dos listas y devuelva una tupla con tres conjuntos: la unión, la intersección y la diferencia de la primera menos la segunda.
+
+  Ejemplos:
+  - `set_operations([1, 2, 3], [2, 3, 4]) -> ({1, 2, 3, 4}, {2, 3}, {1})`
+  - `set_operations([1, 2], [3, 4]) -> ({1, 2, 3, 4}, set(), {1, 2})`
+  - `set_operations([], [1, 2]) -> ({1, 2}, set(), set())`
+
+methodSignature: set_operations(a, b)
+estimatedMinutes: 6
+difficulty: medium
+hints:
+- Convierte cada lista a `set(...)` para eliminar los repetidos.
+- Los operadores son `|` (unión), `&` (intersección) y `-` (diferencia).
+starterCode: |
+  def set_operations(a, b):
+      # Tu código aquí
+      return (set(), set(), set())
+referenceSolution: |
+  def set_operations(a, b):
+      conjunto_a = set(a)
+      conjunto_b = set(b)
+      return (conjunto_a | conjunto_b, conjunto_a & conjunto_b, conjunto_a - conjunto_b)
+tests: |
+  from solution import set_operations
+
+  def test_union_interseccion_diferencia():
+      assert set_operations([1, 2, 3], [2, 3, 4]) == ({1, 2, 3, 4}, {2, 3}, {1})
+
+  def test_sin_elementos_en_comun():
+      assert set_operations([1, 2], [3, 4]) == ({1, 2, 3, 4}, set(), {1, 2})
+
+  def test_uno_vacio():
+      assert set_operations([], [1, 2]) == ({1, 2}, set(), set())
+
+  def test_iguales():
+      assert set_operations([1, 1, 2], [2, 2, 1]) == ({1, 2}, {1, 2}, set())
+
+  def test_con_repetidos():
+      assert set_operations([1, 1, 1, 2], [2, 2, 3]) == ({1, 2, 3}, {2}, {1})

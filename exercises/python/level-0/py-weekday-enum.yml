@@ -1,0 +1,69 @@
+language: python
+slug: py-weekday-enum
+level: 0
+topic: enums
+title: Días de la semana con Enum
+statement: |
+  Un Enum puede tener métodos que se leen sobre cada miembro. Escribe un Enum Weekday con los días LUNES, MARTES, MIERCOLES, JUEVES, VIERNES, SABADO y DOMINGO, y un método is_weekend() que devuelva True si el día es sábado o domingo, y False en cualquier otro caso.
+
+  Ejemplos:
+  - `Weekday.SABADO.is_weekend() -> True`
+  - `Weekday.DOMINGO.is_weekend() -> True`
+  - `Weekday.LUNES.is_weekend() -> False`
+
+methodSignature: "class Weekday(Enum):"
+estimatedMinutes: 7
+difficulty: easy
+hints:
+- 'Declara los siete días como miembros dentro de la clase: LUNES = 1, MARTES = 2, ...'
+- El método is_weekend(self) es un método normal; dentro, self es el día sobre el que se llama.
+- 'Comprueba si self está entre los días de fin de semana: self in (Weekday.SABADO, Weekday.DOMINGO).'
+starterCode: |
+  from enum import Enum
+
+
+  class Weekday(Enum):
+      LUNES = 1
+      MARTES = 2
+      MIERCOLES = 3
+      JUEVES = 4
+      VIERNES = 5
+      SABADO = 6
+      DOMINGO = 7
+
+      def is_weekend(self):
+          # Tu código aquí
+          return False
+referenceSolution: |
+  from enum import Enum
+
+
+  class Weekday(Enum):
+      LUNES = 1
+      MARTES = 2
+      MIERCOLES = 3
+      JUEVES = 4
+      VIERNES = 5
+      SABADO = 6
+      DOMINGO = 7
+
+      def is_weekend(self):
+          return self in (Weekday.SABADO, Weekday.DOMINGO)
+tests: |
+  from solution import Weekday
+
+  def test_sabado_es_fin_de_semana():
+      assert Weekday.SABADO.is_weekend() is True
+
+  def test_domingo_es_fin_de_semana():
+      assert Weekday.DOMINGO.is_weekend() is True
+
+  def test_lunes_no_es_fin_de_semana():
+      assert Weekday.LUNES.is_weekend() is False
+
+  def test_viernes_no_es_fin_de_semana():
+      assert Weekday.VIERNES.is_weekend() is False
+
+  def test_solo_dos_dias_son_fin_de_semana():
+      fines = [dia for dia in Weekday if dia.is_weekend()]
+      assert fines == [Weekday.SABADO, Weekday.DOMINGO]

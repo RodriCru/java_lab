@@ -1,0 +1,108 @@
+language: python
+slug: py-abstract-vehicle-cost
+level: 0
+topic: abstraction
+title: Coste de vehículos (clase abstracta)
+statement: |
+  Una clase abstracta marca un contrato que las hijas deben cumplir. Crea `Vehicle(ABC)` con un atributo `nombre` y un método abstracto `cost()`. Implementa `Bicycle(nombre)`, cuyo `cost()` es `0`, y `Truck(nombre, toneladas)`, cuyo `cost()` es `100` por tonelada. Añade `total_cost(vehicles)`, que suma el coste de todos.
+
+  Ejemplos:
+  - `Bicycle("BMX").cost() -> 0`
+  - `Truck("Volvo", 3).cost() -> 300`
+  - `total_cost([Bicycle("BMX"), Truck("Volvo", 2)]) -> 200`
+
+methodSignature: "class Vehicle(ABC):"
+estimatedMinutes: 10
+difficulty: medium
+hints:
+- "Importa `from abc import ABC, abstractmethod`."
+- "La clase hereda de `ABC` y el método se decora con `@abstractmethod`."
+- "Una clase abstracta no se puede instanciar: lanza `TypeError`."
+starterCode: |
+  from abc import ABC, abstractmethod
+
+
+  class Vehicle(ABC):
+      def __init__(self, nombre):
+          self.nombre = nombre
+
+      @abstractmethod
+      def cost(self):
+          ...
+
+
+  class Bicycle(Vehicle):
+      def cost(self):
+          # Tu código aquí
+          return None
+
+
+  class Truck(Vehicle):
+      def __init__(self, nombre, toneladas):
+          super().__init__(nombre)
+          self.toneladas = toneladas
+
+      def cost(self):
+          # Tu código aquí
+          return None
+
+
+  def total_cost(vehicles):
+      # Tu código aquí
+      return 0
+referenceSolution: |
+  from abc import ABC, abstractmethod
+
+
+  class Vehicle(ABC):
+      def __init__(self, nombre):
+          self.nombre = nombre
+
+      @abstractmethod
+      def cost(self):
+          ...
+
+
+  class Bicycle(Vehicle):
+      def cost(self):
+          return 0
+
+
+  class Truck(Vehicle):
+      def __init__(self, nombre, toneladas):
+          super().__init__(nombre)
+          self.toneladas = toneladas
+
+      def cost(self):
+          return 100 * self.toneladas
+
+
+  def total_cost(vehicles):
+      return sum(v.cost() for v in vehicles)
+tests: |
+  from solution import Vehicle, Bicycle, Truck, total_cost
+
+
+  def test_la_abstracta_no_se_instancia():
+      try:
+          Vehicle("genérico")
+          creado = True
+      except TypeError:
+          creado = False
+      assert not creado
+
+
+  def test_bici_no_cuesta():
+      assert Bicycle("BMX").cost() == 0
+
+
+  def test_camion_por_toneladas():
+      assert Truck("Volvo", 3).cost() == 300
+
+
+  def test_total_cost():
+      assert total_cost([Bicycle("BMX"), Truck("Volvo", 2)]) == 200
+
+
+  def test_total_vacio():
+      assert total_cost([]) == 0

@@ -1,0 +1,43 @@
+language: python
+slug: py-repeat-text
+level: 0
+topic: basics
+title: Repetir un texto
+statement: |
+  Escribe una función que devuelva el texto recibido repetido n veces, uno detrás de otro.
+
+  Ejemplos:
+  - `repeat_text("ab", 3) -> "ababab"`
+  - `repeat_text("x", 0) -> ""`
+  - `repeat_text("hola", 1) -> "hola"`
+
+methodSignature: repeat_text(text, n)
+estimatedMinutes: 4
+difficulty: easy
+hints:
+- En Python el operador * entre un texto y un número lo repite esa cantidad de veces.
+- Si n es 0, el resultado es una cadena vacía.
+starterCode: |
+  def repeat_text(text, n):
+      # Tu código aquí
+      return ""
+referenceSolution: |
+  def repeat_text(text, n):
+      return text * n
+tests: |
+  from solution import repeat_text
+
+  def test_repite_tres_veces():
+      assert repeat_text("ab", 3) == "ababab"
+
+  def test_cero_veces():
+      assert repeat_text("x", 0) == ""
+
+  def test_una_vez():
+      assert repeat_text("hola", 1) == "hola"
+
+  def test_cadena_vacia():
+      assert repeat_text("", 5) == ""
+
+  def test_repite_dos_veces():
+      assert repeat_text("-", 2) == "--"

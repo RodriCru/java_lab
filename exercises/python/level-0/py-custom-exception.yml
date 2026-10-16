@@ -1,0 +1,56 @@
+language: python
+slug: py-custom-exception
+level: 0
+topic: exceptions
+title: Excepción propia de saldo insuficiente
+statement: |
+  Define una excepción propia `SaldoInsuficienteError` y una función que reste un monto al saldo. Si el monto es mayor que el saldo, lanza `SaldoInsuficienteError`; en caso contrario devuelve el saldo restante.
+
+  Ejemplos:
+  - `retirar(100, 30) -> 70`
+  - `retirar(100, 100) -> 0`
+  - `retirar(50, 80) -> lanza SaldoInsuficienteError`
+
+methodSignature: "class SaldoInsuficienteError(Exception):"
+estimatedMinutes: 6
+difficulty: medium
+hints:
+- Una excepción propia se crea heredando de Exception; el cuerpo puede ser solo pass.
+- Usa raise SaldoInsuficienteError("Saldo insuficiente") cuando el monto supere el saldo.
+starterCode: |
+  class SaldoInsuficienteError(Exception):
+      pass
+
+
+  def retirar(saldo, monto):
+      # Tu código aquí
+      return saldo
+referenceSolution: |
+  class SaldoInsuficienteError(Exception):
+      pass
+
+
+  def retirar(saldo, monto):
+      if monto > saldo:
+          raise SaldoInsuficienteError("Saldo insuficiente")
+      return saldo - monto
+tests: |
+  import pytest
+  from solution import SaldoInsuficienteError, retirar
+
+  def test_retiro_valido():
+      assert retirar(100, 30) == 70
+
+  def test_retiro_exacto():
+      assert retirar(100, 100) == 0
+
+  def test_saldo_insuficiente():
+      with pytest.raises(SaldoInsuficienteError):
+          retirar(50, 80)
+
+  def test_es_subclase_de_exception():
+      assert issubclass(SaldoInsuficienteError, Exception)
+
+  def test_mensaje_del_error():
+      with pytest.raises(SaldoInsuficienteError, match="insuficiente"):
+          retirar(10, 20)

@@ -1,0 +1,56 @@
+language: python
+slug: py-grade-letter
+level: 0
+topic: operators-decisions
+title: Nota en letra
+statement: |
+  Escribe una función que convierta una puntuación de 0 a 100 en una letra: "A" para 90 o más, "B" de 80 a 89, "C" de 70 a 79, "D" de 60 a 69 y "F" por debajo de 60.
+
+  Ejemplos:
+  - `grade_letter(95) -> "A"`
+  - `grade_letter(85) -> "B"`
+  - `grade_letter(65) -> "D"`
+  - `grade_letter(50) -> "F"`
+
+methodSignature: grade_letter(score)
+estimatedMinutes: 5
+difficulty: easy
+hints:
+- Evalúa de mayor a menor con if, elif y else; así el primer caso que encaje gana.
+- Comprueba cada rango con el operador >=, por ejemplo score >= 90.
+starterCode: |
+  def grade_letter(score):
+      # Tu código aquí
+      return ""
+referenceSolution: |
+  def grade_letter(score):
+      if score >= 90:
+          return "A"
+      elif score >= 80:
+          return "B"
+      elif score >= 70:
+          return "C"
+      elif score >= 60:
+          return "D"
+      else:
+          return "F"
+tests: |
+  from solution import grade_letter
+
+  def test_a():
+      assert grade_letter(95) == "A"
+
+  def test_b():
+      assert grade_letter(85) == "B"
+
+  def test_c():
+      assert grade_letter(72) == "C"
+
+  def test_d():
+      assert grade_letter(65) == "D"
+
+  def test_f():
+      assert grade_letter(50) == "F"
+
+  def test_limite_de_d():
+      assert grade_letter(60) == "D"

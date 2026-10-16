@@ -1,0 +1,49 @@
+language: python
+slug: py-parse-key-values
+level: 0
+topic: input-parsing
+title: Convertir pares clave-valor
+statement: |
+  Escribe una función que reciba un texto con pares `clave=valor` separados por `;` y devuelva un diccionario. Las claves y los valores van siempre como texto.
+
+  Ejemplos:
+  - `parse_key_values("a=1;b=2") -> {"a": "1", "b": "2"}`
+  - `parse_key_values("nombre=Ana") -> {"nombre": "Ana"}`
+  - `parse_key_values("") -> {}`
+
+methodSignature: parse_key_values(text)
+estimatedMinutes: 7
+difficulty: medium
+hints:
+- Separa los pares con `text.split(";")` y cada par con `par.split("=", 1)` (el 1 evita romper valores que contengan `=`).
+- Guarda cada par en un diccionario y controla el caso del texto vacío.
+starterCode: |
+  def parse_key_values(text):
+      # Tu código aquí
+      return {}
+referenceSolution: |
+  def parse_key_values(text):
+      resultado = {}
+      if text.strip() == "":
+          return resultado
+      for par in text.split(";"):
+          clave, valor = par.split("=", 1)
+          resultado[clave.strip()] = valor.strip()
+      return resultado
+tests: |
+  from solution import parse_key_values
+
+  def test_dos_pares():
+      assert parse_key_values("a=1;b=2") == {"a": "1", "b": "2"}
+
+  def test_un_par():
+      assert parse_key_values("nombre=Ana") == {"nombre": "Ana"}
+
+  def test_vacio():
+      assert parse_key_values("") == {}
+
+  def test_espacios_alrededor():
+      assert parse_key_values("a = 1 ; b = 2") == {"a": "1", "b": "2"}
+
+  def test_valor_con_igual():
+      assert parse_key_values("expr=x=y") == {"expr": "x=y"}

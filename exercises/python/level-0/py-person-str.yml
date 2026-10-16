@@ -1,0 +1,56 @@
+language: python
+slug: py-person-str
+level: 0
+topic: oop-basics
+title: Texto de una persona (__str__)
+statement: |
+  El método especial `__str__` decide cómo se convierte un objeto en texto. Crea una clase `Person` con los atributos `nombre` y `edad`; su `__str__` debe devolver el nombre, un paréntesis, la edad, un espacio y la palabra `años`, así: `Nombre (edad años)`.
+
+  Ejemplos:
+  - `str(Person("Ana", 30)) -> "Ana (30 años)"`
+  - `str(Person("Luis", 7)) -> "Luis (7 años)"`
+
+methodSignature: "class Person:"
+estimatedMinutes: 6
+difficulty: medium
+hints:
+- "`__str__` no lleva parámetros además de `self` y debe devolver un `str`."
+- 'Con una f-string puedes interpolar: `f"{self.nombre} ({self.edad} años)"`.'
+- "Guarda los datos en `__init__` para poder usarlos después."
+starterCode: |
+  class Person:
+      def __init__(self, nombre, edad):
+          self.nombre = nombre
+          self.edad = edad
+
+      def __str__(self):
+          # Tu código aquí
+          return ""
+referenceSolution: |
+  class Person:
+      def __init__(self, nombre, edad):
+          self.nombre = nombre
+          self.edad = edad
+
+      def __str__(self):
+          return f"{self.nombre} ({self.edad} años)"
+tests: |
+  from solution import Person
+
+
+  def test_str_basico():
+      assert str(Person("Ana", 30)) == "Ana (30 años)"
+
+
+  def test_str_con_un_digito():
+      assert str(Person("Luis", 7)) == "Luis (7 años)"
+
+
+  def test_f_string_usa_str():
+      p = Person("Eva", 25)
+      assert f"{p}" == "Eva (25 años)"
+
+
+  def test_guarda_atributos():
+      p = Person("Mario", 40)
+      assert p.nombre == "Mario" and p.edad == 40

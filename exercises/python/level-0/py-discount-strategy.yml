@@ -1,0 +1,88 @@
+language: python
+slug: py-discount-strategy
+level: 0
+topic: abstraction
+title: Estrategia de descuento
+statement: |
+  El patrón estrategia recibe el cálculo variable como un objeto aparte. Crea `Checkout(estrategia)` con un método `total(amount)` que delegue en `estrategia.apply(amount)`. Implementa `NoDiscount`, que devuelve el importe tal cual, y `PercentDiscount(percent)`, que resta el porcentaje indicado.
+
+  Ejemplos:
+  - `Checkout(NoDiscount()).total(200) -> 200`
+  - `Checkout(PercentDiscount(10)).total(200) -> 180`
+  - `Checkout(PercentDiscount(0)).total(50) -> 50`
+
+methodSignature: "class Checkout:"
+estimatedMinutes: 10
+difficulty: medium
+hints:
+- "`Checkout` solo guarda la estrategia y la usa: no conoce los detalles del descuento."
+- "`PercentDiscount.apply` calcula `amount - amount * self.percent / 100`."
+- "Cambiar `checkout.estrategia` debe cambiar el resultado sin tocar `Checkout`."
+starterCode: |
+  class Checkout:
+      def __init__(self, estrategia):
+          self.estrategia = estrategia
+
+      def total(self, amount):
+          # Tu código aquí
+          return 0
+
+
+  class NoDiscount:
+      def apply(self, amount):
+          # Tu código aquí
+          return 0
+
+
+  class PercentDiscount:
+      def __init__(self, percent):
+          self.percent = percent
+
+      def apply(self, amount):
+          # Tu código aquí
+          return 0
+referenceSolution: |
+  class Checkout:
+      def __init__(self, estrategia):
+          self.estrategia = estrategia
+
+      def total(self, amount):
+          return self.estrategia.apply(amount)
+
+
+  class NoDiscount:
+      def apply(self, amount):
+          return amount
+
+
+  class PercentDiscount:
+      def __init__(self, percent):
+          self.percent = percent
+
+      def apply(self, amount):
+          return amount - amount * self.percent / 100
+tests: |
+  from solution import Checkout, NoDiscount, PercentDiscount
+
+
+  def test_sin_descuento():
+      assert Checkout(NoDiscount()).total(200) == 200
+
+
+  def test_descuento_porcentaje():
+      assert Checkout(PercentDiscount(10)).total(200) == 180
+
+
+  def test_descuento_cero():
+      assert Checkout(PercentDiscount(0)).total(50) == 50
+
+
+  def test_estrategia_intercambiable():
+      c = Checkout(NoDiscount())
+      assert c.total(100) == 100
+      c.estrategia = PercentDiscount(25)
+      assert c.total(100) == 75
+
+
+  def test_descuento_mitad():
+      assert Checkout(PercentDiscount(50)).total(10) == 5

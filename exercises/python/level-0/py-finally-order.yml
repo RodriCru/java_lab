@@ -1,0 +1,57 @@
+language: python
+slug: py-finally-order
+level: 0
+topic: exceptions
+title: El orden de try, except, else y finally
+statement: |
+  Escribe una función que devuelva, en orden, los bloques que se ejecutan en un `try` / `except` / `else` / `finally`. Añade siempre "try"; usa el parámetro `con_error` para decidir el camino, y "finally" se ejecuta siempre al final.
+
+  Ejemplos:
+  - `ejecutar(False) -> ["try", "else", "finally"]`
+  - `ejecutar(True) -> ["try", "except", "finally"]`
+
+methodSignature: ejecutar(con_error)
+estimatedMinutes: 7
+difficulty: medium
+hints:
+- Lleva una lista de pasos y ve añadiendo cada nombre con append.
+- Si con_error es True, lanza un ValueError dentro del try para que lo capture el except.
+- El bloque else solo entra cuando no hubo error; finally siempre entra.
+starterCode: |
+  def ejecutar(con_error):
+      # Tu código aquí
+      return []
+referenceSolution: |
+  def ejecutar(con_error):
+      pasos = []
+      try:
+          pasos.append("try")
+          if con_error:
+              raise ValueError("error simulado")
+      except ValueError:
+          pasos.append("except")
+      else:
+          pasos.append("else")
+      finally:
+          pasos.append("finally")
+      return pasos
+tests: |
+  from solution import ejecutar
+
+  def test_sin_error_pasa_por_else():
+      assert ejecutar(False) == ["try", "else", "finally"]
+
+  def test_con_error_pasa_por_except():
+      assert ejecutar(True) == ["try", "except", "finally"]
+
+  def test_finally_es_el_ultimo():
+      assert ejecutar(True)[-1] == "finally"
+      assert ejecutar(False)[-1] == "finally"
+
+  def test_siempre_empieza_por_try():
+      assert ejecutar(True)[0] == "try"
+      assert ejecutar(False)[0] == "try"
+
+  def test_no_mezcla_else_y_except():
+      assert "except" not in ejecutar(False)
+      assert "else" not in ejecutar(True)

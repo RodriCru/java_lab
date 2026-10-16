@@ -1,0 +1,55 @@
+language: python
+slug: py-classify-triangle
+level: 0
+topic: operators-decisions
+title: Clasificar un triángulo
+statement: |
+  Escribe una función que reciba las longitudes de tres lados y devuelva el tipo de triángulo: "equilatero" si los tres lados son iguales, "isosceles" si dos son iguales, "escaleno" si todos son distintos y "no es triangulo" si los lados no forman un triángulo válido (algún lado no es positivo o la suma de dos lados cualesquiera no supera al tercero).
+
+  Ejemplos:
+  - `classify_triangle(3, 3, 3) -> "equilatero"`
+  - `classify_triangle(3, 3, 4) -> "isosceles"`
+  - `classify_triangle(3, 4, 5) -> "escaleno"`
+  - `classify_triangle(1, 2, 3) -> "no es triangulo"`
+
+methodSignature: classify_triangle(a, b, c)
+estimatedMinutes: 6
+difficulty: medium
+hints:
+- 'Primero comprueba que el triángulo es válido: todos los lados > 0 y cada lado menor que la suma de los otros dos.'
+- Después compara las longitudes entre sí para decidir si es equilátero, isósceles o escaleno.
+starterCode: |
+  def classify_triangle(a, b, c):
+      # Tu código aquí
+      return ""
+referenceSolution: |
+  def classify_triangle(a, b, c):
+      if a <= 0 or b <= 0 or c <= 0:
+          return "no es triangulo"
+      if a + b <= c or a + c <= b or b + c <= a:
+          return "no es triangulo"
+      if a == b == c:
+          return "equilatero"
+      if a == b or a == c or b == c:
+          return "isosceles"
+      return "escaleno"
+tests: |
+  from solution import classify_triangle
+
+  def test_equilatero():
+      assert classify_triangle(3, 3, 3) == "equilatero"
+
+  def test_isosceles():
+      assert classify_triangle(3, 3, 4) == "isosceles"
+
+  def test_escaleno():
+      assert classify_triangle(3, 4, 5) == "escaleno"
+
+  def test_no_es_triangulo():
+      assert classify_triangle(1, 2, 3) == "no es triangulo"
+
+  def test_lado_no_positivo():
+      assert classify_triangle(0, 4, 5) == "no es triangulo"
+
+  def test_isosceles_otro_orden():
+      assert classify_triangle(5, 3, 5) == "isosceles"

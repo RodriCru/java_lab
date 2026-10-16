@@ -1,0 +1,49 @@
+language: python
+slug: py-unique-preserving-order
+level: 0
+topic: collections
+title: Quitar duplicados conservando el orden
+statement: |
+  Escribe una función que devuelva una lista sin elementos repetidos, manteniendo el orden en que aparecen por primera vez.
+
+  Ejemplos:
+  - `unique_preserving_order([3, 1, 3, 2, 1]) -> [3, 1, 2]`
+  - `unique_preserving_order(["b", "a", "b", "c", "a"]) -> ["b", "a", "c"]`
+  - `unique_preserving_order([]) -> []`
+
+methodSignature: unique_preserving_order(items)
+estimatedMinutes: 6
+difficulty: medium
+hints:
+- Un conjunto recuerda qué valores ya viste, pero no guarda el orden.
+- Recorre la lista y añade a un resultado solo los valores que aún no estén en el conjunto.
+starterCode: |
+  def unique_preserving_order(items):
+      # Tu código aquí
+      return []
+referenceSolution: |
+  def unique_preserving_order(items):
+      vistos = set()
+      resultado = []
+      for item in items:
+          if item not in vistos:
+              vistos.add(item)
+              resultado.append(item)
+      return resultado
+tests: |
+  from solution import unique_preserving_order
+
+  def test_conserva_el_orden():
+      assert unique_preserving_order([3, 1, 3, 2, 1]) == [3, 1, 2]
+
+  def test_vacia():
+      assert unique_preserving_order([]) == []
+
+  def test_sin_repetidos():
+      assert unique_preserving_order([1, 2, 3]) == [1, 2, 3]
+
+  def test_todos_iguales():
+      assert unique_preserving_order(["a", "a", "a"]) == ["a"]
+
+  def test_mezcla():
+      assert unique_preserving_order(["b", "a", "b", "c", "a"]) == ["b", "a", "c"]

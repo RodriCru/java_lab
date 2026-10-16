@@ -1,0 +1,55 @@
+language: python
+slug: py-build-pyramid
+level: 0
+topic: loops
+title: Dibujar una pirámide
+statement: |
+  Un bucle for repite un bloque de código un número conocido de veces. Escribe una función que imprima una pirámide de asteriscos de n filas, centrada y sin espacios sobrantes al final de cada linea. La fila i lleva (2 * i - 1) asteriscos y (n - i) espacios delante. Si n es 0 no imprime nada.
+
+  Ejemplos:
+  - `build_pyramid(1) imprime: *`
+  - `build_pyramid(3) imprime: "  *", " ***" y "*****", uno por línea`
+  - `build_pyramid(0) imprime: nada`
+
+methodSignature: build_pyramid(n)
+estimatedMinutes: 5
+difficulty: medium
+hints:
+- Recorre las filas con for i in range(1, n + 1).
+- En cada fila imprime " " * (n - i) seguido de "*" * (2 * i - 1).
+- print(...) ya agrega el salto de linea final.
+starterCode: |
+  def build_pyramid(n):
+      # Tu código aquí
+      pass
+referenceSolution: |
+  def build_pyramid(n):
+      for i in range(1, n + 1):
+          print(" " * (n - i) + "*" * (2 * i - 1))
+tests: |
+  from solution import build_pyramid
+
+  def test_una_fila(capsys):
+      build_pyramid(1)
+      captured = capsys.readouterr()
+      assert captured.out == "*\n"
+
+  def test_tres_filas(capsys):
+      build_pyramid(3)
+      captured = capsys.readouterr()
+      assert captured.out == "  *\n ***\n*****\n"
+
+  def test_cero_no_imprime(capsys):
+      build_pyramid(0)
+      captured = capsys.readouterr()
+      assert captured.out == ""
+
+  def test_cinco_filas(capsys):
+      build_pyramid(5)
+      captured = capsys.readouterr()
+      assert captured.out == "    *\n   ***\n  *****\n *******\n*********\n"
+
+  def test_ultima_fila_tiene_dos_n_menos_uno_asteriscos(capsys):
+      build_pyramid(4)
+      captured = capsys.readouterr()
+      assert captured.out.split("\n")[3] == "*******"

@@ -1,0 +1,45 @@
+language: python
+slug: py-day-type
+level: 0
+topic: operators-decisions
+title: ¿Laborable o fin de semana?
+statement: |
+  Escribe una función que reciba el nombre de un día de la semana en español y devuelva "laborable" de lunes a viernes, o "fin de semana" para sábado y domingo.
+
+  Ejemplos:
+  - `day_type("lunes") -> "laborable"`
+  - `day_type("sábado") -> "fin de semana"`
+  - `day_type("domingo") -> "fin de semana"`
+
+methodSignature: day_type(day)
+estimatedMinutes: 4
+difficulty: easy
+hints:
+- Puedes comparar el día con "sábado" y "domingo", o comprobar si está dentro de una tupla con in.
+- Ten en cuenta la tilde de "sábado".
+starterCode: |
+  def day_type(day):
+      # Tu código aquí
+      return ""
+referenceSolution: |
+  def day_type(day):
+      if day.lower() in ("sábado", "sabado", "domingo"):
+          return "fin de semana"
+      return "laborable"
+tests: |
+  from solution import day_type
+
+  def test_lunes():
+      assert day_type("lunes") == "laborable"
+
+  def test_viernes():
+      assert day_type("viernes") == "laborable"
+
+  def test_sabado():
+      assert day_type("sábado") == "fin de semana"
+
+  def test_domingo():
+      assert day_type("domingo") == "fin de semana"
+
+  def test_miercoles():
+      assert day_type("miércoles") == "laborable"

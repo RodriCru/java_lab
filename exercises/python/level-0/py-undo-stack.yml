@@ -1,0 +1,85 @@
+language: python
+slug: py-undo-stack
+level: 0
+topic: collections
+title: Una pila de deshacer
+statement: |
+  Una pila (LIFO) guarda elementos y siempre saca el último que entró. Crea la clase `UndoStack` con tres métodos:
+
+  - `push(valor)`: apila un valor.
+  - `pop()`: saca y devuelve el último valor, o `None` si la pila está vacía.
+  - `peek()`: devuelve el último valor sin sacarlo, o `None` si está vacía.
+
+  Ejemplos:
+  - `pila.push("a"); pila.peek() -> "a"`
+  - `pila.push("b"); pila.pop() -> "b"`
+
+methodSignature: 'class UndoStack:'
+estimatedMinutes: 8
+difficulty: easy
+hints:
+- Una lista de Python ya sirve como pila; `append` añade al final y `pop` saca el último.
+- El último elemento es `self._items[-1]`; comprueba antes con `if not self._items` para devolver `None`.
+starterCode: |
+  class UndoStack:
+      def __init__(self):
+          # Tu código aquí
+          self._items = []
+
+      def push(self, valor):
+          # Tu código aquí
+          pass
+
+      def pop(self):
+          # Tu código aquí
+          return None
+
+      def peek(self):
+          # Tu código aquí
+          return None
+referenceSolution: |
+  class UndoStack:
+      def __init__(self):
+          self._items = []
+
+      def push(self, valor):
+          self._items.append(valor)
+
+      def pop(self):
+          if not self._items:
+              return None
+          return self._items.pop()
+
+      def peek(self):
+          if not self._items:
+              return None
+          return self._items[-1]
+tests: |
+  from solution import UndoStack
+
+  def test_peek_devuelve_el_ultimo():
+      pila = UndoStack()
+      pila.push("a")
+      pila.push("b")
+      assert pila.peek() == "b"
+
+  def test_pop_devuelve_el_ultimo():
+      pila = UndoStack()
+      pila.push("a")
+      pila.push("b")
+      assert pila.pop() == "b"
+
+  def test_orden_lifo():
+      pila = UndoStack()
+      pila.push("primero")
+      pila.push("segundo")
+      pila.push("tercero")
+      assert [pila.pop(), pila.pop(), pila.pop()] == ["tercero", "segundo", "primero"]
+
+  def test_pop_en_vacia_devuelve_none():
+      pila = UndoStack()
+      assert pila.pop() is None
+
+  def test_peek_en_vacia_devuelve_none():
+      pila = UndoStack()
+      assert pila.peek() is None

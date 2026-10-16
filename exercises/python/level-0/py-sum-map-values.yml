@@ -1,0 +1,43 @@
+language: python
+slug: py-sum-map-values
+level: 0
+topic: collections
+title: Sumar los valores de un diccionario
+statement: |
+  Escribe una función que reciba un diccionario con valores numéricos y devuelva la suma de todos sus valores.
+
+  Ejemplos:
+  - `sum_map_values({"a": 1, "b": 2}) -> 3`
+  - `sum_map_values({"solo": 42}) -> 42`
+  - `sum_map_values({}) -> 0`
+
+methodSignature: sum_map_values(values)
+estimatedMinutes: 4
+difficulty: easy
+hints:
+- Usa `values.values()` para obtener solo los valores del diccionario.
+- La función `sum(...)` suma una colección; con un diccionario vacío devuelve 0.
+starterCode: |
+  def sum_map_values(values):
+      # Tu código aquí
+      return 0
+referenceSolution: |
+  def sum_map_values(values):
+      return sum(values.values())
+tests: |
+  from solution import sum_map_values
+
+  def test_dos_claves():
+      assert sum_map_values({"a": 1, "b": 2}) == 3
+
+  def test_vacio():
+      assert sum_map_values({}) == 0
+
+  def test_negativos():
+      assert sum_map_values({"x": -5, "y": 5}) == 0
+
+  def test_una_clave():
+      assert sum_map_values({"solo": 42}) == 42
+
+  def test_muchas_claves():
+      assert sum_map_values({"a": 1, "b": 2, "c": 3, "d": 4}) == 10

@@ -1,0 +1,45 @@
+language: python
+slug: py-validate-age
+level: 0
+topic: exceptions
+title: Validar una edad
+statement: |
+  Escribe una función que devuelva la edad recibida, pero que lance un error si la edad es negativa. Si `age` es menor que 0, lanza `ValueError` con el mensaje "La edad no puede ser negativa".
+
+  Ejemplos:
+  - `validate_age(25) -> 25`
+  - `validate_age(0) -> 0`
+  - `validate_age(-1) -> lanza ValueError`
+
+methodSignature: validate_age(age)
+estimatedMinutes: 5
+difficulty: easy
+hints:
+- Primero comprueba si age es menor que 0.
+- Para señalar el error usa raise ValueError("La edad no puede ser negativa").
+starterCode: |
+  def validate_age(age):
+      # Tu código aquí
+      return age
+referenceSolution: |
+  def validate_age(age):
+      if age < 0:
+          raise ValueError("La edad no puede ser negativa")
+      return age
+tests: |
+  import pytest
+  from solution import validate_age
+
+  def test_edad_positiva():
+      assert validate_age(25) == 25
+
+  def test_edad_cero():
+      assert validate_age(0) == 0
+
+  def test_edad_negativa_lanza_error():
+      with pytest.raises(ValueError):
+          validate_age(-1)
+
+  def test_mensaje_del_error():
+      with pytest.raises(ValueError, match="no puede ser negativa"):
+          validate_age(-99)

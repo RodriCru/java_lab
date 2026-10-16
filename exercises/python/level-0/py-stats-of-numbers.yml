@@ -1,0 +1,46 @@
+language: python
+slug: py-stats-of-numbers
+level: 0
+topic: functions
+title: Mínimo, máximo y media
+statement: |
+  Una función puede devolver varios valores a la vez usando una tupla. Escribe una función que devuelva el mínimo, el máximo y la media de una lista de números. Si la lista está vacía, devuelve (0, 0, 0.0).
+
+  Ejemplos:
+  - `stats([1, 2, 3, 4]) -> (1, 4, 2.5)`
+  - `stats([7]) -> (7, 7, 7.0)`
+  - `stats([]) -> (0, 0, 0.0)`
+
+methodSignature: stats(numbers)
+estimatedMinutes: 5
+difficulty: medium
+hints:
+- min(...) y max(...) obtienen el menor y el mayor de una colección.
+- La media es la suma dividida entre la cantidad de elementos (sum(numbers) / len(numbers)).
+- 'Para devolver varios valores, escribe varios tras return separados por comas: return a, b, c.'
+starterCode: |
+  def stats(numbers):
+      # Tu código aquí
+      return (0, 0, 0.0)
+referenceSolution: |
+  def stats(numbers):
+      if not numbers:
+          return (0, 0, 0.0)
+      return (min(numbers), max(numbers), sum(numbers) / len(numbers))
+tests: |
+  from solution import stats
+
+  def test_lista_normal():
+      assert stats([1, 2, 3, 4]) == (1, 4, 2.5)
+
+  def test_un_elemento():
+      assert stats([7]) == (7, 7, 7.0)
+
+  def test_vacia():
+      assert stats([]) == (0, 0, 0.0)
+
+  def test_negativos():
+      assert stats([-5, 0, 5]) == (-5, 5, 0.0)
+
+  def test_media_fraccionaria():
+      assert stats([1, 2]) == (1, 2, 1.5)

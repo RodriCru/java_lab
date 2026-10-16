@@ -1,0 +1,126 @@
+language: python
+slug: py-template-method
+level: 0
+topic: abstraction
+title: Bebidas con método plantilla
+statement: |
+  En el patrón método plantilla la clase base fija el orden de los pasos y las hijas rellenan los que cambian. La clase abstracta `Beverage` tiene `prepare()`, que ejecuta hervir agua, `brew()`, servir y `add_condiments()` en ese orden, uniendo los pasos con `" | "`. `brew()` y `add_condiments()` son abstractos. Implementa `Tea` y `Coffee`.
+
+  Ejemplos:
+  - `Tea().prepare() -> "Hervir agua | Infusionar té | Servir en taza | Añadir limón"`
+  - `Coffee().prepare() -> "Hervir agua | Colar café | Servir en taza | Añadir azúcar"`
+
+methodSignature: "class Beverage(ABC):"
+estimatedMinutes: 12
+difficulty: medium
+hints:
+- "`boil_water` y `pour` traen el texto fijo desde la base."
+- "Las subclases solo implementan `brew` y `add_condiments`."
+- 'Junta los cuatro textos con `" | ".join([...])`.'
+starterCode: |
+  from abc import ABC, abstractmethod
+
+
+  class Beverage(ABC):
+      def prepare(self):
+          # Tu código aquí
+          return ""
+
+      def boil_water(self):
+          return "Hervir agua"
+
+      @abstractmethod
+      def brew(self):
+          ...
+
+      def pour(self):
+          return "Servir en taza"
+
+      @abstractmethod
+      def add_condiments(self):
+          ...
+
+
+  class Tea(Beverage):
+      def brew(self):
+          # Tu código aquí
+          return ""
+
+      def add_condiments(self):
+          # Tu código aquí
+          return ""
+
+
+  class Coffee(Beverage):
+      def brew(self):
+          # Tu código aquí
+          return ""
+
+      def add_condiments(self):
+          # Tu código aquí
+          return ""
+referenceSolution: |
+  from abc import ABC, abstractmethod
+
+
+  class Beverage(ABC):
+      def prepare(self):
+          pasos = [self.boil_water(), self.brew(), self.pour(), self.add_condiments()]
+          return " | ".join(pasos)
+
+      def boil_water(self):
+          return "Hervir agua"
+
+      @abstractmethod
+      def brew(self):
+          ...
+
+      def pour(self):
+          return "Servir en taza"
+
+      @abstractmethod
+      def add_condiments(self):
+          ...
+
+
+  class Tea(Beverage):
+      def brew(self):
+          return "Infusionar té"
+
+      def add_condiments(self):
+          return "Añadir limón"
+
+
+  class Coffee(Beverage):
+      def brew(self):
+          return "Colar café"
+
+      def add_condiments(self):
+          return "Añadir azúcar"
+tests: |
+  from solution import Beverage, Tea, Coffee
+
+
+  def test_tea_prepara_en_orden():
+      assert Tea().prepare() == "Hervir agua | Infusionar té | Servir en taza | Añadir limón"
+
+
+  def test_coffee_prepara_en_orden():
+      assert Coffee().prepare() == "Hervir agua | Colar café | Servir en taza | Añadir azúcar"
+
+
+  def test_paso_fijo_viene_de_la_base():
+      assert Tea().boil_water() == "Hervir agua"
+
+
+  def test_beverage_es_abstracta():
+      try:
+          Beverage()
+          creado = True
+      except TypeError:
+          creado = False
+      assert not creado
+
+
+  def test_tea_es_beverage():
+      assert isinstance(Tea(), Beverage)

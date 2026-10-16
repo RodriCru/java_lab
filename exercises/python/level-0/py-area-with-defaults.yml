@@ -1,0 +1,43 @@
+language: python
+slug: py-area-with-defaults
+level: 0
+topic: functions
+title: Área con argumento por defecto
+statement: |
+  Un parámetro puede tener un valor por defecto: si quien llama no lo pasa, se usa ese valor. Escribe una función que devuelva el área de un rectángulo, con altura 1 por defecto.
+
+  Ejemplos:
+  - `area(5) -> 5`
+  - `area(4, 3) -> 12`
+  - `area(2, 0) -> 0`
+
+methodSignature: area(base, height=1)
+estimatedMinutes: 3
+difficulty: easy
+hints:
+- 'Los parámetros con valor por defecto se escriben asi: def area(base, height=1).'
+- Solo se pasan cuando se necesitan; si no, Python usa el valor por defecto.
+starterCode: |
+  def area(base, height=1):
+      # Tu código aquí
+      return 0
+referenceSolution: |
+  def area(base, height=1):
+      return base * height
+tests: |
+  from solution import area
+
+  def test_solo_base():
+      assert area(5) == 5
+
+  def test_base_y_altura():
+      assert area(4, 3) == 12
+
+  def test_altura_cero():
+      assert area(2, 0) == 0
+
+  def test_altura_explicita_uno():
+      assert area(7, 1) == 7
+
+  def test_numeros_decimales():
+      assert area(2.5, 2) == 5.0

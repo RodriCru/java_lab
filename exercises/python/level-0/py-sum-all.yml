@@ -1,0 +1,44 @@
+language: python
+slug: py-sum-all
+level: 0
+topic: functions
+title: Sumar todos los argumentos
+statement: |
+  Con *args una función recibe una cantidad variable de argumentos y los ve como una tupla. Escribe una función que devuelva la suma de todos los números que recibe.
+
+  Ejemplos:
+  - `sum_all(1, 2, 3) -> 6`
+  - `sum_all(10) -> 10`
+  - `sum_all() -> 0`
+
+methodSignature: sum_all(*numbers)
+estimatedMinutes: 4
+difficulty: easy
+hints:
+- 'El asterisco delante del nombre guarda todos los argumentos en una tupla: def sum_all(*numbers).'
+- Dentro de la función, numbers es una tupla y se comporta como cualquier colección.
+- sum(...) suma todos los elementos de una colección; sum(()) es 0.
+starterCode: |
+  def sum_all(*numbers):
+      # Tu código aquí
+      return 0
+referenceSolution: |
+  def sum_all(*numbers):
+      return sum(numbers)
+tests: |
+  from solution import sum_all
+
+  def test_tres_numeros():
+      assert sum_all(1, 2, 3) == 6
+
+  def test_un_numero():
+      assert sum_all(10) == 10
+
+  def test_sin_argumentos():
+      assert sum_all() == 0
+
+  def test_con_negativos():
+      assert sum_all(-1, -2, 5) == 2
+
+  def test_muchos_numeros():
+      assert sum_all(*range(1, 11)) == 55

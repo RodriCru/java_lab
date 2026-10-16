@@ -1,0 +1,48 @@
+language: python
+slug: py-parse-int-or-default
+level: 0
+topic: exceptions
+title: Convertir texto en número con respaldo
+statement: |
+  Escribe una función que convierta `text` en un número entero. Si el texto no representa un entero válido, debe devolver `default` en vez de fallar.
+
+  Ejemplos:
+  - `parse_int_or_default("42", 0) -> 42`
+  - `parse_int_or_default("abc", -1) -> -1`
+  - `parse_int_or_default("3.5", 0) -> 0`
+  - `parse_int_or_default("-15", 0) -> -15`
+
+methodSignature: parse_int_or_default(text, default)
+estimatedMinutes: 5
+difficulty: easy
+hints:
+- Usa int(text) dentro de un try para intentar la conversión.
+- Captura ValueError con except y devuelve default.
+starterCode: |
+  def parse_int_or_default(text, default):
+      # Tu código aquí
+      return default
+referenceSolution: |
+  def parse_int_or_default(text, default):
+      try:
+          return int(text)
+      except ValueError:
+          return default
+tests: |
+  import pytest
+  from solution import parse_int_or_default
+
+  def test_numero_valido():
+      assert parse_int_or_default("42", 0) == 42
+
+  def test_texto_no_numerico():
+      assert parse_int_or_default("abc", -1) == -1
+
+  def test_decimal_no_es_entero():
+      assert parse_int_or_default("3.5", 0) == 0
+
+  def test_negativo():
+      assert parse_int_or_default("-15", 0) == -15
+
+  def test_con_espacios():
+      assert parse_int_or_default(" 7 ", 0) == 7

@@ -1,0 +1,75 @@
+language: python
+slug: py-bounded-counter
+level: 0
+topic: oop-basics
+title: Contador con límites
+statement: |
+  El encapsulamiento cuida que los datos de un objeto siempre sean válidos. Crea una clase `Counter` que guarde un valor dentro de un rango `[minimo, maximo]` y empiece en `minimo`. `increment(n)` sube el valor sin superar el máximo y `decrement(n)` lo baja sin bajar del mínimo; ambos devuelven el valor actual.
+
+  Ejemplos:
+  - `Counter(0, 10).increment(3) -> 3`
+  - `Counter(0, 10).increment(20) -> 10`
+  - `Counter(5, 20).decrement(1) -> 5`
+
+methodSignature: "class Counter:"
+estimatedMinutes: 8
+difficulty: medium
+hints:
+- "Guarda `minimo`, `maximo` y `valor` como atributos en `__init__`."
+- "`min(...)` y `max(...)` ayudan a no salirse del rango."
+- "Devuelve `self.valor` al final de cada método."
+starterCode: |
+  class Counter:
+      def __init__(self, minimo=0, maximo=10):
+          self.minimo = minimo
+          self.maximo = maximo
+          self.valor = minimo
+
+      def increment(self, n=1):
+          # Tu código aquí
+          return self.valor
+
+      def decrement(self, n=1):
+          # Tu código aquí
+          return self.valor
+referenceSolution: |
+  class Counter:
+      def __init__(self, minimo=0, maximo=10, valor=None):
+          self.minimo = minimo
+          self.maximo = maximo
+          self.valor = minimo if valor is None else valor
+
+      def increment(self, n=1):
+          self.valor = min(self.maximo, self.valor + n)
+          return self.valor
+
+      def decrement(self, n=1):
+          self.valor = max(self.minimo, self.valor - n)
+          return self.valor
+tests: |
+  from solution import Counter
+
+
+  def test_valor_inicial():
+      assert Counter(3, 8).valor == 3
+
+
+  def test_incremento_normal():
+      assert Counter(0, 10).increment(3) == 3
+
+
+  def test_incremento_no_pasa_del_maximo():
+      assert Counter(0, 10).increment(20) == 10
+
+
+  def test_decremento_no_baja_del_minimo():
+      c = Counter(0, 10)
+      c.increment(5)
+      assert c.decrement(9) == 0
+
+
+  def test_secuencia_de_operaciones():
+      c = Counter(1, 5)
+      c.increment(2)
+      c.increment(2)
+      assert c.decrement(1) == 4

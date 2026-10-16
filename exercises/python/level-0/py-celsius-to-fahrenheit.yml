@@ -1,0 +1,45 @@
+language: python
+slug: py-celsius-to-fahrenheit
+level: 0
+topic: basics
+title: Convertir grados Celsius a Fahrenheit
+statement: |
+  Escribe una función que reciba una temperatura en grados Celsius y devuelva su equivalente en grados Fahrenheit. La fórmula es F = C * 9 / 5 + 32.
+
+  Ejemplos:
+  - `celsius_to_fahrenheit(0) -> 32.0`
+  - `celsius_to_fahrenheit(100) -> 212.0`
+  - `celsius_to_fahrenheit(-40) -> -40.0`
+
+methodSignature: celsius_to_fahrenheit(c)
+estimatedMinutes: 4
+difficulty: easy
+hints:
+- Multiplica los grados por 9, divide entre 5 y suma 32.
+- Usa el operador / para que la división sea decimal, y devuelve el resultado con return.
+starterCode: |
+  def celsius_to_fahrenheit(c):
+      # Tu código aquí
+      return 0.0
+referenceSolution: |
+  def celsius_to_fahrenheit(c):
+      return c * 9 / 5 + 32
+tests: |
+  import pytest
+
+  from solution import celsius_to_fahrenheit
+
+  def test_congelacion():
+      assert celsius_to_fahrenheit(0) == pytest.approx(32.0)
+
+  def test_ebullicion():
+      assert celsius_to_fahrenheit(100) == pytest.approx(212.0)
+
+  def test_punto_de_encuentro():
+      assert celsius_to_fahrenheit(-40) == pytest.approx(-40.0)
+
+  def test_temperatura_ambiente():
+      assert celsius_to_fahrenheit(25) == pytest.approx(77.0)
+
+  def test_positivo_bajo():
+      assert celsius_to_fahrenheit(37) == pytest.approx(98.6)

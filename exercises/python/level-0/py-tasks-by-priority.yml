@@ -1,0 +1,51 @@
+language: python
+slug: py-tasks-by-priority
+level: 0
+topic: collections
+title: La tarea más prioritaria
+statement: |
+  Una tarea se representa como una tupla `(prioridad, nombre)`, donde un número **menor** significa más prioridad. Escribe una función que devuelva el nombre de la tarea más prioritaria, o `None` si la lista está vacía.
+
+  Usa el módulo `heapq`; en un montículo el elemento menor siempre está al frente.
+
+  Ejemplos:
+  - `next_task([(3, "correo"), (1, "informe"), (2, "llamada")]) -> "informe"`
+  - `next_task([(0, "urgente"), (1, "normal")]) -> "urgente"`
+  - `next_task([]) -> None`
+
+methodSignature: next_task(tasks)
+estimatedMinutes: 8
+difficulty: medium
+hints:
+- Con `import heapq` puedes usar `heapq.nsmallest(1, tasks)` para obtener la de menor número.
+- Controla la lista vacía devolviendo `None` antes de tocar el montículo.
+starterCode: |
+  import heapq
+
+  def next_task(tasks):
+      # Tu código aquí
+      return None
+referenceSolution: |
+  import heapq
+
+  def next_task(tasks):
+      if not tasks:
+          return None
+      return heapq.nsmallest(1, tasks)[0][1]
+tests: |
+  from solution import next_task
+
+  def test_devuelve_la_de_mayor_prioridad():
+      assert next_task([(3, "correo"), (1, "informe"), (2, "llamada")]) == "informe"
+
+  def test_una_sola_tarea():
+      assert next_task([(5, "solo")]) == "solo"
+
+  def test_lista_vacia():
+      assert next_task([]) is None
+
+  def test_prioridad_cero():
+      assert next_task([(0, "urgente"), (1, "normal")]) == "urgente"
+
+  def test_ignora_las_de_menor_prioridad():
+      assert next_task([(9, "x"), (4, "y"), (7, "z")]) == "y"

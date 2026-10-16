@@ -1,0 +1,46 @@
+language: python
+slug: py-safe-divide
+level: 0
+topic: exceptions
+title: Dividir sin fallar
+statement: |
+  Escribe una función que divida `a` entre `b`. Si `b` es cero, en lugar de que el programa falle, debes devolver el valor `default`.
+
+  Ejemplos:
+  - `safe_divide(10, 2) -> 5.0`
+  - `safe_divide(7, 0) -> None`
+  - `safe_divide(7, 0, "error") -> "error"`
+  - `safe_divide(-4, 2) -> -2.0`
+
+methodSignature: safe_divide(a, b, default=None)
+estimatedMinutes: 5
+difficulty: easy
+hints:
+- Comprueba primero si b es 0 y devuelve default en ese caso.
+- Si no, devuelve la división normal con el operador /.
+starterCode: |
+  def safe_divide(a, b, default=None):
+      # Tu código aquí
+      return default
+referenceSolution: |
+  def safe_divide(a, b, default=None):
+      if b == 0:
+          return default
+      return a / b
+tests: |
+  from solution import safe_divide
+
+  def test_division_normal():
+      assert safe_divide(10, 2) == 5.0
+
+  def test_division_entre_cero_devuelve_none():
+      assert safe_divide(7, 0) is None
+
+  def test_division_entre_cero_con_default():
+      assert safe_divide(7, 0, "error") == "error"
+
+  def test_negativos():
+      assert safe_divide(-4, 2) == -2.0
+
+  def test_cero_entre_algo():
+      assert safe_divide(0, 5) == 0.0

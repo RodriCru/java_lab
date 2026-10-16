@@ -1,0 +1,84 @@
+language: python
+slug: py-singleton-scope
+level: 0
+topic: spring-principles
+title: Alcance singleton
+statement: |
+  Un objeto con alcance *singleton* se crea una sola vez y siempre se devuelve la misma instancia. Completa `Registro` para que, sin importar cuántas veces se llame a `obtener_registro()`, todas apunten al mismo objeto y compartan sus datos.
+
+  Ejemplos:
+  - `obtener_registro() is obtener_registro() -> True`
+  - tras `guardar("a", 1)` en una referencia, `obtener("a")` en otra devuelve `1`
+
+methodSignature: "class Registro:"
+estimatedMinutes: 9
+difficulty: medium
+hints:
+- Guarda la instancia única en un atributo de clase (por ejemplo _instancia) y créala solo si es None.
+- Puedes controlar la creación sobrescribiendo __new__ o devolviendo siempre la misma instancia desde obtener_registro.
+- limpiar() debe vaciar el diccionario de datos.
+starterCode: |
+  class Registro:
+      _instancia = None
+
+      def __new__(cls):
+          # Tu código aquí
+          return super().__new__(cls)
+
+      def guardar(self, clave, valor):
+          pass
+
+      def obtener(self, clave):
+          # Tu código aquí
+          return None
+
+      def limpiar(self):
+          pass
+
+
+  def obtener_registro():
+      # Tu código aquí
+      return Registro()
+referenceSolution: |
+  class Registro:
+      _instancia = None
+
+      def __new__(cls):
+          if cls._instancia is None:
+              cls._instancia = super().__new__(cls)
+              cls._instancia.datos = {}
+          return cls._instancia
+
+      def guardar(self, clave, valor):
+          self.datos[clave] = valor
+
+      def obtener(self, clave):
+          return self.datos.get(clave)
+
+      def limpiar(self):
+          self.datos.clear()
+
+
+  def obtener_registro():
+      return Registro()
+tests: |
+  from solution import Registro, obtener_registro
+
+  def test_misma_instancia():
+      assert obtener_registro() is obtener_registro()
+
+  def test_comparte_el_estado():
+      uno = obtener_registro()
+      otro = obtener_registro()
+      uno.limpiar()
+      uno.guardar("a", 1)
+      assert otro.obtener("a") == 1
+
+  def test_limpiar_borra_los_datos():
+      registro = obtener_registro()
+      registro.guardar("x", 9)
+      registro.limpiar()
+      assert registro.obtener("x") is None
+
+  def test_es_una_instancia_del_registro():
+      assert isinstance(obtener_registro(), Registro)

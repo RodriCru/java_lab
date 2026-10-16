@@ -1,0 +1,46 @@
+language: python
+slug: py-sum-one-to-n
+level: 0
+topic: basics
+title: Sumar del 1 hasta n
+statement: |
+  Escribe una función que devuelva la suma de todos los enteros desde 1 hasta n, ambos incluidos. Si n es menor que 1, la suma es 0.
+
+  Ejemplos:
+  - `sum_one_to_n(5) -> 15`
+  - `sum_one_to_n(1) -> 1`
+  - `sum_one_to_n(0) -> 0`
+
+methodSignature: sum_one_to_n(n)
+estimatedMinutes: 5
+difficulty: easy
+hints:
+- Puedes acumular el total en una variable que empieza en 0 y sumar con un for y range(1, n + 1).
+- Usa return para entregar la suma acumulada.
+starterCode: |
+  def sum_one_to_n(n):
+      # Tu código aquí
+      return 0
+referenceSolution: |
+  def sum_one_to_n(n):
+      total = 0
+      for i in range(1, n + 1):
+          total += i
+      return total
+tests: |
+  from solution import sum_one_to_n
+
+  def test_cinco():
+      assert sum_one_to_n(5) == 15
+
+  def test_uno():
+      assert sum_one_to_n(1) == 1
+
+  def test_cero():
+      assert sum_one_to_n(0) == 0
+
+  def test_diez():
+      assert sum_one_to_n(10) == 55
+
+  def test_negativo():
+      assert sum_one_to_n(-4) == 0

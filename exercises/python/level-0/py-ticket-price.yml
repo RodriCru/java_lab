@@ -1,0 +1,51 @@
+language: python
+slug: py-ticket-price
+level: 0
+topic: operators-decisions
+title: Precio de la entrada
+statement: |
+  Escribe una función que devuelva el precio de una entrada según la edad: 5 para menores de 12 años (niño), 12 de 12 a 64 años (adulto) y 8 para 65 o más (senior).
+
+  Ejemplos:
+  - `ticket_price(5) -> 5`
+  - `ticket_price(30) -> 12`
+  - `ticket_price(70) -> 8`
+
+methodSignature: ticket_price(age)
+estimatedMinutes: 4
+difficulty: easy
+hints:
+- 'Usa if, elif y else con los límites de edad: age < 12 y age >= 65.'
+- Cada rama devuelve un número distinto con return.
+starterCode: |
+  def ticket_price(age):
+      # Tu código aquí
+      return 0
+referenceSolution: |
+  def ticket_price(age):
+      if age < 12:
+          return 5
+      elif age >= 65:
+          return 8
+      else:
+          return 12
+tests: |
+  from solution import ticket_price
+
+  def test_nino():
+      assert ticket_price(5) == 5
+
+  def test_adulto():
+      assert ticket_price(30) == 12
+
+  def test_senior():
+      assert ticket_price(70) == 8
+
+  def test_limite_nino():
+      assert ticket_price(11) == 5
+
+  def test_limite_adulto():
+      assert ticket_price(12) == 12
+
+  def test_limite_senior():
+      assert ticket_price(65) == 8

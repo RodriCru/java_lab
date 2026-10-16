@@ -1,0 +1,55 @@
+language: python
+slug: py-exception-chaining
+level: 0
+topic: exceptions
+title: Encadenar excepciones con raise from
+statement: |
+  Escribe una función que convierta un texto en entero, pero que cuando falle lance una excepción propia `ErrorAplicacion` encadenada a la causa original con `raise ... from ...`.
+
+  Ejemplos:
+  - `cargar_configuracion("42") -> 42`
+  - `cargar_configuracion("abc") -> lanza ErrorAplicacion`
+  - `cargar_configuracion("abc").__cause__ -> es un ValueError`
+
+methodSignature: "class ErrorAplicacion(Exception):"
+estimatedMinutes: 7
+difficulty: medium
+hints:
+- Captura ValueError con except y guárdalo con as error.
+- Lanza la nueva excepción con raise ErrorAplicacion("...") from error para encadenarla.
+starterCode: |
+  class ErrorAplicacion(Exception):
+      pass
+
+
+  def cargar_configuracion(texto):
+      # Tu código aquí
+      return None
+referenceSolution: |
+  class ErrorAplicacion(Exception):
+      pass
+
+
+  def cargar_configuracion(texto):
+      try:
+          return int(texto)
+      except ValueError as error:
+          raise ErrorAplicacion("No se pudo leer la configuración") from error
+tests: |
+  import pytest
+  from solution import ErrorAplicacion, cargar_configuracion
+
+  def test_texto_valido():
+      assert cargar_configuracion("42") == 42
+
+  def test_texto_invalido_lanza_error_propio():
+      with pytest.raises(ErrorAplicacion):
+          cargar_configuracion("abc")
+
+  def test_conserva_la_causa_original():
+      with pytest.raises(ErrorAplicacion) as info:
+          cargar_configuracion("no-es-numero")
+      assert isinstance(info.value.__cause__, ValueError)
+
+  def test_es_subclase_de_exception():
+      assert issubclass(ErrorAplicacion, Exception)

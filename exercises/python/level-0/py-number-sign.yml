@@ -1,0 +1,48 @@
+language: python
+slug: py-number-sign
+level: 0
+topic: basics
+title: El signo de un número
+statement: |
+  Escribe una función que devuelva el signo de un número entero: "positivo" si es mayor que cero, "negativo" si es menor que cero y "cero" si es exactamente cero.
+
+  Ejemplos:
+  - `sign(5) -> "positivo"`
+  - `sign(-3) -> "negativo"`
+  - `sign(0) -> "cero"`
+
+methodSignature: sign(n)
+estimatedMinutes: 4
+difficulty: easy
+hints:
+- Usa if, elif y else para cubrir los tres casos.
+- Recuerda devolver cada texto con return y respetar las tildes del enunciado.
+starterCode: |
+  def sign(n):
+      # Tu código aquí
+      return ""
+referenceSolution: |
+  def sign(n):
+      if n > 0:
+          return "positivo"
+      elif n < 0:
+          return "negativo"
+      else:
+          return "cero"
+tests: |
+  from solution import sign
+
+  def test_positivo():
+      assert sign(5) == "positivo"
+
+  def test_negativo():
+      assert sign(-3) == "negativo"
+
+  def test_cero():
+      assert sign(0) == "cero"
+
+  def test_uno():
+      assert sign(1) == "positivo"
+
+  def test_negativo_grande():
+      assert sign(-100) == "negativo"

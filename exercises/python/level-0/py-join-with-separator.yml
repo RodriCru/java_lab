@@ -1,0 +1,43 @@
+language: python
+slug: py-join-with-separator
+level: 0
+topic: functions
+title: Unir textos con un separador
+statement: |
+  Un parámetro es cada dato que recibe una función. Escribe una función que reciba una lista de textos y un separador, y devuelva una sola cadena con todos los textos unidos por ese separador.
+
+  Ejemplos:
+  - `join_with_separator(["a", "b", "c"], "-") -> "a-b-c"`
+  - `join_with_separator(["hola"], ",") -> "hola"`
+  - `join_with_separator([], "-") -> ""`
+
+methodSignature: join_with_separator(items, sep)
+estimatedMinutes: 3
+difficulty: easy
+hints:
+- Las cadenas tienen el método .join(...), que une una colección usando la propia cadena como separador.
+- 'El separador es el texto sobre el que llamas a join: sep.join(items).'
+starterCode: |
+  def join_with_separator(items, sep):
+      # Tu código aquí
+      return ""
+referenceSolution: |
+  def join_with_separator(items, sep):
+      return sep.join(items)
+tests: |
+  from solution import join_with_separator
+
+  def test_tres_palabras():
+      assert join_with_separator(["a", "b", "c"], "-") == "a-b-c"
+
+  def test_un_solo_elemento():
+      assert join_with_separator(["hola"], ",") == "hola"
+
+  def test_lista_vacia():
+      assert join_with_separator([], "-") == ""
+
+  def test_separador_largo():
+      assert join_with_separator(["1", "2"], " y ") == "1 y 2"
+
+  def test_separador_vacio():
+      assert join_with_separator(["a", "b"], "") == "ab"

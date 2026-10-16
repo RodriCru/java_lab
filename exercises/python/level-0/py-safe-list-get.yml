@@ -1,0 +1,47 @@
+language: python
+slug: py-safe-list-get
+level: 0
+topic: exceptions
+title: Acceder a una posición con respaldo
+statement: |
+  Escribe una función que devuelva el elemento de `items` en la posición `index`. Si esa posición no existe, debe devolver `default` en vez de fallar.
+
+  Ejemplos:
+  - `safe_list_get([1, 2, 3], 1, None) -> 2`
+  - `safe_list_get([1, 2, 3], 10, "x") -> "x"`
+  - `safe_list_get([], 0, 0) -> 0`
+  - `safe_list_get([1, 2, 3], -1, None) -> 3`
+
+methodSignature: safe_list_get(items, index, default)
+estimatedMinutes: 5
+difficulty: easy
+hints:
+- Accede con items[index] dentro de un try.
+- Captura IndexError con except y devuelve default en ese caso.
+starterCode: |
+  def safe_list_get(items, index, default):
+      # Tu código aquí
+      return default
+referenceSolution: |
+  def safe_list_get(items, index, default):
+      try:
+          return items[index]
+      except IndexError:
+          return default
+tests: |
+  from solution import safe_list_get
+
+  def test_posicion_valida():
+      assert safe_list_get([1, 2, 3], 1, None) == 2
+
+  def test_fuera_de_rango():
+      assert safe_list_get([1, 2, 3], 10, "x") == "x"
+
+  def test_lista_vacia():
+      assert safe_list_get([], 0, 0) == 0
+
+  def test_indice_negativo_valido():
+      assert safe_list_get([1, 2, 3], -1, None) == 3
+
+  def test_primera_posicion():
+      assert safe_list_get(["a", "b"], 0, None) == "a"

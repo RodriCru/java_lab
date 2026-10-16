@@ -1,0 +1,70 @@
+language: python
+slug: py-class-counter
+level: 0
+topic: oop-basics
+title: Contar instancias creadas
+statement: |
+  Las variables de clase viven en la clase y las comparten todas las instancias. Crea una clase `Widget` con una variable de clase `creados` que empiece en `0` y suba en `1` cada vez que se construye un `Widget`. Añade la función `total_creados()`, que devuelva ese contador.
+
+  Ejemplos:
+  - tras crear dos `Widget`, `total_creados()` avanza `-> 2`
+  - `Widget.creados -> 2`
+
+methodSignature: "class Widget:"
+estimatedMinutes: 7
+difficulty: medium
+hints:
+- "La variable de clase se escribe dentro de la clase pero fuera de `__init__`: `creados = 0`."
+- "Para modificarla usa el nombre de la clase: `Widget.creados += 1`."
+- "`total_creados` devuelve `Widget.creados`."
+starterCode: |
+  class Widget:
+      creados = 0
+
+      def __init__(self, nombre):
+          self.nombre = nombre
+
+
+  def total_creados():
+      # Tu código aquí
+      return 0
+referenceSolution: |
+  class Widget:
+      creados = 0
+
+      def __init__(self, nombre):
+          self.nombre = nombre
+          Widget.creados += 1
+
+
+  def total_creados():
+      return Widget.creados
+tests: |
+  from solution import Widget, total_creados
+
+
+  def test_crear_una_instancia():
+      antes = total_creados()
+      Widget("a")
+      assert total_creados() == antes + 1
+
+
+  def test_crear_varias():
+      antes = total_creados()
+      for i in range(3):
+          Widget(str(i))
+      assert total_creados() == antes + 3
+
+
+  def test_compartida_por_la_clase():
+      antes = total_creados()
+      Widget("x")
+      assert Widget.creados == antes + 1
+
+
+  def test_guarda_nombre():
+      assert Widget("motor").nombre == "motor"
+
+
+  def test_contador_inicial():
+      assert total_creados() >= 0

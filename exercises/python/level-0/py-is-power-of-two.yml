@@ -1,0 +1,47 @@
+language: python
+slug: py-is-power-of-two
+level: 0
+topic: operators-decisions
+title: ¿Es potencia de dos?
+statement: |
+  Escribe una función que indique si un número entero positivo es una potencia de dos. Devuelve True si lo es y False en caso contrario. El número 1 cuenta como potencia (2 elevado a 0).
+
+  Ejemplos:
+  - `is_power_of_two(1) -> True`
+  - `is_power_of_two(16) -> True`
+  - `is_power_of_two(6) -> False`
+  - `is_power_of_two(0) -> False`
+
+methodSignature: is_power_of_two(n)
+estimatedMinutes: 5
+difficulty: medium
+hints:
+- Una potencia de dos positiva tiene un solo bit encendido; el truco n & (n - 1) da 0 en ese caso.
+- No olvides descartar los números menores que 1.
+starterCode: |
+  def is_power_of_two(n):
+      # Tu código aquí
+      return False
+referenceSolution: |
+  def is_power_of_two(n):
+      return n > 0 and (n & (n - 1)) == 0
+tests: |
+  from solution import is_power_of_two
+
+  def test_uno():
+      assert is_power_of_two(1) is True
+
+  def test_dieciseis():
+      assert is_power_of_two(16) is True
+
+  def test_seis():
+      assert is_power_of_two(6) is False
+
+  def test_cero():
+      assert is_power_of_two(0) is False
+
+  def test_negativo():
+      assert is_power_of_two(-8) is False
+
+  def test_dos():
+      assert is_power_of_two(2) is True

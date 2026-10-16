@@ -1,0 +1,74 @@
+language: python
+slug: py-animal-sounds
+level: 0
+topic: oop-basics
+title: Sonidos de animales (polimorfismo)
+statement: |
+  El polimorfismo permite que objetos de clases distintas respondan al mismo método con su propio comportamiento. Crea una clase base `Animal` con un método `speak()` que devuelva `"..."`. Después crea `Perro` y `Gato`, que heredan de `Animal` y sobrescriben `speak()` para devolver `"Guau"` y `"Miau"`.
+
+  Ejemplos:
+  - `Animal().speak() -> "..."`
+  - `Perro().speak() -> "Guau"`
+  - `Gato().speak() -> "Miau"`
+
+methodSignature: "class Animal:"
+estimatedMinutes: 8
+difficulty: medium
+hints:
+- "Una subclase hereda con `class Perro(Animal):`."
+- "Sobrescribir es definir el mismo método `speak` en la subclase."
+- "Usa `return` para devolver el texto; imprimir no sirve para el test."
+starterCode: |
+  class Animal:
+      def speak(self):
+          # Tu código aquí
+          return None
+
+
+  class Perro(Animal):
+      def speak(self):
+          # Tu código aquí
+          return None
+
+
+  class Gato(Animal):
+      def speak(self):
+          # Tu código aquí
+          return None
+referenceSolution: |
+  class Animal:
+      def speak(self):
+          return "..."
+
+
+  class Perro(Animal):
+      def speak(self):
+          return "Guau"
+
+
+  class Gato(Animal):
+      def speak(self):
+          return "Miau"
+tests: |
+  from solution import Animal, Perro, Gato
+
+
+  def test_animal_base():
+      assert Animal().speak() == "..."
+
+
+  def test_perro_ladra():
+      assert Perro().speak() == "Guau"
+
+
+  def test_gato_maulla():
+      assert Gato().speak() == "Miau"
+
+
+  def test_son_subclases():
+      assert isinstance(Perro(), Animal) and isinstance(Gato(), Animal)
+
+
+  def test_polimorfismo_en_lista():
+      animales = [Perro(), Gato(), Perro()]
+      assert [a.speak() for a in animales] == ["Guau", "Miau", "Guau"]

@@ -1,0 +1,88 @@
+language: python
+slug: py-constructor-injection
+level: 0
+topic: spring-principles
+title: Inyección por constructor
+statement: |
+  Un servicio debe recibir su dependencia (el repositorio) en el constructor, en vez de crearla él mismo. Completa `ServicioDeUsuarios` para que use el repositorio inyectado: `registrar(nombre)` guarda el nombre en mayúsculas y devuelve ese valor; `buscar(nombre)` devuelve lo guardado o `None`.
+
+  Ejemplos:
+  - `ServicioDeUsuarios(repo).registrar("ana") -> "ANA"`
+  - `ServicioDeUsuarios(repo).buscar("luis") -> None`
+
+methodSignature: "class ServicioDeUsuarios:"
+estimatedMinutes: 8
+difficulty: medium
+hints:
+- 'Guarda el repositorio recibido en el constructor: self.repositorio = repositorio.'
+- Para registrar, guarda nombre.upper() con el método guardar del repositorio y devuélvelo.
+- Para buscar, delega en el método obtener del repositorio.
+starterCode: |
+  class RepositorioEnMemoria:
+      def __init__(self):
+          self.datos = {}
+
+      def guardar(self, clave, valor):
+          self.datos[clave] = valor
+
+      def obtener(self, clave):
+          return self.datos.get(clave)
+
+
+  class ServicioDeUsuarios:
+      def __init__(self, repositorio):
+          self.repositorio = repositorio
+
+      def registrar(self, nombre):
+          # Tu código aquí
+          return None
+
+      def buscar(self, nombre):
+          # Tu código aquí
+          return None
+referenceSolution: |
+  class RepositorioEnMemoria:
+      def __init__(self):
+          self.datos = {}
+
+      def guardar(self, clave, valor):
+          self.datos[clave] = valor
+
+      def obtener(self, clave):
+          return self.datos.get(clave)
+
+
+  class ServicioDeUsuarios:
+      def __init__(self, repositorio):
+          self.repositorio = repositorio
+
+      def registrar(self, nombre):
+          valor = nombre.upper()
+          self.repositorio.guardar(nombre, valor)
+          return valor
+
+      def buscar(self, nombre):
+          return self.repositorio.obtener(nombre)
+tests: |
+  from solution import RepositorioEnMemoria, ServicioDeUsuarios
+
+  def test_registrar_devuelve_el_valor_guardado():
+      servicio = ServicioDeUsuarios(RepositorioEnMemoria())
+      assert servicio.registrar("ana") == "ANA"
+
+  def test_buscar_devuelve_none_si_no_existe():
+      servicio = ServicioDeUsuarios(RepositorioEnMemoria())
+      assert servicio.buscar("luis") is None
+
+  def test_usa_la_dependencia_inyectada():
+      repo = RepositorioEnMemoria()
+      servicio = ServicioDeUsuarios(repo)
+      servicio.registrar("bob")
+      assert repo.obtener("bob") == "BOB"
+
+  def test_dos_servicios_comparten_repositorio():
+      repo = RepositorioEnMemoria()
+      uno = ServicioDeUsuarios(repo)
+      otro = ServicioDeUsuarios(repo)
+      uno.registrar("x")
+      assert otro.buscar("x") == "X"

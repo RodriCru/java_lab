@@ -1,0 +1,48 @@
+language: python
+slug: py-swap-elements
+level: 0
+topic: functions
+title: Intercambiar dos posiciones
+statement: |
+  Una función recibe una lista como referencia, asi que si la modifica tambien cambia la del llamador. Escribe una función que devuelva una lista NUEVA con los elementos de las posiciones i y j intercambiados, sin tocar la lista original.
+
+  Ejemplos:
+  - `swap_elements([1, 2, 3], 0, 2) -> [3, 2, 1]`
+  - `swap_elements(["a", "b"], 1, 0) -> ["b", "a"]`
+  - `swap_elements([5, 6, 7, 8], 1, 1) -> [5, 6, 7, 8]`
+
+methodSignature: swap_elements(items, i, j)
+estimatedMinutes: 5
+difficulty: medium
+hints:
+- 'Haz una copia primero para no cambiar la lista original: copia = list(items).'
+- 'En Python puedes intercambiar dos valores en una linea: copia[i], copia[j] = copia[j], copia[i].'
+- Si i y j son iguales la lista queda igual.
+starterCode: |
+  def swap_elements(items, i, j):
+      # Tu código aquí
+      return items
+referenceSolution: |
+  def swap_elements(items, i, j):
+      copia = list(items)
+      copia[i], copia[j] = copia[j], copia[i]
+      return copia
+tests: |
+  from solution import swap_elements
+
+  def test_intercambia_extremos():
+      assert swap_elements([1, 2, 3], 0, 2) == [3, 2, 1]
+
+  def test_intercambia_inicio():
+      assert swap_elements(["a", "b"], 1, 0) == ["b", "a"]
+
+  def test_mismo_indice():
+      assert swap_elements([5, 6, 7, 8], 1, 1) == [5, 6, 7, 8]
+
+  def test_no_modifica_la_original():
+      original = [1, 2, 3]
+      swap_elements(original, 0, 1)
+      assert original == [1, 2, 3]
+
+  def test_indices_centrales():
+      assert swap_elements([10, 20, 30, 40], 1, 2) == [10, 30, 20, 40]

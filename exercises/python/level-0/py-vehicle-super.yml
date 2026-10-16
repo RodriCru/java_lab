@@ -1,0 +1,77 @@
+language: python
+slug: py-vehicle-super
+level: 0
+topic: oop-basics
+title: Vehículos y super()
+statement: |
+  `super()` llama al método de la clase padre, útil para reutilizar su inicialización. Crea `Vehicle(marca, ruedas)` con un método `describe()` que devuelva `"marca con N ruedas"`. La clase `Car(marca, puertas)` hereda de `Vehicle`, llama a `super().__init__` con 4 ruedas y sobrescribe `describe()` añadiendo `" y M puertas"`.
+
+  Ejemplos:
+  - `Vehicle("Bici", 2).describe() -> "Bici con 2 ruedas"`
+  - `Car("Toyota", 5).describe() -> "Toyota con 4 ruedas y 5 puertas"`
+
+methodSignature: "class Vehicle:"
+estimatedMinutes: 9
+difficulty: medium
+hints:
+- "En `Car.__init__` llama primero a `super().__init__(marca, 4)`."
+- "En `Car.describe` reutiliza `super().describe()` y concatena el resto."
+- "Todas las ruedas del coche son 4, por eso no se reciben por parámetro."
+starterCode: |
+  class Vehicle:
+      def __init__(self, marca, ruedas):
+          self.marca = marca
+          self.ruedas = ruedas
+
+      def describe(self):
+          # Tu código aquí
+          return ""
+
+
+  class Car(Vehicle):
+      def __init__(self, marca, puertas):
+          self.marca = marca
+          self.puertas = puertas
+
+      def describe(self):
+          # Tu código aquí
+          return ""
+referenceSolution: |
+  class Vehicle:
+      def __init__(self, marca, ruedas):
+          self.marca = marca
+          self.ruedas = ruedas
+
+      def describe(self):
+          return f"{self.marca} con {self.ruedas} ruedas"
+
+
+  class Car(Vehicle):
+      def __init__(self, marca, puertas):
+          super().__init__(marca, 4)
+          self.puertas = puertas
+
+      def describe(self):
+          return super().describe() + f" y {self.puertas} puertas"
+tests: |
+  from solution import Vehicle, Car
+
+
+  def test_describe_vehicle():
+      assert Vehicle("Bici", 2).describe() == "Bici con 2 ruedas"
+
+
+  def test_car_fija_cuatro_ruedas():
+      assert Car("Toyota", 5).ruedas == 4
+
+
+  def test_describe_car():
+      assert Car("Toyota", 5).describe() == "Toyota con 4 ruedas y 5 puertas"
+
+
+  def test_car_guarda_marca():
+      assert Car("Ford", 3).marca == "Ford"
+
+
+  def test_car_es_vehicle():
+      assert isinstance(Car("Fiat", 4), Vehicle)

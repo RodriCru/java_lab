@@ -36,6 +36,7 @@ edades = {"Ana": 30, "Luis": 25}
 
 - Leer con `edades["Ana"]` o, para evitar errores, `edades.get("Ana")`.
 - Recorrer las claves con `for nombre in edades:` y los pares con `edades.items()`.
+- Obtener solo los valores con `edades.values()` (por ejemplo, `sum(edades.values())`).
 - Comprobar una clave con `"Ana" in edades`.
 
 ## Conjuntos
@@ -45,4 +46,17 @@ Un conjunto guarda valores **sin repetir**, muy útil para contar elementos úni
 ```python
 def unicos(valores):
     return set(valores)
+```
+
+## Colas de prioridad con heapq
+
+El módulo `heapq` trata una lista como un **montículo**: el elemento más pequeño siempre queda al frente. Es la forma estándar de sacar siempre el de mayor prioridad cuando usas números pequeños para lo urgente.
+
+```python
+import heapq
+
+def mas_urgente(tareas):
+    if not tareas:
+        return None
+    return heapq.nsmallest(1, tareas)[0]
 ```

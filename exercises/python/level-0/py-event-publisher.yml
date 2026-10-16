@@ -1,0 +1,72 @@
+language: python
+slug: py-event-publisher
+level: 0
+topic: spring-principles
+title: Publicador de eventos (observador)
+statement: |
+  Implementa el patrón **observador**: un publicador al que varios manejadores se **suscriben** a un evento, y al **publicar** se avisa a todos los suscritos de ese evento pasándoles los datos.
+
+  Ejemplos:
+  - tras `suscribir("saludo", f)` y `publicar("saludo", "hola")`, `f` recibe `"hola"`
+  - `publicar("otro")` sin suscriptores no falla
+
+methodSignature: "class PublicadorDeEventos:"
+estimatedMinutes: 10
+difficulty: medium
+hints:
+- Guarda los manejadores en un diccionario cuyo valor sea una lista por evento.
+- En suscribir, usa setdefault para añadir el manejador a la lista del evento.
+- En publicar, recorre los manejadores del evento con un bucle y llámales pasando los datos.
+starterCode: |
+  class PublicadorDeEventos:
+      def __init__(self):
+          self._suscriptores = {}
+
+      def suscribir(self, evento, manejador):
+          # Tu código aquí
+          pass
+
+      def publicar(self, evento, datos=None):
+          # Tu código aquí
+          pass
+referenceSolution: |
+  class PublicadorDeEventos:
+      def __init__(self):
+          self._suscriptores = {}
+
+      def suscribir(self, evento, manejador):
+          self._suscriptores.setdefault(evento, []).append(manejador)
+
+      def publicar(self, evento, datos=None):
+          for manejador in self._suscriptores.get(evento, []):
+              manejador(datos)
+tests: |
+  from solution import PublicadorDeEventos
+
+  def test_notifica_al_suscriptor():
+      publicador = PublicadorDeEventos()
+      recibidos = []
+      publicador.suscribir("saludo", lambda datos: recibidos.append(datos))
+      publicador.publicar("saludo", "hola")
+      assert recibidos == ["hola"]
+
+  def test_varios_suscriptores_reciben_el_evento():
+      publicador = PublicadorDeEventos()
+      primero = []
+      segundo = []
+      publicador.suscribir("x", lambda datos: primero.append(1))
+      publicador.suscribir("x", lambda datos: segundo.append(1))
+      publicador.publicar("x")
+      assert len(primero) == 1
+      assert len(segundo) == 1
+
+  def test_evento_sin_suscriptores_no_falla():
+      publicador = PublicadorDeEventos()
+      publicador.publicar("nadie")
+
+  def test_solo_reciben_su_evento():
+      publicador = PublicadorDeEventos()
+      recibidos = []
+      publicador.suscribir("a", lambda datos: recibidos.append("a"))
+      publicador.publicar("b")
+      assert recibidos == []

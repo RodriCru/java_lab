@@ -1,0 +1,43 @@
+language: python
+slug: py-sum-tokens
+level: 0
+topic: input-parsing
+title: Sumar los números de una línea
+statement: |
+  Escribe una función que reciba una línea con números enteros separados por espacios y devuelva la suma de todos ellos. Debe aguantar espacios de más sin fallar.
+
+  Ejemplos:
+  - `sum_tokens("1 2 3") -> 6`
+  - `sum_tokens("10 -4") -> 6`
+  - `sum_tokens("") -> 0`
+
+methodSignature: sum_tokens(line)
+estimatedMinutes: 5
+difficulty: easy
+hints:
+- Usa `line.split()` para eliminar los espacios de más sin limpiarlos a mano.
+- Convierte cada trozo a `int` y sumálos con `sum(...)`.
+starterCode: |
+  def sum_tokens(line):
+      # Tu código aquí
+      return 0
+referenceSolution: |
+  def sum_tokens(line):
+      return sum(int(trozo) for trozo in line.split())
+tests: |
+  from solution import sum_tokens
+
+  def test_tres_numeros():
+      assert sum_tokens("1 2 3") == 6
+
+  def test_con_negativos():
+      assert sum_tokens("10 -4") == 6
+
+  def test_vacia():
+      assert sum_tokens("") == 0
+
+  def test_espacios_de_mas():
+      assert sum_tokens("  5   5  ") == 10
+
+  def test_un_numero():
+      assert sum_tokens("7") == 7

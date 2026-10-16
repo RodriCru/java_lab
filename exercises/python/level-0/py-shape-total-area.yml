@@ -1,0 +1,94 @@
+language: python
+slug: py-shape-total-area
+level: 0
+topic: oop-basics
+title: Área total de figuras
+statement: |
+  Una clase base define el contrato que comparten sus hijas. Crea `Shape` con un método `area()`, y dos subclases: `Rectangle(ancho, alto)` y `Circle(radio)`. Después escribe `total_area(shapes)`, que suma el área de todas las figuras recibidas. Usa `math.pi` para el círculo.
+
+  Ejemplos:
+  - `Rectangle(2, 3).area() -> 6`
+  - `round(Circle(1).area(), 2) -> 3.14`
+  - `total_area([Rectangle(2, 3), Rectangle(1, 1)]) -> 7`
+
+methodSignature: "class Shape:"
+estimatedMinutes: 10
+difficulty: medium
+hints:
+- "`Circle.area()` es `math.pi * self.radio ** 2`; importa `math`."
+- "En `total_area` recorre la lista y suma `s.area()`."
+- "`sum(...)` sobre una comprensión de generador deja el código en una línea."
+starterCode: |
+  class Shape:
+      def area(self):
+          # Tu código aquí
+          return 0
+
+
+  class Rectangle(Shape):
+      def __init__(self, ancho, alto):
+          self.ancho = ancho
+          self.alto = alto
+
+
+  class Circle(Shape):
+      def __init__(self, radio):
+          self.radio = radio
+
+
+  def total_area(shapes):
+      # Tu código aquí
+      return 0
+referenceSolution: |
+  import math
+
+
+  class Shape:
+      def area(self):
+          raise NotImplementedError
+
+
+  class Rectangle(Shape):
+      def __init__(self, ancho, alto):
+          self.ancho = ancho
+          self.alto = alto
+
+      def area(self):
+          return self.ancho * self.alto
+
+
+  class Circle(Shape):
+      def __init__(self, radio):
+          self.radio = radio
+
+      def area(self):
+          return math.pi * self.radio ** 2
+
+
+  def total_area(shapes):
+      return sum(s.area() for s in shapes)
+tests: |
+  import math
+
+  from solution import Shape, Rectangle, Circle, total_area
+
+
+  def test_area_rectangulo():
+      assert Rectangle(2, 3).area() == 6
+
+
+  def test_area_circulo():
+      assert round(Circle(1).area(), 2) == 3.14
+
+
+  def test_es_subclase():
+      assert isinstance(Rectangle(2, 2), Shape) and isinstance(Circle(1), Shape)
+
+
+  def test_total_area_vacia():
+      assert total_area([]) == 0
+
+
+  def test_total_area_mezcla():
+      figuras = [Rectangle(2, 3), Rectangle(1, 1), Circle(2)]
+      assert round(total_area(figuras), 2) == round(7 + math.pi * 4, 2)

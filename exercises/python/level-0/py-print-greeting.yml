@@ -1,0 +1,52 @@
+language: python
+slug: py-print-greeting
+level: 0
+topic: basics
+title: Imprimir un saludo
+statement: |
+  Escribe una función que muestre en la consola un saludo con el nombre recibido. Si el nombre es "Ana", debe imprimir exactamente Hola, Ana!
+
+  Ejemplos:
+  - `print_greeting("Ana") imprime: Hola, Ana!`
+  - `print_greeting("Luis") imprime: Hola, Luis!`
+
+methodSignature: print_greeting(name)
+estimatedMinutes: 3
+difficulty: easy
+hints:
+- 'Esta función no devuelve nada: solo muestra texto con print(...).'
+- Puedes unir el texto con el nombre usando + o una f-string.
+starterCode: |
+  def print_greeting(name):
+      # Tu código aquí
+      return
+referenceSolution: |
+  def print_greeting(name):
+      print(f"Hola, {name}!")
+tests: |
+  from solution import print_greeting
+
+  def test_saludo_ana(capsys):
+      print_greeting("Ana")
+      captured = capsys.readouterr()
+      assert captured.out == "Hola, Ana!\n"
+
+  def test_saludo_luis(capsys):
+      print_greeting("Luis")
+      captured = capsys.readouterr()
+      assert captured.out == "Hola, Luis!\n"
+
+  def test_saludo_nombre_corto(capsys):
+      print_greeting("Eva")
+      captured = capsys.readouterr()
+      assert captured.out == "Hola, Eva!\n"
+
+  def test_saludo_una_sola_linea(capsys):
+      print_greeting("Maria")
+      captured = capsys.readouterr()
+      assert captured.out.count("\n") == 1
+
+  def test_saludo_vacio(capsys):
+      print_greeting("")
+      captured = capsys.readouterr()
+      assert captured.out == "Hola, !\n"

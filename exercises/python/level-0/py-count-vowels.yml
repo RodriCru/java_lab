@@ -1,0 +1,44 @@
+language: python
+slug: py-count-vowels
+level: 0
+topic: loops
+title: Contar vocales
+statement: |
+  Recorrer un texto con for permite mirar cada carácter. Escribe una función que cuente cuántas vocales (a, e, i, o, u) hay en un texto, sin distinguir mayúsculas de minúsculas.
+
+  Ejemplos:
+  - `count_vowels("hola") -> 2`
+  - `count_vowels("Python") -> 1`
+  - `count_vowels("") -> 0`
+
+methodSignature: count_vowels(text)
+estimatedMinutes: 4
+difficulty: easy
+hints:
+- 'Convierte el texto a minúsculas primero: text.lower().'
+- 'Recorre los caracteres con for letra in texto: y comprueba si letra in "aeiou".'
+- Lleva un contador que aumente cada vez que encuentres una vocal.
+starterCode: |
+  def count_vowels(text):
+      # Tu código aquí
+      return 0
+referenceSolution: |
+  def count_vowels(text):
+      return sum(1 for letra in text.lower() if letra in "aeiou")
+tests: |
+  from solution import count_vowels
+
+  def test_palabra_simple():
+      assert count_vowels("hola") == 2
+
+  def test_mezcla_de_mayusculas():
+      assert count_vowels("Python") == 1
+
+  def test_vacio():
+      assert count_vowels("") == 0
+
+  def test_sin_vocales():
+      assert count_vowels("xyz") == 0
+
+  def test_solo_vocales():
+      assert count_vowels("AEIOU") == 5

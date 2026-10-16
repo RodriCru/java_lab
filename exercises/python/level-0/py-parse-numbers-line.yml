@@ -1,0 +1,45 @@
+language: python
+slug: py-parse-numbers-line
+level: 0
+topic: input-parsing
+title: Convertir una línea en números
+statement: |
+  En las entrevistas los datos suelen llegar como texto. Escribe una función que reciba una línea con números enteros separados por espacios y devuelva la lista de esos números ya convertidos a `int`.
+
+  Usa `split()` para separar los trozos y `int(...)` para convertir cada uno.
+
+  Ejemplos:
+  - `parse_numbers_line("1 2 3") -> [1, 2, 3]`
+  - `parse_numbers_line("42") -> [42]`
+  - `parse_numbers_line("") -> []`
+
+methodSignature: parse_numbers_line(line)
+estimatedMinutes: 6
+difficulty: easy
+hints:
+- Usa `line.split()` sin argumentos para separar por cualquier cantidad de espacios y descartar los sobrantes.
+- Convierte cada trozo con `int(...)`, por ejemplo dentro de una comprensión de listas.
+starterCode: |
+  def parse_numbers_line(line):
+      # Tu código aquí
+      return []
+referenceSolution: |
+  def parse_numbers_line(line):
+      return [int(trozo) for trozo in line.split()]
+tests: |
+  from solution import parse_numbers_line
+
+  def test_tres_numeros():
+      assert parse_numbers_line("1 2 3") == [1, 2, 3]
+
+  def test_un_solo_numero():
+      assert parse_numbers_line("42") == [42]
+
+  def test_linea_vacia():
+      assert parse_numbers_line("") == []
+
+  def test_espacios_de_mas():
+      assert parse_numbers_line("  4   5 ") == [4, 5]
+
+  def test_negativos():
+      assert parse_numbers_line("-1 0 7") == [-1, 0, 7]

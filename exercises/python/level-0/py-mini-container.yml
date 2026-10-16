@@ -1,0 +1,69 @@
+language: python
+slug: py-mini-container
+level: 0
+topic: spring-principles
+title: Contenedor mínimo de dependencias
+statement: |
+  Un contenedor guarda **fábricas** y las resuelve cuando se le piden. Cada fábrica recibe el propio contenedor como argumento, así puede resolver sus dependencias. Si se registra como singleton, la instancia se crea una sola vez.
+
+  Ejemplos:
+  - `c.registrar("doble", lambda cont: 2); c.resolver("doble") -> 2`
+  - `c.registrar("obj", lambda cont: object(), singleton=True)` -> `c.resolver("obj") is c.resolver("obj") -> True`
+
+methodSignature: "class Contenedor:"
+estimatedMinutes: 10
+difficulty: medium
+hints:
+- Guarda las fábricas junto a si son singleton, por ejemplo como tupla (fabrica, singleton).
+- 'resolver debe llamar a la fábrica pasándole self: fabrica(self).'
+- Si es singleton, guárdala en un diccionario aparte la primera vez y devuélvela siempre.
+starterCode: |
+  class Contenedor:
+      def __init__(self):
+          self._fabricas = {}
+
+      def registrar(self, nombre, fabrica, singleton=False):
+          self._fabricas[nombre] = (fabrica, singleton)
+
+      def resolver(self, nombre):
+          # Tu código aquí
+          return None
+referenceSolution: |
+  class Contenedor:
+      def __init__(self):
+          self._fabricas = {}
+          self._singletons = {}
+
+      def registrar(self, nombre, fabrica, singleton=False):
+          self._fabricas[nombre] = (fabrica, singleton)
+
+      def resolver(self, nombre):
+          fabrica, singleton = self._fabricas[nombre]
+          if singleton:
+              if nombre not in self._singletons:
+                  self._singletons[nombre] = fabrica(self)
+              return self._singletons[nombre]
+          return fabrica(self)
+tests: |
+  from solution import Contenedor
+
+  def test_resuelve_una_fabrica_simple():
+      contenedor = Contenedor()
+      contenedor.registrar("saludo", lambda cont: "hola")
+      assert contenedor.resolver("saludo") == "hola"
+
+  def test_singleton_devuelve_la_misma_instancia():
+      contenedor = Contenedor()
+      contenedor.registrar("obj", lambda cont: object(), singleton=True)
+      assert contenedor.resolver("obj") is contenedor.resolver("obj")
+
+  def test_transitorio_crea_cada_vez():
+      contenedor = Contenedor()
+      contenedor.registrar("obj", lambda cont: object())
+      assert contenedor.resolver("obj") is not contenedor.resolver("obj")
+
+  def test_resuelve_dependencias_anidadas():
+      contenedor = Contenedor()
+      contenedor.registrar("doble", lambda cont: 2)
+      contenedor.registrar("cuadruple", lambda cont: cont.resolver("doble") * 2)
+      assert contenedor.resolver("cuadruple") == 4

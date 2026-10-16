@@ -1,0 +1,108 @@
+language: python
+slug: py-abstract-report-template
+level: 0
+topic: abstraction
+title: Plantilla de informe (método plantilla)
+statement: |
+  El patrón método plantilla deja el esqueleto en la clase base y los pasos variables en las hijas. Crea la clase abstracta `Report(ABC)` con un método concreto `render()` que devuelva el título, un salto de línea y el cuerpo. `title()` y `body()` son abstractos. Implementa `TextReport(titulo, texto)`.
+
+  Ejemplos:
+  - `TextReport("Nota", "Todo bien").render() -> "Nota (salto de línea) Todo bien"`
+  - `TextReport("Saludo", "Hola").title() -> "Saludo"`
+
+methodSignature: "class Report(ABC):"
+estimatedMinutes: 10
+difficulty: medium
+hints:
+- "`render` no se marca como abstracto: es el esqueleto reutilizable."
+- "`title` y `body` se decoran con `@abstractmethod`."
+- "`TextReport` guarda los datos en `__init__` y los devuelve en `title`/`body`."
+starterCode: |
+  from abc import ABC, abstractmethod
+
+
+  class Report(ABC):
+      def render(self):
+          # Tu código aquí
+          return ""
+
+      @abstractmethod
+      def title(self):
+          ...
+
+      @abstractmethod
+      def body(self):
+          ...
+
+
+  class TextReport(Report):
+      def __init__(self, titulo, texto):
+          self.titulo = titulo
+          self.texto = texto
+
+      def title(self):
+          return self.titulo
+
+      def body(self):
+          return self.texto
+referenceSolution: |
+  from abc import ABC, abstractmethod
+
+
+  class Report(ABC):
+      def render(self):
+          return self.title() + "\n" + self.body()
+
+      @abstractmethod
+      def title(self):
+          ...
+
+      @abstractmethod
+      def body(self):
+          ...
+
+
+  class TextReport(Report):
+      def __init__(self, titulo, texto):
+          self.titulo = titulo
+          self.texto = texto
+
+      def title(self):
+          return self.titulo
+
+      def body(self):
+          return self.texto
+tests: |
+  from solution import Report, TextReport
+
+
+  def test_render_junta_titulo_y_cuerpo():
+      assert TextReport("Nota", "Todo bien").render() == "Nota\nTodo bien"
+
+
+  def test_title():
+      assert TextReport("Hola", "x").title() == "Hola"
+
+
+  def test_body():
+      assert TextReport("Hola", "cuerpo").body() == "cuerpo"
+
+
+  def test_reporte_es_abstracto():
+      try:
+          Report()
+          creado = True
+      except TypeError:
+          creado = False
+      assert not creado
+
+
+  def test_otra_subclase_hereda_render():
+      class Simple(Report):
+          def title(self):
+              return "T"
+
+          def body(self):
+              return "B"
+
+      assert Simple().render() == "T\nB"

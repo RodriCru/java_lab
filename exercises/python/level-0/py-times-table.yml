@@ -1,0 +1,44 @@
+language: python
+slug: py-times-table
+level: 0
+topic: loops
+title: Tabla de multiplicar
+statement: |
+  Recorrer un rango fijo con for y crear textos con f-strings sirve para generar listas. Escribe una función que devuelva la tabla de multiplicar de n, del 1 al 10, como una lista de textos con el formato "n x i = resultado".
+
+  Ejemplos:
+  - `times_table(1) -> ["1 x 1 = 1", "1 x 2 = 2", ..., "1 x 10 = 10"]`
+  - `times_table(2)[0] -> "2 x 1 = 2"`
+  - `times_table(5)[9] -> "5 x 10 = 50"`
+
+methodSignature: times_table(n)
+estimatedMinutes: 5
+difficulty: easy
+hints:
+- Recorre los multiplicadores con for i in range(1, 11) (range excluye el final).
+- 'Arma cada texto con una f-string: f"{n} x {i} = {n * i}".'
+- Guarda los resultados en una lista y devuélvela al terminar.
+starterCode: |
+  def times_table(n):
+      # Tu código aquí
+      return []
+referenceSolution: |
+  def times_table(n):
+      return [f"{n} x {i} = {n * i}" for i in range(1, 11)]
+tests: |
+  from solution import times_table
+
+  def test_tiene_diez_lineas():
+      assert len(times_table(3)) == 10
+
+  def test_primera_linea():
+      assert times_table(2)[0] == "2 x 1 = 2"
+
+  def test_ultima_linea():
+      assert times_table(5)[9] == "5 x 10 = 50"
+
+  def test_una_del_medio():
+      assert times_table(7)[4] == "7 x 5 = 35"
+
+  def test_tabla_del_uno():
+      assert times_table(1) == [f"1 x {i} = {i}" for i in range(1, 11)]

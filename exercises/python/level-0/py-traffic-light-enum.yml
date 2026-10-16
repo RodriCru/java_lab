@@ -1,0 +1,69 @@
+language: python
+slug: py-traffic-light-enum
+level: 0
+topic: enums
+title: Semáforo con Enum
+statement: |
+  Un Enum agrupa un conjunto fijo de valores con nombre; sus miembros son constantes y se comparan con is. Escribe un Enum TrafficLight con los miembros ROJO, AMARILLO y VERDE y un atributo siguiente que devuelva la luz que viene después: tras ROJO viene VERDE, tras VERDE viene AMARILLO y tras AMARILLO vuelve a ROJO.
+
+  Ejemplos:
+  - `TrafficLight.ROJO.siguiente -> TrafficLight.VERDE`
+  - `TrafficLight.VERDE.siguiente -> TrafficLight.AMARILLO`
+  - `TrafficLight.AMARILLO.siguiente -> TrafficLight.ROJO`
+
+methodSignature: "class TrafficLight(Enum):"
+estimatedMinutes: 8
+difficulty: medium
+hints:
+- 'Los miembros se declaran dentro de la clase como nombres con un valor: ROJO = 1.'
+- 'Puedes exponer siguiente con @property para leerlo sin paréntesis: TrafficLight.ROJO.siguiente.'
+- Dentro de un método del Enum puedes comparar con self is TrafficLight.ROJO y devolver el miembro siguiente.
+starterCode: |
+  from enum import Enum
+
+
+  class TrafficLight(Enum):
+      ROJO = 1
+      AMARILLO = 2
+      VERDE = 3
+
+      @property
+      def siguiente(self):
+          # Tu código aquí
+          return None
+referenceSolution: |
+  from enum import Enum
+
+
+  class TrafficLight(Enum):
+      ROJO = 1
+      AMARILLO = 2
+      VERDE = 3
+
+      @property
+      def siguiente(self):
+          if self is TrafficLight.ROJO:
+              return TrafficLight.VERDE
+          if self is TrafficLight.VERDE:
+              return TrafficLight.AMARILLO
+          return TrafficLight.ROJO
+tests: |
+  from solution import TrafficLight
+
+  def test_rojo_sigue_verde():
+      assert TrafficLight.ROJO.siguiente is TrafficLight.VERDE
+
+  def test_verde_sigue_amarillo():
+      assert TrafficLight.VERDE.siguiente is TrafficLight.AMARILLO
+
+  def test_amarillo_sigue_rojo():
+      assert TrafficLight.AMARILLO.siguiente is TrafficLight.ROJO
+
+  def test_ciclo_completo_vuelve_al_inicio():
+      luz = TrafficLight.ROJO
+      for _ in range(3):
+          luz = luz.siguiente
+      assert luz is TrafficLight.ROJO
+
+  def test_miembros_del_enum():
+      assert [luz.name for luz in TrafficLight] == ["ROJO", "AMARILLO", "VERDE"]

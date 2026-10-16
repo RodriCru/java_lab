@@ -1,0 +1,43 @@
+language: python
+slug: py-is-adult
+level: 0
+topic: basics
+title: ¿Es mayor de edad?
+statement: |
+  Escribe una función que indique si una persona es mayor de edad. Se considera mayor de edad a partir de los 18 años. Devuelve True si lo es y False en caso contrario.
+
+  Ejemplos:
+  - `is_adult(18) -> True`
+  - `is_adult(17) -> False`
+  - `is_adult(30) -> True`
+
+methodSignature: is_adult(age)
+estimatedMinutes: 3
+difficulty: easy
+hints:
+- Compara la edad con 18 usando el operador >=.
+- La comparación ya devuelve True o False; puedes devolverla directamente con return.
+starterCode: |
+  def is_adult(age):
+      # Tu código aquí
+      return False
+referenceSolution: |
+  def is_adult(age):
+      return age >= 18
+tests: |
+  from solution import is_adult
+
+  def test_exactamente_dieciocho():
+      assert is_adult(18) is True
+
+  def test_menor():
+      assert is_adult(17) is False
+
+  def test_adulto():
+      assert is_adult(30) is True
+
+  def test_recien_nacido():
+      assert is_adult(0) is False
+
+  def test_mayor_de_edad_limite():
+      assert is_adult(19) is True
