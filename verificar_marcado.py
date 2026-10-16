@@ -8,7 +8,7 @@ Comprueba que:
   - no quedan restos de etiquetas `Entrada:`/`Salida:`
 
 Uso: python3 verificar_marcado.py [java python ...]
-     python3 verificar_marcado.py python/basics
+     python3 verificar_marcado.py python/level-0
 """
 import glob
 import os
@@ -49,7 +49,7 @@ def revisar(ruta):
 
 
 def archivos_a_revisar(argumentos):
-    """Sin argumentos, todos los lenguajes. Acepta 'python' o 'python/basics'."""
+    """Sin argumentos, todos los lenguajes. Acepta 'python' o 'python/level-0'."""
     objetivos = argumentos or sorted(
         d for d in os.listdir(EJERCICIOS) if os.path.isdir(os.path.join(EJERCICIOS, d)))
     rutas = []

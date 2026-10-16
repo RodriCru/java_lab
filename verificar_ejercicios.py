@@ -13,7 +13,7 @@ No confia en ningun reporte previo: lee los archivos y ejecuta los tests de verd
 Uso:
   python3 verificar_ejercicios.py                 # todos los lenguajes
   python3 verificar_ejercicios.py python          # solo un lenguaje
-  python3 verificar_ejercicios.py python/basics   # solo un tema de un lenguaje
+  python3 verificar_ejercicios.py python/level-0  # solo una carpeta (nivel) de un lenguaje
 """
 import glob
 import os
@@ -138,7 +138,7 @@ VERIFICADORES = {"java": verificar_java, "python": verificar_python}
 
 
 def lenguajes_a_verificar(argumentos):
-    """Sin argumentos, todos los lenguajes con carpeta. Acepta 'python' o 'python/basics'."""
+    """Sin argumentos, todos los lenguajes con carpeta. Acepta 'python' o 'python/level-0'."""
     disponibles = sorted(
         d for d in os.listdir(EJERCICIOS_RAIZ)
         if os.path.isdir(os.path.join(EJERCICIOS_RAIZ, d)))
@@ -155,7 +155,7 @@ def lenguajes_a_verificar(argumentos):
 
 
 def archivos_del_objetivo(objetivo):
-    """'python' -> todos sus YAML; 'python/basics' -> solo ese tema."""
+    """'python' -> todos sus YAML; 'python/level-0' -> solo esa carpeta."""
     partes = objetivo.split("/")
     base = os.path.join(EJERCICIOS_RAIZ, *partes)
     if len(partes) > 1:
