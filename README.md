@@ -20,23 +20,27 @@ Actualmente incluye **50 ejercicios de Nivel Básico** (el plan son ~100 entre B
 
 | Herramienta | Versión usada | Nota |
 |---|---|---|
-| Java (JDK) | 17 | El backend usa Java 17 y Spring Boot 3.5 |
-| Docker | 29.x | Necesario para el motor de ejecución aislado |
+| Java (JDK) | 17 | Backend, runner-service y los ejercicios de Java |
+| Python | 3.12 + pytest | Para los ejercicios de Python (el runner-service lo ejecuta) |
 | Node.js | 24.x | Para el frontend (Next.js 16) |
-| Maven | — | **No hace falta instalarlo**: se usa el wrapper `backend/mvnw` |
+| Maven | — | **No hace falta instalarlo**: se usa el wrapper `mvnw` de la raíz |
 
 ---
 
 ## Puesta en marcha
 
-### 1. Construir las imágenes que ejecutan el código de los alumnos
+### 1. Arrancar el runner-service (el que ejecuta el código)
 
-Solo la primera vez (y cuando cambie `runner/`):
+Necesita JDK (para Java) y Python con pytest (para Python) en el equipo. En un servidor, el
+runner-service corre como contenedor con todo eso dentro; en local, usas lo que tengas instalado.
 
 ```bash
-cd runner
-./build.sh            # crea javalab-runner:17 (Java) y javalab-runner-python:3.12 (Python)
+# desde la raíz del proyecto (reactor: padre + runner-core + runner-service + backend)
+JAVALAB_JUNIT_JAR="$PWD/runner/junit-platform-console-standalone.jar" \
+  ./mvnw -pl runner-core,runner-service -am spring-boot:run
 ```
+
+Queda en `http://localhost:8081`.
 
 ### 2. Arrancar el backend
 
@@ -46,7 +50,8 @@ cp ../.env.example ../.env      # OBLIGATORIO: rellena JAVALAB_JWT_SECRET (opens
 ./mvnw spring-boot:run
 ```
 
-La API queda en `http://localhost:8080/api/v1`.
+La API queda en `http://localhost:8080/api/v1`. Por defecto llama al runner-service en
+`http://localhost:8081` (se cambia con `JAVALAB_RUNNER_SERVICE_URL`).
 
 > La base de datos SQLite se crea sola en `backend/data/javalab.db` (ignorada por git).
 
@@ -66,17 +71,16 @@ Abre `http://localhost:3000`, crea una cuenta y empieza a resolver ejercicios.
 ## Cómo funciona un envío
 
 1. El frontend manda el código a `POST /api/v1/submissions`.
-2. El backend revisa el código contra una lista blanca de imports y una lista negra de APIs
-   peligrosas (`Runtime`, `ProcessBuilder`, `System.exit`, `java.io`, hilos, sockets…).
-3. Se inyectan los tests JUnit del ejercicio, que **viven solo en el servidor**.
-4. Se compila y ejecuta dentro de un contenedor desechable:
-   `--network none --memory 256m --cpus 0.5 --pids-limit 64 --cap-drop ALL --read-only`,
-   con un timeout de 10 segundos.
-5. Se devuelve el resultado test por test y se guarda el intento en el progreso.
+2. El backend se lo pasa al **runner-service** por HTTP (`POST /internal/run`), con el lenguaje, los
+   tests del ejercicio y el código del alumno. El backend **no ejecuta nada**.
+3. El runner-service valida el código (lista blanca de imports y lista negra de APIs peligrosas:
+   `Runtime`, `ProcessBuilder`, `System.exit`, `java.io`, hilos, sockets…; en Python, `os`,
+   `subprocess`, `eval`…), compila y ejecuta **los tests del ejercicio** (que viven solo en el
+   servidor), con un timeout de 10 segundos.
+4. Devuelve el resultado test por test, y el backend lo guarda en el progreso.
 
-Si Docker no está disponible, el backend cae automáticamente al **motor local** (`javac` del
-equipo) y lo avisa en los logs. El aislamiento es menor. Se puede forzar/comprobar con
-`JAVALAB_RUNNER_USE_DOCKER` (**el motor local sólo ejecuta Java**: Python necesita Docker).
+El runner-service es la única pieza que tiene compiladores (JDK, Python). Añadir un lenguaje
+(TypeScript, C, C++…) es añadir su toolchain a **su** imagen y su comando; el backend no cambia.
 
 ---
 
@@ -84,10 +88,12 @@ equipo) y lo avisa en los logs. El aislamiento es menor. Se puede forzar/comprob
 
 ```
 java_practice_project/
-├── backend/     Spring Boot: API, autenticación JWT, catálogo y motor de ejecución
-├── frontend/    Next.js 16 + Tailwind + Monaco Editor
-├── exercises/   Catálogo de ejercicios en YAML (enunciado, pistas, solución y tests)
-├── runner/      Imágenes Docker que compilan y ejecutan el código (una por lenguaje)
+├── backend/         Spring Boot: API, autenticación JWT, catálogo y progreso (NO ejecuta código)
+├── runner-core/     Código compartido: validadores, adaptadores de lenguaje y lectura de resultados
+├── runner-service/  Servicio que compila y ejecuta el código (Java, Python y los que vengan)
+├── frontend/        Next.js 16 + Tailwind + Monaco Editor
+├── exercises/       Catálogo de ejercicios en YAML (enunciado, pistas, solución y tests)
+├── runner/          El jar de JUnit que usan los ejercicios de Java
 └── PLAN.md      Plan del proyecto y fases pendientes
 ```
 
@@ -199,36 +205,31 @@ Todas las respuestas siguen el contrato LRCH:
 
 ## Despliegue (Coolify + Docker + Neon + frontend)
 
+Dos servicios en Coolify: el **backend** (API, sin Docker) y el **runner-service** (compila y ejecuta).
+
 ```
-Navegador ──► Frontend (Next.js) ──/api/v1/*──► Backend (Coolify, Spring Boot) ──► Neon (Postgres)
-                                                       │
-                                                       ├─► Docker del host (socket) ─► runner efímero
-                                                       └─► Resend (correos)
+Navegador ──► Frontend (Next.js) ──/api/v1/*──► Backend (Coolify)
+                                                    │   │
+                                                    │   └─► Neon (Postgres) + Resend (correos)
+                                                    │
+                                                    └─► Runner-service (red interna, /internal/run)
+                                                            └─► compila y ejecuta (JDK, Python)
 ```
 
-El backend corre en un contenedor y lanza **otros contenedores desechables** (uno por envío) para
-ejecutar el código del alumno. Para eso necesita el CLI de Docker (viene en la imagen), acceso al
-daemon del host y un **directorio compartido** en `/work`.
+El backend **no ejecuta nada**: manda el código al runner-service por HTTP. El runner-service es la
+única pieza con compiladores. Se comunican por la red interna de Coolify, sin socket ni Docker.
 
 **1. Base de datos (Neon).** Crea un proyecto y copia host, base, usuario y contraseña. La URL de Neon
 empieza por `postgresql://`; el backend necesita el formato JDBC:
 `jdbc:postgresql://<host>/<base>?sslmode=require`, con usuario y contraseña en variables aparte.
 
-**2. Imágenes de los runners (una vez, por SSH en el servidor).**
+**2. Runner-service.** Nuevo servicio en Coolify:
+- Build: `Dockerfile Path = ./runner-service/Dockerfile`, contexto = raíz del repo.
+- Puerto interno `8081`.
+- Health Check: `/internal/health`.
+- **No se expone a internet** (solo lo llama el backend por la red interna).
 
-```bash
-cd runner && ./build.sh        # crea javalab-runner:17 y javalab-runner-python:3.12
-```
-
-Repetir cuando cambie algo de `runner/`.
-
-**3. Directorio compartido (una vez, por SSH).**
-
-```bash
-sudo mkdir -p /srv/javalab/work && sudo chown 10001:10001 /srv/javalab/work
-```
-
-**4. Backend (Coolify).** Dockerfile Path = `./Dockerfile`, Health Check = `/api/v1/health`. Variables:
+**3. Backend.** Dockerfile Path = `./Dockerfile`, Health Check = `/api/v1/health`. Variables:
 
 | Variable | Valor |
 |---|---|
@@ -238,32 +239,15 @@ sudo mkdir -p /srv/javalab/work && sudo chown 10001:10001 /srv/javalab/work
 | `JAVALAB_DB_URL` / `JAVALAB_DB_USER` / `JAVALAB_DB_PASSWORD` | los de Neon (formato JDBC) |
 | `JAVALAB_RESEND_API_KEY` / `JAVALAB_MAIL_FROM` | los de Resend |
 | `JAVALAB_SUPER_ADMIN_EMAIL` | tu correo: esa cuenta se promueve a SUPER_ADMIN al arrancar |
-| `JAVALAB_RUNNER_WORK_DIR` | `/work` |
-| `JAVALAB_RUNNER_HOST_WORK_DIR` | la ruta del mismo directorio **vista por el host** (`/srv/javalab/work`) |
+| `JAVALAB_RUNNER_SERVICE_URL` | `http://<nombre-del-servicio-runner>:8081` (red interna de Coolify) |
 
-Volúmenes (Storages) del backend, ambos *bind mount*:
-
-```
-/var/run/docker.sock   →  /var/run/docker.sock     # para que pueda lanzar los runners
-/srv/javalab/work      →  /work                    # directorio compartido backend<->runners
-```
-
-El backend y los runners comparten `/work` porque el daemon del host no ve los temporales del
-contenedor del backend. `JAVALAB_RUNNER_HOST_WORK_DIR` le dice al backend la ruta del host para montar
-en los runners.
-
-Los envíos se ejecutan de uno en uno (`JAVALAB_RUNNER_MAX_CONCURRENT=1`) para acotar memoria; el resto
+Los envíos se ejecutan de uno en uno (`JAVALAB_RUNNER_MAX_CONCURRENT=1`) para acotar CPU; el resto
 espera su turno hasta `JAVALAB_RUNNER_QUEUE_WAIT_SECONDS` y si se agota responde 429 `SERVIDOR_OCUPADO`.
 
 El `Dockerfile` ya fija `SPRING_PROFILES_ACTIVE=prod`; en producción el **registro está cerrado por
 defecto** (`JAVALAB_REGISTRATION_ENABLED=false`): las cuentas se crean por invitación.
 
-> **Mejora futura (opcional):** montar el socket crudo le da al backend control del Docker del host.
-> Si en algún momento se abre a más gente, se puede interponer un *socket proxy*
-> (`tecnativa/docker-socket-proxy`) que sólo permita crear/listar/borrar contenedores. Hoy no hace
-> falta: el laboratorio es personal y el registro está cerrado.
-
-**5. Frontend.** Variables (definirlas **antes** del build, porque `NEXT_PUBLIC_*` se incrusta):
+**4. Frontend.** Variables (definirlas **antes** del build, porque `NEXT_PUBLIC_*` se incrusta):
 
 | Variable | Valor |
 |---|---|
@@ -278,11 +262,10 @@ Perfil → Cambiar contraseña). Desde el mismo panel se reenvía una contraseñ
 contraseña temporal solo viaja en ese correo; la API nunca la devuelve. El rol se comprueba contra la base de datos en
 cada llamada, no contra el token.
 
-**Sobre la seguridad del runner.** El código del alumno corre en un contenedor **efímero** aparte
-(`--network none --memory 256m --cpus 0.5 --pids-limit 64 --cap-drop ALL --read-only`, timeout 10 s),
-nunca dentro del backend. El backend habla con el daemon de Docker por el socket del host, así que
-puede lanzar contenedores: el aislamiento real está en los flags del runner y en el validador del
-código. El registro está cerrado: la única puerta de entrada son las invitaciones.
+**Sobre la seguridad del runner.** El código del alumno **no se ejecuta en el backend**: corre dentro del
+runner-service, con un usuario sin privilegios, un directorio temporal que se borra al acabar y un timeout
+de 10 segundos. La validación del código (imports y APIs prohibidas) ocurre **antes** de compilar. El
+registro está cerrado: la única puerta de entrada son las invitaciones.
 
 ## Seguridad
 
