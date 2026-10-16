@@ -60,7 +60,7 @@ public class PythonSourceValidator {
 
         String sinDocstrings = quitarCadenas(codigo);
         for (String token : TOKENS_PROHIBIDOS) {
-            if (sinDocstrings.contains(token)) {
+            if (contieneToken(sinDocstrings, token)) {
                 problemas.add("no está permitido usar '" + token + "'");
             }
         }
@@ -69,6 +69,14 @@ public class PythonSourceValidator {
             throw RunnerException.badRequest("CODIGO_NO_PERMITIDO",
                     "No se puede ejecutar tu código: " + String.join("; ", problemas) + ".");
         }
+    }
+
+    /**
+     * Busca el token respetando el inicio de identificador: {@code os.} se detecta en
+     * {@code os.system("ls")} pero no dentro de {@code datos.get("x")} ni {@code pasos.append(...)}.
+     */
+    private boolean contieneToken(String codigo, String token) {
+        return Pattern.compile("(?<!\\w)" + Pattern.quote(token)).matcher(codigo).find();
     }
 
     /**

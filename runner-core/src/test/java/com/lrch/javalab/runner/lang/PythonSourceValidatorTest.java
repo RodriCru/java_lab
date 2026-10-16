@@ -64,4 +64,23 @@ class PythonSourceValidatorTest {
                 """;
         assertThatCode(() -> validador.validar(codigo)).doesNotThrowAnyException();
     }
+
+    @Test
+    @DisplayName("No confunde identificadores que acaban en 'os' con el módulo os")
+    void noConfundeIdentificadoresConElModuloOs() {
+        String codigo = """
+                def recoger(datos, pasos, varios):
+                    pasos.append(datos.get("x"))
+                    return pasos + varios
+                """;
+        assertThatCode(() -> validador.validar(codigo)).doesNotThrowAnyException();
+    }
+
+    @Test
+    @DisplayName("Bloquea el acceso al módulo os aunque no se importe")
+    void rechazaElModuloOsSinImportarlo() {
+        assertThatThrownBy(() -> validador.validar("os.system('ls')\n"))
+                .isInstanceOf(RunnerException.class)
+                .extracting(e -> ((RunnerException) e).getCode()).isEqualTo("CODIGO_NO_PERMITIDO");
+    }
 }
