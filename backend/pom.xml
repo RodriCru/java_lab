@@ -5,25 +5,27 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-parent</artifactId>
-    <version>3.5.16</version>
-    <relativePath/>
+    <groupId>com.lrch</groupId>
+    <artifactId>javalab-parent</artifactId>
+    <version>0.1.0</version>
   </parent>
 
-  <groupId>com.lrch</groupId>
   <artifactId>javalab-backend</artifactId>
-  <version>0.1.0</version>
   <name>Java Practice Lab - Backend</name>
   <description>API del laboratorio de ejercicios de Java</description>
 
   <properties>
-    <java.version>17</java.version>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <jjwt.version>0.12.7</jjwt.version>
   </properties>
 
   <dependencies>
+    <!-- Nucleo compartido: validadores, adaptadores y lectura de resultados. -->
+    <dependency>
+      <groupId>com.lrch</groupId>
+      <artifactId>javalab-runner-core</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web</artifactId>

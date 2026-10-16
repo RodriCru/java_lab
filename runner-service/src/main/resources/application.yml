@@ -1,0 +1,11 @@
+server:
+  port: ${PORT:8081}
+
+spring:
+  application:
+    name: javalab-runner-service
+
+# El servicio no tiene base de datos ni catalogo: solo ejecuta codigo.
+logging:
+  level:
+    com.lrch.javalab: INFO

@@ -54,22 +54,12 @@ javalab:
     exercises-dir: ${JAVALAB_EXERCISES_DIR:../exercises}
     questions-dir: ${JAVALAB_QUESTIONS_DIR:../questions}
   runner:
-    use-docker: ${JAVALAB_RUNNER_USE_DOCKER:true}
+    # URL del runner-service (el que compila y ejecuta; el backend ya no habla con Docker).
+    service-url: ${JAVALAB_RUNNER_SERVICE_URL:http://localhost:8081}
     # Envios que se ejecutan a la vez; el resto espera su turno (hasta queue-wait-seconds).
     max-concurrent: ${JAVALAB_RUNNER_MAX_CONCURRENT:1}
     queue-wait-seconds: ${JAVALAB_RUNNER_QUEUE_WAIT_SECONDS:60}
-    image: ${JAVALAB_RUNNER_IMAGE:javalab-runner:17}
     timeout-seconds: ${JAVALAB_RUNNER_TIMEOUT_SECONDS:10}
-    memory: ${JAVALAB_RUNNER_MEMORY:256m}
-    cpus: ${JAVALAB_RUNNER_CPUS:0.5}
-    # Jar de JUnit usado tanto por la imagen Docker como por el fallback local.
-    junit-jar: ${JAVALAB_RUNNER_JUNIT_JAR:../runner/junit-platform-console-standalone.jar}
-    # Directorio compartido backend<->runners (obligatorio con Docker en un servidor: el daemon del
-    # host no ve los temporales del contenedor). Vacio en local: se usa el temporal del sistema.
-    work-dir: ${JAVALAB_RUNNER_WORK_DIR:}
-    # Ruta del mismo directorio VISTA POR EL HOST (solo si el backend corre en un contenedor). El
-    # daemon de Docker resuelve los -v contra el host, no contra el contenedor del backend.
-    host-work-dir: ${JAVALAB_RUNNER_HOST_WORK_DIR:}
 
 logging:
   level:

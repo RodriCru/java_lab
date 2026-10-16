@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>com.lrch</groupId>
+    <artifactId>javalab-parent</artifactId>
+    <version>0.1.0</version>
+  </parent>
+
+  <artifactId>javalab-runner-core</artifactId>
+  <name>Java Practice Lab - Runner core</name>
+  <description>Código compartido entre el backend y el runner-service: validadores, adaptadores y lectura de resultados</description>
+
+  <dependencies>
+    <!-- La validación usa jakarta.validation (ApiException y anotaciones). -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-validation</artifactId>
+    </dependency>
+    <!-- La lectura de los reportes usa SLF4J (para los logs) y JAXP (incluido en el JDK). -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+</project>

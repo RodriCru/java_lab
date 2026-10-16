@@ -1,5 +1,6 @@
 package com.lrch.javalab.runner;
 
+import com.lrch.javalab.catalog.Exercise;
 import com.lrch.javalab.common.ApiException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,47 +19,42 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+/**
+ * Prueba la cola de envios. El motor real (HttpCodeRunner) se sustituye por un mock: aqui solo
+ * interesa que los envios se encolen de uno en uno y que el turno se libere siempre.
+ */
 class RunnerServiceTest {
 
-    private static final ExecutionRequest PETICION = peticionJava();
-
-    /** Petición de un ejercicio Java mínimo: el adaptador no se usa porque el motor está mockeado. */
-    private static ExecutionRequest peticionJava() {
-        var ejercicio = new com.lrch.javalab.catalog.Exercise("java", "slug", 1, "topic", "Titulo",
-                "enunciado", "public static int suma(int a, int b)", "Solution", 5, "easy",
-                List.of("pista 1", "pista 2"), "class Solution {}", "class Solution {}", "@Test", null);
-        var adapter = new com.lrch.javalab.runner.lang.JavaLanguageAdapter(
-                new com.lrch.javalab.runner.SourceValidator());
-        return new ExecutionRequest(ejercicio, adapter, "codigo");
-    }
+    private static final ExecutionRequest PETICION = new ExecutionRequest(
+            new Exercise("java", "slug", 1, "topic", "Titulo", "enunciado",
+                    "public static int suma(int a, int b)", "Solution", 5, "easy",
+                    List.of("pista 1", "pista 2"), "class Solution {}", "class Solution {}", "@Test", null),
+            "codigo");
 
     private static ExecutionResult resultado() {
-        return new ExecutionResult(ExecutionResult.Status.PASSED, true, List.of(), "", "", 0, "local");
+        return new ExecutionResult(ExecutionResult.Status.PASSED, true, List.of(), "", "", 0, "service");
     }
 
-    private RunnerService servicio(LocalCodeRunner local, int maxConcurrent, long esperaSegundos) {
-        DockerCodeRunner docker = mock(DockerCodeRunner.class);
-        when(docker.disponible()).thenReturn(false);
-        when(local.disponible()).thenReturn(true);
-        RunnerProperties propiedades = new RunnerProperties(false, null, 10, null, null, null,
-                maxConcurrent, esperaSegundos, null, null);
-        return new RunnerService(docker, local, propiedades);
+    private RunnerService servicio(CodeRunner runner, int maxConcurrent, long esperaSegundos) {
+        when(runner.nombre()).thenReturn("service");
+        RunnerProperties propiedades = new RunnerProperties("http://runner:8081", 10, maxConcurrent, esperaSegundos);
+        return new RunnerService(runner, propiedades);
     }
 
     @Test
     @DisplayName("Los envíos simultáneos se ejecutan de uno en uno")
     void unoALaVez() throws Exception {
-        LocalCodeRunner local = mock(LocalCodeRunner.class);
+        CodeRunner runner = mock(CodeRunner.class);
         AtomicInteger enCurso = new AtomicInteger();
         AtomicInteger maximo = new AtomicInteger();
-        when(local.ejecutar(any())).thenAnswer(invocacion -> {
+        when(runner.ejecutar(any())).thenAnswer(invocacion -> {
             int ahora = enCurso.incrementAndGet();
             maximo.accumulateAndGet(ahora, Math::max);
             Thread.sleep(150);
             enCurso.decrementAndGet();
             return resultado();
         });
-        RunnerService servicio = servicio(local, 1, 30);
+        RunnerService servicio = servicio(runner, 1, 30);
 
         ExecutorService pool = Executors.newFixedThreadPool(4);
         try {
@@ -77,15 +73,15 @@ class RunnerServiceTest {
     @Test
     @DisplayName("Si la espera se agota responde 429 SERVIDOR_OCUPADO y no deja el turno ocupado")
     void esperaAgotada() throws Exception {
-        LocalCodeRunner local = mock(LocalCodeRunner.class);
+        CodeRunner runner = mock(CodeRunner.class);
         CountDownLatch dentro = new CountDownLatch(1);
         CountDownLatch soltar = new CountDownLatch(1);
-        when(local.ejecutar(any())).thenAnswer(invocacion -> {
+        when(runner.ejecutar(any())).thenAnswer(invocacion -> {
             dentro.countDown();
             soltar.await(10, TimeUnit.SECONDS);
             return resultado();
         });
-        RunnerService servicio = servicio(local, 1, 1);
+        RunnerService servicio = servicio(runner, 1, 1);
 
         ExecutorService pool = Executors.newSingleThreadExecutor();
         try {
@@ -102,16 +98,15 @@ class RunnerServiceTest {
             pool.shutdownNow();
         }
 
-        // El turno se liberó: un envío nuevo vuelve a entrar sin esperar.
         assertThat(servicio.ejecutar(PETICION).status()).isEqualTo(ExecutionResult.Status.PASSED);
     }
 
     @Test
     @DisplayName("Si el motor lanza una excepción el turno se libera igual")
     void liberaElTurnoSiFalla() {
-        LocalCodeRunner local = mock(LocalCodeRunner.class);
-        when(local.ejecutar(any())).thenThrow(new IllegalStateException("fallo")).thenReturn(resultado());
-        RunnerService servicio = servicio(local, 1, 1);
+        CodeRunner runner = mock(CodeRunner.class);
+        when(runner.ejecutar(any())).thenThrow(new IllegalStateException("fallo")).thenReturn(resultado());
+        RunnerService servicio = servicio(runner, 1, 1);
 
         assertThatThrownBy(() -> servicio.ejecutar(PETICION)).isInstanceOf(IllegalStateException.class);
         assertThat(servicio.ejecutar(PETICION).status()).isEqualTo(ExecutionResult.Status.PASSED);

@@ -5,9 +5,8 @@
 **/*.db
 **/data/
 
-# No hacen falta para el backend.
+# No hacen falta para construir:
 frontend/
-runner/
 .git/
 .github/
 **/node_modules/
@@ -16,3 +15,6 @@ runner/
 *.md
 *.py
 CLAUDE.md
+
+# Imagenes del runner ANTIGUAS (una por lenguaje). Ya no se usan: el runner-service las reemplaza.
+runner/

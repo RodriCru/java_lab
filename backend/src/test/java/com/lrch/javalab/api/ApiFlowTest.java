@@ -36,6 +36,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @SpringBootTest
 @AutoConfigureMockMvc
+@org.springframework.context.annotation.Import(MotorDeMentiraConfig.class)
 class ApiFlowTest {
 
     @Autowired
@@ -56,6 +57,8 @@ class ApiFlowTest {
             throw new UncheckedIOException(ex);
         }
         registry.add("spring.datasource.url", () -> "jdbc:sqlite:" + db);
+        // Desactiva el motor real (HTTP): estos tests usan el de mentira (MotorDeMentiraConfig).
+        registry.add("javalab.runner.service-enabled", () -> "false");
     }
 
     @Test
@@ -148,10 +151,9 @@ class ApiFlowTest {
     }
 
     @Test
-    @DisplayName("La solucion de referencia pasa todos los tests del ejercicio")
-    void laSolucionDeReferenciaPasaTodosLosTests() throws Exception {
+    @DisplayName("Un envío que el motor acepta pasa los tests y marca el ejercicio como resuelto")
+    void unEnvioQuePasaMarcaElEjercicioResuelto() throws Exception {
         Exercise ejercicio = ejercicio("even-or-odd");
-        int testsEsperados = contarTests(ejercicio);
 
         mockMvc.perform(enviar(ejercicio.referenceSolution(), sesion(), ejercicio.slug()))
                 .andExpect(status().isOk())
@@ -159,20 +161,19 @@ class ApiFlowTest {
                 .andExpect(jsonPath("$.data.status").value("PASSED"))
                 .andExpect(jsonPath("$.data.compiled").value(true))
                 .andExpect(jsonPath("$.data.solved").value(true))
-                .andExpect(jsonPath("$.data.passed").value(testsEsperados))
                 .andExpect(jsonPath("$.data.failed").value(0))
-                .andExpect(jsonPath("$.data.total").value(testsEsperados))
-                .andExpect(jsonPath("$.data.tests.length()").value(testsEsperados))
+                .andExpect(jsonPath("$.data.total").value(org.hamcrest.Matchers.greaterThan(0)))
                 .andExpect(jsonPath("$.data.tests[0].passed").value(true));
     }
 
     @Test
-    @DisplayName("El codigo inicial no pasa los tests y el ejercicio queda marcado como intentado")
-    void elCodigoInicialNoPasaLosTests() throws Exception {
+    @DisplayName("Un envío que falla queda marcado como intentado pero no resuelto")
+    void unEnvioQueFallaQuedaIntentado() throws Exception {
         Exercise ejercicio = ejercicio("max-of-three");
         Cookie sesion = sesion();
 
-        mockMvc.perform(enviar(ejercicio.starterCode(), sesion, ejercicio.slug()))
+        // El motor de mentira falla cuando el código contiene FALLA.
+        mockMvc.perform(enviar("FALLA", sesion, ejercicio.slug()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.status").value("FAILED"))
                 .andExpect(jsonPath("$.data.compiled").value(true))
@@ -186,17 +187,10 @@ class ApiFlowTest {
     }
 
     @Test
-    @DisplayName("Un codigo que no compila devuelve COMPILE_ERROR con el detalle del compilador")
-    void unCodigoQueNoCompilaDevuelveCompileError() throws Exception {
-        String codigoRoto = """
-                public class Solution {
-                    public static boolean isEven(int number) {
-                        return number % ;
-                    }
-                }
-                """;
-
-        mockMvc.perform(enviar(codigoRoto, sesion(), "even-or-odd"))
+    @DisplayName("Un envío que no compila devuelve COMPILE_ERROR")
+    void unEnvioQueNoCompilaDevuelveCompileError() throws Exception {
+        // El motor de mentira devuelve COMPILE_ERROR cuando el código contiene ROMPE.
+        mockMvc.perform(enviar("ROMPE", sesion(), "even-or-odd"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.status").value("COMPILE_ERROR"))
                 .andExpect(jsonPath("$.data.compiled").value(false))
@@ -205,23 +199,15 @@ class ApiFlowTest {
     }
 
     @Test
-    @DisplayName("El codigo con APIs prohibidas se rechaza antes de ejecutarse")
+    @DisplayName("El código con APIs prohibidas se rechaza antes de ejecutarse")
     void elCodigoConApisProhibidasSeRechaza() throws Exception {
-        String codigoPeligroso = """
-                import java.io.File;
-
-                public class Solution {
-                    public static boolean isEven(int number) {
-                        new File("/tmp/x").delete();
-                        return number % 2 == 0;
-                    }
-                }
-                """;
+        // El motor de mentira rechaza el mismo caso que el validador real (java.io).
+        String codigoPeligroso = "PROHIBIDO java.io.File";
 
         mockMvc.perform(enviar(codigoPeligroso, sesion(), "even-or-odd"))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.error").value("CODIGO_NO_PERMITIDO"))
-                .andExpect(jsonPath("$.message").value(org.hamcrest.Matchers.containsString("java.io.File")));
+                .andExpect(jsonPath("$.message").value(org.hamcrest.Matchers.containsString("no está permitido")));
     }
 
     @Test
@@ -265,7 +251,8 @@ class ApiFlowTest {
                 .andExpect(jsonPath("$.data.solved").value(true))
                 .andExpect(jsonPath("$.data.yaEstabaResuelto").value(false));
 
-        mockMvc.perform(enviar(ejercicio.starterCode(), sesion, ejercicio.slug()))
+        // Un envío que falla después de haber resuelto: no debe perder el avance.
+        mockMvc.perform(enviar("FALLA", sesion, ejercicio.slug()))
                 .andExpect(jsonPath("$.data.status").value("FAILED"))
                 .andExpect(jsonPath("$.data.solved").value(true))
                 .andExpect(jsonPath("$.data.yaEstabaResuelto").value(true));
@@ -288,10 +275,10 @@ class ApiFlowTest {
                 .andExpect(jsonPath("$.data.complexityQuestion.correctIndex").doesNotExist())
                 .andExpect(jsonPath("$.data.complexityQuestion.explanation").doesNotExist());
 
-        // Tests fallan (starter): no se revela nada.
+        // Tests fallan: no se revela nada.
         mockMvc.perform(post("/api/v1/submissions").cookie(sesion).contentType(MediaType.APPLICATION_JSON)
                         .content(json(Map.of("exerciseSlug", ejercicio.slug(),
-                                "sourceCode", ejercicio.starterCode(), "complexityAnswer", correcta))))
+                                "sourceCode", "FALLA", "complexityAnswer", correcta))))
                 .andExpect(jsonPath("$.data.status").value("FAILED"))
                 .andExpect(jsonPath("$.data.complexity").doesNotExist());
 
@@ -308,28 +295,6 @@ class ApiFlowTest {
                         .content(json(Map.of("exerciseSlug", ejercicio.slug(),
                                 "sourceCode", ejercicio.referenceSolution(), "complexityAnswer", correcta))))
                 .andExpect(jsonPath("$.data.complexity.correct").value(true));
-    }
-
-    @Test
-    void cadaTestTraeSuEntradaYLaSalidaDeConsola() throws Exception {
-        Cookie sesion = sesion();
-        String codigo = """
-                public class Solution {
-                    public static String repeatText(String text, int times) {
-                        for (int i = 0; i < times; i++) {
-                            System.out.print(text);
-                        }
-                        return "";
-                    }
-                }
-                """;
-
-        mockMvc.perform(enviar(codigo, sesion, "repeat-text"))
-                .andExpect(jsonPath("$.data.status").value("FAILED"))
-                .andExpect(jsonPath("$.data.tests[?(@.name=='t1')].input")
-                        .value("assertEquals(\"ababab\", Solution.repeatText(\"ab\", 3));"))
-                .andExpect(jsonPath("$.data.tests[?(@.name=='t1')].output").value("ababab"))
-                .andExpect(jsonPath("$.data.tests[?(@.name=='t3')].output").doesNotExist());
     }
 
     @Test
@@ -369,30 +334,14 @@ class ApiFlowTest {
     }
 
     @Test
-    @DisplayName("Un ejercicio de Python se ejecuta de verdad (Docker + pytest) y guarda progreso")
-    void unEjercicioDePythonSeEjecutaDeVerdad() throws Exception {
+    @DisplayName("El backend delega los envíos de Python en el motor (y guarda el progreso)")
+    void unEnvioDePythonSeDelegaYGuardaProgreso() throws Exception {
         Cookie sesion = sesion();
-        String codigo = """
-                def add_two_numbers(a, b):
-                    return a + b
-                """;
-
-        mockMvc.perform(enviar(codigo, sesion, "py-add-two-numbers"))
+        mockMvc.perform(enviar("def add_two_numbers(a, b):\n    return a + b\n", sesion, "py-add-two-numbers"))
                 .andExpect(jsonPath("$.data.status").value("PASSED"))
-                .andExpect(jsonPath("$.data.solved").value(true))
-                .andExpect(jsonPath("$.data.total").value(5))
-                .andExpect(jsonPath("$.data.passed").value(5));
-
-        // Y con una solucion incorrecta, falla y no se marca como resuelto.
-        String mal = """
-                def add_two_numbers(a, b):
-                    return a - b
-                """;
-        mockMvc.perform(enviar(mal, sesion, "py-add-two-numbers"))
-                .andExpect(jsonPath("$.data.status").value("FAILED"))
                 .andExpect(jsonPath("$.data.solved").value(true));
 
-        mockMvc.perform(enviar(mal, sesion(), "py-reverse-text"))
+        mockMvc.perform(enviar("FALLA", sesion(), "py-reverse-text"))
                 .andExpect(jsonPath("$.data.status").value("FAILED"))
                 .andExpect(jsonPath("$.data.solved").value(false));
     }
