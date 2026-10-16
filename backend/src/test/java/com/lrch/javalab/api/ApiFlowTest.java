@@ -99,7 +99,7 @@ class ApiFlowTest {
     void laListaSePuedeFiltrarPorTema() throws Exception {
         int esperados = (int) catalog.all().stream().filter(e -> "strings".equals(e.topic())).count();
 
-        mockMvc.perform(get("/api/v1/exercises").param("topic", "strings").cookie(sesion()))
+        mockMvc.perform(get("/api/v1/exercises").param("topic", "strings").param("per_page", "100").cookie(sesion()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.length()").value(esperados))
                 .andExpect(jsonPath("$.pagination.total").value(esperados));
